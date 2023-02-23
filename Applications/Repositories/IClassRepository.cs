@@ -6,5 +6,6 @@ namespace Applications.Repositories
     {
         Task<List<Class>> GetEnableClasses();
         Task<List<Class>> GetDisableClasses();
+        Task<List<Class>> GetClassByName(string Name);
     }
 }
