@@ -1,4 +1,5 @@
-﻿using Applications.IRepositories;
+﻿using Application.Repositories;
+using Applications.IRepositories;
 using Applications.Repositories;
 
 namespace Applications
@@ -9,6 +10,7 @@ namespace Applications
         public IAssignmentRepository AssignmentRepository { get; }
         public IQuizzRepository QuizzRepository { get; }
         public IUserRepository UserRepository { get; }
+        public IClassUserRepository ClassUserRepository { get; }
         public IAuditPlanRepository AuditPlanRepository { get; }
         public ILectureRepository LectureRepository { get; }
         public IUnitRepository UnitRepository { get; }
