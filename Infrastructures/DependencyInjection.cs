@@ -16,7 +16,7 @@ namespace Infrastructures
         {
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddScoped<IUnitOfWork, UnitOfWork>();
-            services.AddScoped<ICurrentTime,CurrentTime>();
+            services.AddScoped<ICurrentTime, CurrentTime>();
             // local; DBName: LMSFSoftDB
             services.AddDbContext<AppDBContext>(options => options.UseSqlServer(config.GetConnectionString("AppDB")));
             // Add Object Services
@@ -28,6 +28,8 @@ namespace Infrastructures
             services.AddScoped<IAssignmentService, AssignmentService>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IAuditPlanService, AuditPlanService>();
+            services.AddScoped<IAuditPlanRepository, AuditPlanRepository>();
             services.AddScoped<ILectureServices, LectureServies>();
             services.AddScoped<ILectureRepository, LectureRepository>();
             services.AddScoped<IUnitRepository, UnitRepository>();

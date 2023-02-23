@@ -5,6 +5,7 @@ using Applications.ViewModels.ModuleViewModels;
 using AutoMapper;
 using Domain.Entities;
 using Application.ViewModels.QuizzViewModels;
+using Applications.ViewModels.AuditPlanViewModel;
 using Applications.ViewModels.LectureViewModels;
 using Application.ViewModels.UnitViewModels;
 
@@ -24,6 +25,8 @@ namespace Infrastructures.Mappers
                .ForMember(dest => dest.QuizzId, src => src.MapFrom(x => x.Id));
             CreateMap<UserViewModel, User>().ReverseMap();
             CreateMap<UpdateUserViewModel, User>().ReverseMap();
+            CreateMap<AuditPlanViewModel, AuditPlan>().ReverseMap();
+            CreateMap<UpdateAuditPlanViewModel, AuditPlan>().ReverseMap();
             CreateMap<CreateLectureViewModel, Lecture>().ReverseMap();
             CreateMap<UpdateLectureViewModel, Lecture>().ReverseMap();
             CreateMap<LectureViewModel, Lecture>().ReverseMap();

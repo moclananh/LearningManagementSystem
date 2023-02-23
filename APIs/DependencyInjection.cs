@@ -6,6 +6,7 @@ using Applications.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Applications.ViewModels.AuditPlanViewModel;
 using Applications.ViewModels.ModuleViewModels;
 
 namespace APIs;
@@ -22,6 +23,8 @@ public static class DependencyInjection
         services.AddHealthChecks();
         services.AddHttpContextAccessor();
         services.AddScoped<IValidator<ClassViewModel>, ClassValidation>();
+        services.AddScoped<IValidator<AuditPlanViewModel>, AuditPlanValidation>();
+        services.AddScoped<IValidator<UpdateAuditPlanViewModel>, UpdateAuditPlanValidation>();
         services.AddScoped<IValidator<ModuleViewModels>, ModuleValidation>();
         //---------------------------------------------------------------------------------------
         services.AddAuthentication(option =>

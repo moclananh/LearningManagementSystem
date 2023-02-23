@@ -9,6 +9,7 @@ namespace Applications
         public IAssignmentRepository AssignmentRepository { get; }
         public IQuizzRepository QuizzRepository { get; }
         public IUserRepository UserRepository { get; }
+        public IAuditPlanRepository AuditPlanRepository { get; }
         public ILectureRepository LectureRepository { get; }
         public IUnitRepository UnitRepository { get; }
         public IModuleRepository ModuleRepository { get; }
