@@ -28,11 +28,12 @@ namespace Infrastructures
             services.AddScoped<IAssignmentService, AssignmentService>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<ILectureServices, LectureServies>();
+            services.AddScoped<ILectureRepository, LectureRepository>();
             services.AddScoped<IUnitRepository, UnitRepository>();
             services.AddScoped<IUnitServices, UnitServices>();
             services.AddScoped<IModuleServices, ModuleService>();
             services.AddScoped<IModuleRepository, ModuleRepository>();
-
             return services;
         }
     }
