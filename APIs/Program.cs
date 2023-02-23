@@ -1,11 +1,10 @@
+using APIs;
 using Infrastructures;
 
 var builder = WebApplication.CreateBuilder(args);
 {
-    builder.Services.AddControllers();
-    builder.Services.AddEndpointsApiExplorer();
-    builder.Services.AddSwaggerGen();
     builder.Services.AddInfrastructureServices(builder.Configuration);
+    builder.Services.AddWebAPIService();
 }
 
 var app = builder.Build();

@@ -13,7 +13,6 @@
   <ItemGroup>
     <Folder Include="Commons\" />
     <Folder Include="Utils\" />
-    <Folder Include="ViewModels\UnitViewModels\" />
   </ItemGroup>
 
   <ItemGroup>
