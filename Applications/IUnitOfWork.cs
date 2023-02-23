@@ -1,10 +1,5 @@
 ﻿using Applications.IRepositories;
 using Applications.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Applications
 {
@@ -14,6 +9,7 @@ namespace Applications
         public IAssignmentRepository AssignmentRepository { get; }
         public IQuizzRepository QuizzRepository { get; }
         public IUserRepository UserRepository { get; }
+        public IUnitRepository UnitRepository { get; }
         public IModuleRepository ModuleRepository { get; }
         public Task<int> SaveChangeAsync();
     }

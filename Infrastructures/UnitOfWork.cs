@@ -11,12 +11,14 @@ namespace Infrastructures
         private readonly IAssignmentRepository _assignmentRepository;
         private readonly IQuizzRepository _quizzRepository;
         private readonly IUserRepository _userRepository;
+        private readonly IUnitRepository _unitRepository;
         private readonly IModuleRepository _moduleRepository;
         public UnitOfWork(AppDBContext appDBContext,
             IClassRepository classRepository, 
             IAssignmentRepository assignmentRepository, 
             IQuizzRepository quizzRepository, 
-            IUserRepository userRepository,           
+            IUserRepository userRepository,
+            IUnitRepository unitRepository,          
             IModuleRepository moduleRepository)
         {
             _appDBContext = appDBContext;
@@ -24,6 +26,7 @@ namespace Infrastructures
             _assignmentRepository = assignmentRepository;
             _quizzRepository = quizzRepository;
             _userRepository = userRepository;
+            _unitRepository = unitRepository;
             _moduleRepository = moduleRepository;
         }
 
@@ -31,6 +34,7 @@ namespace Infrastructures
         public IAssignmentRepository AssignmentRepository => _assignmentRepository;
         public IQuizzRepository QuizzRepository => _quizzRepository;
         public IUserRepository UserRepository => _userRepository;
+        public IUnitRepository UnitRepository => _unitRepository;
         public IModuleRepository ModuleRepository => _moduleRepository;
         public async Task<int> SaveChangeAsync() => await _appDBContext.SaveChangesAsync();
     }
