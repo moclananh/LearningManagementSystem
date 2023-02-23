@@ -1,4 +1,5 @@
-﻿using Applications.Repositories;
+﻿using Applications.Interfaces;
+using Applications.Repositories;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -7,7 +8,7 @@ namespace Infrastructures.Repositories
     public class ClassRepository : GenericRepository<Class>, IClassRepository
     {
         private readonly AppDBContext _dbContext;
-        public ClassRepository(AppDBContext dbContext) : base(dbContext)
+        public ClassRepository(AppDBContext dbContext, ICurrentTime currentTime, IClaimService claimService) : base(dbContext,currentTime, claimService)
         {
             _dbContext = dbContext;
         }

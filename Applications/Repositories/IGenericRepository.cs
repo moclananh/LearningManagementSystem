@@ -1,4 +1,5 @@
 ﻿using Domain.Base;
+using System.Linq.Expressions;
 
 namespace Applications.Repositories
 {
@@ -12,5 +13,7 @@ namespace Applications.Repositories
         void SoftRemove(TEntity entity);
         Task AddRangeAsync(List<TEntity> entities);
         void SoftRemoveRange(List<TEntity> entities);
+        Task<List<TEntity>> Find(Expression<Func<TEntity, bool>> expression);
+        IQueryable<TEntity> query();
     }
 }

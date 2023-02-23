@@ -13,6 +13,7 @@ namespace Applications
         public IClassRepository ClassRepository { get; }
         public IAssignmentRepository AssignmentRepository { get; }
         public IQuizzRepository QuizzRepository { get; }
+        public IUserRepository UserRepository { get; }
         public Task<int> SaveChangeAsync();
     }
 }

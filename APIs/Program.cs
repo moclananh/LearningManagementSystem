@@ -4,7 +4,8 @@ using Infrastructures;
 var builder = WebApplication.CreateBuilder(args);
 {
     builder.Services.AddInfrastructureServices(builder.Configuration);
-    builder.Services.AddWebAPIService();
+    builder.Services.AddHttpContextAccessor();
+    builder.Services.AddWebAPIService(builder.Configuration);
 }
 
 var app = builder.Build();

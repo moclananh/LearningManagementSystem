@@ -1,4 +1,5 @@
-﻿using Applications.IRepositories;
+﻿using Applications.Interfaces;
+using Applications.IRepositories;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,7 +9,7 @@ namespace Infrastructures.Repositories
     {
         private readonly AppDBContext _context;
 
-        public QuizzRepository(AppDBContext appDBContext) : base(appDBContext)
+        public QuizzRepository(AppDBContext appDBContext, ICurrentTime currentTime, IClaimService claimService) : base(appDBContext, currentTime, claimService)
         {
             _context = appDBContext;
         }

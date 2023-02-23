@@ -1,20 +1,28 @@
-﻿using Applications.Repositories;
+﻿using Applications.Interfaces;
+using Applications.Repositories;
 using Domain.Base;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace Infrastructures.Repositories
 {
     public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : BaseEntity
     {
         protected DbSet<TEntity> _dbSet;
-        public GenericRepository(AppDBContext appDBContext)
+        private ICurrentTime _timeService;
+        private IClaimService _claimService;
+
+        public GenericRepository(AppDBContext appDBContext, ICurrentTime currentTime, IClaimService claimService) // contructor 3 param
         {
             _dbSet = appDBContext.Set<TEntity>();
+            _timeService = currentTime;
+            _claimService = claimService;
         }
+
         public async Task AddAsync(TEntity entity)
         {
             entity.CreationDate = DateTime.UtcNow;
-            //entity.CreatedBy = _claimsService.GetCurrentUserId;
+            entity.CreatedBy = _claimService.GetCurrentUserId;
             await _dbSet.AddAsync(entity);
         }
 
@@ -23,8 +31,7 @@ namespace Infrastructures.Repositories
             foreach (var entity in entities)
             {
                 entity.CreationDate = DateTime.UtcNow;
-                // Login user should return CurrentUser
-                //entity.CreatedBy = _claimsService.GetCurrentUserId;
+                entity.CreatedBy = _claimService.GetCurrentUserId;
             }
             await _dbSet.AddRangeAsync(entities);
         }
@@ -34,14 +41,13 @@ namespace Infrastructures.Repositories
         public async Task<TEntity?> GetByIdAsync(Guid id)
         {
             var result = await _dbSet.FirstOrDefaultAsync(x => x.Id == id);
-            // todo should throw exception when not found
             return result;
         }
 
         public void SoftRemove(TEntity entity)
         {
             entity.IsDeleted = true;
-            //entity.DeleteBy = _claimsService.GetCurrentUserId;
+            entity.DeleteBy = _claimService.GetCurrentUserId;
             _dbSet.Update(entity);
         }
 
@@ -50,16 +56,16 @@ namespace Infrastructures.Repositories
             foreach (var entity in entities)
             {
                 entity.IsDeleted = true;
-                entity.DeletionDate = DateTime.UtcNow;
-                //entity.DeleteBy = _claimsService.GetCurrentUserId;
+                entity.DeletionDate = _timeService.CurrentTime();
+                entity.DeleteBy = _claimService.GetCurrentUserId;
             }
             _dbSet.UpdateRange(entities);
         }
 
         public void Update(TEntity entity)
         {
-            entity.ModificationDate = DateTime.UtcNow;
-            //entity.ModificationBy = _claimsService.GetCurrentUserId;
+            entity.ModificationDate = _timeService.CurrentTime();
+            entity.ModificationBy = _claimService.GetCurrentUserId;
             _dbSet.Update(entity);
         }
 
@@ -68,9 +74,18 @@ namespace Infrastructures.Repositories
             foreach (var entity in entities)
             {
                 entity.CreationDate = DateTime.UtcNow;
-                //entity.CreatedBy = _claimsService.GetCurrentUserId;
+                entity.CreatedBy = _claimService.GetCurrentUserId;
             }
             _dbSet.UpdateRange(entities);
+        }
+        public async Task<List<TEntity>> Find(Expression<Func<TEntity, bool>> expression)
+        {
+            var data = await _dbSet.Where(expression).ToListAsync();
+            return data;
+        }
+        public IQueryable<TEntity> query()
+        {
+            return _dbSet.AsQueryable();
         }
     }
 }

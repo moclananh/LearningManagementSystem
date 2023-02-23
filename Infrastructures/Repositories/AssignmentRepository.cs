@@ -1,4 +1,5 @@
-﻿using Applications.Repositories;
+﻿using Applications.Interfaces;
+using Applications.Repositories;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -7,7 +8,9 @@ namespace Infrastructures.Repositories
     public class AssignmentRepository : GenericRepository<Assignment>, IAssignmentRepository
     {
         private readonly AppDBContext _dbContext;
-        public AssignmentRepository(AppDBContext dbContext) : base(dbContext)
+        public AssignmentRepository(AppDBContext dbContext, 
+            ICurrentTime currentTime, 
+            IClaimService claimService) : base(dbContext,currentTime,claimService)
         {
             _dbContext = dbContext;
         }
