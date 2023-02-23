@@ -15,14 +15,14 @@ namespace Applications.Services
             _mapper = mapper;
         }
 
-        public async Task<ClassViewModel?> CreateClass(ClassViewModel classDTO)
+        public async Task<CreateClassViewModel?> CreateClass(CreateClassViewModel classDTO)
         {
             var classOjb = _mapper.Map<Class>(classDTO);
             await _unitOfWork.ClassRepository.AddAsync(classOjb);
             var isSuccess = await _unitOfWork.SaveChangeAsync() > 0;
             if (isSuccess)
             {
-                return _mapper.Map<ClassViewModel>(classOjb);
+                return _mapper.Map<CreateClassViewModel>(classOjb);
             }
             return null;
 
@@ -63,7 +63,7 @@ namespace Applications.Services
             return result;
         }
 
-        public async Task<ClassViewModel?> UpdateClass(Guid ClassId, ClassViewModel classDTO)
+        public async Task<UpdateClassViewModel?> UpdateClass(Guid ClassId, UpdateClassViewModel classDTO)
         {
             var classObj = await _unitOfWork.ClassRepository.GetByIdAsync(ClassId);
             if (classObj != null)
@@ -73,7 +73,7 @@ namespace Applications.Services
                 var isSuccess = await _unitOfWork.SaveChangeAsync() > 0;
                 if (isSuccess)
                 {
-                    return _mapper.Map<ClassViewModel>(classObj);
+                    return _mapper.Map<UpdateClassViewModel>(classObj);
                 }
             }
             return null;

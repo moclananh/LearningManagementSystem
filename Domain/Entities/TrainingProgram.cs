@@ -9,7 +9,7 @@ namespace Domain.Entities
         public string TrainingProgramName { get; set; }
         public string Duration { get; set; }
         public Status Status { get; set; }
-        public ICollection<ClassTrainingProgram> ClassTrainingPrograms { get; set; }
-        public ICollection<TrainingProgramSyllabus> TrainingProgramSyllabi { get; set; }
+        public ICollection<ClassTrainingProgram?> ClassTrainingPrograms { get; set; }
+        public ICollection<TrainingProgramSyllabus?> TrainingProgramSyllabi { get; set; }
     }
 }

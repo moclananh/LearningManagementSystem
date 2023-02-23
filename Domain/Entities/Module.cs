@@ -8,8 +8,8 @@ namespace Domain.Entities
     {
         public string ModuleName { get; set; }
         public Status Status { get; set; }
-        public ICollection<SyllabusModule> SyllabusModules { get; set; }
-        public ICollection<ModuleUnit> ModuleUnits { get; set; }
+        public ICollection<SyllabusModule?> SyllabusModules { get; set; }
+        public ICollection<ModuleUnit?> ModuleUnits { get; set; }
         public AuditPlan AuditPlan { get; set; }
     }
 }

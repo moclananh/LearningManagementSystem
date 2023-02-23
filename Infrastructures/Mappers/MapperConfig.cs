@@ -18,6 +18,8 @@ namespace Infrastructures.Mappers
     {
         public MapperConfig()
         {
+            CreateMap<UpdateClassViewModel, Class>().ReverseMap();
+            CreateMap<CreateClassViewModel, Class>().ReverseMap();
             CreateMap<ClassViewModel, Class>().ReverseMap();
             CreateMap<UpdateAssignmentViewModel, Assignment>().ReverseMap();
             CreateMap<CreateQuizzViewModel, Quizz>().ReverseMap();

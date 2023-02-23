@@ -9,7 +9,7 @@ namespace Applications.Interfaces
         public Task<List<ClassViewModel>> GetDisableClasses();
         public Task<ClassViewModel> GetClassById(Guid ClassId);
         public Task<List<ClassViewModel>> GetClassByName(string Name);
-        public Task<ClassViewModel?> CreateClass(ClassViewModel classDTO);
-        public Task<ClassViewModel?> UpdateClass(Guid ClassId, ClassViewModel classDTO);
+        public Task<CreateClassViewModel?> CreateClass(CreateClassViewModel classDTO);
+        public Task<UpdateClassViewModel?> UpdateClass(Guid ClassId, UpdateClassViewModel classDTO);
     }
 }

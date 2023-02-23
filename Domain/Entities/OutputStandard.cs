@@ -7,6 +7,6 @@ namespace Domain.Entities
     {
         public string OutputStandardCode { get; set; }
         public string Description { get; set; }
-        public ICollection<SyllabusOutputStandard> SyllabusOutputStandards { get; set; }
+        public ICollection<SyllabusOutputStandard?> SyllabusOutputStandards { get; set; }
     }
 }

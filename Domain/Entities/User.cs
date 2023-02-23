@@ -17,10 +17,10 @@ namespace Domain.Entities
         public string Level { get; set; }
         public Role Role { get; set; }
         public Status Status { get; set; }
-        public ICollection<UserAuditPlan> UserAuditPlans { get; set; }
+        public ICollection<UserAuditPlan?> UserAuditPlans { get; set; }
         public ICollection<AuditResult> AuditResults { get; set; }
         public ICollection<AbsentRequest> AbsentRequests { get; set; }
-        public ICollection<ClassUser> ClassUsers { get; set; }
+        public ICollection<ClassUser?> ClassUsers { get; set; } 
         public ICollection<Attendance> Attendences { get; set; }
     }
 }

@@ -11,20 +11,23 @@ namespace APIs.Controllers
     public class ClassController : ControllerBase
     {
         private readonly IClassServices _classServices;
-        private readonly IValidator<ClassViewModel> _validator;
+        private readonly IValidator<UpdateClassViewModel> _validatorUpdate;
+        private readonly IValidator<CreateClassViewModel> _validatorCreate;
         public ClassController(IClassServices classServices,
-            IValidator<ClassViewModel> validator)
+            IValidator<UpdateClassViewModel> validatorUpdate,
+            IValidator<CreateClassViewModel> validatorCreate)
         {
             _classServices = classServices;
-            _validator = validator;
+            _validatorUpdate = validatorUpdate;
+            _validatorCreate = validatorCreate;
         }
 
         [HttpPost("CreateClass")]
-        public async Task<IActionResult> CreateClass(ClassViewModel ClassModel)
+        public async Task<IActionResult> CreateClass(CreateClassViewModel ClassModel)
         {
             if (ModelState.IsValid)
             {
-                ValidationResult result = _validator.Validate(ClassModel);
+                ValidationResult result = _validatorCreate.Validate(ClassModel);
                 if (result.IsValid)
                 {
                     await _classServices.CreateClass(ClassModel);
@@ -43,6 +46,9 @@ namespace APIs.Controllers
         [HttpGet("GetClassById/{ClassId}")]
         public async Task<ClassViewModel> GetClassById(Guid ClassId) => await _classServices.GetClassById(ClassId);
 
+        [HttpGet("GetClassByName/{ClassName}")]
+        public async Task<List<ClassViewModel>> GetClassesByName(string ClassName) => await _classServices.GetClassByName(ClassName);
+
         [HttpGet("GetEnableClasses")]
         public async Task<List<ClassViewModel>> GetEnableClasses() => await _classServices.GetEnableClasses();
 
@@ -50,11 +56,11 @@ namespace APIs.Controllers
         public async Task<List<ClassViewModel>> GetDiableClasses() => await _classServices.GetDisableClasses();
 
         [HttpPut("UpdateClass/{ClassId}")]
-        public async Task<IActionResult> UpdateClass(Guid ClassId, ClassViewModel Class)
+        public async Task<IActionResult> UpdateClass(Guid ClassId, UpdateClassViewModel Class)
         {
             if (ModelState.IsValid)
             {
-                ValidationResult result = _validator.Validate(Class);
+                ValidationResult result = _validatorUpdate.Validate(Class);
                 if (result.IsValid)
                 {
                     await _classServices.UpdateClass(ClassId, Class);
@@ -65,7 +71,7 @@ namespace APIs.Controllers
                 }
             }
             return Ok("Update Class Success");
-            
+
         }
 
     }

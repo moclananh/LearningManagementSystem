@@ -12,9 +12,9 @@ namespace Domain.Entities
         public DateTime EndDate { get; set; }
         public string Location { get; set; }
         public Status Status { get; set; }
-        public ICollection<ClassTrainingProgram> ClassTrainingPrograms { get; set; }
+        public ICollection<ClassTrainingProgram?> ClassTrainingPrograms { get; set; }
         public ICollection<AuditPlan> AuditPlans { get; set; }
-        public ICollection<ClassUser> ClassUsers { get; set; }
+        public ICollection<ClassUser?> ClassUsers { get; set; }
         public ICollection<Attendance> Attendences { get; set; }
         public ICollection<AbsentRequest> AbsentRequests { get; set; }
     }
