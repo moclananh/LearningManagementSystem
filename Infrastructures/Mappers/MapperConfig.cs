@@ -10,7 +10,7 @@ using Applications.ViewModels.ModuleViewModels;
 using Applications.ViewModels.AuditPlanViewModel;
 using Applications.ViewModels.LectureViewModels;
 using Application.ViewModels.UnitViewModels;
-
+using Application.ViewModels.TrainingProgramModels;
 
 namespace Infrastructures.Mappers
 {
@@ -38,6 +38,8 @@ namespace Infrastructures.Mappers
             CreateMap<Unit, UnitViewModel>()
                .ForMember(dest => dest.UnitId, src => src.MapFrom(x => x.Id));
             CreateMap<ModuleViewModels, Module>().ReverseMap();
+            CreateMap<ViewTrainingProgram, TrainingProgram>().ReverseMap();
+
         }
     }
 }

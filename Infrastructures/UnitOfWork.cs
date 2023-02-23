@@ -18,6 +18,8 @@ namespace Infrastructures
         private readonly ILectureRepository _lectureRepository;
         private readonly IUnitRepository _unitRepository;
         private readonly IModuleRepository _moduleRepository;
+        private readonly ITrainingProgramRepository _trainingProgramRepository;
+
         public UnitOfWork(AppDBContext appDBContext,
             IClassRepository classRepository, 
             IAssignmentRepository assignmentRepository, 
@@ -27,7 +29,8 @@ namespace Infrastructures
             ILectureRepository lectureRepository,
             IUnitRepository unitRepository,          
             IModuleRepository moduleRepository,
-            IAuditPlanRepository auditPlanRepository)
+            IAuditPlanRepository auditPlanRepository,
+            ITrainingProgramRepository trainingProgramRepository)
 
         {
             _appDBContext = appDBContext;
@@ -40,6 +43,7 @@ namespace Infrastructures
             _lectureRepository = lectureRepository;
             _unitRepository = unitRepository;
             _moduleRepository = moduleRepository;
+            _trainingProgramRepository = trainingProgramRepository;
         }
 
         public IClassRepository ClassRepository => _classRepository;
@@ -51,6 +55,7 @@ namespace Infrastructures
         public ILectureRepository LectureRepository => _lectureRepository;
         public IUnitRepository UnitRepository => _unitRepository;
         public IModuleRepository ModuleRepository => _moduleRepository;
+        public ITrainingProgramRepository TrainingProgramRepository => _trainingProgramRepository;
         public async Task<int> SaveChangeAsync() => await _appDBContext.SaveChangesAsync();
     }
 }

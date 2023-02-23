@@ -42,6 +42,8 @@ namespace Infrastructures
             services.AddScoped<IUnitServices, UnitServices>();
             services.AddScoped<IModuleServices, ModuleService>();
             services.AddScoped<IModuleRepository, ModuleRepository>();
+            services.AddScoped<ITrainingProgramRepository, TrainingProgramRepository>();
+            services.AddScoped<ITrainingProgramService, TrainingProgramService>();
             return services;
         }
     }
