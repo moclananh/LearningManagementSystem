@@ -1,6 +1,7 @@
 using Applications.ViewModels.AssignmentViewModels;
 using Applications.ViewModels.UserViewModels;
 using Applications.ViewModels.ClassViewModels;
+using Applications.ViewModels.ModuleViewModels;
 using AutoMapper;
 using Domain.Entities;
 using Application.ViewModels.QuizzViewModels;
@@ -20,6 +21,7 @@ namespace Infrastructures.Mappers
                .ForMember(dest => dest.QuizzId, src => src.MapFrom(x => x.Id));
             CreateMap<UserViewModel, User>().ReverseMap();
             CreateMap<UpdateUserViewModel, User>().ReverseMap();
+            CreateMap<ModuleViewModels, Module>().ReverseMap();
         }
     }
 }

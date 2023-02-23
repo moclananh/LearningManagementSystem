@@ -14,6 +14,7 @@ namespace Applications
         public IAssignmentRepository AssignmentRepository { get; }
         public IQuizzRepository QuizzRepository { get; }
         public IUserRepository UserRepository { get; }
+        public IModuleRepository ModuleRepository { get; }
         public Task<int> SaveChangeAsync();
     }
 }

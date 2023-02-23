@@ -28,6 +28,8 @@ namespace Infrastructures
             services.AddScoped<IAssignmentService, AssignmentService>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IModuleServices, ModuleService>();
+            services.AddScoped<IModuleRepository, ModuleRepository>();
 
             return services;
         }
