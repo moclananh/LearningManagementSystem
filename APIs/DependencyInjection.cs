@@ -36,18 +36,18 @@ public static class DependencyInjection
             option.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
         })
             .AddJwtBearer(options =>
-{
-    options.SaveToken = true;
-    options.RequireHttpsMetadata = false;
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8
-          .GetBytes(configuration.GetSection("Jwt:SecretKey").Value)),
-        ValidateIssuer = false,
-        ValidateAudience = false
-    };
-});
+            {
+                options.SaveToken = true;
+                options.RequireHttpsMetadata = false;
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8
+                        .GetBytes(configuration.GetSection("Jwt:SecretKey").Value)),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+                };
+            });
         services.AddAuthorization(opt =>
         {
             // set Policy
