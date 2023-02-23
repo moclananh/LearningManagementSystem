@@ -23,14 +23,10 @@ public static class DependencyInjection
         services.AddSwaggerGen();
         services.AddHealthChecks();
         services.AddHttpContextAccessor();
-<<<<<<< HEAD
         services.AddScoped<IValidator<UpdateClassViewModel>, UpdateClassValidation>();
         services.AddScoped<IValidator<CreateClassViewModel>, CreateClassValidation>();
-=======
-        services.AddScoped<IValidator<ClassViewModel>, ClassValidation>();
         services.AddScoped<IValidator<AuditPlanViewModel>, AuditPlanValidation>();
         services.AddScoped<IValidator<UpdateAuditPlanViewModel>, UpdateAuditPlanValidation>();
->>>>>>> 32fd97d03e4718cc08c23206f91c1c4bd0ba2aec
         services.AddScoped<IValidator<ModuleViewModels>, ModuleValidation>();
         //---------------------------------------------------------------------------------------
         services.AddAuthentication(option =>
