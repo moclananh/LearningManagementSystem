@@ -1,4 +1,5 @@
-﻿using Applications.Repositories;
+﻿using Applications.IRepositories;
+using Applications.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,7 @@ namespace Applications
     public interface IUnitOfWork
     {
         public IClassRepository ClassRepository { get; }
+        public IQuizzRepository QuizzRepository { get; }
         public Task<int> SaveChangeAsync();
     }
 }

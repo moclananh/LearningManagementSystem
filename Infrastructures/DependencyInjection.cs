@@ -1,5 +1,6 @@
 ﻿using Applications;
 using Applications.Interfaces;
+using Applications.IRepositories;
 using Applications.Repositories;
 using Applications.Services;
 using Infrastructures.Repositories;
@@ -20,6 +21,8 @@ namespace Infrastructures
             // Add Object Services
             services.AddScoped<IClassServices, ClassServices>();
             services.AddScoped<IClassRepository, ClassRepository>();
+            services.AddScoped<IQuizzServices, QuizzServices>();
+            services.AddScoped<IQuizzRepository, QuizzRepository>();
 
             return services;
         }
