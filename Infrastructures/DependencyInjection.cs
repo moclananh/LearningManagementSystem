@@ -23,7 +23,8 @@ namespace Infrastructures
             services.AddScoped<IClassRepository, ClassRepository>();
             services.AddScoped<IQuizzServices, QuizzServices>();
             services.AddScoped<IQuizzRepository, QuizzRepository>();
-
+            services.AddScoped<IAssignmentRepository, AssignmentRepository>();
+            services.AddScoped<IAssignmentService, AssignmentService>();
             return services;
         }
     }

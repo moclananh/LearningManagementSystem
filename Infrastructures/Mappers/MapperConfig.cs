@@ -1,3 +1,4 @@
+using Applications.ViewModels.AssignmentViewModels;
 ﻿using Application.ViewModels.QuizzViewModels;
 using Applications.ViewModels.ClassViewModels;
 using AutoMapper;
@@ -10,6 +11,7 @@ namespace Infrastructures.Mappers
         public MapperConfig()
         {
             CreateMap<ClassViewModel, Class>().ReverseMap();
+            CreateMap<UpdateAssignmentViewModel, Assignment>().ReverseMap();
             CreateMap<CreateQuizzViewModel, Quizz>().ReverseMap();
             CreateMap<QuizzViewModel, Quizz>().ReverseMap();
             CreateMap<UpdateQuizzViewModel, Quizz>().ReverseMap();

@@ -11,6 +11,7 @@ namespace Applications
     public interface IUnitOfWork
     {
         public IClassRepository ClassRepository { get; }
+        public IAssignmentRepository AssignmentRepository { get; }
         public IQuizzRepository QuizzRepository { get; }
         public Task<int> SaveChangeAsync();
     }
