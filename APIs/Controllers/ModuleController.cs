@@ -36,6 +36,9 @@ namespace APIs.Controllers
             return Ok("Create Module Successfully");
         }
 
+        [HttpGet("GetAllModules")]
+        public async Task<List<ModuleViewModels>> GetAllModules() => await _moduleServices.GetAllModules();
+
         [HttpGet("GetModulesBySyllabusId/{syllabusId}")]
         public async Task<List<ModuleViewModels>> GetModulesBySyllabusId(Guid syllabusId) => await _moduleServices.GetModulesBySyllabusId(syllabusId);
 

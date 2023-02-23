@@ -4,6 +4,7 @@ namespace Applications.Interfaces
 {
     public interface IModuleServices
     {
+        public Task<List<ModuleViewModels>> GetAllModules();
         public Task<List<ModuleViewModels>> GetEnableModules();
         public Task<List<ModuleViewModels>> GetDisableModules();
         public Task<List<ModuleViewModels>> GetModulesBySyllabusId(Guid syllabusId);

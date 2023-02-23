@@ -27,6 +27,13 @@ namespace Applications.Services
             return null;
         }
 
+        public async Task<List<ModuleViewModels>> GetAllModules()
+        {
+            var modules = await _unitOfWork.ModuleRepository.GetAllAsync();
+            var result = _mapper.Map<List<ModuleViewModels>>(modules);
+            return result;
+        }
+
         public async Task<List<ModuleViewModels>> GetDisableModules()
         {
             var module = await _unitOfWork.ModuleRepository.GetDisableModules();
