@@ -1,4 +1,5 @@
-﻿using Applications.Interfaces;
+﻿using Applications.Commons;
+using Applications.Interfaces;
 using Applications.ViewModels.LectureViewModels;
 using AutoMapper;
 using Domain.Entities;
@@ -82,6 +83,12 @@ namespace Applications.Services
                 }
             }
             return null;
+        }
+        public async Task<Pagination<LectureViewModel>> GetLecturePagingsionAsync(int pageIndex = 0, int pageSize = 10)
+        {
+            var lectures = await _unitOfWork.LectureRepository.ToPagination(pageIndex, pageSize);
+            var result = _mapper.Map<Pagination<LectureViewModel>>(lectures);
+            return result;
         }
     }
 }

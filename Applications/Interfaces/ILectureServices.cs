@@ -1,4 +1,5 @@
-﻿using Applications.ViewModels.LectureViewModels;
+﻿using Applications.Commons;
+using Applications.ViewModels.LectureViewModels;
 
 namespace Applications.Interfaces
 {
@@ -12,5 +13,7 @@ namespace Applications.Interfaces
         public Task<List<LectureViewModel>> GetLectureByName(string Name);
         public Task<CreateLectureViewModel?> CreateLecture(CreateLectureViewModel lectureDTO);
         public Task<UpdateLectureViewModel?> UpdateLecture(Guid LectureId, UpdateLectureViewModel lectureDTO);
+        public Task<Pagination<LectureViewModel>> GetLecturePagingsionAsync(int pageIndex = 0, int pageSize = 10);
+
     }
 }
