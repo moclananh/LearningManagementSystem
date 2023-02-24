@@ -1,4 +1,5 @@
 ﻿using Application.ViewModels.QuizzViewModels;
+using Applications.Commons;
 using Applications.Interfaces;
 using AutoMapper;
 using Domain.Entities;
@@ -80,6 +81,13 @@ namespace Applications.Services
         {
             var quizzes = await _unitOfWork.QuizzRepository.GetDisableQuizzes();
             var result = _mapper.Map<List<QuizzViewModel>>(quizzes);
+            return result;
+        }
+
+        public async Task<Pagination<QuizzViewModel>> GetQuizzPagingsionAsync(int pageIndex = 0, int pageSize = 10)
+        {
+            var quizzes = await _unitOfWork.QuizzRepository.ToPagination(pageIndex, pageSize);
+            var result = _mapper.Map<Pagination<QuizzViewModel>>(quizzes);
             return result;
         }
     }

@@ -1,4 +1,5 @@
-﻿using Domain.Base;
+﻿using Applications.Commons;
+using Domain.Base;
 using System.Linq.Expressions;
 
 namespace Applications.Repositories
@@ -15,5 +16,7 @@ namespace Applications.Repositories
         void SoftRemoveRange(List<TEntity> entities);
         Task<List<TEntity>> Find(Expression<Func<TEntity, bool>> expression);
         IQueryable<TEntity> query();
+
+        Task<Pagination<TEntity>> ToPagination(int pageNumber = 0, int pageSize = 10);
     }
 }

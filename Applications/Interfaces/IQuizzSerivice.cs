@@ -1,4 +1,5 @@
 ﻿using Application.ViewModels.QuizzViewModels;
+using Applications.Commons;
 
 namespace Applications.Interfaces
 {
@@ -12,5 +13,6 @@ namespace Applications.Interfaces
         public Task<UpdateQuizzViewModel> UpdatQuizzAsync(Guid QuizzId, UpdateQuizzViewModel QuizzDTO);
         public Task<List<QuizzViewModel>> GetEnableQuizzes();
         public Task<List<QuizzViewModel>> GetDisableQuizzes();
+        public Task<Pagination<QuizzViewModel>> GetQuizzPagingsionAsync(int pageIndex = 0, int pageSize = 10);
     }
 }

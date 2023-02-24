@@ -1,4 +1,5 @@
 ﻿using Application.ViewModels.QuizzViewModels;
+using Applications.Commons;
 using Applications.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,8 +15,11 @@ namespace APIs.Controllers
             _quizzServices = quizzServices;
         }
 
-        [HttpGet("GetAllQuizz")]
-        public async Task<List<QuizzViewModel>> ViewAllQuizzAsync() => await _quizzServices.ViewAllQuizzAsync();
+        [HttpGet("GetQuizzPagingsion")]
+        public async Task<Pagination<QuizzViewModel>> GetQuizzPagingsion(int pageIndex = 0, int pageSize = 10)
+        {
+            return await _quizzServices.GetQuizzPagingsionAsync(pageIndex, pageSize);
+        }
 
         [HttpPost("CreateQuizz")]
         public async Task<CreateQuizzViewModel> CreateQuizz(CreateQuizzViewModel QuizzModel) => await _quizzServices.CreateQuizzAsync(QuizzModel);

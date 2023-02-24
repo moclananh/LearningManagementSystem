@@ -1,4 +1,5 @@
-﻿using Applications.Interfaces;
+﻿using Applications.Commons;
+using Applications.Interfaces;
 using Applications.Repositories;
 using Domain.Base;
 using Microsoft.EntityFrameworkCore;
@@ -86,6 +87,26 @@ namespace Infrastructures.Repositories
         public IQueryable<TEntity> query()
         {
             return _dbSet.AsQueryable();
+        }
+
+        public async Task<Pagination<TEntity>> ToPagination(int pageIndex = 0, int pageSize = 10)
+        {
+            var itemCount = await _dbSet.CountAsync();
+            var items = await _dbSet.OrderByDescending(x => x.CreationDate)
+                                    .Skip(pageIndex * pageSize)
+                                    .Take(pageSize)
+                                    .AsNoTracking()
+                                    .ToListAsync();
+
+            var result = new Pagination<TEntity>()
+            {
+                PageIndex = pageIndex,
+                PageSize = pageSize,
+                TotalItemsCount = itemCount,
+                Items = items,
+            };
+
+            return result;
         }
     }
 }
