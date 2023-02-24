@@ -9,5 +9,7 @@ namespace Applications.Interfaces
         public Task<UpdateAssignmentViewModel?> UpdateAssignment(Guid AssignmentId, UpdateAssignmentViewModel assignmentDTO);
         public Task<UpdateAssignmentViewModel> GetAssignmentById(Guid AssignmentId);
         public Task<List<UpdateAssignmentViewModel>> GetAssignmentByUnitId(Guid UnitId);
+        public Task<List<AssignmentViewModel>> ViewAllAssignmentAsync();
+        public Task<CreateAssignmentViewModel> CreateAssignmentAsync(CreateAssignmentViewModel AssignmentDTO);
     }
 }

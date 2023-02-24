@@ -1,6 +1,7 @@
 ﻿using Applications.Interfaces;
 using Applications.ViewModels.AssignmentViewModels;
 using AutoMapper;
+using Domain.Entities;
 
 namespace Applications.Services
 {
@@ -54,6 +55,24 @@ namespace Applications.Services
                 {
                     return _mapper.Map<UpdateAssignmentViewModel>(asmObj);
                 }
+            }
+            return null;
+        }
+        public async Task<List<AssignmentViewModel>> ViewAllAssignmentAsync()
+        {
+            var assignment = await _unitOfWork.AssignmentRepository.GetAllAsync();
+            var result = _mapper.Map<List<AssignmentViewModel>>(assignment);
+            return result;
+        }
+
+        public async Task<CreateAssignmentViewModel> CreateAssignmentAsync(CreateAssignmentViewModel AssignmentDTO)
+        {
+            var assignmentOjb = _mapper.Map<Assignment>(AssignmentDTO);
+            await _unitOfWork.AssignmentRepository.AddAsync(assignmentOjb);
+            var isSuccess = await _unitOfWork.SaveChangeAsync() > 0;
+            if (isSuccess)
+            {
+                return _mapper.Map<CreateAssignmentViewModel>(assignmentOjb);
             }
             return null;
         }

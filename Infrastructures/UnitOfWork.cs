@@ -19,6 +19,7 @@ namespace Infrastructures
         private readonly IUnitRepository _unitRepository;
         private readonly IModuleRepository _moduleRepository;
         private readonly ITrainingProgramRepository _trainingProgramRepository;
+        private readonly IOutputStandardRepository _outputStandardRepository;
         private readonly ISyllabusRepository _syllabusRepository;
         private readonly IAssignmentQuestionRepository _assignmentquestionRepository;
 
@@ -33,6 +34,7 @@ namespace Infrastructures
             IModuleRepository moduleRepository,
             IAuditPlanRepository auditPlanRepository,
             ITrainingProgramRepository trainingProgramRepository,
+            IOutputStandardRepository outputStandardRepository,
             ISyllabusRepository syllabusRepository,
             IAssignmentQuestionRepository assignmentQuestionRepository)
 
@@ -48,6 +50,7 @@ namespace Infrastructures
             _unitRepository = unitRepository;
             _moduleRepository = moduleRepository;
             _trainingProgramRepository = trainingProgramRepository;
+            _outputStandardRepository = outputStandardRepository;
             _syllabusRepository = syllabusRepository;
             _assignmentquestionRepository = assignmentQuestionRepository;
         }
@@ -62,6 +65,7 @@ namespace Infrastructures
         public IUnitRepository UnitRepository => _unitRepository;
         public IModuleRepository ModuleRepository => _moduleRepository;
         public ITrainingProgramRepository TrainingProgramRepository => _trainingProgramRepository;
+        public IOutputStandardRepository OutputStandardRepository => _outputStandardRepository;
         public ISyllabusRepository SyllabusRepository => _syllabusRepository;
         public IAssignmentQuestionRepository AssignmentQuestionRepository => _assignmentquestionRepository;
         public async Task<int> SaveChangeAsync() => await _appDBContext.SaveChangesAsync();

@@ -11,6 +11,7 @@ using Application.Repositories;
 using Infrastructure.Repositories;
 using Application.Interfaces;
 using Application.Services;
+using Domain.Entities;
 
 namespace Infrastructures
 {
@@ -30,6 +31,8 @@ namespace Infrastructures
             services.AddScoped<IQuizzRepository, QuizzRepository>();
             services.AddScoped<IAssignmentRepository, AssignmentRepository>();
             services.AddScoped<IAssignmentService, AssignmentService>();
+            services.AddScoped<IOutputStandardRepository, OutputStandardRepository>();
+            services.AddScoped<IOutputStandardService, OutputStandardService>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IClassUserRepository, ClassUserRepository>();

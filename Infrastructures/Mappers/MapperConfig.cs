@@ -11,9 +11,10 @@ using Applications.ViewModels.AuditPlanViewModel;
 using Applications.ViewModels.LectureViewModels;
 using Application.ViewModels.UnitViewModels;
 using Application.ViewModels.TrainingProgramModels;
+using Applications.ViewModels.OutputStandardViewModels;
 using Applications.ViewModels.SyllabusViewModels;
-using Applications.Commons;
 using Applications.ViewModels.AssignmentQuestionViewModels;
+using Applications.Commons;
 
 namespace Infrastructures.Mappers
 {
@@ -25,6 +26,8 @@ namespace Infrastructures.Mappers
             CreateMap<CreateClassViewModel, Class>().ReverseMap();
             CreateMap<ClassViewModel, Class>().ReverseMap();
             CreateMap<UpdateAssignmentViewModel, Assignment>().ReverseMap();
+            CreateMap<AssignmentViewModel, Assignment>().ReverseMap();
+            CreateMap<CreateAssignmentViewModel, Assignment>().ReverseMap();
             CreateMap<CreateQuizzViewModel, Quizz>().ReverseMap();
             CreateMap<QuizzViewModel, Quizz>().ReverseMap();
             CreateMap<UpdateQuizzViewModel, Quizz>().ReverseMap();
@@ -44,6 +47,9 @@ namespace Infrastructures.Mappers
                .ForMember(dest => dest.UnitId, src => src.MapFrom(x => x.Id));
             CreateMap<ModuleViewModels, Module>().ReverseMap();
             CreateMap<ViewTrainingProgram, TrainingProgram>().ReverseMap();
+            CreateMap<UpdateOutputStandardViewModel, OutputStandard>().ReverseMap();
+            CreateMap<OutputStandardViewModel, OutputStandard>().ReverseMap();
+            CreateMap<CreateOutputStandardViewModel, OutputStandard>().ReverseMap();
             CreateMap<CreateSyllabusViewModel, Syllabus>().ReverseMap();
             CreateMap<UpdateSyllabusViewModel, Syllabus>().ReverseMap();
             CreateMap<SyllabusViewModel, Syllabus>().ReverseMap();

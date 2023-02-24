@@ -1,4 +1,6 @@
-﻿using Applications.Interfaces;
+﻿using Application.ViewModels.QuizzViewModels;
+using Applications.Interfaces;
+using Applications.Services;
 using Applications.ViewModels.AssignmentViewModels;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,6 +15,11 @@ namespace APIs.Controllers
         {
             _assignmentService = assignmentServices;
         }
+        [HttpGet("GetAllAssignment")]
+        public async Task<List<AssignmentViewModel>> ViewAllAssignmentAsync() => await _assignmentService.ViewAllAssignmentAsync();
+
+        [HttpPost("CreateAssignment")]
+        public async Task<CreateAssignmentViewModel> CreateAssignment(CreateAssignmentViewModel AssignmentModel) => await _assignmentService.CreateAssignmentAsync(AssignmentModel);
 
         [HttpGet("GetEnableAssignments")]
         public async Task<List<UpdateAssignmentViewModel>> GetEnableAssignments() => await _assignmentService.GetEnableAssignments();
