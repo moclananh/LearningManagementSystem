@@ -1,4 +1,5 @@
-﻿using Applications.Interfaces;
+﻿using Applications.Commons;
+using Applications.Interfaces;
 using Applications.ViewModels.ClassTrainingProgramViewModels;
 using Applications.ViewModels.ClassViewModels;
 using AutoMapper;
@@ -51,10 +52,10 @@ namespace Applications.Services
 
         }
 
-        public async Task<List<ClassViewModel>> GetAllClasses()
+        public async Task<Pagination<ClassViewModel>> GetAllClasses(int pageIndex = 0, int pageSize = 10)
         {
-            var classes = await _unitOfWork.ClassRepository.GetAllAsync();
-            var result = _mapper.Map<List<ClassViewModel>>(classes);
+            var classes = await _unitOfWork.ClassRepository.ToPagination();
+            var result = _mapper.Map<Pagination<ClassViewModel>>(classes);
             return result;
         }
 
@@ -65,24 +66,24 @@ namespace Applications.Services
             return result;
         }
 
-        public async Task<List<ClassViewModel>> GetClassByName(string Name)
+        public async Task<Pagination<ClassViewModel>> GetClassByName(string Name, int pageIndex = 0, int pageSize = 10)
         {
             var classes = await _unitOfWork.ClassRepository.GetClassByName(Name);
-            var result = _mapper.Map<List<ClassViewModel>>(classes);
+            var result = _mapper.Map<Pagination<ClassViewModel>>(classes);
             return result;
         }
 
-        public async Task<List<ClassViewModel>> GetDisableClasses()
+        public async Task<Pagination<ClassViewModel>> GetDisableClasses(int pageIndex = 0, int pageSize = 10)
         {
             var classes = await _unitOfWork.ClassRepository.GetDisableClasses();
-            var result = _mapper.Map<List<ClassViewModel>>(classes);
+            var result = _mapper.Map<Pagination<ClassViewModel>>(classes);
             return result;
         }
 
-        public async Task<List<ClassViewModel>> GetEnableClasses()
+        public async Task<Pagination<ClassViewModel>> GetEnableClasses(int pageIndex = 0, int pageSize = 10)
         {
             var classes = await _unitOfWork.ClassRepository.GetEnableClasses();
-            var result = _mapper.Map<List<ClassViewModel>>(classes);
+            var result = _mapper.Map<Pagination<ClassViewModel>>(classes);
             return result;
         }
 

@@ -1,9 +1,11 @@
-﻿using Applications.Interfaces;
+﻿using Applications.Commons;
+using Applications.Interfaces;
 using Applications.ViewModels.ClassTrainingProgramViewModels;
 using Applications.ViewModels.ClassViewModels;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
+using System.Drawing.Printing;
 
 namespace APIs.Controllers
 {
@@ -42,19 +44,19 @@ namespace APIs.Controllers
         }
 
         [HttpGet("GetAllClasses")]
-        public async Task<List<ClassViewModel>> GetAllClasses() => await _classServices.GetAllClasses();
+        public async Task<Pagination<ClassViewModel>> GetAllClasses(int pageIndex = 0, int pageSize = 10) => await _classServices.GetAllClasses(pageIndex, pageSize);
 
         [HttpGet("GetClassById/{ClassId}")]
         public async Task<ClassViewModel> GetClassById(Guid ClassId) => await _classServices.GetClassById(ClassId);
 
         [HttpGet("GetClassByName/{ClassName}")]
-        public async Task<List<ClassViewModel>> GetClassesByName(string ClassName) => await _classServices.GetClassByName(ClassName);
+        public async Task<Pagination<ClassViewModel>> GetClassesByName(string ClassName, int pageIndex = 0, int pageSize = 10) => await _classServices.GetClassByName(ClassName, pageIndex, pageSize);
 
         [HttpGet("GetEnableClasses")]
-        public async Task<List<ClassViewModel>> GetEnableClasses() => await _classServices.GetEnableClasses();
+        public async Task<Pagination<ClassViewModel>> GetEnableClasses(int pageIndex = 0, int pageSize = 10) => await _classServices.GetEnableClasses(pageIndex, pageSize);
 
         [HttpGet("GetDisableClasses")]
-        public async Task<List<ClassViewModel>> GetDiableClasses() => await _classServices.GetDisableClasses();
+        public async Task<Pagination<ClassViewModel>> GetDiableClasses(int pageIndex = 0, int pageSize = 10) => await _classServices.GetDisableClasses(pageIndex, pageSize);
 
         [HttpPut("UpdateClass/{ClassId}")]
         public async Task<IActionResult> UpdateClass(Guid ClassId, UpdateClassViewModel Class)
@@ -73,6 +75,7 @@ namespace APIs.Controllers
             }
             return Ok("Update Class Success");
         }
+
         [HttpPost("Class/AddTrainingProgram/{ClassId}/{TrainingProgramId}")]
         public async Task<IActionResult> AddTrainingProgram(Guid ClassId, Guid TrainingProgramId)
         {
@@ -83,6 +86,7 @@ namespace APIs.Controllers
             }
             return BadRequest("Add TrainingProgram Fail");
         }
+
         [HttpDelete("Class/DeleteTrainingProgram/{ClassId}/{TrainingProgramId}")]
         public async Task<IActionResult> DeleTrainingProgram(Guid ClassId, Guid TrainingProgramId)
         {
