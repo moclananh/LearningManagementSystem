@@ -2,11 +2,6 @@
 using Applications.Repositories;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infrastructures.Repositories
 {
@@ -22,6 +17,11 @@ namespace Infrastructures.Repositories
         public async Task<List<AssignmentQuestion>> GetAllAssignmentQuestionByAssignmentId(Guid AssignmentId)
         {
             return await _dbContext.AssignmentQuestions.Where(a => a.AssignmentId == AssignmentId).ToListAsync();
+        }
+
+        public async Task UploadAssignmentListAsync(List<AssignmentQuestion> assignmentQuestionList)
+        {
+            await _dbContext.AddRangeAsync(assignmentQuestionList);
         }
     }
 }

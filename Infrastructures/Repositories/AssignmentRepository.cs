@@ -13,6 +13,8 @@ namespace Infrastructures.Repositories
             _dbContext = dbContext;
         }
 
+        public async Task<List<Assignment>> GetAssignmentByName(string Name) => await _dbContext.Assignments.Where(x => x.AssignmentName.Contains(Name)).ToListAsync();
+
         public async Task<List<Assignment>> GetAssignmentByUnitId(Guid UnitId) => await _dbContext.Assignments.Where(a => a.UnitId == UnitId).ToListAsync();
 
         public async Task<List<Assignment>> GetDisableAssignmentAsync() => await _dbContext.Assignments.Where(x => x.Status == Domain.Enum.StatusEnum.Status.Disable).ToListAsync();

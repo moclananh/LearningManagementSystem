@@ -11,5 +11,6 @@ namespace Applications.Interfaces
         public Task<List<UpdateAssignmentViewModel>> GetAssignmentByUnitId(Guid UnitId);
         public Task<List<AssignmentViewModel>> ViewAllAssignmentAsync();
         public Task<CreateAssignmentViewModel> CreateAssignmentAsync(CreateAssignmentViewModel AssignmentDTO);
+        public Task<List<UpdateAssignmentViewModel>> GetAssignmentByName(string Name);
     }
 }

@@ -35,5 +35,8 @@ namespace APIs.Controllers
 
         [HttpPut("UpdateAssignment/{AssignmentId}")]
         public async Task<UpdateAssignmentViewModel?> UpdateAssignment(Guid AssignmentId, UpdateAssignmentViewModel assignmentDTO) => await _assignmentService.UpdateAssignment(AssignmentId, assignmentDTO);
+
+        [HttpGet("GetAssignmentByName/{AssignmentName}")]
+        public async Task<List<UpdateAssignmentViewModel>> GetAssignmentByName(string AssignmentName) => await _assignmentService.GetAssignmentByName(AssignmentName);
     }
 }

@@ -76,5 +76,12 @@ namespace Applications.Services
             }
             return null;
         }
+
+        public async Task<List<UpdateAssignmentViewModel>> GetAssignmentByName(string Name)
+        {
+            var asmObj = await _unitOfWork.AssignmentRepository.GetAssignmentByName(Name);
+            var result = _mapper.Map<List<UpdateAssignmentViewModel>>(asmObj);
+            return result;
+        }
     }
 }
