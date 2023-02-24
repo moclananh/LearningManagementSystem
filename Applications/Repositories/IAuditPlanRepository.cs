@@ -1,13 +1,14 @@
-﻿using Domain.Entities;
+﻿using Applications.Commons;
+using Domain.Entities;
 
 namespace Applications.Repositories
 {
     public interface IAuditPlanRepository : IGenericRepository<AuditPlan>
     {
-        Task<List<AuditPlan>> GetEnableAuditPlans();
-        Task<List<AuditPlan>> GetDisableAuditPlans();
-        Task<List<AuditPlan>> GetAuditPlanByModuleId(Guid ModuleID);
-        Task<List<AuditPlan>> GetAuditPlanByClassId(Guid ClassID);
-        Task<List<AuditPlan>> GetAuditPlanByName(string AuditPlanName);
+        Task<Pagination<AuditPlan>> GetEnableAuditPlans(int pageNumber = 0, int pageSize = 10);
+        Task<Pagination<AuditPlan>> GetDisableAuditPlans(int pageNumber = 0, int pageSize = 10);
+        Task<AuditPlan?> GetAuditPlanByModuleId(Guid ModuleID);
+        Task<Pagination<AuditPlan>> GetAuditPlanByClassId(Guid ClassID, int pageNumber = 0, int pageSize = 10);
+        Task<Pagination<AuditPlan>> GetAuditPlanByName(string AuditPlanName, int pageNumber = 0, int pageSize = 10);
     }
 }

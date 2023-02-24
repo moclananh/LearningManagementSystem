@@ -1,4 +1,5 @@
-﻿using Applications.Interfaces;
+﻿using Applications.Commons;
+using Applications.Interfaces;
 using Applications.Repositories;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -20,14 +21,91 @@ namespace Infrastructures.Repositories
             _dBContext = dBContext;
         }
 
-        public async Task<List<AuditPlan>> GetAuditPlanByClassId(Guid ClassID) => await _dBContext.AuditPlans.Where(x => x.ClassId.Equals(ClassID)).ToListAsync();
+        public async Task<Pagination<AuditPlan>> GetAuditPlanByClassId(Guid ClassID, int pageNumber = 0, int pageSize = 10)
+        {
+            var itemCount = await _dBContext.AuditPlans.CountAsync();
+            var items = await _dbSet.Where(x => x.ClassId.Equals(ClassID))
+                                    .OrderByDescending(x => x.CreationDate)
+                                    .Skip(pageNumber * pageSize)
+                                    .Take(pageSize)
+                                    .AsNoTracking()
+                                    .ToListAsync();
 
-        public async Task<List<AuditPlan>> GetAuditPlanByModuleId(Guid ModuleID) => await _dBContext.AuditPlans.Where(x => x.ModuleId.Equals(ModuleID)).ToListAsync();
+            var result = new Pagination<AuditPlan>()
+            {
+                PageIndex = pageNumber,
+                PageSize = pageSize,
+                TotalItemsCount = itemCount,
+                Items = items,
+            };
 
-        public async Task<List<AuditPlan>> GetAuditPlanByName(string AuditPlanName) => await (from a in _dBContext.AuditPlans select a).Where(n => n.AuditPlanName!.Contains(AuditPlanName)).ToListAsync();
+            return result;
+        }
 
-        public async Task<List<AuditPlan>> GetDisableAuditPlans() => await _dBContext.AuditPlans.Where(x => x.Status == Domain.Enum.StatusEnum.Status.Disable).ToListAsync();
+        public async Task<AuditPlan?> GetAuditPlanByModuleId(Guid ModuleID) => _dBContext.AuditPlans.FirstOrDefault(x => x.ModuleId.Equals(ModuleID));
 
-        public async Task<List<AuditPlan>> GetEnableAuditPlans() => await _dBContext.AuditPlans.Where(x => x.Status == Domain.Enum.StatusEnum.Status.Enable).ToListAsync();
+        public async Task<Pagination<AuditPlan>> GetAuditPlanByName(string AuditPlanName, int pageNumber = 0, int pageSize = 10)
+        {
+            var itemCount = await _dBContext.AuditPlans.CountAsync();
+            var items = await _dbSet.Where(x => x.AuditPlanName.Contains(AuditPlanName))
+                                    .OrderByDescending(x => x.CreationDate)
+                                    .Skip(pageNumber * pageSize)
+                                    .Take(pageSize)
+                                    .AsNoTracking()
+                                    .ToListAsync();
+
+            var result = new Pagination<AuditPlan>()
+            {
+                PageIndex = pageNumber,
+                PageSize = pageSize,
+                TotalItemsCount = itemCount,
+                Items = items,
+            };
+
+            return result;
+        }
+
+        public async Task<Pagination<AuditPlan>> GetDisableAuditPlans(int pageNumber = 0, int pageSize = 10)
+        {
+            var itemCount = await _dBContext.AuditPlans.CountAsync();
+            var items = await _dbSet.Where(x => x.Status == Domain.Enum.StatusEnum.Status.Disable)
+                                    .OrderByDescending(x => x.CreationDate)
+                                    .Skip(pageNumber * pageSize)
+                                    .Take(pageSize)
+                                    .AsNoTracking()
+                                    .ToListAsync();
+
+            var result = new Pagination<AuditPlan>()
+            {
+                PageIndex = pageNumber,
+                PageSize = pageSize,
+                TotalItemsCount = itemCount,
+                Items = items,
+            };
+
+            return result;
+        }
+
+        public async Task<Pagination<AuditPlan>> GetEnableAuditPlans(int pageNumber = 0, int pageSize = 10)
+        {
+            var itemCount = await _dBContext.AuditPlans.CountAsync();
+            var items = await _dbSet.Where(x => x.Status == Domain.Enum.StatusEnum.Status.Enable)
+                                    .OrderByDescending(x => x.CreationDate)
+                                    .Skip(pageNumber * pageSize)
+                                    .Take(pageSize)
+                                    .AsNoTracking()
+                                    .ToListAsync();
+
+            var result = new Pagination<AuditPlan>()
+            {
+                PageIndex = pageNumber,
+                PageSize = pageSize,
+                TotalItemsCount = itemCount,
+                Items = items,
+            };
+
+            return result;
+        }
+
     }
 }

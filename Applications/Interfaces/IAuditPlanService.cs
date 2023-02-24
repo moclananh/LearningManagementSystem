@@ -1,17 +1,18 @@
-﻿using Applications.ViewModels.AuditPlanViewModel;
+﻿using Applications.Commons;
+using Applications.ViewModels.AuditPlanViewModel;
 using System.Drawing.Printing;
 
 namespace Applications.Interfaces
 {
     public interface IAuditPlanService
     {
-        public Task<List<AuditPlanViewModel>> GetAllAuditPlanAsync();
-        public Task<List<AuditPlanViewModel>> GetEnableAuditPlanAsync();
-        public Task<List<AuditPlanViewModel>> GetDisableAuditPlanAsync();
+        public Task<Pagination<AuditPlanViewModel>> GetAllAuditPlanAsync(int pageIndex = 0, int pageSize = 10);
+        public Task<Pagination<AuditPlanViewModel>> GetEnableAuditPlanAsync(int pageIndex = 0, int pageSize = 10);
+        public Task<Pagination<AuditPlanViewModel>> GetDisableAuditPlanAsync(int pageIndex = 0, int pageSize = 10);
         public Task<AuditPlanViewModel> GetAuditPlanByIdAsync(Guid AuditPlanId);
-        public Task<List<AuditPlanViewModel>> GetAuditPlanByModuleIdAsync(Guid ModuleId);
-        public Task<List<AuditPlanViewModel>> GetAuditPlanbyClassIdAsync(Guid ClassId);
-        public Task<List<AuditPlanViewModel>> GetAuditPlanByName(string AuditPlanName);
+        public Task<AuditPlanViewModel> GetAuditPlanByModuleIdAsync(Guid ModuleId);
+        public Task<Pagination<AuditPlanViewModel>> GetAuditPlanbyClassIdAsync(Guid ClassId, int pageIndex = 0, int pageSize = 10);
+        public Task<Pagination<AuditPlanViewModel>> GetAuditPlanByName(string AuditPlanName, int pageIndex = 0, int pageSize = 10);
         public Task<AuditPlanViewModel?> CreateAuditPlanAsync(AuditPlanViewModel AuditPlanDTO);
         public Task<UpdateAuditPlanViewModel?> UpdateAuditPlanAsync(Guid auditPlanId, UpdateAuditPlanViewModel updateAuditPlanView);
     }
