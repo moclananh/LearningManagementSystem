@@ -48,6 +48,7 @@ namespace Infrastructures.Repositories
         public void SoftRemove(TEntity entity)
         {
             entity.IsDeleted = true;
+            entity.DeletionDate = _timeService.CurrentTime();
             entity.DeleteBy = _claimService.GetCurrentUserId;
             _dbSet.Update(entity);
         }

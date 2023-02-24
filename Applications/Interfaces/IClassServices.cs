@@ -1,4 +1,5 @@
-﻿using Applications.ViewModels.ClassViewModels;
+﻿using Applications.ViewModels.ClassTrainingProgramViewModels;
+using Applications.ViewModels.ClassViewModels;
 
 namespace Applications.Interfaces
 {
@@ -11,5 +12,7 @@ namespace Applications.Interfaces
         public Task<List<ClassViewModel>> GetClassByName(string Name);
         public Task<CreateClassViewModel?> CreateClass(CreateClassViewModel classDTO);
         public Task<UpdateClassViewModel?> UpdateClass(Guid ClassId, UpdateClassViewModel classDTO);
+        public Task<CreateClassTrainingProgramViewModel> AddTrainingProgramToClass(Guid ClassId, Guid TrainingProgramId);
+        public Task<CreateClassTrainingProgramViewModel> RemoveTrainingProgramToClass(Guid ClassId, Guid TrainingProgramId);
     }
 }

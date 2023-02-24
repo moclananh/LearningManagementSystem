@@ -22,21 +22,23 @@ namespace Infrastructures
         private readonly IOutputStandardRepository _outputStandardRepository;
         private readonly ISyllabusRepository _syllabusRepository;
         private readonly IAssignmentQuestionRepository _assignmentquestionRepository;
+        private readonly IClassTrainingProgramRepository _classTrainingProgramRepository;
 
         public UnitOfWork(AppDBContext appDBContext,
-            IClassRepository classRepository, 
-            IAssignmentRepository assignmentRepository, 
-            IQuizzRepository quizzRepository, 
+            IClassRepository classRepository,
+            IAssignmentRepository assignmentRepository,
+            IQuizzRepository quizzRepository,
             IUserRepository userRepository,
             IClassUserRepository classUserRepository,
             ILectureRepository lectureRepository,
-            IUnitRepository unitRepository,          
+            IUnitRepository unitRepository,
             IModuleRepository moduleRepository,
             IAuditPlanRepository auditPlanRepository,
             ITrainingProgramRepository trainingProgramRepository,
             IOutputStandardRepository outputStandardRepository,
             ISyllabusRepository syllabusRepository,
-            IAssignmentQuestionRepository assignmentQuestionRepository)
+            IAssignmentQuestionRepository assignmentQuestionRepository,
+            IClassTrainingProgramRepository classTrainingProgramRepository)
 
         {
             _appDBContext = appDBContext;
@@ -53,6 +55,7 @@ namespace Infrastructures
             _outputStandardRepository = outputStandardRepository;
             _syllabusRepository = syllabusRepository;
             _assignmentquestionRepository = assignmentQuestionRepository;
+            _classTrainingProgramRepository = classTrainingProgramRepository;
         }
 
         public IClassRepository ClassRepository => _classRepository;
@@ -68,6 +71,8 @@ namespace Infrastructures
         public IOutputStandardRepository OutputStandardRepository => _outputStandardRepository;
         public ISyllabusRepository SyllabusRepository => _syllabusRepository;
         public IAssignmentQuestionRepository AssignmentQuestionRepository => _assignmentquestionRepository;
+        public IClassTrainingProgramRepository ClassTrainingProgramRepository => _classTrainingProgramRepository;
+
         public async Task<int> SaveChangeAsync() => await _appDBContext.SaveChangesAsync();
     }
 }

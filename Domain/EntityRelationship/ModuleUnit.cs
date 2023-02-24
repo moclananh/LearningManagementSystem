@@ -1,8 +1,9 @@
-﻿using Domain.Entities;
+﻿using Domain.Base;
+using Domain.Entities;
 
 namespace Domain.EntityRelationship
 {
-    public class ModuleUnit
+    public class ModuleUnit : BaseEntity
     {
         public Guid ModuleId { get; set; }
         public Guid UnitId { get; set; }

@@ -1,4 +1,5 @@
 ﻿using Applications.Interfaces;
+using Applications.ViewModels.ClassTrainingProgramViewModels;
 using Applications.ViewModels.ClassViewModels;
 using FluentValidation;
 using FluentValidation.Results;
@@ -71,8 +72,26 @@ namespace APIs.Controllers
                 }
             }
             return Ok("Update Class Success");
-
         }
-
+        [HttpPost("Class/AddTrainingProgram/{ClassId}/{TrainingProgramId}")]
+        public async Task<IActionResult> AddTrainingProgram(Guid ClassId, Guid TrainingProgramId)
+        {
+            if (ModelState.IsValid)
+            {
+                await _classServices.AddTrainingProgramToClass(ClassId, TrainingProgramId);
+                return Ok("Add Success");
+            }
+            return BadRequest("Add TrainingProgram Fail");
+        }
+        [HttpDelete("Class/DeleteTrainingProgram/{ClassId}/{TrainingProgramId}")]
+        public async Task<IActionResult> DeleTrainingProgram(Guid ClassId, Guid TrainingProgramId)
+        {
+            if (ModelState.IsValid)
+            {
+                await _classServices.RemoveTrainingProgramToClass(ClassId, TrainingProgramId);
+                return Ok("Remove Success");
+            }
+            return BadRequest("Remove TrainingProgram Fail");
+        }
     }
 }

@@ -11,6 +11,8 @@ namespace Infrastructures.FluentAPIs
         {
             //set PK
             builder.HasKey(k => new { k.SyllabusId, k.ModuleId });
+            // Ignore Id in BaseEntity
+            builder.Ignore(i => i.Id);
             //set relation
             builder.HasOne<Syllabus>(s => s.Syllabus)
                 .WithMany(s => s.SyllabusModules)

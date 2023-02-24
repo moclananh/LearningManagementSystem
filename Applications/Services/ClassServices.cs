@@ -1,7 +1,9 @@
 ﻿using Applications.Interfaces;
+using Applications.ViewModels.ClassTrainingProgramViewModels;
 using Applications.ViewModels.ClassViewModels;
 using AutoMapper;
 using Domain.Entities;
+using Domain.EntityRelationship;
 
 namespace Applications.Services
 {
@@ -13,6 +15,27 @@ namespace Applications.Services
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+        }
+
+        public async Task<CreateClassTrainingProgramViewModel> AddTrainingProgramToClass(Guid ClassId, Guid TrainingProgramId)
+        {
+            var classOjb = await _unitOfWork.ClassRepository.GetByIdAsync(ClassId);
+            var trainingProgram = await _unitOfWork.TrainingProgramRepository.GetByIdAsync(TrainingProgramId);
+            if (classOjb != null && trainingProgram != null)
+            {
+                var classTrainingProgram = new ClassTrainingProgram()
+                {
+                    Class = classOjb,
+                    TrainingProgram = trainingProgram
+                };
+                await _unitOfWork.ClassTrainingProgramRepository.AddAsync(classTrainingProgram);
+                var isSuccess = await _unitOfWork.SaveChangeAsync() > 0;
+                if (isSuccess)
+                {
+                    return _mapper.Map<CreateClassTrainingProgramViewModel>(classTrainingProgram);
+                }
+            }
+            return null;
         }
 
         public async Task<CreateClassViewModel?> CreateClass(CreateClassViewModel classDTO)
@@ -63,6 +86,21 @@ namespace Applications.Services
             return result;
         }
 
+        public async Task<CreateClassTrainingProgramViewModel> RemoveTrainingProgramToClass(Guid ClassId, Guid TrainingProgramId)
+        {
+            var classTrainingProgram = await _unitOfWork.ClassTrainingProgramRepository.GetClassTrainingProgram(ClassId, TrainingProgramId);
+            if (classTrainingProgram != null)
+            {
+                _unitOfWork.ClassTrainingProgramRepository.SoftRemove(classTrainingProgram);
+                var isSucces = await _unitOfWork.SaveChangeAsync() > 0;
+                if (isSucces)
+                {
+                    return _mapper.Map<CreateClassTrainingProgramViewModel>(classTrainingProgram);
+                }
+            }
+            return null;
+        }
+
         public async Task<UpdateClassViewModel?> UpdateClass(Guid ClassId, UpdateClassViewModel classDTO)
         {
             var classObj = await _unitOfWork.ClassRepository.GetByIdAsync(ClassId);
@@ -77,7 +115,6 @@ namespace Applications.Services
                 }
             }
             return null;
-
         }
     }
 }

@@ -11,6 +11,8 @@ namespace Infrastructures.FluentAPIs
         {
             //set PK
             builder.HasKey(k => new { k.ModuleId, k.UnitId });
+            // Ignore Id in BaseEntity
+            builder.Ignore(i => i.Id);
             // set realtion
             builder.HasOne<Module>(m => m.Module)
                 .WithMany(mu => mu.ModuleUnits)
