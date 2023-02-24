@@ -8,5 +8,6 @@ namespace Applications.Repositories
         Task<List<AuditPlan>> GetDisableAuditPlans();
         Task<List<AuditPlan>> GetAuditPlanByModuleId(Guid ModuleID);
         Task<List<AuditPlan>> GetAuditPlanByClassId(Guid ClassID);
+        Task<List<AuditPlan>> GetAuditPlanByName(string AuditPlanName);
     }
 }

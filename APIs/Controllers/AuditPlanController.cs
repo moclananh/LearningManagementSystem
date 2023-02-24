@@ -41,6 +41,9 @@ namespace APIs.Controllers
         [HttpGet("GetAuditPlanByClassId/{ClassId}")]
         public async Task<List<AuditPlanViewModel>> GetAuditPlanByClassId(Guid ClassId) => await _auditPlanService.GetAuditPlanbyClassIdAsync(ClassId);
 
+        [HttpGet("GetAuditPlanByName/{AuditPlanName}")]
+        public async Task<List<AuditPlanViewModel>> GetAuditPlanByName(string AuditPlanName) => await _auditPlanService.GetAuditPlanByName(AuditPlanName);
+
         [HttpPost("CreateAuditPlan")]
         public async Task<IActionResult> CreateAuditPlan(AuditPlanViewModel createAuditPlanViewModel)
         {

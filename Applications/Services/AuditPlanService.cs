@@ -55,6 +55,13 @@ namespace Applications.Services
             return result;
         }
 
+        public async Task<List<AuditPlanViewModel>> GetAuditPlanByName(string AuditPlanName)
+        {
+            var auditplans = await _unitOfWork.AuditPlanRepository.GetAuditPlanByName(AuditPlanName);
+            var result = _mapper.Map<List<AuditPlanViewModel>>(auditplans);
+            return result;
+        }
+
         public async Task<List<AuditPlanViewModel>> GetDisableAuditPlanAsync()
         {
             var auditplans = await _unitOfWork.AuditPlanRepository.GetDisableAuditPlans();
