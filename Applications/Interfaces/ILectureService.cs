@@ -3,7 +3,7 @@ using Applications.ViewModels.LectureViewModels;
 
 namespace Applications.Interfaces
 {
-    public interface ILectureServices
+    public interface ILectureService
     {
         public Task<List<LectureViewModel>> GetAllLectures();
         public Task<List<LectureViewModel>> GetEnableLectures();

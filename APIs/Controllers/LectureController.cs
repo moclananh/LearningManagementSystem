@@ -13,10 +13,10 @@ namespace APIs.Controllers
     [ApiController]
     public class LectureController : ControllerBase
     {
-        private readonly ILectureServices _lectureServices;
+        private readonly ILectureService _lectureServices;
         private readonly IValidator<CreateLectureViewModel> _validatorCreate;
         private readonly IValidator<UpdateLectureViewModel> _validatorUpdate;
-        public LectureController(ILectureServices lectureServices,
+        public LectureController(ILectureService lectureServices,
             IValidator<CreateLectureViewModel> validatorCreate,
             IValidator<UpdateLectureViewModel> validatorUpdate)
         {

@@ -6,7 +6,7 @@ using Domain.Entities;
 
 namespace Applications.Services
 {
-    public class LectureServies : ILectureServices
+    public class LectureServies : ILectureService
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;

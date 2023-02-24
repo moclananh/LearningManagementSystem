@@ -5,7 +5,7 @@ using Domain.Entities;
 
 namespace Applications.Services
 {
-    public class ModuleService : IModuleServices
+    public class ModuleService : IModuleService
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;

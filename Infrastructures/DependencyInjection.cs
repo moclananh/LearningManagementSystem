@@ -25,7 +25,7 @@ namespace Infrastructures
             // local; DBName: LMSFSoftDB
             services.AddDbContext<AppDBContext>(options => options.UseSqlServer(config.GetConnectionString("AppDB")));
             // Add Object Services
-            services.AddScoped<IClassServices, ClassServices>();
+            services.AddScoped<IClassService, ClassServices>();
             services.AddScoped<IClassRepository, ClassRepository>();
             services.AddScoped<IQuizzServices, QuizzServices>();
             services.AddScoped<IQuizzRepository, QuizzRepository>();
@@ -39,11 +39,11 @@ namespace Infrastructures
             services.AddScoped<IClassUserServices, ClassUserService>();
             services.AddScoped<IAuditPlanService, AuditPlanService>();
             services.AddScoped<IAuditPlanRepository, AuditPlanRepository>();
-            services.AddScoped<ILectureServices, LectureServies>();
+            services.AddScoped<ILectureService, LectureServies>();
             services.AddScoped<ILectureRepository, LectureRepository>();
             services.AddScoped<IUnitRepository, UnitRepository>();
             services.AddScoped<IUnitServices, UnitServices>();
-            services.AddScoped<IModuleServices, ModuleService>();
+            services.AddScoped<IModuleService, ModuleService>();
             services.AddScoped<IModuleRepository, ModuleRepository>();
             services.AddScoped<ITrainingProgramRepository, TrainingProgramRepository>();
             services.AddScoped<ITrainingProgramService, TrainingProgramService>();

@@ -2,7 +2,7 @@
 
 namespace Applications.Interfaces
 {
-    public interface IModuleServices
+    public interface IModuleService
     {
         public Task<List<ModuleViewModels>> GetAllModules();
         public Task<List<ModuleViewModels>> GetEnableModules();

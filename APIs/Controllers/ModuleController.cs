@@ -10,9 +10,9 @@ namespace APIs.Controllers
     [ApiController]
     public class ModuleController : ControllerBase
     {
-        private readonly IModuleServices _moduleServices;
+        private readonly IModuleService _moduleServices;
         private readonly IValidator<ModuleViewModels> _validator;
-        public ModuleController(IModuleServices moduleServices, IValidator<ModuleViewModels> validator)
+        public ModuleController(IModuleService moduleServices, IValidator<ModuleViewModels> validator)
         {
             _moduleServices = moduleServices;
             _validator = validator;

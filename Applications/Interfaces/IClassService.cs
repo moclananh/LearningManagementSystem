@@ -4,7 +4,7 @@ using Applications.ViewModels.ClassViewModels;
 
 namespace Applications.Interfaces
 {
-    public interface IClassServices
+    public interface IClassService
     {
         public Task<Pagination<ClassViewModel>> GetAllClasses(int pageIndex = 0, int pageSize = 10);
         public Task<Pagination<ClassViewModel>> GetEnableClasses(int pageIndex = 0, int pageSize = 10);

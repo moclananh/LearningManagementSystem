@@ -14,24 +14,11 @@ namespace Applications.Services
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
-        public async Task<List<QuizzViewModel>> ViewAllQuizzAsync()
-        {
-            var quizzes = await _unitOfWork.QuizzRepository.GetAllAsync();
-            var result = _mapper.Map<List<QuizzViewModel>>(quizzes);
-            return result;
-        }
 
         public async Task<QuizzViewModel> GetQuizzByQuizzIdAsync(Guid QuizzId)
         {
             var quizz = await _unitOfWork.QuizzRepository.GetByIdAsync(QuizzId);
             var result = _mapper.Map<QuizzViewModel>(quizz);
-            return result;
-        }
-
-        public async Task<List<QuizzViewModel>> GetQuizzByUnitIdAsync(Guid UnitId)
-        {
-            var quizz = await _unitOfWork.QuizzRepository.GetQuizzByUnitIdAsync(UnitId);
-            var result = _mapper.Map<List<QuizzViewModel>>(quizz);
             return result;
         }
 
@@ -63,30 +50,37 @@ namespace Applications.Services
             return null;
         }
 
-        public async Task<List<QuizzViewModel>> GetQuizzByName(string Name)
+        public async Task<Pagination<QuizzViewModel>> GetQuizzByName(string Name, int pageIndex = 0, int pageSize = 10)
         {
             var quizzes = await _unitOfWork.QuizzRepository.GetQuizzByName(Name);
-            var result = _mapper.Map<List<QuizzViewModel>>(quizzes);
+            var result = _mapper.Map<Pagination<QuizzViewModel>>(quizzes);
             return result;
         }
 
-        public async Task<List<QuizzViewModel>> GetEnableQuizzes()
+        public async Task<Pagination<QuizzViewModel>> GetAllQuizzes(int pageIndex = 0, int pageSize = 10)
+        {
+            var quizzes = await _unitOfWork.QuizzRepository.ToPagination();
+            var result = _mapper.Map<Pagination<QuizzViewModel>>(quizzes);
+            return result;
+        }
+
+        public async Task<Pagination<QuizzViewModel>> GetEnableQuizzes(int pageIndex = 0, int pageSize = 10)
         {
             var quizzes = await _unitOfWork.QuizzRepository.GetEnableQuizzes();
-            var result = _mapper.Map<List<QuizzViewModel>>(quizzes);
+            var result = _mapper.Map<Pagination<QuizzViewModel>>(quizzes);
             return result;
         }
 
-        public async Task<List<QuizzViewModel>> GetDisableQuizzes()
+        public async Task<Pagination<QuizzViewModel>> GetDisableQuizzes(int pageIndex = 0, int pageSize = 10)
         {
             var quizzes = await _unitOfWork.QuizzRepository.GetDisableQuizzes();
-            var result = _mapper.Map<List<QuizzViewModel>>(quizzes);
+            var result = _mapper.Map<Pagination<QuizzViewModel>>(quizzes);
             return result;
         }
 
-        public async Task<Pagination<QuizzViewModel>> GetQuizzPagingsionAsync(int pageIndex = 0, int pageSize = 10)
+        public async Task<Pagination<QuizzViewModel>> GetQuizzByUnitIdAsync(Guid UnitId, int pageIndex = 0, int pageSize = 10)
         {
-            var quizzes = await _unitOfWork.QuizzRepository.ToPagination(pageIndex, pageSize);
+            var quizzes = await _unitOfWork.QuizzRepository.GetQuizzByUnitIdAsync(UnitId);
             var result = _mapper.Map<Pagination<QuizzViewModel>>(quizzes);
             return result;
         }

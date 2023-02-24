@@ -8,7 +8,7 @@ using Domain.EntityRelationship;
 
 namespace Applications.Services
 {
-    public class ClassServices : IClassServices
+    public class ClassServices : IClassService
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
