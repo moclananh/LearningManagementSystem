@@ -1,5 +1,7 @@
 ﻿using Application.Interfaces;
+using Application.ViewModels.QuizzViewModels;
 using Applications;
+using Applications.Commons;
 using Applications.ViewModels.ClassUserViewModels;
 using Applications.ViewModels.Response;
 using AutoMapper;
@@ -18,6 +20,13 @@ namespace Application.Services
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+        }
+
+        public async Task<Pagination<CreateClassUserViewModel>> GetClassUserPagingsionAsync(int pageIndex = 0, int pageSize = 10)
+        {
+            var classUser = await _unitOfWork.ClassUserRepository.ToPagination(pageIndex, pageSize);
+            var result = _mapper.Map<Pagination<CreateClassUserViewModel>>(classUser);
+            return result;
         }
 
         public async Task<Response> UploadClassUserFile(IFormFile formFile)

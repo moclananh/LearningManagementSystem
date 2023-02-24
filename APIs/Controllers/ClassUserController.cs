@@ -1,5 +1,6 @@
 ﻿using Application.Interfaces;
 using Application.ViewModels.QuizzViewModels;
+using Applications.Commons;
 using Applications.Interfaces;
 using Applications.Services;
 using Applications.ViewModels.ClassUserViewModels;
@@ -18,8 +19,11 @@ namespace APIs.Controllers
             _classUserServices = classuserServices;
         }
 
-        [HttpGet("GetAllClassUser")]
-        public async Task<List<CreateClassUserViewModel>> ViewAllClassUserAsync() => await _classUserServices.ViewAllClassUserAsync();
+        [HttpGet("GetClassUserPagingsion")]
+        public async Task<Pagination<CreateClassUserViewModel>> GetClassUserPagingsion(int pageIndex = 0, int pageSize = 10)
+        {
+            return await _classUserServices.GetClassUserPagingsionAsync(pageIndex, pageSize);
+        }
 
         [HttpPost("UploadClassUserFile")]
         public async Task<Response> Import(IFormFile formFile) => await _classUserServices.UploadClassUserFile(formFile);
