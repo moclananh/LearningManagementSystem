@@ -17,6 +17,7 @@ namespace Applications
         public IModuleRepository ModuleRepository { get; }
         public ITrainingProgramRepository TrainingProgramRepository { get; }
         public ISyllabusRepository SyllabusRepository { get; }
+        public IAssignmentQuestionRepository AssignmentQuestionRepository { get; }
         public Task<int> SaveChangeAsync();
     }
 }

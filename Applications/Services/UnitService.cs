@@ -27,6 +27,13 @@ namespace Applications.Services
             return null;
         }
 
+        public async Task<List<CreateUnitViewModel>> GetUnitByModuleIdAsync(Guid ModuleId)
+        {
+            var unit = await _unitOfWork.UnitRepository.ViewAllUnitByModuleIdAsync(ModuleId);
+            var result = _mapper.Map<List<CreateUnitViewModel>>(unit);
+            return result;
+        }
+
         public async Task<CreateUnitViewModel> UpdateUnitAsync(Guid UnitId, CreateUnitViewModel UnitDTO)
         {
             var unit = await _unitOfWork.UnitRepository.GetByIdAsync(UnitId);

@@ -6,5 +6,6 @@ namespace Applications.Repositories
     {
         Task<List<Unit>> GetEnableUnits();
         Task<List<Unit>> GetDisableUnits();
+        Task<List<Unit>> ViewAllUnitByModuleIdAsync(Guid ModuleId);
     }
 }

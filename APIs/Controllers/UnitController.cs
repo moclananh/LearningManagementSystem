@@ -31,5 +31,12 @@ namespace API.Controllers
 
         [HttpGet("GetDisableUnits")]
         public async Task<List<UnitViewModel>> GetDiableClasses() => await _unitServices.ViewDisableUnitsAsync();
+               
+        [HttpGet("GetUnitsByModuleId/{ModuleId}")]
+        public async Task<List<CreateUnitViewModel>> GetUnitByModuleIdAsync(Guid ModuleId)
+        {
+            return await _unitServices.GetUnitByModuleIdAsync(ModuleId);
+        }
     }
 }
+

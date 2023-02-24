@@ -10,5 +10,6 @@ namespace Applications.Interfaces
         public Task<UnitViewModel> ViewUnitById(Guid UnitId);
         public Task<List<UnitViewModel>> ViewEnableUnitsAsync();
         public Task<List<UnitViewModel>> ViewDisableUnitsAsync();
+        public Task<List<CreateUnitViewModel>> GetUnitByModuleIdAsync(Guid ModuleId);
     }
 }
