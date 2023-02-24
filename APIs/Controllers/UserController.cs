@@ -33,7 +33,6 @@ public class UserController : Controller
     [HttpGet("GetAllUsers")]
     public async Task<List<UserViewModel>> GetAllUsers() => await _userService.GetAllUsers();
 
-
     /// <summary>
     /// Get user by ID.
     /// </summary>
@@ -41,7 +40,6 @@ public class UserController : Controller
     /// <returns></returns>
     [HttpGet("GetUserById/{UserId}")]
     public async Task<UserViewModel> GetUserById(Guid UserId) => await _userService.GetUserById(UserId);
-
 
     /// <summary>
     /// Update user function 
@@ -51,7 +49,6 @@ public class UserController : Controller
     /// <returns></returns>
     [HttpPut("UpdateUser/{UserId}")]
     public async Task<Response> UpdateUser(Guid UserId, [FromBody] UpdateUserViewModel user) => await _userService.UpdateUser(UserId, user);
-
 
     /// <summary>
     /// Get All User by ROLE.

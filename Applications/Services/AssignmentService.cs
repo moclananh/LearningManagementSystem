@@ -1,7 +1,6 @@
 ﻿using Applications.Interfaces;
 using Applications.ViewModels.AssignmentViewModels;
 using AutoMapper;
-using Domain.Entities;
 
 namespace Applications.Services
 {

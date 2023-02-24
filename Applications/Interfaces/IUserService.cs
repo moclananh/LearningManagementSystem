@@ -1,13 +1,7 @@
 ﻿using Applications.ViewModels.Response;
 using Applications.ViewModels.UserViewModels;
-using Domain.Enum;
 using Domain.Enum.RoleEnum;
 using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Applications.Interfaces;
 

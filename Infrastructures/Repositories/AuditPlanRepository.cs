@@ -19,24 +19,12 @@ namespace Infrastructures.Repositories
             _dBContext = dBContext;
         }
 
-        public async Task<List<AuditPlan>> GetAuditPlanByClassId(Guid ClassID)
-        {
-            return await _dBContext.AuditPlans.Where(x => x.ClassId.Equals(ClassID)).ToListAsync();
-        }
+        public async Task<List<AuditPlan>> GetAuditPlanByClassId(Guid ClassID) => await _dBContext.AuditPlans.Where(x => x.ClassId.Equals(ClassID)).ToListAsync();
 
-        public async Task<List<AuditPlan>> GetAuditPlanByModuleId(Guid ModuleID)
-        {
-            return await _dBContext.AuditPlans.Where(x => x.ModuleId.Equals(ModuleID)).ToListAsync();
-        }
+        public async Task<List<AuditPlan>> GetAuditPlanByModuleId(Guid ModuleID) => await _dBContext.AuditPlans.Where(x => x.ModuleId.Equals(ModuleID)).ToListAsync();
 
-        public async Task<List<AuditPlan>> GetDisableAuditPlans()
-        {
-            return await _dBContext.AuditPlans.Where(x => x.Status == Domain.Enum.StatusEnum.Status.Disable).ToListAsync();
-        }
+        public async Task<List<AuditPlan>> GetDisableAuditPlans() => await _dBContext.AuditPlans.Where(x => x.Status == Domain.Enum.StatusEnum.Status.Disable).ToListAsync();
 
-        public async Task<List<AuditPlan>> GetEnableAuditPlans()
-        {
-            return await _dBContext.AuditPlans.Where(x => x.Status == Domain.Enum.StatusEnum.Status.Enable).ToListAsync();
-        }
+        public async Task<List<AuditPlan>> GetEnableAuditPlans() => await _dBContext.AuditPlans.Where(x => x.Status == Domain.Enum.StatusEnum.Status.Enable).ToListAsync();
     }
 }

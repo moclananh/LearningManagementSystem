@@ -9,6 +9,8 @@ using System.Text;
 using Applications.ViewModels.AuditPlanViewModel;
 using Applications.ViewModels.ModuleViewModels;
 using APIs.Validations.ClassValidations;
+using APIs.Validations.SyllabusValidations;
+using Applications.ViewModels.SyllabusViewModels;
 
 namespace APIs;
 
@@ -28,6 +30,8 @@ public static class DependencyInjection
         services.AddScoped<IValidator<AuditPlanViewModel>, AuditPlanValidation>();
         services.AddScoped<IValidator<UpdateAuditPlanViewModel>, UpdateAuditPlanValidation>();
         services.AddScoped<IValidator<ModuleViewModels>, ModuleValidation>();
+        services.AddScoped<IValidator<UpdateSyllabusViewModel>, UpdateSyllabusValidation>();
+        services.AddScoped<IValidator<CreateSyllabusViewModel>, CreateSyllabusValidation>();
         //---------------------------------------------------------------------------------------
         services.AddAuthentication(option =>
         {

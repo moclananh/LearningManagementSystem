@@ -1,5 +1,4 @@
 ﻿using Application.Interfaces;
-using Application.ViewModels.QuizzViewModels;
 using Applications;
 using Applications.ViewModels.ClassUserViewModels;
 using Applications.ViewModels.Response;

@@ -24,40 +24,22 @@ namespace APIs.Controllers
         }
 
         [HttpGet("GetAllAuditPlan")]
-        public async Task<List<AuditPlanViewModel>> GetAllQuizzAsync()
-        {
-            return await _auditPlanService.GetAllAuditPlanAsync();
-        }
+        public async Task<List<AuditPlanViewModel>> GetAllQuizzAsync() => await _auditPlanService.GetAllAuditPlanAsync();
 
         [HttpGet("GetEnableAuditPlan")]
-        public async Task<List<AuditPlanViewModel>> GetEnableClasses()
-        {
-            return await _auditPlanService.GetEnableAuditPlanAsync();
-        }
+        public async Task<List<AuditPlanViewModel>> GetEnableClasses() => await _auditPlanService.GetEnableAuditPlanAsync();
 
         [HttpGet("GetDisableAuditPlan")]
-        public async Task<List<AuditPlanViewModel>> GetDiableClasses()
-        {
-            return await _auditPlanService.GetDisableAuditPlanAsync();
-        }
+        public async Task<List<AuditPlanViewModel>> GetDiableClasses() => await _auditPlanService.GetDisableAuditPlanAsync();
 
         [HttpGet("GetAuditPlanById/{AuditPlanId}")]
-        public async Task<AuditPlanViewModel> GetAuditPlanByIdAsync(Guid AuditPlanId)
-        {
-            return await _auditPlanService.GetAuditPlanByIdAsync(AuditPlanId);
-        }
+        public async Task<AuditPlanViewModel> GetAuditPlanByIdAsync(Guid AuditPlanId) => await _auditPlanService.GetAuditPlanByIdAsync(AuditPlanId);
 
         [HttpGet("GetAuditPlanByModuleId/{ModuleId}")]
-        public async Task<List<AuditPlanViewModel>> GetAuditPlanByModuleId(Guid ModuleId)
-        {
-            return await _auditPlanService.GetAuditPlanByModuleIdAsync(ModuleId);
-        }
+        public async Task<List<AuditPlanViewModel>> GetAuditPlanByModuleId(Guid ModuleId) => await _auditPlanService.GetAuditPlanByModuleIdAsync(ModuleId);
 
         [HttpGet("GetAuditPlanByClassId/{ClassId}")]
-        public async Task<List<AuditPlanViewModel>> GetAuditPlanByClassId(Guid ClassId)
-        {
-            return await _auditPlanService.GetAuditPlanbyClassIdAsync(ClassId);
-        }
+        public async Task<List<AuditPlanViewModel>> GetAuditPlanByClassId(Guid ClassId) => await _auditPlanService.GetAuditPlanbyClassIdAsync(ClassId);
 
         [HttpPost("CreateAuditPlan")]
         public async Task<IActionResult> CreateAuditPlan(AuditPlanViewModel createAuditPlanViewModel)

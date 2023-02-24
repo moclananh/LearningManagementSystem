@@ -8,8 +8,7 @@ namespace Infrastructures.Repositories;
 public class UserRepository : GenericRepository<User>, IUserRepository
 {
 	private AppDBContext _dbContext;
-	public UserRepository(AppDBContext context, ICurrentTime currentTime, IClaimService claimService)
-		: base(context, currentTime, claimService)
+	public UserRepository(AppDBContext context, ICurrentTime currentTime, IClaimService claimService) : base(context, currentTime, claimService)
 	{
 		_dbContext = context;
 	}

@@ -11,6 +11,7 @@ using Applications.ViewModels.AuditPlanViewModel;
 using Applications.ViewModels.LectureViewModels;
 using Application.ViewModels.UnitViewModels;
 using Application.ViewModels.TrainingProgramModels;
+using Applications.ViewModels.SyllabusViewModels;
 
 namespace Infrastructures.Mappers
 {
@@ -41,7 +42,9 @@ namespace Infrastructures.Mappers
                .ForMember(dest => dest.UnitId, src => src.MapFrom(x => x.Id));
             CreateMap<ModuleViewModels, Module>().ReverseMap();
             CreateMap<ViewTrainingProgram, TrainingProgram>().ReverseMap();
-
+            CreateMap<CreateSyllabusViewModel, Syllabus>().ReverseMap();
+            CreateMap<UpdateSyllabusViewModel, Syllabus>().ReverseMap();
+            CreateMap<SyllabusViewModel, Syllabus>().ReverseMap();
         }
     }
 }
