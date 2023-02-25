@@ -1,4 +1,5 @@
 ﻿using Domain.Base;
+using Domain.EntityRelationship;
 
 namespace Domain.Entities
 {
@@ -6,6 +7,7 @@ namespace Domain.Entities
     {
         public string Score { get; set; }
         public string Note { get; set; }
+        public ICollection<UserAuditResult> UserAuditResults { get; set; }
         public Guid AuditPlanId { get; set; }
         public AuditPlan AuditPlan { get; set; }
         public Guid UserId { get; set; }

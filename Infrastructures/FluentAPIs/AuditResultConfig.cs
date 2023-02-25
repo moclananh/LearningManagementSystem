@@ -8,10 +8,6 @@ namespace Infrastructures.FluentAPIs
     {
         public void Configure(EntityTypeBuilder<AuditResult> builder)
         {
-            builder.HasOne<User>(s => s.User)
-               .WithMany(s => s.AuditResults)
-               .HasForeignKey(fk => fk.UserId);
-
             builder.HasOne<AuditPlan>(s => s.AuditPlan)
                 .WithMany(s => s.AuditResults)
                 .HasForeignKey(fk => fk.AuditPlanId);

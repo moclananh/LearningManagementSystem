@@ -18,9 +18,9 @@ namespace Domain.Entities
         public Role Role { get; set; }
         public Status Status { get; set; }
         public ICollection<UserAuditPlan?> UserAuditPlans { get; set; }
-        public ICollection<AuditResult> AuditResults { get; set; }
+        public ICollection<UserAuditResult> UserAuditResults { get; set; }
         public ICollection<AbsentRequest> AbsentRequests { get; set; }
-        public ICollection<ClassUser?> ClassUsers { get; set; } 
+        public ICollection<ClassUser?> ClassUsers { get; set; }
         public ICollection<Attendance> Attendences { get; set; }
     }
 }
