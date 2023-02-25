@@ -20,6 +20,7 @@ namespace Applications
         public ISyllabusRepository SyllabusRepository { get; }
         public IAssignmentQuestionRepository AssignmentQuestionRepository { get; }
         public IClassTrainingProgramRepository ClassTrainingProgramRepository { get; }
+        public IPracticeQuestionRepository PracticeQuestionRepository { get; }
         public Task<int> SaveChangeAsync();
     }
 }

@@ -52,35 +52,35 @@ namespace Applications.Services
 
         public async Task<Pagination<QuizzViewModel>> GetQuizzByName(string Name, int pageIndex = 0, int pageSize = 10)
         {
-            var quizzes = await _unitOfWork.QuizzRepository.GetQuizzByName(Name);
+            var quizzes = await _unitOfWork.QuizzRepository.GetQuizzByName(Name, pageIndex, pageSize);
             var result = _mapper.Map<Pagination<QuizzViewModel>>(quizzes);
             return result;
         }
 
         public async Task<Pagination<QuizzViewModel>> GetAllQuizzes(int pageIndex = 0, int pageSize = 10)
         {
-            var quizzes = await _unitOfWork.QuizzRepository.ToPagination();
+            var quizzes = await _unitOfWork.QuizzRepository.ToPagination(pageIndex, pageSize);
             var result = _mapper.Map<Pagination<QuizzViewModel>>(quizzes);
             return result;
         }
 
         public async Task<Pagination<QuizzViewModel>> GetEnableQuizzes(int pageIndex = 0, int pageSize = 10)
         {
-            var quizzes = await _unitOfWork.QuizzRepository.GetEnableQuizzes();
+            var quizzes = await _unitOfWork.QuizzRepository.GetEnableQuizzes(pageIndex, pageSize);
             var result = _mapper.Map<Pagination<QuizzViewModel>>(quizzes);
             return result;
         }
 
         public async Task<Pagination<QuizzViewModel>> GetDisableQuizzes(int pageIndex = 0, int pageSize = 10)
         {
-            var quizzes = await _unitOfWork.QuizzRepository.GetDisableQuizzes();
+            var quizzes = await _unitOfWork.QuizzRepository.GetDisableQuizzes(pageIndex, pageSize);
             var result = _mapper.Map<Pagination<QuizzViewModel>>(quizzes);
             return result;
         }
 
         public async Task<Pagination<QuizzViewModel>> GetQuizzByUnitIdAsync(Guid UnitId, int pageIndex = 0, int pageSize = 10)
         {
-            var quizzes = await _unitOfWork.QuizzRepository.GetQuizzByUnitIdAsync(UnitId);
+            var quizzes = await _unitOfWork.QuizzRepository.GetQuizzByUnitIdAsync(UnitId, pageIndex, pageSize);
             var result = _mapper.Map<Pagination<QuizzViewModel>>(quizzes);
             return result;
         }

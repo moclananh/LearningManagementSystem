@@ -1,5 +1,6 @@
-﻿using Applications.Interfaces;
-using Applications.ViewModels.AssignmentQuestionViewModels;
+﻿using Applications.Commons;
+using Applications.Interfaces;
+using Applications.ViewModels.PracticeQuestionViewModels;
 using Applications.ViewModels.Response;
 using AutoMapper;
 using Domain.Entities;
@@ -9,30 +10,30 @@ using System.Net;
 
 namespace Applications.Services
 {
-    public class AssignmentQuestionService : IAssignmentQuestionService
+    public class PracticeQuestionService : IPracticeQuestionService
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        public AssignmentQuestionService(IUnitOfWork unitOfWork, IMapper mapper)
+        public PracticeQuestionService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
 
-        public async Task<List<AssignmentQuestionViewModel>> GetAssignmentQuestionByAssignmentId(Guid AssignmentId)
+        public async Task<Pagination<PracticeQuestionViewModel>> GetPracticeQuestionByPracticeId(Guid PracticeId, int pageIndex = 0, int pageSize = 10)
         {
-            var asmQObj = await _unitOfWork.AssignmentQuestionRepository.GetAllAssignmentQuestionByAssignmentId(AssignmentId);
-            var result = _mapper.Map<List<AssignmentQuestionViewModel>>(asmQObj);
+            var practiceObj = await _unitOfWork.PracticeQuestionRepository.GetAllPracticeQuestionById(PracticeId, pageIndex, pageSize);
+            var result = _mapper.Map<Pagination<PracticeQuestionViewModel>>(practiceObj);
             return result;
         }
 
-        public async Task<Response> UploadAssignmentQuestions(IFormFile formFile)
+        public async Task<Response> UploadPracticeQuestions(IFormFile formFile)
         {
             if (formFile == null || formFile.Length <= 0) return new Response(HttpStatusCode.Conflict, "File is empty");
 
             if (!Path.GetExtension(formFile.FileName).Equals(".xlsx", StringComparison.OrdinalIgnoreCase)) return new Response(HttpStatusCode.Conflict, "Not Support file extension");
 
-            var assignmentList = new List<AssignmentQuestion>();
+            var practiceList = new List<PracticeQuestion>();
 
             using (var stream = new MemoryStream())
             {
@@ -42,24 +43,25 @@ namespace Applications.Services
                 {
                     ExcelWorksheet worksheet = package.Workbook.Worksheets[0];
                     var rowCount = worksheet.Dimension.Rows;
-                    var AssienmentID = Guid.Parse(worksheet.Cells[1, 2].Value.ToString());
+                    var PracticeID = Guid.Parse(worksheet.Cells[1, 2].Value.ToString());
                     var isDelete = bool.Parse(worksheet.Cells[2, 2].Value.ToString());
-                    for(int row = 4; row <= rowCount; row++)
+                    for (int row = 4; row <= rowCount; row++)
                     {
-                        assignmentList.Add(new AssignmentQuestion
+                        practiceList.Add(new PracticeQuestion
                         {
                             Question = worksheet.Cells[row, 1].Value.ToString().Trim(),
                             Answer = worksheet.Cells[row, 2].Value.ToString().Trim(),
                             Note = worksheet.Cells[row, 3].Value.ToString().Trim(),
-                            AssignmentId = AssienmentID,
-                            
+                            PracticeId = PracticeID,
+
                         });
                     }
                 }
             }
-            await _unitOfWork.AssignmentQuestionRepository.UploadAssignmentListAsync(assignmentList);
+            await _unitOfWork.PracticeQuestionRepository.UploadPracticeListAsync(practiceList);
             await _unitOfWork.SaveChangeAsync();
             return new Response(HttpStatusCode.OK, "OK");
         }
+
     }
 }

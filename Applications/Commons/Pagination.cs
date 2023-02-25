@@ -1,6 +1,4 @@
-﻿
-
-namespace Applications.Commons;
+﻿namespace Applications.Commons;
 
 public class Pagination<T>
 {

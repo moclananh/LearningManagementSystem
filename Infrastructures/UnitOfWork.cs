@@ -2,7 +2,6 @@
 using Applications;
 using Applications.IRepositories;
 using Applications.Repositories;
-using Infrastructures.Repositories;
 
 namespace Infrastructures
 {
@@ -23,6 +22,7 @@ namespace Infrastructures
         private readonly ISyllabusRepository _syllabusRepository;
         private readonly IAssignmentQuestionRepository _assignmentquestionRepository;
         private readonly IClassTrainingProgramRepository _classTrainingProgramRepository;
+        private readonly IPracticeQuestionRepository _practicequestionRepository;
 
         public UnitOfWork(AppDBContext appDBContext,
             IClassRepository classRepository,
@@ -38,7 +38,8 @@ namespace Infrastructures
             IOutputStandardRepository outputStandardRepository,
             ISyllabusRepository syllabusRepository,
             IAssignmentQuestionRepository assignmentQuestionRepository,
-            IClassTrainingProgramRepository classTrainingProgramRepository)
+            IClassTrainingProgramRepository classTrainingProgramRepository,
+            IPracticeQuestionRepository practicequestionRepository)
 
         {
             _appDBContext = appDBContext;
@@ -56,6 +57,7 @@ namespace Infrastructures
             _syllabusRepository = syllabusRepository;
             _assignmentquestionRepository = assignmentQuestionRepository;
             _classTrainingProgramRepository = classTrainingProgramRepository;
+            _practicequestionRepository = practicequestionRepository;
         }
 
         public IClassRepository ClassRepository => _classRepository;
@@ -72,6 +74,7 @@ namespace Infrastructures
         public ISyllabusRepository SyllabusRepository => _syllabusRepository;
         public IAssignmentQuestionRepository AssignmentQuestionRepository => _assignmentquestionRepository;
         public IClassTrainingProgramRepository ClassTrainingProgramRepository => _classTrainingProgramRepository;
+        public IPracticeQuestionRepository PracticeQuestionRepository => _practicequestionRepository;
 
         public async Task<int> SaveChangeAsync() => await _appDBContext.SaveChangesAsync();
     }
