@@ -10,10 +10,6 @@ namespace Infrastructures.FluentAPIs
         {
             builder.HasKey(x => x.Id);
 
-            builder.HasOne<AuditResult>(s => s.AuditResult)
-                .WithOne(s => s.AuditPlan)
-                .HasForeignKey<AuditResult>(s => s.AuditPlanId);
-
             builder.HasOne<Class>(s => s.Class)
                 .WithMany(s => s.AuditPlans)
                 .HasForeignKey(fk => fk.ClassId);

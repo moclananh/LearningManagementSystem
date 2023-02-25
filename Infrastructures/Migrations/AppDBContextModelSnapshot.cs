@@ -387,8 +387,7 @@ namespace Infrastructures.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AuditPlanId")
-                        .IsUnique();
+                    b.HasIndex("AuditPlanId");
 
                     b.HasIndex("UserId");
 
@@ -1358,8 +1357,8 @@ namespace Infrastructures.Migrations
             modelBuilder.Entity("Domain.Entities.AuditResult", b =>
                 {
                     b.HasOne("Domain.Entities.AuditPlan", "AuditPlan")
-                        .WithOne("AuditResult")
-                        .HasForeignKey("Domain.Entities.AuditResult", "AuditPlanId")
+                        .WithMany("AuditResults")
+                        .HasForeignKey("AuditPlanId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -1571,8 +1570,7 @@ namespace Infrastructures.Migrations
                 {
                     b.Navigation("AuditQuestions");
 
-                    b.Navigation("AuditResult")
-                        .IsRequired();
+                    b.Navigation("AuditResults");
 
                     b.Navigation("UserAuditPlans");
                 });

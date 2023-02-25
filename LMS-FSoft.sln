@@ -3,13 +3,21 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{F325589D-6BB5-4E0C-849D-0D4DDD2CF7D5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "Domain\Domain.csproj", "{F325589D-6BB5-4E0C-849D-0D4DDD2CF7D5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructures", "Infrastructures\Infrastructures.csproj", "{D0844D07-59BD-4F40-8671-3DB789E86C92}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructures", "Infrastructures\Infrastructures.csproj", "{D0844D07-59BD-4F40-8671-3DB789E86C92}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Applications", "Applications\Applications.csproj", "{96961BDB-245A-4D2C-9284-5A4E648C1430}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Applications", "Applications\Applications.csproj", "{96961BDB-245A-4D2C-9284-5A4E648C1430}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APIs", "APIs\APIs.csproj", "{5B843CFB-BC84-49B2-A8E8-A9BF38954AE0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "APIs", "APIs\APIs.csproj", "{5B843CFB-BC84-49B2-A8E8-A9BF38954AE0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LMS-FSoftTests", "LMS-FSoftTests", "{ECDF42CC-77B5-4E84-96C9-58302D34A1ED}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain.Tests", "Domain.Tests\Domain.Tests.csproj", "{6A6CE552-3DC2-4D66-84F8-04184939A510}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructures.Tests", "Infrastructures.Test\Infrastructures.Tests.csproj", "{E536452C-8C55-4420-8A5E-7F5E2236D153}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Applications.Tests", "Applications.Test\Applications.Tests.csproj", "{ADF787BF-14DC-4145-9FA5-E7AE0A9D58A4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,9 +41,26 @@ Global
 		{5B843CFB-BC84-49B2-A8E8-A9BF38954AE0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5B843CFB-BC84-49B2-A8E8-A9BF38954AE0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5B843CFB-BC84-49B2-A8E8-A9BF38954AE0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6A6CE552-3DC2-4D66-84F8-04184939A510}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6A6CE552-3DC2-4D66-84F8-04184939A510}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6A6CE552-3DC2-4D66-84F8-04184939A510}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6A6CE552-3DC2-4D66-84F8-04184939A510}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E536452C-8C55-4420-8A5E-7F5E2236D153}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E536452C-8C55-4420-8A5E-7F5E2236D153}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E536452C-8C55-4420-8A5E-7F5E2236D153}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E536452C-8C55-4420-8A5E-7F5E2236D153}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ADF787BF-14DC-4145-9FA5-E7AE0A9D58A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ADF787BF-14DC-4145-9FA5-E7AE0A9D58A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ADF787BF-14DC-4145-9FA5-E7AE0A9D58A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ADF787BF-14DC-4145-9FA5-E7AE0A9D58A4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{6A6CE552-3DC2-4D66-84F8-04184939A510} = {ECDF42CC-77B5-4E84-96C9-58302D34A1ED}
+		{E536452C-8C55-4420-8A5E-7F5E2236D153} = {ECDF42CC-77B5-4E84-96C9-58302D34A1ED}
+		{ADF787BF-14DC-4145-9FA5-E7AE0A9D58A4} = {ECDF42CC-77B5-4E84-96C9-58302D34A1ED}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {135480F5-8976-447B-A21E-DA5B6CBBFB35}

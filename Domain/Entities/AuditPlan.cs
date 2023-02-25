@@ -18,7 +18,7 @@ namespace Domain.Entities
         public Status Status { get; set; }
         public Guid ModuleId { get; set; }
         public Module Module { get; set; }
-        public AuditResult AuditResult { get; set; }
+        public ICollection<AuditResult> AuditResults { get; set; }
         public ICollection<AuditQuestion> AuditQuestions { get; set; }
         public ICollection<UserAuditPlan?> UserAuditPlans { get; set; }
         public Guid ClassId { get; set; }

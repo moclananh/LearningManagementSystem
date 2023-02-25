@@ -812,8 +812,7 @@ namespace Infrastructures.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_AuditResults_AuditPlanId",
                 table: "AuditResults",
-                column: "AuditPlanId",
-                unique: true);
+                column: "AuditPlanId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AuditResults_UserId",
