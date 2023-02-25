@@ -622,7 +622,6 @@ namespace Infrastructures.Migrations
                     Score = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Note = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     AuditPlanId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     ModificationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -638,12 +637,6 @@ namespace Infrastructures.Migrations
                         name: "FK_AuditResults_AuditPlans_AuditPlanId",
                         column: x => x.AuditPlanId,
                         principalTable: "AuditPlans",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_AuditResults_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -813,11 +806,6 @@ namespace Infrastructures.Migrations
                 name: "IX_AuditResults_AuditPlanId",
                 table: "AuditResults",
                 column: "AuditPlanId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AuditResults_UserId",
-                table: "AuditResults",
-                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ClassTrainingProgram_TrainingProgramId",

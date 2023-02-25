@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructures.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20230225171053_NewMigration")]
+    [Migration("20230225172438_NewMigration")]
     partial class NewMigration
     {
         /// <inheritdoc />
@@ -385,14 +385,9 @@ namespace Infrastructures.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("Id");
 
                     b.HasIndex("AuditPlanId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("AuditResults");
                 });
@@ -1365,15 +1360,7 @@ namespace Infrastructures.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("AuditPlan");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Domain.Entities.Lecture", b =>

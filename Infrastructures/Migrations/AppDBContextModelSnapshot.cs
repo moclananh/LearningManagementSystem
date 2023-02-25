@@ -382,14 +382,9 @@ namespace Infrastructures.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("Id");
 
                     b.HasIndex("AuditPlanId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("AuditResults");
                 });
@@ -1362,15 +1357,7 @@ namespace Infrastructures.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("AuditPlan");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Domain.Entities.Lecture", b =>
