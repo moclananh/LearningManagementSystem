@@ -1,4 +1,5 @@
 ﻿using Application.ViewModels.QuizzViewModels;
+using Applications.Commons;
 using Applications.Interfaces;
 using Applications.Services;
 using Applications.ViewModels.AssignmentViewModels;
@@ -16,27 +17,27 @@ namespace APIs.Controllers
             _assignmentService = assignmentServices;
         }
         [HttpGet("GetAllAssignment")]
-        public async Task<List<AssignmentViewModel>> ViewAllAssignmentAsync() => await _assignmentService.ViewAllAssignmentAsync();
+        public async Task<Pagination<AssignmentViewModel>> ViewAllAssignmentAsync(int pageIndex = 0, int pageSize = 10) => await _assignmentService.ViewAllAssignmentAsync(pageIndex, pageSize);
 
         [HttpPost("CreateAssignment")]
         public async Task<CreateAssignmentViewModel> CreateAssignment(CreateAssignmentViewModel AssignmentModel) => await _assignmentService.CreateAssignmentAsync(AssignmentModel);
 
         [HttpGet("GetEnableAssignments")]
-        public async Task<List<UpdateAssignmentViewModel>> GetEnableAssignments() => await _assignmentService.GetEnableAssignments();
+        public async Task<Pagination<UpdateAssignmentViewModel>> GetEnableAssignments(int pageIndex = 0, int pageSize = 10) => await _assignmentService.GetEnableAssignments(pageIndex, pageSize);
 
         [HttpGet("GetDisableAssignments")]
-        public async Task<List<UpdateAssignmentViewModel>> GetDiableAssignments() => await _assignmentService.GetDisableAssignments();
+        public async Task<Pagination<UpdateAssignmentViewModel>> GetDiableAssignments(int pageIndex = 0, int pageSize = 10) => await _assignmentService.GetDisableAssignments(pageIndex, pageSize);
 
         [HttpGet("ViewAssignmentById/{AssignmentId}")]
         public async Task<UpdateAssignmentViewModel> GetAssignmentById(Guid AssignmentId) => await _assignmentService.GetAssignmentById(AssignmentId);
 
         [HttpGet("ViewAssignmentsByUnitId/{UnitId}")]
-        public async Task<List<UpdateAssignmentViewModel>> GetAssignmentsByUnitId(Guid UnitId) => await _assignmentService.GetAssignmentByUnitId(UnitId);
+        public async Task<Pagination<UpdateAssignmentViewModel>> GetAssignmentsByUnitId(Guid UnitId, int pageIndex = 0, int pageSize = 10) => await _assignmentService.GetAssignmentByUnitId(UnitId, pageIndex, pageSize);
 
         [HttpPut("UpdateAssignment/{AssignmentId}")]
         public async Task<UpdateAssignmentViewModel?> UpdateAssignment(Guid AssignmentId, UpdateAssignmentViewModel assignmentDTO) => await _assignmentService.UpdateAssignment(AssignmentId, assignmentDTO);
 
         [HttpGet("GetAssignmentByName/{AssignmentName}")]
-        public async Task<List<UpdateAssignmentViewModel>> GetAssignmentByName(string AssignmentName) => await _assignmentService.GetAssignmentByName(AssignmentName);
+        public async Task<Pagination<UpdateAssignmentViewModel>> GetAssignmentByName(string AssignmentName, int pageIndex = 0, int pageSize = 10) => await _assignmentService.GetAssignmentByName(AssignmentName, pageIndex, pageSize);
     }
 }

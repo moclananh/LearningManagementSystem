@@ -3,6 +3,7 @@ using Applications.Interfaces;
 using Applications.ViewModels.AuditPlanViewModel;
 using AutoMapper;
 using Domain.Entities;
+using Domain.EntityRelationship;
 
 namespace Applications.Services
 {
@@ -30,14 +31,14 @@ namespace Applications.Services
 
         public async Task<Pagination<AuditPlanViewModel>> GetAllAuditPlanAsync(int pageIndex = 0, int pageSize = 10)
         {
-            var auditplans = await _unitOfWork.AuditPlanRepository.ToPagination();
+            var auditplans = await _unitOfWork.AuditPlanRepository.ToPagination(pageIndex, pageSize);
             var result = _mapper.Map<Pagination<AuditPlanViewModel>>(auditplans);
             return result;
         }
 
         public async Task<Pagination<AuditPlanViewModel>> GetAuditPlanbyClassIdAsync(Guid ClassId, int pageIndex = 0, int pageSize = 10)
         {
-            var auditplans = await _unitOfWork.AuditPlanRepository.GetAuditPlanByClassId(ClassId);
+            var auditplans = await _unitOfWork.AuditPlanRepository.GetAuditPlanByClassId(ClassId, pageIndex, pageSize);
             var result = _mapper.Map<Pagination<AuditPlanViewModel>>(auditplans);
             return result;
         }
@@ -58,21 +59,21 @@ namespace Applications.Services
 
         public async Task<Pagination<AuditPlanViewModel>> GetAuditPlanByName(string AuditPlanName, int pageIndex = 0, int pageSize = 10)
         {
-            var auditplans = await _unitOfWork.AuditPlanRepository.GetAuditPlanByName(AuditPlanName);
+            var auditplans = await _unitOfWork.AuditPlanRepository.GetAuditPlanByName(AuditPlanName, pageIndex, pageSize);
             var result = _mapper.Map<Pagination<AuditPlanViewModel>>(auditplans);
             return result;
         }
 
         public async Task<Pagination<AuditPlanViewModel>> GetDisableAuditPlanAsync(int pageIndex = 0, int pageSize = 10)
         {
-            var auditplans = await _unitOfWork.AuditPlanRepository.GetDisableAuditPlans();
+            var auditplans = await _unitOfWork.AuditPlanRepository.GetDisableAuditPlans(pageIndex, pageSize);
             var result = _mapper.Map<Pagination<AuditPlanViewModel>>(auditplans);
             return result;
         }
 
         public async Task<Pagination<AuditPlanViewModel>> GetEnableAuditPlanAsync(int pageIndex = 0, int pageSize = 10)
         {
-            var auditplans = await _unitOfWork.AuditPlanRepository.GetEnableAuditPlans();
+            var auditplans = await _unitOfWork.AuditPlanRepository.GetEnableAuditPlans(pageIndex, pageSize);
             var result = _mapper.Map<Pagination<AuditPlanViewModel>>(auditplans);
             return result;
         }

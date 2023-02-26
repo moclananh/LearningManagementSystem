@@ -1,4 +1,5 @@
-﻿using Applications.Interfaces;
+﻿using Applications.Commons;
+using Applications.Interfaces;
 using Applications.Repositories;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -14,9 +15,25 @@ namespace Infrastructures.Repositories
         {
             _dbContext = dbContext;
         }
-        public async Task<List<AssignmentQuestion>> GetAllAssignmentQuestionByAssignmentId(Guid AssignmentId)
+        public async Task<Pagination<AssignmentQuestion>> GetAllAssignmentQuestionByAssignmentId(Guid AssignmentId, int pageNumber = 0, int pageSize = 10)
         {
-            return await _dbContext.AssignmentQuestions.Where(a => a.AssignmentId == AssignmentId).ToListAsync();
+            var itemCount = await _dbContext.AssignmentQuestions.CountAsync();
+            var items = await _dbSet.Where(x => x.AssignmentId.Equals(AssignmentId))
+                                    .OrderByDescending(x => x.CreationDate)
+                                    .Skip(pageNumber * pageSize)
+                                    .Take(pageSize)
+                                    .AsNoTracking()
+                                    .ToListAsync();
+
+            var result = new Pagination<AssignmentQuestion>()
+            {
+                PageIndex = pageNumber,
+                PageSize = pageSize,
+                TotalItemsCount = itemCount,
+                Items = items,
+            };
+
+            return result;
         }
 
         public async Task UploadAssignmentListAsync(List<AssignmentQuestion> assignmentQuestionList)

@@ -1,4 +1,5 @@
-﻿using Applications.Interfaces;
+﻿using Applications.Commons;
+using Applications.Interfaces;
 using Applications.ViewModels.AssignmentQuestionViewModels;
 using Applications.ViewModels.Response;
 using AutoMapper;
@@ -19,10 +20,10 @@ namespace Applications.Services
             _mapper = mapper;
         }
 
-        public async Task<List<AssignmentQuestionViewModel>> GetAssignmentQuestionByAssignmentId(Guid AssignmentId)
+        public async Task<Pagination<AssignmentQuestionViewModel>> GetAssignmentQuestionByAssignmentId(Guid AssignmentId, int pageIndex = 0, int pageSize = 10)
         {
-            var asmQObj = await _unitOfWork.AssignmentQuestionRepository.GetAllAssignmentQuestionByAssignmentId(AssignmentId);
-            var result = _mapper.Map<List<AssignmentQuestionViewModel>>(asmQObj);
+            var asmQObj = await _unitOfWork.AssignmentQuestionRepository.GetAllAssignmentQuestionByAssignmentId(AssignmentId, pageIndex, pageSize);
+            var result = _mapper.Map<Pagination<AssignmentQuestionViewModel>>(asmQObj);
             return result;
         }
 

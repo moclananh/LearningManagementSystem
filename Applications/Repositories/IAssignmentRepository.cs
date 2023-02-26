@@ -1,12 +1,13 @@
-﻿using Domain.Entities;
+﻿using Applications.Commons;
+using Domain.Entities;
 
 namespace Applications.Repositories
 {
     public interface IAssignmentRepository : IGenericRepository<Assignment>
     {
-        Task<List<Assignment>> GetEnableAssignmentAsync();
-        Task<List<Assignment>> GetDisableAssignmentAsync();
-        Task<List<Assignment>> GetAssignmentByUnitId(Guid UnitId);
-        Task<List<Assignment>> GetAssignmentByName(string Name);
+        Task<Pagination<Assignment>> GetEnableAssignmentAsync(int pageNumber = 0, int pageSize = 10);
+        Task<Pagination<Assignment>> GetDisableAssignmentAsync(int pageNumber = 0, int pageSize = 10);
+        Task<Pagination<Assignment>> GetAssignmentByUnitId(Guid UnitId, int pageNumber = 0, int pageSize = 10);
+        Task<Pagination<Assignment>> GetAssignmentByName(string Name, int pageNumber = 0, int pageSize = 10);
     }
 }

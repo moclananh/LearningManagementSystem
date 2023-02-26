@@ -1,4 +1,5 @@
-﻿using Applications.Interfaces;
+﻿using Applications.Commons;
+using Applications.Interfaces;
 using Applications.ViewModels.AssignmentViewModels;
 using AutoMapper;
 using Domain.Entities;
@@ -22,24 +23,24 @@ namespace Applications.Services
             return result;
         }
 
-        public async Task<List<UpdateAssignmentViewModel>> GetAssignmentByUnitId(Guid UnitId)
+        public async Task<Pagination<UpdateAssignmentViewModel>> GetAssignmentByUnitId(Guid UnitId, int pageIndex = 0, int pageSize = 10)
         {
-            var asmObj = await _unitOfWork.AssignmentRepository.GetAssignmentByUnitId(UnitId);
-            var result = _mapper.Map<List<UpdateAssignmentViewModel>>(asmObj);
+            var asmObj = await _unitOfWork.AssignmentRepository.GetAssignmentByUnitId(UnitId, pageIndex, pageSize);
+            var result = _mapper.Map<Pagination<UpdateAssignmentViewModel>>(asmObj);
             return result;
         }
 
-        public async Task<List<UpdateAssignmentViewModel>> GetDisableAssignments()
+        public async Task<Pagination<UpdateAssignmentViewModel>> GetDisableAssignments(int pageIndex = 0, int pageSize = 10)
         {
-            var asmObj = await _unitOfWork.AssignmentRepository.GetDisableAssignmentAsync();
-            var result = _mapper.Map<List<UpdateAssignmentViewModel>>(asmObj);
+            var asmObj = await _unitOfWork.AssignmentRepository.GetDisableAssignmentAsync(pageIndex, pageSize);
+            var result = _mapper.Map<Pagination<UpdateAssignmentViewModel>>(asmObj);
             return result;
         }
 
-        public async Task<List<UpdateAssignmentViewModel>> GetEnableAssignments()
+        public async Task<Pagination<UpdateAssignmentViewModel>> GetEnableAssignments(int pageIndex = 0, int pageSize = 10)
         {
-            var asmObj = await _unitOfWork.AssignmentRepository.GetEnableAssignmentAsync();
-            var result = _mapper.Map<List<UpdateAssignmentViewModel>>(asmObj);
+            var asmObj = await _unitOfWork.AssignmentRepository.GetEnableAssignmentAsync(pageIndex, pageSize);
+            var result = _mapper.Map<Pagination<UpdateAssignmentViewModel>>(asmObj);
             return result;
         }
 
@@ -58,10 +59,10 @@ namespace Applications.Services
             }
             return null;
         }
-        public async Task<List<AssignmentViewModel>> ViewAllAssignmentAsync()
+        public async Task<Pagination<AssignmentViewModel>> ViewAllAssignmentAsync(int pageIndex = 0, int pageSize = 10)
         {
-            var assignment = await _unitOfWork.AssignmentRepository.GetAllAsync();
-            var result = _mapper.Map<List<AssignmentViewModel>>(assignment);
+            var assignment = await _unitOfWork.AssignmentRepository.ToPagination(pageIndex, pageSize);
+            var result = _mapper.Map<Pagination<AssignmentViewModel>>(assignment);
             return result;
         }
 
@@ -77,10 +78,10 @@ namespace Applications.Services
             return null;
         }
 
-        public async Task<List<UpdateAssignmentViewModel>> GetAssignmentByName(string Name)
+        public async Task<Pagination<UpdateAssignmentViewModel>> GetAssignmentByName(string Name, int pageIndex = 0, int pageSize = 10)
         {
-            var asmObj = await _unitOfWork.AssignmentRepository.GetAssignmentByName(Name);
-            var result = _mapper.Map<List<UpdateAssignmentViewModel>>(asmObj);
+            var asmObj = await _unitOfWork.AssignmentRepository.GetAssignmentByName(Name, pageIndex, pageSize);
+            var result = _mapper.Map<Pagination<UpdateAssignmentViewModel>>(asmObj);
             return result;
         }
     }

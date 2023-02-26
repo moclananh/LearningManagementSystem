@@ -75,7 +75,6 @@ namespace Infrastructures
         public IAssignmentQuestionRepository AssignmentQuestionRepository => _assignmentquestionRepository;
         public IClassTrainingProgramRepository ClassTrainingProgramRepository => _classTrainingProgramRepository;
         public IPracticeQuestionRepository PracticeQuestionRepository => _practicequestionRepository;
-
         public async Task<int> SaveChangeAsync() => await _appDBContext.SaveChangesAsync();
     }
 }
