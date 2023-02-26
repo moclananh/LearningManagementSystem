@@ -11,13 +11,14 @@ namespace Infrastructures.Tests.Mappers.ClassMapper
         [Fact]
         public void TestMapper()
         {
-            var fixture = new Fixture();
-            fixture.Behaviors.OfType<ThrowingRecursionBehavior>().ToList()
-            .ForEach(b => fixture.Behaviors.Remove(b));
-            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
             //arrange
-            var classMock = _fixture.Create<Class>();
-
+            var classMock = _fixture.Build<Class>()
+                            .Without(x => x.AbsentRequests)
+                            .Without(x => x.Attendences)
+                            .Without(x => x.AuditPlans)
+                            .Without(x => x.ClassUsers)
+                            .Without(x => x.ClassTrainingPrograms)
+                            .Create();
             //act
             var result = _mapperConfig.Map<ClassViewModel>(classMock);
 

@@ -51,10 +51,6 @@ namespace Domain.Tests
         protected readonly Mock<ITrainingProgramRepository> _trainingProgramRepositoryMock;
         protected readonly Mock<IUserRepository> _userRepositoryMock;
         protected readonly AppDBContext _dbContext;
-        public void Dispose()
-        {
-            _dbContext.Dispose();
-        }
 
         public SetupTest()
         {
@@ -100,12 +96,15 @@ namespace Domain.Tests
             _userRepositoryMock = new Mock<IUserRepository>();
 
             var options = new DbContextOptionsBuilder<AppDBContext>()
-                .UseSqlServer("Data Source=(local);Initial Catalog=LMSFSoftDB;User ID=sa;Password=123;Connect Timeout=30;Encrypt")
-                .Options;
-            _dbContext = new AppDBContext(options);
+                .UseSqlServer("Data Source=(local);Initial Catalog=LMSFSoftDB;User ID=sa;Password=123;TrustServerCertificate=True");
+            _dbContext = new AppDBContext(options.Options);
 
             _currentTimeMock.Setup(x => x.CurrentTime()).Returns(DateTime.UtcNow);
             _claimServiceMock.Setup(x => x.GetCurrentUserId).Returns(Guid.Empty);
+        }
+        public void Dispose()
+        {
+            _dbContext.Dispose();
         }
     }
 }
