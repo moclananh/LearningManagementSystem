@@ -1,6 +1,9 @@
-﻿using Applications.Interfaces;
+﻿using Application.ViewModels.UnitViewModels;
+using Applications.Commons;
+using Applications.Interfaces;
 using Applications.Services;
 using Applications.ViewModels.Response;
+using Applications.ViewModels.SyllabusViewModels;
 using Applications.ViewModels.UserViewModels;
 using Domain.Enum;
 using Domain.Enum.RoleEnum;
@@ -87,5 +90,11 @@ public class UserController : Controller
         return Ok(message);
     }
     */
+
+    [HttpGet("GetUsersByClassId/{ClassId}")]
+    public async Task<Pagination<UserViewModel>> GetUnitByModuleIdAsync(Guid ClassId, int pageIndex = 0, int pageSize = 10)
+    {
+        return await _userService.GetUserByClassId(ClassId, pageIndex, pageSize);
+    }
 }
 

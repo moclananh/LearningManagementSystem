@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Http;
 using OfficeOpenXml;
 using Domain.Enum.StatusEnum;
 using Domain.Enum.RoleEnum;
+using Applications.ViewModels.SyllabusViewModels;
+using Applications.Commons;
 
 namespace Applications.Services;
 
@@ -26,6 +28,12 @@ public class UserService : IUserService
 
     // Get All Users 
     public async Task<List<UserViewModel>> GetAllUsers() => _mapper.Map<List<UserViewModel>>(await _unitOfWork.UserRepository.GetAllAsync());
+
+    public async Task<Pagination<UserViewModel>> GetUserByClassId(Guid ClassId, int pageIndex = 0, int pageSize = 10)
+    {
+        var Users = await _unitOfWork.UserRepository.GetUserByClassId(ClassId, pageIndex, pageSize);
+        return _mapper.Map<Pagination<UserViewModel>>(Users); ;
+    }
 
 
     //Get User By ID
