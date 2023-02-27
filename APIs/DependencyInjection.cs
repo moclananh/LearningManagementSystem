@@ -13,6 +13,8 @@ using APIs.Validations.SyllabusValidations;
 using Applications.ViewModels.SyllabusViewModels;
 using APIs.Validations.LectureValidations;
 using Applications.ViewModels.LectureViewModels;
+using Applications.ViewModels.AssignmentViewModels;
+using APIs.Validations.AssignmentValidations;
 
 namespace APIs;
 
@@ -36,6 +38,8 @@ public static class DependencyInjection
         services.AddScoped<IValidator<CreateSyllabusViewModel>, CreateSyllabusValidation>();
         services.AddScoped<IValidator<CreateLectureViewModel>, CreateLectureValidation>();
         services.AddScoped<IValidator<UpdateLectureViewModel>, UpdateLectureValidation>();
+        services.AddScoped<IValidator<CreateAssignmentViewModel>, CreateAssignmentValidation>();
+        services.AddScoped<IValidator<UpdateAssignmentViewModel>, UpdateAssignmentValidation>();
         //---------------------------------------------------------------------------------------
         services.AddAuthentication(option =>
         {
