@@ -1,4 +1,5 @@
-﻿using Applications.Interfaces;
+﻿using Applications.Commons;
+using Applications.Interfaces;
 using Applications.ViewModels.OutputStandardViewModels;
 using Applications.ViewModels.SyllabusOutputStandardViewModels;
 using AutoMapper;
@@ -22,14 +23,12 @@ namespace Applications.Services
             var result = _mapper.Map<List<OutputStandardViewModel>>(outputStandard);
             return result;
         }
-
         public async Task<OutputStandardViewModel> GetOutputStandardByOutputStandardIdAsync(Guid OutputStandardId)
         {
             var outputStandard = await _unitOfWork.OutputStandardRepository.GetByIdAsync(OutputStandardId);
             var result = _mapper.Map<OutputStandardViewModel>(outputStandard);
             return result;
         }
-
         public async Task<CreateOutputStandardViewModel> CreateOutputStandardAsync(CreateOutputStandardViewModel OutputStandardDTO)
         {
             var outputStandardOjb = _mapper.Map<OutputStandard>(OutputStandardDTO);
@@ -41,7 +40,6 @@ namespace Applications.Services
             }
             return null;
         }
-
         public async Task<UpdateOutputStandardViewModel> UpdatOutputStandardAsync(Guid OutputStandardId, UpdateOutputStandardViewModel OutputStandardDTO)
         {
             var outputStandardOjb = await _unitOfWork.OutputStandardRepository.GetByIdAsync(OutputStandardId);
@@ -77,7 +75,6 @@ namespace Applications.Services
             }
             return null;
         }
-
         public async Task<CreateSyllabusOutputStandardViewModel> RemoveOutputStandardToSyllabus(Guid SyllabusId, Guid OutputStandardId)
         {
             var classTrainingProgram = await _unitOfWork.SyllabusOutputStandardRepository.GetSyllabusOutputStandard(SyllabusId, OutputStandardId);
@@ -92,6 +89,11 @@ namespace Applications.Services
             }
             return null;
         }
-
+        public async Task<Pagination<OutputStandardViewModel>> GetOutputStandardBySyllabusIdAsync(Guid SyllabusId, int pageIndex, int pageSize)
+        {
+            var outputStandardOjb = await _unitOfWork.OutputStandardRepository.GetOutputStandardBySyllabusIdAsync(SyllabusId, pageIndex, pageSize);
+            var result = _mapper.Map<Pagination<OutputStandardViewModel>>(outputStandardOjb);
+            return result;
+        }
     }
 }

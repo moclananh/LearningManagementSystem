@@ -1,6 +1,7 @@
 ﻿using Applications.ViewModels.OutputStandardViewModels;
 using Applications.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Applications.Commons;
 
 namespace APIs.Controllers
 {
@@ -13,7 +14,6 @@ namespace APIs.Controllers
         {
             _outputStandardServices = outputStandardServices;
         }
-
         [HttpGet("GetAllOutputStandard")]
         public async Task<List<OutputStandardViewModel>> ViewAllOutputStandardAsync() => await _outputStandardServices.ViewAllOutputStandardAsync();
 
@@ -25,7 +25,8 @@ namespace APIs.Controllers
 
         [HttpPut("UpdateOutputStandard/{OutputStandardId}")]
         public async Task<UpdateOutputStandardViewModel> UpdateOutputStandard(Guid OutputStandardId, UpdateOutputStandardViewModel outputStandardModel) => await _outputStandardServices.UpdatOutputStandardAsync(OutputStandardId, outputStandardModel);
-
+        [HttpGet("GetOutputStandardBySyllabusId/{SyllabusId}")]
+        public async Task<Pagination<OutputStandardViewModel>> GetOutputStandardBySyllabusId(Guid SyllabusId, int pageIndex = 0, int pageSize = 10) => await _outputStandardServices.GetOutputStandardBySyllabusIdAsync(SyllabusId, pageIndex, pageSize);
         [HttpPost("OutputStandard/AddOutputStandard/{SyllabusId}/{OutputStandardId}")]
         public async Task<IActionResult> AddOutputStandard(Guid SyllabusId, Guid OutputStandardId)
         {

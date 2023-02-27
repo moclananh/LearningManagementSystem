@@ -38,5 +38,26 @@ namespace Infrastructures.Repositories
             };
             return result;
         }
+        public async Task<Pagination<Practice>> GetPracticeByName(string Name, int pageNumber = 0, int pageSize = 10)
+        {
+
+            var itemCount = await _context.Practices.CountAsync();
+            var items = await _context.Practices.Where(x => x.PracticeName.Contains(Name))
+                                    .OrderByDescending(x => x.CreationDate)
+                                    .Skip(pageNumber * pageSize)
+                                    .Take(pageSize)
+                                    .AsNoTracking()
+                                    .ToListAsync();
+
+            var result = new Pagination<Practice>()
+            {
+                PageIndex = pageNumber,
+                PageSize = pageSize,
+                TotalItemsCount = itemCount,
+                Items = items,
+            };
+
+            return result;
+        }
     }
 }
