@@ -1,11 +1,11 @@
 ﻿using Applications.ViewModels.AuditPlanViewModel;
 using FluentValidation;
 
-namespace APIs.Validations
+namespace APIs.Validations.AuditPlanValidations
 {
-    public class UpdateAuditPlanValidation : AbstractValidator<UpdateAuditPlanViewModel>
+    public class AuditPlanValidation : AbstractValidator<AuditPlanViewModel>
     {
-        public UpdateAuditPlanValidation()
+        public AuditPlanValidation()
         {
             RuleFor(x => x.AuditPlanName).NotEmpty().MaximumLength(100);
             RuleFor(x => x.AuditDate).NotEmpty();

@@ -1,7 +1,7 @@
 ﻿using Applications.ViewModels.ModuleViewModels;
 using FluentValidation;
 
-namespace APIs.Validations
+namespace APIs.Validations.ModuleValidations
 {
     public class ModuleValidation : AbstractValidator<ModuleViewModels>
     {

@@ -1,5 +1,4 @@
-﻿using APIs.Validations;
-using Applications.ViewModels.ClassViewModels;
+﻿using Applications.ViewModels.ClassViewModels;
 using FluentValidation;
 using APIs.Services;
 using Applications.Interfaces;
@@ -13,6 +12,12 @@ using APIs.Validations.SyllabusValidations;
 using Applications.ViewModels.SyllabusViewModels;
 using APIs.Validations.LectureValidations;
 using Applications.ViewModels.LectureViewModels;
+using APIs.Validations.AuditPlanValidations;
+using APIs.Validations.ModuleValidations;
+using Application.ViewModels.QuizzViewModels;
+using APIs.Validations.QuizzValidations;
+using Application.ViewModels.UnitViewModels;
+using APIs.Validations.UnitValidations;
 using Applications.ViewModels.AssignmentViewModels;
 using APIs.Validations.AssignmentValidations;
 
@@ -38,6 +43,9 @@ public static class DependencyInjection
         services.AddScoped<IValidator<CreateSyllabusViewModel>, CreateSyllabusValidation>();
         services.AddScoped<IValidator<CreateLectureViewModel>, CreateLectureValidation>();
         services.AddScoped<IValidator<UpdateLectureViewModel>, UpdateLectureValidation>();
+        services.AddScoped<IValidator<CreateQuizzViewModel>, CreateQuizzValidation>();
+        services.AddScoped<IValidator<UpdateQuizzViewModel>, UpdateQuizzValidation>();
+        services.AddScoped<IValidator<CreateUnitViewModel>, UnitValidation>();
         services.AddScoped<IValidator<CreateAssignmentViewModel>, CreateAssignmentValidation>();
         services.AddScoped<IValidator<UpdateAssignmentViewModel>, UpdateAssignmentValidation>();
         //---------------------------------------------------------------------------------------
