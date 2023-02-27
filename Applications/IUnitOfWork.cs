@@ -24,6 +24,7 @@ namespace Applications
         public IPracticeRepository PracticeRepository { get; }
         public IAuditResultRepository AuditResultRepository { get; }
         public IPracticeQuestionRepository PracticeQuestionRepository { get; }
+        public ITrainingProgramSyllabiRepository TrainingProgramSyllabiRepository { get; }
         public ISyllabusOutputStandardRepository SyllabusOutputStandardRepository { get; }
         public IModuleUnitRepository ModuleUnitRepository { get; }
         public IUserAuditPlanRepository UserAuditPlanRepository { get; }

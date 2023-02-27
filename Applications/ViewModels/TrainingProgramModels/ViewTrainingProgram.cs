@@ -1,11 +1,4 @@
-﻿using Domain.EntityRelationship;
-using Domain.Enum;
-using Domain.Enum.StatusEnum;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Domain.Enum.StatusEnum;
 
 namespace Application.ViewModels.TrainingProgramModels
 {
@@ -14,6 +7,5 @@ namespace Application.ViewModels.TrainingProgramModels
         public string TrainingProgramName { get; set; }
         public string Duration { get; set; }
         public Status Status { get; set; }
-
     }
 }

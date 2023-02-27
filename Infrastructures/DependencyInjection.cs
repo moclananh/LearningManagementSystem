@@ -59,6 +59,7 @@ namespace Infrastructures
             services.AddScoped<IAuditResultServices, AuditResultServices>();
             services.AddScoped<IPracticeQuestionRepository, PracticeQuestionRepository>();
             services.AddScoped<IPracticeQuestionService, PracticeQuestionService>();
+            services.AddScoped<ITrainingProgramSyllabiRepository, TrainingProgramSyllabiRepository>();
             services.AddScoped<IModuleUnitRepository, ModuleUnitRepository>();
             services.AddScoped<IUserAuditPlanRepository, UserAuditPlanRepository>();
             return services;

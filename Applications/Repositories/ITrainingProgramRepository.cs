@@ -1,11 +1,12 @@
-﻿using Domain.Entities;
+﻿using Applications.Commons;
+using Domain.Entities;
 
 namespace Applications.Repositories
 {
-    public interface ITrainingProgramRepository:IGenericRepository<TrainingProgram>
+    public interface ITrainingProgramRepository : IGenericRepository<TrainingProgram>
     {
-        Task<List<TrainingProgram>> GetTrainingProgramByClassId(Guid ClassId);
-        Task<List<TrainingProgram>> GetTrainingProgramEnable();
-        Task<List<TrainingProgram>> GetTrainingProgramDisable();
+        Task<Pagination<TrainingProgram>> GetTrainingProgramByClassId(Guid ClassId, int pageNumber = 0, int pageSize = 10);
+        Task<Pagination<TrainingProgram>> GetTrainingProgramEnable(int pageNumber = 0, int pageSize = 10);
+        Task<Pagination<TrainingProgram>> GetTrainingProgramDisable(int pageNumber = 0, int pageSize = 10);
     }
 }

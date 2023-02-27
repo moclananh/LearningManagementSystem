@@ -19,6 +19,7 @@ using Applications.ViewModels.ClassTrainingProgramViewModels;
 using Applications.ViewModels.AuditResultViewModels;
 using Applications.ViewModels.PracticeViewModels;
 using Applications.ViewModels.PracticeQuestionViewModels;
+using Applications.ViewModels.TrainingProgramSyllabi;
 using Applications.ViewModels.SyllabusOutputStandardViewModels;
 
 using Applications.ViewModels.UnitModuleViewModel;
@@ -69,6 +70,7 @@ namespace Infrastructures.Mappers
             CreateMap<PracticeViewModel, Practice>().ReverseMap();
             CreateMap<AuditResultViewModel, AuditResult>().ReverseMap();
             CreateMap<PracticeQuestionViewModel, PracticeQuestion>().ReverseMap();
+            CreateMap<CreateTrainingProgramSyllabi,TrainingProgramSyllabus>().ReverseMap();
             CreateMap<ModuleUnitViewModel, ModuleUnit>().ReverseMap();
             CreateMap<CreateUserAuditPlanViewModel, UserAuditPlan>().ReverseMap();
 
