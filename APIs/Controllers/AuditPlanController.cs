@@ -80,5 +80,26 @@ namespace APIs.Controllers
             }
             return Ok("Update AuditPlan Success");
         }
+        [HttpPost("AuditPlan/AddUser/{AuditPlanId}/{UserId}")]
+        public async Task<IActionResult> AddUser(Guid AuditPlanId, Guid UserId)
+        {
+            if (ModelState.IsValid)
+            {
+                await _auditPlanService.AddUserToAuditPlan(AuditPlanId, UserId);
+                return Ok("Add Success");
+            }
+            return BadRequest("Add User Fail");
+        }
+
+        [HttpDelete("AuditPlan/DeleteUser/{AuditPlanId}/{UserId}")]
+        public async Task<IActionResult> DeleteUser(Guid AuditPlanId, Guid UserId)
+        {
+            if (ModelState.IsValid)
+            {
+                await _auditPlanService.RemoveUserToAuditPlan(AuditPlanId, UserId);
+                return Ok("Remove Success");
+            }
+            return BadRequest("Remove User Fail");
+        }
     }
 }

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructures.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20230225172438_NewMigration")]
+    [Migration("20230227014552_NewMigration")]
     partial class NewMigration
     {
         /// <inheritdoc />
@@ -1259,6 +1259,8 @@ namespace Infrastructures.Migrations
 
                     b.HasKey("UserId", "AuditPlanId");
 
+                    b.HasIndex("AuditPlanId");
+
                     b.ToTable("UserAuditPlan");
                 });
 
@@ -1536,7 +1538,7 @@ namespace Infrastructures.Migrations
                 {
                     b.HasOne("Domain.Entities.AuditPlan", "AuditPlan")
                         .WithMany("UserAuditPlans")
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("AuditPlanId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

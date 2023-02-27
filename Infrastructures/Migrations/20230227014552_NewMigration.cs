@@ -659,8 +659,8 @@ namespace Infrastructures.Migrations
                 {
                     table.PrimaryKey("PK_UserAuditPlan", x => new { x.UserId, x.AuditPlanId });
                     table.ForeignKey(
-                        name: "FK_UserAuditPlan_AuditPlans_UserId",
-                        column: x => x.UserId,
+                        name: "FK_UserAuditPlan_AuditPlans_AuditPlanId",
+                        column: x => x.AuditPlanId,
                         principalTable: "AuditPlans",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -861,6 +861,11 @@ namespace Infrastructures.Migrations
                 name: "IX_TrainingProgramSyllabi_TrainingProgramId",
                 table: "TrainingProgramSyllabi",
                 column: "TrainingProgramId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserAuditPlan_AuditPlanId",
+                table: "UserAuditPlan",
+                column: "AuditPlanId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Users_Email",

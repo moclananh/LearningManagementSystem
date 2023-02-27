@@ -20,7 +20,7 @@ namespace Infrastructures.FluentAPIs
 
             builder.HasOne<AuditPlan>(u => u.AuditPlan)
                 .WithMany(cu => cu.UserAuditPlans)
-                .HasForeignKey(fk => fk.UserId);
+                .HasForeignKey(fk => fk.AuditPlanId);
 
         }
     }

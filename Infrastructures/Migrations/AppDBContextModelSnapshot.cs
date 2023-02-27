@@ -1256,6 +1256,8 @@ namespace Infrastructures.Migrations
 
                     b.HasKey("UserId", "AuditPlanId");
 
+                    b.HasIndex("AuditPlanId");
+
                     b.ToTable("UserAuditPlan");
                 });
 
@@ -1533,7 +1535,7 @@ namespace Infrastructures.Migrations
                 {
                     b.HasOne("Domain.Entities.AuditPlan", "AuditPlan")
                         .WithMany("UserAuditPlans")
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("AuditPlanId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

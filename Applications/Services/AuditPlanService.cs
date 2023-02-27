@@ -1,6 +1,7 @@
 ﻿using Applications.Commons;
 using Applications.Interfaces;
 using Applications.ViewModels.AuditPlanViewModel;
+using Applications.ViewModels.UserAuditPlanViewModels;
 using AutoMapper;
 using Domain.Entities;
 using Domain.EntityRelationship;
@@ -89,6 +90,40 @@ namespace Applications.Services
                 if (isSuccess)
                 {
                     return _mapper.Map<UpdateAuditPlanViewModel>(auditplanObj);
+                }
+            }
+            return null;
+        }
+        public async Task<CreateUserAuditPlanViewModel> AddUserToAuditPlan(Guid AuditPlanId, Guid UserId)
+        {
+            var auditOjb = await _unitOfWork.AuditPlanRepository.GetByIdAsync(AuditPlanId);
+            var user = await _unitOfWork.UserRepository.GetByIdAsync(UserId);
+            if (auditOjb != null && user != null)
+            {
+                var userAuditPlan = new UserAuditPlan()
+                {
+                    AuditPlan = auditOjb,
+                    User = user
+                };
+                await _unitOfWork.UserAuditPlanRepository.AddAsync(userAuditPlan);
+                var isSuccess = await _unitOfWork.SaveChangeAsync() > 0;
+                if (isSuccess)
+                {
+                    return _mapper.Map<CreateUserAuditPlanViewModel>(userAuditPlan);
+                }
+            }
+            return null;
+        }
+        public async Task<CreateUserAuditPlanViewModel> RemoveUserToAuditPlan(Guid AuditPlanId, Guid UserId)
+        {
+            var user = await _unitOfWork.UserAuditPlanRepository.GetUserAuditPlan(AuditPlanId, UserId);
+            if (user != null)
+            {
+                _unitOfWork.UserAuditPlanRepository.SoftRemove(user);
+                var isSucces = await _unitOfWork.SaveChangeAsync() > 0;
+                if (isSucces)
+                {
+                    return _mapper.Map<CreateUserAuditPlanViewModel>(user);
                 }
             }
             return null;

@@ -17,6 +17,7 @@ using Applications.ViewModels.AssignmentQuestionViewModels;
 using Applications.Commons;
 using Applications.ViewModels.ClassTrainingProgramViewModels;
 using Applications.ViewModels.PracticeQuestionViewModels;
+using Applications.ViewModels.UserAuditPlanViewModels;
 
 namespace Infrastructures.Mappers
 {
@@ -59,6 +60,7 @@ namespace Infrastructures.Mappers
             CreateMap<AssignmentQuestionViewModel, AssignmentQuestion>().ReverseMap();
             CreateMap<CreateClassTrainingProgramViewModel, ClassTrainingProgram>().ReverseMap();
             CreateMap<PracticeQuestionViewModel, PracticeQuestion>().ReverseMap();
+            CreateMap<CreateUserAuditPlanViewModel, UserAuditPlan>().ReverseMap();
             /* pagination */
             CreateMap(typeof(Pagination<>), typeof(Pagination<>));
         }

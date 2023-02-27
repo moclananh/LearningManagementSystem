@@ -54,6 +54,7 @@ namespace Infrastructures
             services.AddScoped<IClassTrainingProgramRepository, ClassTrainingProgramRepository>();
             services.AddScoped<IPracticeQuestionRepository, PracticeQuestionRepository>();
             services.AddScoped<IPracticeQuestionService, PracticeQuestionService>();
+            services.AddScoped<IUserAuditPlanRepository, UserAuditPlanRepository>();
             return services;
         }
     }
