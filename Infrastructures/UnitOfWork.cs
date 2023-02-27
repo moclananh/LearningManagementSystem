@@ -26,6 +26,7 @@ namespace Infrastructures
         private readonly IPracticeRepository _practiceRepository;
         private readonly IAuditResultRepository _auditResultRepository;
         private readonly IPracticeQuestionRepository _practicequestionRepository;
+        private readonly ISyllabusOutputStandardRepository _syllabusOutputStandardRepository;
         private readonly IModuleUnitRepository _moduleUnitRepository;
         private readonly IUserAuditPlanRepository _userAuditPlanRepository;
 
@@ -44,9 +45,10 @@ namespace Infrastructures
             ISyllabusRepository syllabusRepository,
             IAssignmentQuestionRepository assignmentQuestionRepository,
             IClassTrainingProgramRepository classTrainingProgramRepository,
+            IPracticeQuestionRepository practicequestionRepository,
+            ISyllabusOutputStandardRepository syllabusOutputStandardRepository,
             IPracticeRepository practiceRepository,
             IAuditResultRepository auditResultRepository,
-            IPracticeQuestionRepository practicequestionRepository,
             IModuleUnitRepository moduleUnitRepository,
             IUserAuditPlanRepository userAuditPlanRepository)
 
@@ -69,6 +71,7 @@ namespace Infrastructures
             _practiceRepository = practiceRepository;
             _auditResultRepository = auditResultRepository;
             _practicequestionRepository = practicequestionRepository;
+            _syllabusOutputStandardRepository = syllabusOutputStandardRepository;
             _moduleUnitRepository = moduleUnitRepository;
             _userAuditPlanRepository = userAuditPlanRepository;
         }
@@ -89,6 +92,7 @@ namespace Infrastructures
         public IAssignmentQuestionRepository AssignmentQuestionRepository => _assignmentquestionRepository;
         public IClassTrainingProgramRepository ClassTrainingProgramRepository => _classTrainingProgramRepository;
         public IPracticeQuestionRepository PracticeQuestionRepository => _practicequestionRepository;
+        public ISyllabusOutputStandardRepository SyllabusOutputStandardRepository => _syllabusOutputStandardRepository;
         public IModuleUnitRepository ModuleUnitRepository => _moduleUnitRepository;
         public IUserAuditPlanRepository UserAuditPlanRepository => _userAuditPlanRepository;
         public async Task<int> SaveChangeAsync() => await _appDBContext.SaveChangesAsync();

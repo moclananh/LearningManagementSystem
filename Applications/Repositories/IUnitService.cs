@@ -1,7 +1,7 @@
 ﻿using Application.ViewModels.UnitViewModels;
 using Applications.Commons;
 
-namespace Applications.Interfaces
+namespace Applications.Repositories
 {
     public interface IUnitServices
     {

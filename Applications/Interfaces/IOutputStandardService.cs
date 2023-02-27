@@ -1,4 +1,5 @@
 ﻿using Applications.ViewModels.OutputStandardViewModels;
+using Applications.ViewModels.SyllabusOutputStandardViewModels;
 
 namespace Applications.Interfaces
 {
@@ -8,5 +9,7 @@ namespace Applications.Interfaces
         public Task<OutputStandardViewModel> GetOutputStandardByOutputStandardIdAsync(Guid OutputStandardId);
         public Task<CreateOutputStandardViewModel> CreateOutputStandardAsync(CreateOutputStandardViewModel OutputStandardDTO);
         public Task<UpdateOutputStandardViewModel> UpdatOutputStandardAsync(Guid OutputStandardId, UpdateOutputStandardViewModel OutputStandardDTO);
+        public Task<CreateSyllabusOutputStandardViewModel> AddOutputStandardToSyllabus(Guid SyllabusId, Guid OutputStandardId);
+        public Task<CreateSyllabusOutputStandardViewModel> RemoveOutputStandardToSyllabus(Guid SyllabusId, Guid OutputStandardId);
     }
 }

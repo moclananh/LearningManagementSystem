@@ -26,5 +26,26 @@ namespace APIs.Controllers
         [HttpPut("UpdateOutputStandard/{OutputStandardId}")]
         public async Task<UpdateOutputStandardViewModel> UpdateOutputStandard(Guid OutputStandardId, UpdateOutputStandardViewModel outputStandardModel) => await _outputStandardServices.UpdatOutputStandardAsync(OutputStandardId, outputStandardModel);
 
+        [HttpPost("OutputStandard/AddOutputStandard/{SyllabusId}/{OutputStandardId}")]
+        public async Task<IActionResult> AddOutputStandard(Guid SyllabusId, Guid OutputStandardId)
+        {
+            if (ModelState.IsValid)
+            {
+                await _outputStandardServices.AddOutputStandardToSyllabus(SyllabusId, OutputStandardId);
+                return Ok("Add Success");
+            }
+            return BadRequest("Add OutputStandard Fail");
+        }
+
+        [HttpDelete("OutputStandard/DeleteOutputStandard/{SyllabusId}/{OutputStandardId}")]
+        public async Task<IActionResult> DeleteOutputStandard(Guid SyllabusId, Guid OutputStandardId)
+        {
+            if (ModelState.IsValid)
+            {
+                await _outputStandardServices.RemoveOutputStandardToSyllabus(SyllabusId, OutputStandardId);
+                return Ok("Remove Success");
+            }
+            return BadRequest("Remove OutputStandard Fail");
+        }
     }
 }
