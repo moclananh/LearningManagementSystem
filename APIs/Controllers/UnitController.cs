@@ -1,4 +1,5 @@
 ﻿using Application.ViewModels.UnitViewModels;
+using Applications.Commons;
 using Applications.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,8 +15,8 @@ namespace API.Controllers
             _unitServices = unitServices;
         }
 
-        [HttpGet("GetAll")]
-        public async Task<List<UnitViewModel>> ViewAllUnitAsync() => await _unitServices.ViewAllUnitAsync();
+        [HttpGet("GetAllUnit")]
+        public async Task<Pagination<UnitViewModel>> GetUnitsPagingsion(int pageIndex = 0, int pageSize = 10) => await _unitServices.GetAllUnits(pageIndex, pageSize);
 
         [HttpPost("CreateUnit")]
         public async Task<CreateUnitViewModel> CreateUnit(CreateUnitViewModel UnitModel) => await _unitServices.CreateUnitAsync(UnitModel); 
@@ -27,15 +28,19 @@ namespace API.Controllers
         public async Task<CreateUnitViewModel> UpdateUnit(Guid UnitId, CreateUnitViewModel UnitModel) => await _unitServices.UpdateUnitAsync(UnitId, UnitModel);
 
         [HttpGet("GetEnableUnits")]
-        public async Task<List<UnitViewModel>> GetEnableUnits() => await _unitServices.ViewEnableUnitsAsync();
-
+        public async Task<Pagination<UnitViewModel>> GetEnableUnits(int pageIndex = 0, int pageSize = 10) => await _unitServices.ViewEnableUnitsAsync(pageIndex, pageSize);
         [HttpGet("GetDisableUnits")]
-        public async Task<List<UnitViewModel>> GetDiableClasses() => await _unitServices.ViewDisableUnitsAsync();
+        public async Task<Pagination<UnitViewModel>> GetDiableClasses(int pageIndex = 0, int pageSize = 10) => await _unitServices.ViewDisableUnitsAsync(pageIndex, pageSize);
                
         [HttpGet("GetUnitsByModuleId/{ModuleId}")]
-        public async Task<List<CreateUnitViewModel>> GetUnitByModuleIdAsync(Guid ModuleId)
+        public async Task<Pagination<CreateUnitViewModel>> GetUnitByModuleIdAsync(Guid ModuleId, int pageIndex = 0, int pageSize = 10)
         {
-            return await _unitServices.GetUnitByModuleIdAsync(ModuleId);
+            return await _unitServices.GetUnitByModuleIdAsync(ModuleId, pageIndex, pageSize);
+        }
+        [HttpGet("GetUnitsByName/{UnitName}")]
+        public async Task<Pagination<UnitViewModel>> GetUnitByNameAsync(string UnitName, int pageIndex = 0, int pageSize = 10)
+        {
+            return await _unitServices.GetUnitByNameAsync(UnitName, pageIndex, pageSize);
         }
     }
 }
