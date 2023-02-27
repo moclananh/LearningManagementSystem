@@ -9,6 +9,7 @@ namespace Applications.ViewModels.AuditPlanViewModel
 {
     public class UpdateAuditPlanViewModel
     {
+        public Guid Id { get; set; }
         public string AuditPlanName { get; set; }
         public string Description { get; set; }
         public DateTime AuditDate { get; set; }
