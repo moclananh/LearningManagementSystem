@@ -51,5 +51,17 @@ namespace Applications.Services
             var result = _mapper.Map<Pagination<PracticeViewModel>>(practiceOjb);
             return result;
         }
+        public async Task<Pagination<PracticeViewModel>> GetDisablePractice(int pageIndex = 0, int pageSize = 10)
+        {
+            var practices = await _unitOfWork.PracticeRepository.GetDisablePractices();
+            var result = _mapper.Map<Pagination<PracticeViewModel>>(practices);
+            return result;
+        }
+        public async Task<Pagination<PracticeViewModel>> GetEnablePractice(int pageIndex = 0, int pageSize = 10)
+        {
+            var practices = await _unitOfWork.PracticeRepository.GetEnablePractices();
+            var result = _mapper.Map<Pagination<PracticeViewModel>>(practices);
+            return result;
+        }
     }
 }
