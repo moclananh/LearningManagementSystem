@@ -16,7 +16,12 @@ using Applications.ViewModels.SyllabusViewModels;
 using Applications.ViewModels.AssignmentQuestionViewModels;
 using Applications.Commons;
 using Applications.ViewModels.ClassTrainingProgramViewModels;
+using Applications.ViewModels.AuditResultViewModels;
+using Applications.ViewModels.PracticeViewModels;
 using Applications.ViewModels.PracticeQuestionViewModels;
+
+using Applications.ViewModels.UnitModuleViewModel;
+
 using Applications.ViewModels.UserAuditPlanViewModels;
 
 namespace Infrastructures.Mappers
@@ -59,8 +64,13 @@ namespace Infrastructures.Mappers
             CreateMap<CreateUnitViewModel, Unit>().ReverseMap();
             CreateMap<AssignmentQuestionViewModel, AssignmentQuestion>().ReverseMap();
             CreateMap<CreateClassTrainingProgramViewModel, ClassTrainingProgram>().ReverseMap();
+            CreateMap<PracticeViewModel, Practice>().ReverseMap();
+            CreateMap<AuditResultViewModel, AuditResult>().ReverseMap();
+            CreateMap<UpdateAuditResultViewModel, AuditResult>().ReverseMap();
             CreateMap<PracticeQuestionViewModel, PracticeQuestion>().ReverseMap();
+            CreateMap<ModuleUnitViewModel, ModuleUnit>().ReverseMap();
             CreateMap<CreateUserAuditPlanViewModel, UserAuditPlan>().ReverseMap();
+
             /* pagination */
             CreateMap(typeof(Pagination<>), typeof(Pagination<>));
         }

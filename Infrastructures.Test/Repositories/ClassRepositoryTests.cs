@@ -1,5 +1,4 @@
-﻿using Applications.Commons;
-using Applications.Repositories;
+﻿using Applications.Repositories;
 using AutoFixture;
 using Domain.Entities;
 using Domain.Tests;

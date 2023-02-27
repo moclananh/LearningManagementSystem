@@ -21,8 +21,6 @@ namespace Infrastructure.Repositories
         {
             _dbContext = dbContext;
         }
-
         public async Task UploadClassUserListAsync(List<ClassUser> classUser) => await _dbContext.AddRangeAsync(classUser);
-        
     }
 }

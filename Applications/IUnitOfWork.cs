@@ -1,4 +1,5 @@
 ﻿using Application.Repositories;
+using Applications.Interfaces;
 using Applications.IRepositories;
 using Applications.Repositories;
 
@@ -20,7 +21,10 @@ namespace Applications
         public ISyllabusRepository SyllabusRepository { get; }
         public IAssignmentQuestionRepository AssignmentQuestionRepository { get; }
         public IClassTrainingProgramRepository ClassTrainingProgramRepository { get; }
+        public IPracticeRepository PracticeRepository { get; }
+        public IAuditResultRepository AuditResultRepository { get; }
         public IPracticeQuestionRepository PracticeQuestionRepository { get; }
+        public IModuleUnitRepository ModuleUnitRepository { get; }
         public IUserAuditPlanRepository UserAuditPlanRepository { get; }
         public Task<int> SaveChangeAsync();
     }

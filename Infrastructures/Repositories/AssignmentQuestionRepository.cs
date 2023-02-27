@@ -36,6 +36,11 @@ namespace Infrastructures.Repositories
             return result;
         }
 
+        public async Task<List<AssignmentQuestion>> GetAllAssignmentQuestionByAssignmentId(Guid AssignmentId)
+        {
+            return await _dbContext.AssignmentQuestions.Where(x => x.AssignmentId == AssignmentId).ToListAsync();
+        }
+
         public async Task UploadAssignmentListAsync(List<AssignmentQuestion> assignmentQuestionList)
         {
             await _dbContext.AddRangeAsync(assignmentQuestionList);

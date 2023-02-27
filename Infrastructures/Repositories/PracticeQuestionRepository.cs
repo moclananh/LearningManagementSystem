@@ -41,5 +41,10 @@ namespace Infrastructures.Repositories
         {
             await _dbContext.AddRangeAsync(practiceQuestionList);
         }
+
+        public async Task<List<PracticeQuestion>> GetAllPracticeQuestionByPracticeId(Guid PracticeId)
+        {
+            return await _dbContext.PracticesQuestions.Where(x => x.PracticeId == PracticeId).ToListAsync();
+        }
     }
 }

@@ -80,6 +80,7 @@ namespace APIs.Controllers
             }
             return Ok("Update AuditPlan Success");
         }
+
         [HttpPost("AuditPlan/AddUser/{AuditPlanId}/{UserId}")]
         public async Task<IActionResult> AddUser(Guid AuditPlanId, Guid UserId)
         {

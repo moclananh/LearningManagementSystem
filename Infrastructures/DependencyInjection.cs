@@ -52,8 +52,13 @@ namespace Infrastructures
             services.AddScoped<IAssignmentQuestionRepository, AssignmentQuestionRepository>();
             services.AddScoped<IAssignmentQuestionService, AssignmentQuestionService>();
             services.AddScoped<IClassTrainingProgramRepository, ClassTrainingProgramRepository>();
+            services.AddScoped<IPracticeRepository, PracticeRepository>();
+            services.AddScoped<IPracticeService, PracticeService>();
+            services.AddScoped<IAuditResultRepository, AuditResultRepository>();
+            services.AddScoped<IAuditResultServices, AuditResultServices>();
             services.AddScoped<IPracticeQuestionRepository, PracticeQuestionRepository>();
             services.AddScoped<IPracticeQuestionService, PracticeQuestionService>();
+            services.AddScoped<IModuleUnitRepository, ModuleUnitRepository>();
             services.AddScoped<IUserAuditPlanRepository, UserAuditPlanRepository>();
             return services;
         }

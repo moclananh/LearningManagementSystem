@@ -27,6 +27,13 @@ namespace Applications.Services
             return result;
         }
 
+        public async Task<List<AssignmentQuestionViewModel>> GetAssignmentQuestionByAssignmentId(Guid assignmentId)
+        {
+            var asmQObj = await _unitOfWork.AssignmentQuestionRepository.GetAllAssignmentQuestionByAssignmentId(assignmentId);
+            var result = _mapper.Map<List<AssignmentQuestionViewModel>>(asmQObj);
+            return result;
+        }
+
         public async Task<Response> UploadAssignmentQuestions(IFormFile formFile)
         {
             if (formFile == null || formFile.Length <= 0) return new Response(HttpStatusCode.Conflict, "File is empty");

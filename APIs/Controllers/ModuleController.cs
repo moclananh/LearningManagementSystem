@@ -1,5 +1,7 @@
 ﻿using Applications.Interfaces;
+using Applications.Services;
 using Applications.ViewModels.ModuleViewModels;
+using Domain.Entities;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
@@ -65,5 +67,16 @@ namespace APIs.Controllers
 
         [HttpGet("GetDisableModules")]
         public async Task<List<ModuleViewModels>> GetDisableModules() => await _moduleServices.GetDisableModules();
+
+        [HttpPost("AddModuleUnit/{moduleId}/{unitId}")]
+        public async Task<IActionResult> AddModuleUnit(Guid moduleId, Guid unitId)
+        {
+            if (ModelState.IsValid)
+            {
+                await _moduleServices.AddUnitToModule(moduleId, unitId);
+                return Ok("Add Success");
+            }
+            return BadRequest("Add Fail");
+        }
     }
 }

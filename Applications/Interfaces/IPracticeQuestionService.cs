@@ -9,5 +9,6 @@ namespace Applications.Interfaces
     {
         public Task<Pagination<PracticeQuestionViewModel>> GetPracticeQuestionByPracticeId(Guid PracticeId, int pageIndex = 0, int pageSize = 10);
         Task<Response> UploadPracticeQuestions(IFormFile formFile);
+        Task<List<PracticeQuestionViewModel>> PracticeQuestionByPracticeId(Guid practiceId);
     }
 }

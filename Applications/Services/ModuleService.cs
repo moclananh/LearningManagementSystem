@@ -1,7 +1,10 @@
 ﻿using Applications.Interfaces;
+using Applications.ViewModels.ClassTrainingProgramViewModels;
 using Applications.ViewModels.ModuleViewModels;
+using Applications.ViewModels.UnitModuleViewModel;
 using AutoMapper;
 using Domain.Entities;
+using Domain.EntityRelationship;
 
 namespace Applications.Services
 {
@@ -85,5 +88,28 @@ namespace Applications.Services
             }
             return null;
         }
+
+        public async Task<ModuleUnitViewModel> AddUnitToModule(Guid ModuleId, Guid UnitId)
+        {
+            var moduleOjb = await _unitOfWork.ModuleRepository.GetByIdAsync(ModuleId);
+            var unitObj = await _unitOfWork.UnitRepository.GetByIdAsync(UnitId);
+            if (moduleOjb != null && unitObj != null)
+            {
+                var moduleUnit = new ModuleUnit()
+                {
+                    Module = moduleOjb,
+                    Unit = unitObj
+                };
+                await _unitOfWork.ModuleUnitRepository.AddAsync(moduleUnit );
+                var isSuccess = await _unitOfWork.SaveChangeAsync() > 0;
+                if (isSuccess)
+                {
+                    return _mapper.Map<ModuleUnitViewModel>(moduleUnit);
+                }
+            }
+            return null;
+        }
+
+
     }
 }

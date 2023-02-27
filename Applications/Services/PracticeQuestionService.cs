@@ -63,5 +63,12 @@ namespace Applications.Services
             return new Response(HttpStatusCode.OK, "OK");
         }
 
+        public async Task<List<PracticeQuestionViewModel>> PracticeQuestionByPracticeId(Guid practiceId)
+        {
+            var praQObj = await _unitOfWork.PracticeQuestionRepository.GetAllPracticeQuestionByPracticeId(practiceId);
+            var result = _mapper.Map<List<PracticeQuestionViewModel>>(praQObj);
+            return result;
+        }
+
     }
 }

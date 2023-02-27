@@ -1,4 +1,5 @@
 ﻿using Applications.ViewModels.ModuleViewModels;
+using Applications.ViewModels.UnitModuleViewModel;
 
 namespace Applications.Interfaces
 {
@@ -12,5 +13,7 @@ namespace Applications.Interfaces
         public Task<List<ModuleViewModels>> GetModulesByName(string name);
         public Task<ModuleViewModels?> CreateModule(ModuleViewModels moduleDTO);
         public Task<ModuleViewModels> UpdateModule(Guid moduleId, ModuleViewModels moduleDTO);
+
+        public Task<ModuleUnitViewModel> AddUnitToModule(Guid ModuleId, Guid UnitId);
     }
 }
