@@ -10,12 +10,19 @@ namespace Applications.ViewModels.LectureViewModels
 {
     public class LectureViewModel
     {
-        public Guid LectureId { get; set; }
+        public Guid Id { get; set; }
         public string LectureName { get; set; }
         public string Duration { get; set; }
         public string Description { get; set; }
         public string Type { get; set; }
         public Status Status { get; set; }
         public Guid UnitId { get; set; }
+        public DateTime CreationDate { get; set; }
+        public Guid? CreatedBy { get; set; }
+        public DateTime? ModificationDate { get; set; }
+        public Guid? ModificationBy { get; set; }
+        public DateTime? DeletionDate { get; set; }
+        public Guid? DeleteBy { get; set; }
+        public bool IsDeleted { get; set; }
     }
 }

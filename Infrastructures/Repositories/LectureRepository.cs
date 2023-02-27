@@ -1,4 +1,5 @@
-﻿using Applications.Interfaces;
+﻿using Applications.Commons;
+using Applications.Interfaces;
 using Applications.Repositories;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -17,9 +18,85 @@ namespace Infrastructures.Repositories
         {
             _dbContext = dbContext;
         }
-        public async Task<List<Lecture>> GetLectureByName(string Name) => await _dbContext.Lectures.Where(x => x.LectureName.Contains(Name)).ToListAsync();
-        public async Task<List<Lecture>> GetLectureByUnitId(Guid UnitId) => await _dbContext.Lectures.Where(x => x.UnitId.Equals(UnitId)).ToListAsync();
-        public async Task<List<Lecture>> GetDisableLectures() => await _dbContext.Lectures.Where(x => x.Status == Domain.Enum.StatusEnum.Status.Disable).ToListAsync();
-        public async Task<List<Lecture>> GetEnableLectures() => await _dbContext.Lectures.Where(x => x.Status == Domain.Enum.StatusEnum.Status.Enable).ToListAsync();
+        public async Task<Pagination<Lecture>> GetLectureByName(string Name, int pageNumber = 0, int pageSize = 10)
+        {
+            var itemCount = await _dbContext.Lectures.CountAsync();
+            var items = await _dbContext.Lectures.Where(x => x.LectureName.Contains(Name))
+                                    .OrderByDescending(x => x.CreationDate)
+                                    .Skip(pageNumber * pageSize)
+                                    .Take(pageSize)
+                                    .AsNoTracking()
+                                    .ToListAsync();
+
+            var result = new Pagination<Lecture>()
+            {
+                PageIndex = pageNumber,
+                PageSize = pageSize,
+                TotalItemsCount = itemCount,
+                Items = items,
+            };
+
+            return result;
+        }
+        public async Task<Pagination<Lecture>> GetLectureByUnitId(Guid UnitId, int pageNumber = 0, int pageSize = 10)
+        {
+            var itemCount = await _dbContext.Lectures.CountAsync();
+            var items = await _dbContext.Lectures.Where(x => x.UnitId.Equals(UnitId))
+                                    .OrderByDescending(x => x.CreationDate)
+                                    .Skip(pageNumber * pageSize)
+                                    .Take(pageSize)
+                                    .AsNoTracking()
+                                    .ToListAsync();
+
+            var result = new Pagination<Lecture>()
+            {
+                PageIndex = pageNumber,
+                PageSize = pageSize,
+                TotalItemsCount = itemCount,
+                Items = items,
+            };
+
+            return result;
+        }
+        public async Task<Pagination<Lecture>> GetDisableLectures(int pageNumber = 0, int pageSize = 10)
+        {
+            var itemCount = await _dbContext.Lectures.CountAsync();
+            var items = await _dbContext.Lectures.Where(x => x.Status == Domain.Enum.StatusEnum.Status.Disable)
+                                    .OrderByDescending(x => x.CreationDate)
+                                    .Skip(pageNumber * pageSize)
+                                    .Take(pageSize)
+                                    .AsNoTracking()
+                                    .ToListAsync();
+
+            var result = new Pagination<Lecture>()
+            {
+                PageIndex = pageNumber,
+                PageSize = pageSize,
+                TotalItemsCount = itemCount,
+                Items = items,
+            };
+
+            return result;
+        }
+        public async Task<Pagination<Lecture>> GetEnableLectures(int pageNumber = 0, int pageSize = 10)
+        {
+            var itemCount = await _dbContext.Lectures.CountAsync();
+            var items = await _dbContext.Lectures.Where(x => x.Status == Domain.Enum.StatusEnum.Status.Enable)
+                                    .OrderByDescending(x => x.CreationDate)
+                                    .Skip(pageNumber * pageSize)
+                                    .Take(pageSize)
+                                    .AsNoTracking()
+                                    .ToListAsync();
+
+            var result = new Pagination<Lecture>()
+            {
+                PageIndex = pageNumber,
+                PageSize = pageSize,
+                TotalItemsCount = itemCount,
+                Items = items,
+            };
+
+            return result;
+        }
     }
 }

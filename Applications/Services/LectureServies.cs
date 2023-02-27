@@ -3,6 +3,7 @@ using Applications.Interfaces;
 using Applications.ViewModels.LectureViewModels;
 using AutoMapper;
 using Domain.Entities;
+using System.Drawing.Printing;
 
 namespace Applications.Services
 {
@@ -29,10 +30,10 @@ namespace Applications.Services
 
         }
 
-        public async Task<List<LectureViewModel>> GetAllLectures()
+        public async Task<Pagination<LectureViewModel>> GetAllLectures(int pageIndex = 0, int pageSize = 10)
         {
-            var lectures = await _unitOfWork.LectureRepository.GetAllAsync();
-            var result = _mapper.Map<List<LectureViewModel>>(lectures);
+            var lectures = await _unitOfWork.LectureRepository.ToPagination(pageIndex, pageSize);
+            var result = _mapper.Map<Pagination<LectureViewModel>>(lectures);
             return result;
         }
 
@@ -42,30 +43,30 @@ namespace Applications.Services
             var result = _mapper.Map<LectureViewModel>(lectureObj);
             return result;
         }
-        public async Task<List<LectureViewModel>> GetLectureByUnitId(Guid UnitId)
+        public async Task<Pagination<LectureViewModel>> GetLectureByUnitId(Guid UnitId, int pageIndex = 0, int pageSize = 10)
         {
-            var lectureObj = await _unitOfWork.LectureRepository.GetLectureByUnitId(UnitId);
-            var result = _mapper.Map<List<LectureViewModel>>(lectureObj);
+            var lectureObj = await _unitOfWork.LectureRepository.GetLectureByUnitId(UnitId, pageIndex, pageSize);
+            var result = _mapper.Map<Pagination<LectureViewModel>>(lectureObj);
             return result;
         }
-        public async Task<List<LectureViewModel>> GetLectureByName(string Name)
+        public async Task<Pagination<LectureViewModel>> GetLectureByName(string Name, int pageIndex = 0, int pageSize = 10)
         {
-            var lectures = await _unitOfWork.LectureRepository.GetLectureByName(Name);
-            var result = _mapper.Map<List<LectureViewModel>>(lectures);
-            return result;
-        }
-
-        public async Task<List<LectureViewModel>> GetDisableLectures()
-        {
-            var lectures = await _unitOfWork.LectureRepository.GetDisableLectures();
-            var result = _mapper.Map<List<LectureViewModel>>(lectures);
+            var lectures = await _unitOfWork.LectureRepository.GetLectureByName(Name, pageIndex, pageSize);
+            var result = _mapper.Map<Pagination<LectureViewModel>>(lectures);
             return result;
         }
 
-        public async Task<List<LectureViewModel>> GetEnableLectures()
+        public async Task<Pagination<LectureViewModel>> GetDisableLectures(int pageIndex = 0, int pageSize = 10)
         {
-            var lectures = await _unitOfWork.LectureRepository.GetEnableLectures();
-            var result = _mapper.Map<List<LectureViewModel>>(lectures);
+            var lectures = await _unitOfWork.LectureRepository.GetDisableLectures(pageIndex, pageSize);
+            var result = _mapper.Map<Pagination<LectureViewModel>>(lectures);
+            return result;
+        }
+
+        public async Task<Pagination<LectureViewModel>> GetEnableLectures(int pageIndex = 0, int pageSize = 10)
+        {
+            var lectures = await _unitOfWork.LectureRepository.GetEnableLectures(pageIndex, pageSize);
+            var result = _mapper.Map<Pagination<LectureViewModel>>(lectures);
             return result;
         }
 
