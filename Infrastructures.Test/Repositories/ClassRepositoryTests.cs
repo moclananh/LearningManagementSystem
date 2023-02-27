@@ -57,9 +57,6 @@ namespace Infrastructures.Tests.Repositories
             resultPaging.PageIndex.Should().Be(0);
             resultPaging.PageSize.Should().Be(10);
             result.Should().BeEquivalentTo(expected);
-            // clean DB data
-            _dbContext.Classes.RemoveRange(mockData);
-            await _dbContext.SaveChangesAsync();
         }
 
         [Fact]
@@ -98,9 +95,6 @@ namespace Infrastructures.Tests.Repositories
             resultPaging.PageIndex.Should().Be(0);
             resultPaging.PageSize.Should().Be(10);
             result.Should().BeEquivalentTo(expected);
-            // clean DB data
-            _dbContext.Classes.RemoveRange(mockData);
-            await _dbContext.SaveChangesAsync();
         }
 
         [Fact]
@@ -139,9 +133,6 @@ namespace Infrastructures.Tests.Repositories
             resultPaging.PageIndex.Should().Be(0);
             resultPaging.PageSize.Should().Be(10);
             result.Should().BeEquivalentTo(expected);
-            // clean DB data
-            _dbContext.Classes.RemoveRange(mockData);
-            await _dbContext.SaveChangesAsync();
         }
     }
 }

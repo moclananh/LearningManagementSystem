@@ -96,8 +96,9 @@ namespace Domain.Tests
             _userRepositoryMock = new Mock<IUserRepository>();
 
             var options = new DbContextOptionsBuilder<AppDBContext>()
-                .UseSqlServer("Data Source=(local);Initial Catalog=LMSFSoftDB;User ID=sa;Password=123;TrustServerCertificate=True");
-            _dbContext = new AppDBContext(options.Options);
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
+            _dbContext = new AppDBContext(options);
 
             _currentTimeMock.Setup(x => x.CurrentTime()).Returns(DateTime.UtcNow);
             _claimServiceMock.Setup(x => x.GetCurrentUserId).Returns(Guid.Empty);

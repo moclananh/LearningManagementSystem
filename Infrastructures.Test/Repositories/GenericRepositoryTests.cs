@@ -36,9 +36,6 @@ namespace Infrastructures.Tests.Repositories
             var result = await _genericRepository.GetAllAsync();
             //assert
             result.Should().BeEquivalentTo(mockData);
-            // clean DB data
-            _dbContext.Classes.RemoveRange(result);
-            await _dbContext.SaveChangesAsync();
         }
 
         [Fact]
@@ -67,9 +64,6 @@ namespace Infrastructures.Tests.Repositories
             var result = await _genericRepository.GetByIdAsync(mockData.Id);
             //assert
             result.Should().BeEquivalentTo(mockData);
-            // clean DB data
-            _dbContext.Classes.Remove(result);
-            await _dbContext.SaveChangesAsync();
         }
 
 
@@ -98,9 +92,6 @@ namespace Infrastructures.Tests.Repositories
             var result = await _dbContext.SaveChangesAsync();
             //assert
             result.Should().Be(1);
-            // clean DB data
-            _dbContext.Classes.Remove(mockData);
-            await _dbContext.SaveChangesAsync();
         }
 
         [Fact]
@@ -164,9 +155,6 @@ namespace Infrastructures.Tests.Repositories
             var result = await _dbContext.SaveChangesAsync();
             //assert
             result.Should().Be(1);
-            // clean DB data
-            _dbContext.Classes.Remove(mockData);
-            await _dbContext.SaveChangesAsync();
         }
 
         [Fact]
@@ -188,9 +176,6 @@ namespace Infrastructures.Tests.Repositories
             var result = await _dbContext.SaveChangesAsync();
             //assert
             result.Should().Be(10);
-            // clean DB data
-            _dbContext.Classes.RemoveRange(mockData);
-            await _dbContext.SaveChangesAsync();
         }
 
         [Fact]
@@ -216,9 +201,6 @@ namespace Infrastructures.Tests.Repositories
             var result = await _dbContext.SaveChangesAsync();
             //assert
             result.Should().Be(10);
-            // clean DB data
-            _dbContext.Classes.RemoveRange(mockData);
-            await _dbContext.SaveChangesAsync();
         }
 
         [Fact]
@@ -245,9 +227,6 @@ namespace Infrastructures.Tests.Repositories
             paginasion.TotalPagesCount.Should().Be(3);
             paginasion.PageIndex.Should().Be(0);
             paginasion.PageSize.Should().Be(10);
-            // clean DB data
-            _dbContext.Classes.RemoveRange(mockData);
-            await _dbContext.SaveChangesAsync();
         }
 
         [Fact]
@@ -274,9 +253,6 @@ namespace Infrastructures.Tests.Repositories
             paginasion.TotalPagesCount.Should().Be(3);
             paginasion.PageIndex.Should().Be(1);
             paginasion.PageSize.Should().Be(20);
-            // clean DB data
-            _dbContext.Classes.RemoveRange(mockData);
-            await _dbContext.SaveChangesAsync();
         }
 
         [Fact]
@@ -303,9 +279,6 @@ namespace Infrastructures.Tests.Repositories
             paginasion.TotalPagesCount.Should().Be(3);
             paginasion.PageIndex.Should().Be(2);
             paginasion.PageSize.Should().Be(20);
-            // clean DB data
-            _dbContext.Classes.RemoveRange(mockData);
-            await _dbContext.SaveChangesAsync();
         }
 
         [Fact]
