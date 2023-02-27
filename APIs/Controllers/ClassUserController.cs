@@ -19,8 +19,8 @@ namespace APIs.Controllers
             _classUserServices = classuserServices;
         }
 
-        [HttpGet("GetClassUserPagingsion")]
-        public async Task<Pagination<CreateClassUserViewModel>> GetClassUserPagingsion(int pageIndex = 0, int pageSize = 10)
+        [HttpGet("GetAllClassUser")]
+        public async Task<Pagination<CreateClassUserViewModel>> GetAllClassUser(int pageIndex = 0, int pageSize = 10)
         {
             return await _classUserServices.GetClassUserPagingsionAsync(pageIndex, pageSize);
         }

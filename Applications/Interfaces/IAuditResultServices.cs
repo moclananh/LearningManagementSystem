@@ -6,6 +6,5 @@ namespace Application.Interfaces
     {
         Task<AuditResultViewModel> GetByAudiPlanId(Guid id);
         Task<AuditResultViewModel> GetAuditResultById(Guid Id);
-        Task<UpdateAuditResultViewModel> UpdateAuditResult(Guid AuditResultId, UpdateAuditResultViewModel classDTO);
     }
 }

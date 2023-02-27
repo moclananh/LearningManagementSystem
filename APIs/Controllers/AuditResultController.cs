@@ -20,10 +20,5 @@ namespace API.Controllers
         {
             return await _service.GetByAudiPlanId(id);
         }
-        [HttpPut("UpdateAuditResult/{AuditResultId}")]
-        public async Task<UpdateAuditResultViewModel> UpdateAuditResult(Guid AuditResultId, UpdateAuditResultViewModel assignmentDTO)
-        {
-            return await _service.UpdateAuditResult(AuditResultId, assignmentDTO);
-        }
     }
 }
