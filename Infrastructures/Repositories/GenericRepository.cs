@@ -13,7 +13,9 @@ namespace Infrastructures.Repositories
         private ICurrentTime _timeService;
         private IClaimService _claimService;
 
-        public GenericRepository(AppDBContext appDBContext, ICurrentTime currentTime, IClaimService claimService) // contructor 3 param
+        public GenericRepository(AppDBContext appDBContext, 
+            ICurrentTime currentTime, 
+            IClaimService claimService) // contructor 3 param
         {
             _dbSet = appDBContext.Set<TEntity>();
             _timeService = currentTime;

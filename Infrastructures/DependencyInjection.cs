@@ -11,6 +11,9 @@ using Application.Repositories;
 using Infrastructure.Repositories;
 using Application.Interfaces;
 using Application.Services;
+using Applications.Utils;
+using Applications.Interfaces.EmailServicesInterface;
+using Applications.Services.EmailServices;
 using Domain.Entities;
 
 namespace Infrastructures

@@ -1,4 +1,5 @@
 using APIs;
+using Applications.Utils;
 using Infrastructures;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -6,6 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
     builder.Services.AddInfrastructureServices(builder.Configuration);
     builder.Services.AddHttpContextAccessor();
     builder.Services.AddWebAPIService(builder.Configuration);
+    builder.Services.Configure<MailSetting>(builder.Configuration.GetSection(nameof(MailSetting)));
 }
 
 var app = builder.Build();

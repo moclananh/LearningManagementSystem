@@ -2,6 +2,7 @@
 using Applications.Interfaces;
 using Applications.Repositories;
 using Domain.Entities;
+using Domain.Enum.RoleEnum;
 using Microsoft.EntityFrameworkCore;
 using System.Drawing.Printing;
 using System.Reflection;
@@ -16,6 +17,29 @@ public class UserRepository : GenericRepository<User>, IUserRepository
 		_dbContext = context;
 	}
 
+	public async Task<User?> GetUserByEmail(string email) => _dbContext.Users.FirstOrDefault(x => x.Email == email);
+
+    public async Task<Pagination<User?>> GetUsersByRole(Role role, int pageNumber = 0, int pageSize = 10)
+    {
+        var itemCount = await _dbContext.Users.CountAsync();
+        var items = await _dbContext.Users.Where(x => x.Role == role)
+            .OrderByDescending(x => x.CreationDate)
+            .Skip(pageNumber * pageSize)
+            .Take(pageSize)
+            .AsNoTracking()
+            .ToListAsync();
+
+        var result = new Pagination<User>()
+        {
+            PageIndex = pageNumber,
+            PageSize = pageSize,
+            TotalItemsCount= itemCount,
+            Items = items
+        };
+        return result;
+    }
+
+   
 	public async Task<Pagination<User>> GetUserByClassId(Guid ClassId, int pageNumber = 0, int pageSize = 10)
 	{
         var itemCount = await _dbContext.Users.CountAsync();
@@ -38,5 +62,4 @@ public class UserRepository : GenericRepository<User>, IUserRepository
         return result;
     }
 
-    public async Task<User?> GetUserByEmail(string email) => _dbContext.Users.FirstOrDefault(x => x.Email == email);
 }

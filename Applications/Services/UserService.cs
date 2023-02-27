@@ -18,7 +18,6 @@ public class UserService : IUserService
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
     private readonly ITokenService _tokenService;
-
     public UserService(IUnitOfWork unitOfWork, IMapper mapper, ITokenService tokenService)
     {
         _unitOfWork = unitOfWork;
@@ -26,8 +25,30 @@ public class UserService : IUserService
         _tokenService = tokenService;
     }
 
+    // Change Password
+    public async Task<Response> ChangePassword(ChangePasswordViewModel changePassword)
+    {
+        var user = (await _unitOfWork.UserRepository.Find(x => x.Password == changePassword.OldPassword)).FirstOrDefault();
+        if (user == null) return new Response(HttpStatusCode.BadRequest, "wrong password!");
+        if (string.Compare(changePassword.NewPassword, changePassword.ConfirmPassword) != 0)
+        {
+            return new Response(HttpStatusCode.BadRequest, "the new password and confirm password does not match!");
+        }
+        user.Password = changePassword.NewPassword;
+        _unitOfWork.UserRepository.Update(user);
+        bool isSuccess = await _unitOfWork.SaveChangeAsync() > 0;
+        if (isSuccess) return new Response(HttpStatusCode.OK, "Change Success!");
+        return new Response(HttpStatusCode.BadRequest, "Not Success");
+    }
+    
+        
     // Get All Users 
-    public async Task<List<UserViewModel>> GetAllUsers() => _mapper.Map<List<UserViewModel>>(await _unitOfWork.UserRepository.GetAllAsync());
+    public async Task<Pagination<UserViewModel>> GetAllUsers(int pageIndex = 0, int pageSize = 10)
+    {
+        var users = await _unitOfWork.UserRepository.ToPagination(pageIndex, pageSize);
+        return _mapper.Map<Pagination<UserViewModel>>(users);
+    }
+
 
     public async Task<Pagination<UserViewModel>> GetUserByClassId(Guid ClassId, int pageIndex = 0, int pageSize = 10)
     {
@@ -40,7 +61,11 @@ public class UserService : IUserService
     public async Task<UserViewModel> GetUserById(Guid id) => _mapper.Map<UserViewModel>(await _unitOfWork.UserRepository.GetByIdAsync(id));
 
     // Get User By role
-    public async Task<List<UserViewModel>> GetUsersByRole(Role role) => _mapper.Map<List<UserViewModel>>(await _unitOfWork.UserRepository.Find(x => x.Role == role));
+    public async Task<Pagination<UserViewModel>> GetUsersByRole(Role role, int pageIndex = 0, int pageSize = 10) 
+    {
+        var users = await _unitOfWork.UserRepository.GetUsersByRole(role,pageIndex,pageSize);
+        return _mapper.Map<Pagination<UserViewModel>>(users);
+    }
 
     // Login
     public async Task<Response> Login(UserLoginViewModel userLoginViewModel)
@@ -78,7 +103,7 @@ public class UserService : IUserService
         return new Response(HttpStatusCode.BadRequest, "Not Success");
     }
 
-    // UploadFile
+    // UploadFile users
     public async Task<Response> UploadFileExcel(IFormFile formFile, CancellationToken cancellationToken)
     {
         if (formFile == null || formFile.Length <= 0) return new Response(HttpStatusCode.Conflict, "formfile is empty");
@@ -100,12 +125,12 @@ public class UserService : IUserService
                 {
                     list.Add(new User
                     {
-                        firstName = worksheet.Cells[row, 1].Value.ToString().Trim(),
-                        lastName = worksheet.Cells[row, 2].Value.ToString().Trim(),
-                        Email = worksheet.Cells[row, 3].Value.ToString().Trim(),
-                        DOB = DateTime.Parse(worksheet.Cells[row, 4].Value.ToString()),
-                        Gender = bool.Parse(worksheet.Cells[row, 5].Value.ToString().Trim()),
-                        Role = (Role)Enum.Parse(typeof(Role), worksheet.Cells[row, 6].Value.ToString()),
+                        firstName = worksheet.Cells[row, 1].Value.ToString().Trim() ?? string.Empty,
+                        lastName = worksheet.Cells[row, 2].Value.ToString().Trim() ?? string.Empty,
+                        Email = worksheet.Cells[row, 3].Value.ToString().Trim() ?? string.Empty,
+                        DOB = DateTime.Parse(worksheet.Cells[row, 4].Value.ToString() ?? string.Empty) ,
+                        Gender = bool.Parse(worksheet.Cells[row, 5].Value.ToString().Trim() ?? string.Empty),
+                        Role = (Role)Enum.Parse(typeof(Role), worksheet.Cells[row, 6].Value.ToString() ?? string.Empty),
                         Image = string.Empty,
                         Level = string.Empty,
                         Password = "12345",

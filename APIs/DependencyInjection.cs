@@ -12,6 +12,10 @@ using APIs.Validations.SyllabusValidations;
 using Applications.ViewModels.SyllabusViewModels;
 using APIs.Validations.LectureValidations;
 using Applications.ViewModels.LectureViewModels;
+using Applications.Utils;
+using static Org.BouncyCastle.Math.EC.ECCurve;
+using Applications.Interfaces.EmailServicesInterface;
+using Applications.Services.EmailServices;
 using APIs.Validations.AuditPlanValidations;
 using APIs.Validations.ModuleValidations;
 using Application.ViewModels.QuizzViewModels;
@@ -20,6 +24,7 @@ using Application.ViewModels.UnitViewModels;
 using APIs.Validations.UnitValidations;
 using Applications.ViewModels.AssignmentViewModels;
 using APIs.Validations.AssignmentValidations;
+
 
 namespace APIs;
 
@@ -34,6 +39,8 @@ public static class DependencyInjection
         services.AddSwaggerGen();
         services.AddHealthChecks();
         services.AddHttpContextAccessor();
+        //services.Configure<MailSetting>(configuration.GetSection(nameof(MailSetting)));  // tranfer data to an instance of MailSettings at runtime
+        services.AddTransient<IMailService, MailService>();
         services.AddScoped<IValidator<UpdateClassViewModel>, UpdateClassValidation>();
         services.AddScoped<IValidator<CreateClassViewModel>, CreateClassValidation>();
         services.AddScoped<IValidator<AuditPlanViewModel>, AuditPlanValidation>();

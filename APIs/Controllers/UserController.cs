@@ -1,11 +1,7 @@
-﻿using Application.ViewModels.UnitViewModels;
-using Applications.Commons;
+﻿using Applications.Commons;
 using Applications.Interfaces;
-using Applications.Services;
 using Applications.ViewModels.Response;
-using Applications.ViewModels.SyllabusViewModels;
 using Applications.ViewModels.UserViewModels;
-using Domain.Enum;
 using Domain.Enum.RoleEnum;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -19,14 +15,10 @@ namespace APIs.Controllers;
 public class UserController : Controller
 {
     private readonly IUserService _userService;
-    //private readonly ISendGridClient _sendGridClient;
-    private readonly IConfiguration _configuration;
 
-    public UserController(IUserService userService,IConfiguration configuration)
+    public UserController(IUserService userService)
     {
-
         _userService = userService;
-        _configuration = configuration;
     }
 
     /// <summary>
@@ -34,7 +26,7 @@ public class UserController : Controller
     /// </summary>
     /// <returns></returns>
     [HttpGet("GetAllUsers")]
-    public async Task<List<UserViewModel>> GetAllUsers() => await _userService.GetAllUsers();
+    public async Task<Pagination<UserViewModel>> GetAllUsers(int pageIndex = 0, int pageSize = 10) => await _userService.GetAllUsers(pageIndex, pageSize);
 
     /// <summary>
     /// Get user by ID.
@@ -59,7 +51,7 @@ public class UserController : Controller
     /// <param name="role"></param>
     /// <returns></returns>
     [HttpGet("GetUserByRole/{role}")]
-    public async Task<List<UserViewModel>> GetUsersByRole(Role role) => await _userService.GetUsersByRole(role);
+    public async Task<Pagination<UserViewModel>> GetUsersByRole(Role role, int pageIndex = 0, int pageSize = 10) => await _userService.GetUsersByRole(role,pageIndex,pageSize);
 
     /// <summary>
     /// Import Users by excel file.
@@ -70,26 +62,18 @@ public class UserController : Controller
     [HttpPost("UploadFileExcel")]
     public async Task<Response> Import(IFormFile formFile, CancellationToken cancellationToken) => await _userService.UploadFileExcel(formFile, cancellationToken);
 
-    /*
-    [HttpGet("sent-text-email")]
-    public async Task<IActionResult> SendPlainTextEmail(string toEmail)
-    {
-        string formEmail = _configuration.GetSection("SendGridEmailSettings").GetValue<string>("FromEmail");
-        string fromName =  _configuration.GetSection("SendGridEmailSettings").GetValue<string>("FromName");
+    /// <summary>
+    /// Change password user
+    /// </summary>
+    /// <param name="changePassword"></param>
+    /// <returns></returns>
+    [HttpPut("Change-Password")]
+    [Authorize]
+    public async Task<Response> ChangePassword([FromBody] ChangePasswordViewModel changePassword) => await _userService.ChangePassword(changePassword);
+    
 
-        var msg = new SendGridMessage()
-        {
-            From = new EmailAddress(formEmail, fromName),
-            Subject = "Plain Text Email",
-            PlainTextContent = "Hello, WellCome!!!"
-        };
-        
-        msg.AddTo(toEmail);
-        var response = await _sendGridClient.SendEmailAsync(msg);
-        string message = response.IsSuccessStatusCode ? $"success! + {toEmail}" : "failed!";
-        return Ok(message);
-    }
-    */
+    
+    
 
     [HttpGet("GetUsersByClassId/{ClassId}")]
     public async Task<Pagination<UserViewModel>> GetUnitByModuleIdAsync(Guid ClassId, int pageIndex = 0, int pageSize = 10)

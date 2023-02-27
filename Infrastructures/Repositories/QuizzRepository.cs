@@ -10,7 +10,10 @@ namespace Infrastructures.Repositories
     {
         private readonly AppDBContext _dbContext;
 
-        public QuizzRepository(AppDBContext appDBContext, ICurrentTime currentTime, IClaimService claimService) : base(appDBContext, currentTime, claimService)
+        public QuizzRepository(AppDBContext appDBContext, 
+            ICurrentTime currentTime, 
+            IClaimService claimService) 
+            : base(appDBContext, currentTime, claimService)
         {
             _dbContext = appDBContext;
         }

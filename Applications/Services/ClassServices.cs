@@ -51,14 +51,14 @@ namespace Applications.Services
             return null;
 
         }
-
+        
         public async Task<Pagination<ClassViewModel>> GetAllClasses(int pageIndex = 0, int pageSize = 10)
         {
             var classes = await _unitOfWork.ClassRepository.ToPagination(pageIndex, pageSize);
             var result = _mapper.Map<Pagination<ClassViewModel>>(classes);
             return result;
         }
-
+        
         public async Task<ClassViewModel> GetClassById(Guid ClassId)
         {
             var classObj = await _unitOfWork.ClassRepository.GetByIdAsync(ClassId);

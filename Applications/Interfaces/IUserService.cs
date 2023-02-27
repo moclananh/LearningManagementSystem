@@ -9,12 +9,13 @@ namespace Applications.Interfaces;
 
 public interface IUserService
 {
-    Task<List<UserViewModel>> GetAllUsers();
+    Task<Pagination<UserViewModel>> GetAllUsers(int pageIndex = 0, int pageSize = 10);
     Task<UserViewModel> GetUserById(Guid id);
     Task<Response> Login(UserLoginViewModel userLoginViewModel);
     Task<Response> UpdateUser(Guid id, UpdateUserViewModel updateUserViewModel);
-    Task<List<UserViewModel>> GetUsersByRole(Role role);
+    Task<Pagination<UserViewModel>> GetUsersByRole(Role role, int pageIndex = 0, int pageSize = 10);
     Task<Response> UploadFileExcel(IFormFile formFile, CancellationToken cancellationToken);
     Task<Pagination<UserViewModel>> GetUserByClassId(Guid ClassId, int pageIndex = 0, int pageSize = 10);
+    Task<Response> ChangePassword(ChangePasswordViewModel changePassword);
 
 }
