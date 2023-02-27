@@ -29,5 +29,21 @@ namespace Application.Services
             var result = _mapper.Map<AuditResultViewModel>(classOjb);
             return result;
         }
+
+        public async Task<UpdateAuditResultViewModel?> UpdateAuditResult(Guid AuditResultId, UpdateAuditResultViewModel classDTO)
+        {
+            var aditRsObj = await _unitOfWork.AuditResultRepository.GetByIdAsync(AuditResultId);
+            if (aditRsObj != null)
+            {
+                _mapper.Map(classDTO, aditRsObj);
+                _unitOfWork.AuditResultRepository.Update(aditRsObj);
+                var isSuccess = await _unitOfWork.SaveChangeAsync() > 0;
+                if (isSuccess)
+                {
+                    return _mapper.Map<UpdateAuditResultViewModel>(aditRsObj);
+                }
+            }
+            return null;
+        }
     }
 }

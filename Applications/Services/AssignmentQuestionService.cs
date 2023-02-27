@@ -3,6 +3,7 @@ using Applications.Interfaces;
 using Applications.ViewModels.AssignmentQuestionViewModels;
 using Applications.ViewModels.Response;
 using AutoMapper;
+using ClosedXML.Excel;
 using Domain.Entities;
 using Microsoft.AspNetCore.Http;
 using OfficeOpenXml;
@@ -68,6 +69,37 @@ namespace Applications.Services
             await _unitOfWork.AssignmentQuestionRepository.UploadAssignmentListAsync(assignmentList);
             await _unitOfWork.SaveChangeAsync();
             return new Response(HttpStatusCode.OK, "OK");
+        }
+
+        public async Task<byte[]> ExportAssignmentQuestionByAssignmentId(Guid assignmentId)
+        {
+            var questions = await _unitOfWork.AssignmentQuestionRepository.GetAllAssignmentQuestionByAssignmentId(assignmentId);
+            var questionViewModels = _mapper.Map<List<AssignmentQuestionViewModel>>(questions);
+
+            // Create a new Excel workbook and worksheet
+            using var workbook = new XLWorkbook();
+            var worksheet = workbook.Worksheets.Add("Assignment Questions");
+
+            // Add the headers to the worksheet
+            worksheet.Cell(1, 1).Value = "Question";
+            worksheet.Cell(1, 2).Value = "Answer";
+            worksheet.Cell(1, 3).Value = "Note";
+
+            // Add the assignment questions to the worksheet
+            for (var i = 0; i < questionViewModels.Count; i++)
+            {
+                var question = questionViewModels[i];
+                worksheet.Cell(i + 2, 1).Value = question.Question;
+                worksheet.Cell(i + 2, 2).Value = question.Answer;
+                worksheet.Cell(i + 2, 3).Value = question.Note;
+            }
+
+            // Convert the workbook to a byte array
+            using var stream = new MemoryStream();
+            workbook.SaveAs(stream);
+            var content = stream.ToArray();
+
+            return content;
         }
     }
 }

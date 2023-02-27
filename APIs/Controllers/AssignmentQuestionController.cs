@@ -21,5 +21,14 @@ namespace APIs.Controllers
 
         [HttpPost("UploadAssignmentQuestionFile")]
         public async Task<Response> UploadAssignmentQuestions(IFormFile formFile) => await _assignmentquestionService.UploadAssignmentQuestions(formFile);
+
+        [HttpGet("{assignmentId}/export")]
+        public async Task<IActionResult> Export(Guid assignmentId)
+        {
+            var content = await _assignmentquestionService.ExportAssignmentQuestionByAssignmentId(assignmentId);
+
+            var fileName = $"AssignmentQuestions_{assignmentId}.xlsx";
+            return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+        }
     }
 }

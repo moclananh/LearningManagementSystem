@@ -22,5 +22,13 @@ namespace APIs.Controllers
 
         [HttpPost("UploadPracticeQuestionFile")]
         public async Task<Response> UploadPracticeQuestionFile(IFormFile formFile) => await _practicequestionService.UploadPracticeQuestions(formFile);
+
+        [HttpGet("{practiceId}/export")]
+        public async Task<IActionResult> Export(Guid practiceId)
+        {
+            var content = await _practicequestionService.ExportPracticeQuestionByPracticeId(practiceId);
+            var fileName = $"PracticesQuestions_{practiceId}.xlsx";
+            return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+        }
     }
 }

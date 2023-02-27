@@ -1,4 +1,5 @@
-﻿using Domain.EntityRelationship;
+﻿using Applications.Commons;
+using Domain.EntityRelationship;
 
 namespace Applications.Repositories
 {
