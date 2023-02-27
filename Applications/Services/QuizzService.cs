@@ -50,9 +50,9 @@ namespace Applications.Services
             return null;
         }
 
-        public async Task<Pagination<QuizzViewModel>> GetQuizzByName(string Name, int pageIndex = 0, int pageSize = 10)
+        public async Task<Pagination<QuizzViewModel>> GetQuizzByName(string QuizzName, int pageIndex = 0, int pageSize = 10)
         {
-            var quizzes = await _unitOfWork.QuizzRepository.GetQuizzByName(Name, pageIndex, pageSize);
+            var quizzes = await _unitOfWork.QuizzRepository.GetQuizzByName(QuizzName, pageIndex, pageSize);
             var result = _mapper.Map<Pagination<QuizzViewModel>>(quizzes);
             return result;
         }
