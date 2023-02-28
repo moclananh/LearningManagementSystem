@@ -4,6 +4,7 @@ using Domain.Entities;
 using Domain.Tests;
 using FluentAssertions;
 using Infrastructures.Repositories;
+using Org.BouncyCastle.Asn1.Pkcs;
 
 namespace Infrastructures.Tests.Repositories
 {
@@ -113,6 +114,42 @@ namespace Infrastructures.Tests.Repositories
             //act
             var resultPaging = await _assignmentRepository.GetDisableAssignmentAsync();
             var result = resultPaging.Items;
+            //assert
+            resultPaging.Previous.Should().BeFalse();
+            resultPaging.Next.Should().BeTrue();
+            resultPaging.Items.Count.Should().Be(10);
+            resultPaging.TotalItemsCount.Should().Be(30);
+            resultPaging.TotalPagesCount.Should().Be(3);
+            resultPaging.PageIndex.Should().Be(0);
+            resultPaging.PageSize.Should().Be(10);
+            result.Should().BeEquivalentTo(expected);
+        }
+
+        [Fact]
+        public async Task AssignmentRepository_GetAssignmentByUnitId_ShouldReturnCorrectData()
+        {
+            //arrange
+            var assignmentMock = _fixture.Build<Assignment>()
+                                .Without(x => x.AssignmentQuestions)
+                                .Without(x => x.Unit)
+                                .CreateMany(30)
+                                .ToList();
+            await _dbContext.AddRangeAsync(assignmentMock);
+            await _dbContext.SaveChangesAsync();
+            var i = Guid.NewGuid();
+            foreach (var item in assignmentMock)
+            {
+                item.UnitId = i;
+            }
+            _dbContext.UpdateRange(assignmentMock);
+            await _dbContext.SaveChangesAsync();
+            var expected = assignmentMock.Where(x => x.UnitId.Equals(i))
+                                        .OrderByDescending(x => x.CreationDate)
+                                        .Take(10)
+                                        .ToList();
+            //act
+            var resultPaging = await _assignmentRepository.GetAssignmentByUnitId(i);
+            var result = resultPaging.Items.ToList();
             //assert
             resultPaging.Previous.Should().BeFalse();
             resultPaging.Next.Should().BeTrue();
