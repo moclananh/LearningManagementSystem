@@ -1,17 +1,18 @@
-﻿using Applications.ViewModels.SyllabusViewModels;
+﻿using Applications.Commons;
+using Applications.ViewModels.SyllabusViewModels;
 
 namespace Applications.Interfaces
 {
     public interface ISyllabusServices
     {
-        Task<CreateSyllabusViewModel?> CreateSyllabus(CreateSyllabusViewModel SyllabusDTO);
-        Task<UpdateSyllabusViewModel?> UpdateSyllabus(Guid SyllabusId, UpdateSyllabusViewModel SyllabusDTO);
-        Task<List<SyllabusViewModel>> GetAllSyllabus();
-        Task<List<SyllabusViewModel>> GetEnableSyllabus();
-        Task<List<SyllabusViewModel>> GetDisableSyllabus();
-        Task<SyllabusViewModel> GetSyllabusById(Guid SyllabusId);
-        Task<List<SyllabusViewModel>> GetSyllabusByName(string SyllabusName);
-        Task<List<SyllabusViewModel>> GetSyllabusByTrainingProgramId(Guid TrainingProgramId);
-        Task<List<SyllabusViewModel>> GetSyllabusByOutputStandardId(Guid OutputStandardId);
+        public Task<CreateSyllabusViewModel?> CreateSyllabus(CreateSyllabusViewModel SyllabusDTO);
+        public Task<UpdateSyllabusViewModel?> UpdateSyllabus(Guid SyllabusId, UpdateSyllabusViewModel SyllabusDTO);
+        public Task<Pagination<SyllabusViewModel>> GetSyllabusToPagination(int pageNumber = 0, int pageSize = 10);
+        public Task<Pagination<SyllabusViewModel>> GetEnableSyllabus(int pageNumber = 0, int pageSize = 10);
+        public Task<Pagination<SyllabusViewModel>> GetDisableSyllabus(int pageNumber = 0, int pageSize = 10);
+        public Task<SyllabusViewModel> GetSyllabusById(Guid SyllabusId);
+        public Task<Pagination<SyllabusViewModel>> GetSyllabusByName(string SyllabusName, int pageNumber = 0, int pageSize = 10);
+        public Task<Pagination<SyllabusViewModel>> GetSyllabusByTrainingProgramId(Guid TrainingProgramId, int pageNumber = 0, int pageSize = 10);
+        public Task<Pagination<SyllabusViewModel>> GetSyllabusByOutputStandardId(Guid OutputStandardId, int pageNumber = 0, int pageSize = 10);
     }
 }

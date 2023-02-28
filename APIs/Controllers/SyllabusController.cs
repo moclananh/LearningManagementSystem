@@ -1,4 +1,5 @@
-﻿using Applications.Interfaces;
+﻿using Applications.Commons;
+using Applications.Interfaces;
 using Applications.ViewModels.SyllabusViewModels;
 using FluentValidation;
 using FluentValidation.Results;
@@ -59,25 +60,25 @@ namespace APIs.Controllers
             return Ok("Update Syllabus Success");
         }
 
-        [HttpGet("GetAllSyllabus")]
-        public async Task<List<SyllabusViewModel>> GetAllSyllabus() => await _syllabusServices.GetAllSyllabus();
+        [HttpGet("GetSyllabusToPagination")]
+        public async Task<Pagination<SyllabusViewModel>> GetSyllabusToPagination(int pageNumber = 0, int pageSize = 10) => await _syllabusServices.GetSyllabusToPagination(pageNumber, pageSize);
 
         [HttpGet("GetEnableSyllabus")]
-        public async Task<List<SyllabusViewModel>> GetEnableSyllabus() => await _syllabusServices.GetEnableSyllabus();
+        public async Task<Pagination<SyllabusViewModel>> GetEnableSyllabus(int pageNumber = 0, int pageSize = 10) => await _syllabusServices.GetEnableSyllabus(pageNumber, pageSize);
 
         [HttpGet("GetDisableSyllabus")]
-        public async Task<List<SyllabusViewModel>> GetDisableSyllabus() => await _syllabusServices.GetDisableSyllabus();
+        public async Task<Pagination<SyllabusViewModel>> GetDisableSyllabus(int pageNumber = 0, int pageSize = 10) => await _syllabusServices.GetDisableSyllabus(pageNumber, pageSize);
 
         [HttpGet("GetSyllabusById/{SyllabusId}")]
         public async Task<SyllabusViewModel> GetSyllabusById(Guid SyllabusId) => await _syllabusServices.GetSyllabusById(SyllabusId);
 
         [HttpGet("GetSyllabusByName/{SyllabusName}")]
-        public async Task<List<SyllabusViewModel>> GetSyllabusByName(string SyllabusName) => await _syllabusServices.GetSyllabusByName(SyllabusName);
+        public async Task<Pagination<SyllabusViewModel>> GetSyllabusByName(string SyllabusName, int pageNumber = 0, int pageSize = 10) => await _syllabusServices.GetSyllabusByName(SyllabusName, pageNumber, pageSize);
 
         [HttpGet("GetSyllabusByTrainingProgramId/{TrainingProgramId}")]
-        public async Task<List<SyllabusViewModel>> GetSyllabusByTrainingProgramId(Guid TrainingProgramId) => await _syllabusServices.GetSyllabusByTrainingProgramId(TrainingProgramId);
+        public async Task<Pagination<SyllabusViewModel>> GetSyllabusByTrainingProgramId(Guid TrainingProgramId, int pageNumber = 0, int pageSize = 10) => await _syllabusServices.GetSyllabusByTrainingProgramId(TrainingProgramId, pageNumber, pageSize);
 
         [HttpGet("GetSyllabusByOutputStandardId/{OutputStandardId}")]
-        public async Task<List<SyllabusViewModel>> GetSyllabusByOutputStandardId(Guid OutputStandardId) => await _syllabusServices.GetSyllabusByOutputStandardId(OutputStandardId);
+        public async Task<Pagination<SyllabusViewModel>> GetSyllabusByOutputStandardId(Guid OutputStandardId, int pageNumber = 0, int pageSize = 10) => await _syllabusServices.GetSyllabusByOutputStandardId(OutputStandardId, pageNumber, pageSize);
     }
 }

@@ -1,4 +1,5 @@
-﻿using Applications.Interfaces;
+﻿using Applications.Commons;
+using Applications.Interfaces;
 using Applications.ViewModels.SyllabusViewModels;
 using AutoMapper;
 using Domain.Entities;
@@ -27,22 +28,22 @@ namespace Applications.Services
             return null;
         }
 
-        public async Task<List<SyllabusViewModel>> GetAllSyllabus()
+        public async Task<Pagination<SyllabusViewModel>> GetSyllabusToPagination(int pageNumber = 0, int pageSize = 10)
         {
-            var syllabus = await _unitOfWork.SyllabusRepository.GetAllAsync();
-            return _mapper.Map<List<SyllabusViewModel>>(syllabus);
+            var syllabus = await _unitOfWork.SyllabusRepository.ToPagination(pageNumber, pageSize);
+            return _mapper.Map<Pagination<SyllabusViewModel>>(syllabus);
         }
 
-        public async Task<List<SyllabusViewModel>> GetDisableSyllabus()
+        public async Task<Pagination<SyllabusViewModel>> GetDisableSyllabus(int pageNumber = 0, int pageSize = 10)
         {
-            var syllabus = await _unitOfWork.SyllabusRepository.GetDisableSyllabus();
-            return _mapper.Map<List<SyllabusViewModel>>(syllabus);
+            var syllabus = await _unitOfWork.SyllabusRepository.GetDisableSyllabus(pageNumber, pageSize);
+            return _mapper.Map<Pagination<SyllabusViewModel>>(syllabus);
         }
 
-        public async Task<List<SyllabusViewModel>> GetEnableSyllabus()
+        public async Task<Pagination<SyllabusViewModel>> GetEnableSyllabus(int pageNumber = 0, int pageSize = 10)
         {
-            var syllabus = await _unitOfWork.SyllabusRepository.GetEnableSyllabus();
-            return _mapper.Map<List<SyllabusViewModel>>(syllabus);
+            var syllabus = await _unitOfWork.SyllabusRepository.GetEnableSyllabus(pageNumber, pageSize);
+            return _mapper.Map<Pagination<SyllabusViewModel>>(syllabus);
         }
 
         public async Task<SyllabusViewModel> GetSyllabusById(Guid SyllabusId)
@@ -51,22 +52,22 @@ namespace Applications.Services
             return _mapper.Map<SyllabusViewModel>(syllabus);
         }
 
-        public async Task<List<SyllabusViewModel>> GetSyllabusByName(string Name)
+        public async Task<Pagination<SyllabusViewModel>> GetSyllabusByName(string Name, int pageNumber = 0, int pageSize = 10)
         {
-            var syllabus = await _unitOfWork.SyllabusRepository.GetSyllabusByName(Name);
-            return _mapper.Map<List<SyllabusViewModel>>(syllabus);
+            var syllabus = await _unitOfWork.SyllabusRepository.GetSyllabusByName(Name, pageNumber, pageSize);
+            return _mapper.Map<Pagination<SyllabusViewModel>>(syllabus);
         }
 
-        public async Task<List<SyllabusViewModel>> GetSyllabusByOutputStandardId(Guid OutputStandardId)
+        public async Task<Pagination<SyllabusViewModel>> GetSyllabusByOutputStandardId(Guid OutputStandardId, int pageNumber = 0, int pageSize = 10)
         {
-            var syllabus = await _unitOfWork.SyllabusRepository.GetSyllabusByOutputStandardId(OutputStandardId);
-            return _mapper.Map<List<SyllabusViewModel>>(syllabus);
+            var syllabus = await _unitOfWork.SyllabusRepository.GetSyllabusByOutputStandardId(OutputStandardId, pageNumber, pageSize);
+            return _mapper.Map<Pagination<SyllabusViewModel>>(syllabus);
         }
 
-        public async Task<List<SyllabusViewModel>> GetSyllabusByTrainingProgramId(Guid TrainingProgramId)
+        public async Task<Pagination<SyllabusViewModel>> GetSyllabusByTrainingProgramId(Guid TrainingProgramId, int pageNumber = 0, int pageSize = 10)
         {
-            var syllabus = await _unitOfWork.SyllabusRepository.GetSyllabusByTrainingProgramId(TrainingProgramId);
-            return _mapper.Map<List<SyllabusViewModel>>(syllabus);
+            var syllabus = await _unitOfWork.SyllabusRepository.GetSyllabusByTrainingProgramId(TrainingProgramId, pageNumber, pageSize);
+            return _mapper.Map<Pagination<SyllabusViewModel>>(syllabus);
         }
 
         public async Task<UpdateSyllabusViewModel?> UpdateSyllabus(Guid SyllabusId, UpdateSyllabusViewModel SyllabusDTO)

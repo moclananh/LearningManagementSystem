@@ -1,13 +1,14 @@
-﻿using Domain.Entities;
+﻿using Applications.Commons;
+using Domain.Entities;
 
 namespace Applications.Repositories
 {
     public interface ISyllabusRepository : IGenericRepository<Syllabus>
     {
-        Task<List<Syllabus>> GetEnableSyllabus();
-        Task<List<Syllabus>> GetDisableSyllabus();
-        Task<List<Syllabus>> GetSyllabusByName(string SyllabusName);
-        Task<List<Syllabus>> GetSyllabusByTrainingProgramId(Guid TrainingProgramId);
-        Task<List<Syllabus>> GetSyllabusByOutputStandardId(Guid OutputStandardId);
+        Task<Pagination<Syllabus>> GetEnableSyllabus(int pageNumber = 0, int pageSize = 10);
+        Task<Pagination<Syllabus>> GetDisableSyllabus(int pageNumber = 0, int pageSize = 10);
+        Task<Pagination<Syllabus>> GetSyllabusByName(string SyllabusName, int pageNumber = 0, int pageSize = 10);
+        Task<Pagination<Syllabus>> GetSyllabusByTrainingProgramId(Guid TrainingProgramId, int pageNumber = 0, int pageSize = 10);
+        Task<Pagination<Syllabus>> GetSyllabusByOutputStandardId(Guid OutputStandardId, int pageNumber = 0, int pageSize = 10);
     }
 }
