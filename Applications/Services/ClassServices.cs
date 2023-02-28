@@ -5,6 +5,8 @@ using Applications.ViewModels.ClassViewModels;
 using AutoMapper;
 using Domain.Entities;
 using Domain.EntityRelationship;
+using Domain.Enum.ClassEnum;
+using Domain.Enum.StatusEnum;
 
 namespace Applications.Services
 {
@@ -51,14 +53,29 @@ namespace Applications.Services
             return null;
 
         }
-        
+
         public async Task<Pagination<ClassViewModel>> GetAllClasses(int pageIndex = 0, int pageSize = 10)
         {
-            var classes = await _unitOfWork.ClassRepository.ToPagination(pageIndex, pageSize);
+            var classes = await _unitOfWork.ClassRepository.ToPagination(pageIndex = 0, pageSize = 10);
             var result = _mapper.Map<Pagination<ClassViewModel>>(classes);
             return result;
         }
-        
+
+        public async Task<Pagination<ClassViewModel>> GetClassByFilter(LocationEnum locations, ClassTimeEnum classTime, Status status, AttendeeEnum attendee, FSUEnum fsu, DateTime? startDate, DateTime? endDate, int pageNumber = 0, int pageSize = 10)
+        {
+            if (startDate == null)
+            {
+                startDate = new DateTime(1999, 01, 01);
+            }
+            if (endDate == null)
+            {
+                endDate = new DateTime(3999, 01, 01);
+            }
+            var classes = await _unitOfWork.ClassRepository.GetClassByFilter(locations, classTime, status, attendee, fsu, startDate, endDate, pageNumber = 0, pageSize = 10);
+            var result = _mapper.Map<Pagination<ClassViewModel>>(classes);
+            return result;
+        }
+
         public async Task<ClassViewModel> GetClassById(Guid ClassId)
         {
             var classObj = await _unitOfWork.ClassRepository.GetByIdAsync(ClassId);
@@ -68,21 +85,21 @@ namespace Applications.Services
 
         public async Task<Pagination<ClassViewModel>> GetClassByName(string Name, int pageIndex = 0, int pageSize = 10)
         {
-            var classes = await _unitOfWork.ClassRepository.GetClassByName(Name, pageIndex, pageSize);
+            var classes = await _unitOfWork.ClassRepository.GetClassByName(Name, pageIndex = 0, pageSize = 10);
             var result = _mapper.Map<Pagination<ClassViewModel>>(classes);
             return result;
         }
 
         public async Task<Pagination<ClassViewModel>> GetDisableClasses(int pageIndex = 0, int pageSize = 10)
         {
-            var classes = await _unitOfWork.ClassRepository.GetDisableClasses(pageIndex, pageSize);
+            var classes = await _unitOfWork.ClassRepository.GetDisableClasses(pageIndex = 0, pageSize = 10);
             var result = _mapper.Map<Pagination<ClassViewModel>>(classes);
             return result;
         }
 
         public async Task<Pagination<ClassViewModel>> GetEnableClasses(int pageIndex = 0, int pageSize = 10)
         {
-            var classes = await _unitOfWork.ClassRepository.GetEnableClasses(pageIndex, pageSize);
+            var classes = await _unitOfWork.ClassRepository.GetEnableClasses(pageIndex = 0, pageSize = 10);
             var result = _mapper.Map<Pagination<ClassViewModel>>(classes);
             return result;
         }

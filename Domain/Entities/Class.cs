@@ -1,5 +1,6 @@
 ﻿using Domain.Base;
 using Domain.EntityRelationship;
+using Domain.Enum.ClassEnum;
 using Domain.Enum.StatusEnum;
 
 namespace Domain.Entities
@@ -10,7 +11,10 @@ namespace Domain.Entities
         public string ClassCode { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public string Location { get; set; }
+        public LocationEnum Location { get; set; }
+        public ClassTimeEnum ClassTime { get; set; }
+        public FSUEnum FSU { get; set; }
+        public AttendeeEnum Attendee { get; set; }
         public Status Status { get; set; }
         public ICollection<ClassTrainingProgram?> ClassTrainingPrograms { get; set; }
         public ICollection<AuditPlan> AuditPlans { get; set; }

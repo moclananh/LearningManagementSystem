@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructures.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20230227014552_NewMigration")]
+    [Migration("20230228073226_NewMigration")]
     partial class NewMigration
     {
         /// <inheritdoc />
@@ -398,6 +398,9 @@ namespace Infrastructures.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<int>("Attendee")
+                        .HasColumnType("int");
+
                     b.Property<string>("ClassCode")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -405,6 +408,9 @@ namespace Infrastructures.Migrations
                     b.Property<string>("ClassName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ClassTime")
+                        .HasColumnType("int");
 
                     b.Property<Guid?>("CreatedBy")
                         .HasColumnType("uniqueidentifier");
@@ -421,12 +427,14 @@ namespace Infrastructures.Migrations
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("FSU")
+                        .HasColumnType("int");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<string>("Location")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Location")
+                        .HasColumnType("int");
 
                     b.Property<Guid?>("ModificationBy")
                         .HasColumnType("uniqueidentifier");

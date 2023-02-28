@@ -2,6 +2,8 @@
 using Applications.Interfaces;
 using Applications.ViewModels.ClassTrainingProgramViewModels;
 using Applications.ViewModels.ClassViewModels;
+using Domain.Enum.ClassEnum;
+using Domain.Enum.StatusEnum;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
@@ -96,6 +98,16 @@ namespace APIs.Controllers
                 return Ok("Remove Success");
             }
             return BadRequest("Remove TrainingProgram Fail");
+        }
+        [HttpGet("GetClassByFilter")]
+        public async Task<IActionResult> GetClassByFilter(LocationEnum locations, ClassTimeEnum classTime, Status status, AttendeeEnum attendee, FSUEnum fsu, DateTime? startDate, DateTime? endDate, int pageNumber = 0, int pageSize = 10)
+        {
+            if (ModelState.IsValid)
+            {
+                var classes = await _classServices.GetClassByFilter(locations, classTime, status, attendee, fsu, startDate, endDate, pageNumber = 0, pageSize = 10);
+                return Ok(classes);
+            }
+            return BadRequest("GetClassByFilter Fail");
         }
     }
 }

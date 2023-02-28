@@ -1,5 +1,7 @@
 ﻿using Applications.Commons;
 using Domain.Entities;
+using Domain.Enum.ClassEnum;
+using Domain.Enum.StatusEnum;
 
 namespace Applications.Repositories
 {
@@ -8,5 +10,6 @@ namespace Applications.Repositories
         Task<Pagination<Class>> GetEnableClasses(int pageNumber = 0, int pageSize = 10);
         Task<Pagination<Class>> GetDisableClasses(int pageNumber = 0, int pageSize = 10);
         Task<Pagination<Class>> GetClassByName(string Name, int pageNumber = 0, int pageSize = 10);
+        Task<Pagination<Class>> GetClassByFilter(LocationEnum locations, ClassTimeEnum classTime, Status status, AttendeeEnum attendee, FSUEnum fsu, DateTime? startDate, DateTime? endDate, int pageNumber = 0, int pageSize = 10);
     }
 }
