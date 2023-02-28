@@ -1,5 +1,6 @@
 ﻿using Application.ViewModels.QuizzViewModels;
 using Applications.Commons;
+using Applications.ViewModels.ClassViewModels;
 using Applications.ViewModels.PracticeViewModels;
 
 namespace Applications.Interfaces
@@ -13,5 +14,6 @@ namespace Applications.Interfaces
         public Task<Pagination<PracticeViewModel>> GetAllPractice(int pageIndex = 0, int pageSize = 10);
         public Task<Pagination<PracticeViewModel>> GetEnablePractice(int pageIndex = 0, int pageSize = 10);
         public Task<Pagination<PracticeViewModel>> GetDisablePractice(int pageIndex = 0, int pageSize = 10);
+        public Task<UpdatePracticeViewModel> UpdatePractice(Guid UnitId, UpdatePracticeViewModel practiceDTO);
     }
 }

@@ -3,6 +3,7 @@ using Applications.Commons;
 using Applications.Interfaces;
 using Applications.Services;
 using Applications.ViewModels.PracticeViewModels;
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 namespace APIs.Controllers
 {
@@ -11,10 +12,10 @@ namespace APIs.Controllers
     public class PracticeController : ControllerBase
     {
         private readonly IPracticeService _service;
-
         public PracticeController(IPracticeService service)
         {
             _service = service;
+           
         }
         [HttpGet("GetPracticesByUnitId/{UnitId}")]
         public async Task<Pagination<PracticeViewModel>> GetPracticesByUnitId(Guid UnitId) => await _service.GetPracticeByUnitId(UnitId);
@@ -33,5 +34,7 @@ namespace APIs.Controllers
         public async Task<Pagination<PracticeViewModel>> GetEnablePractices(int pageIndex = 0, int pageSize = 10) => await _service.GetEnablePractice(pageIndex, pageSize);
         [HttpGet("GetDisablePractice")]
         public async Task<Pagination<PracticeViewModel>> GetDisablePractice(int pageIndex = 0, int pageSize = 10) => await _service.GetDisablePractice(pageIndex, pageSize);
+        [HttpPut("UpdatePractice/{PracticeId}")]
+        public async Task<UpdatePracticeViewModel> UpdatePractice(Guid PracticeId, UpdatePracticeViewModel practiceDTO) => await _service.UpdatePractice(PracticeId, practiceDTO);
     }
 }

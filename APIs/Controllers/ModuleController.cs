@@ -78,5 +78,15 @@ namespace APIs.Controllers
             }
             return BadRequest("Add Fail");
         }
+        [HttpDelete("DeleteUnit/{moduleId}/{unitId}")]
+        public async Task<IActionResult> DeleteUnit(Guid moduleId, Guid unitId)
+        {
+            if (ModelState.IsValid)
+            {
+                await _moduleServices.RemoveUnitToModule(moduleId, unitId);
+                return Ok("Remove Success");
+            }
+            return BadRequest("Remove Unit Fail");
+        }
     }
 }

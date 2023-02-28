@@ -73,8 +73,8 @@ namespace Infrastructures.Mappers
             CreateMap<CreateTrainingProgramSyllabi,TrainingProgramSyllabus>().ReverseMap();
             CreateMap<ModuleUnitViewModel, ModuleUnit>().ReverseMap();
             CreateMap<CreateUserAuditPlanViewModel, UserAuditPlan>().ReverseMap();
+            CreateMap<UpdatePracticeViewModel, Practice>().ReverseMap();
             CreateMap<UpdateAuditResultViewModel, AuditResult>().ReverseMap();
-
             /* pagination */
             CreateMap(typeof(Pagination<>), typeof(Pagination<>));
         }

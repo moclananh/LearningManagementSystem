@@ -1,5 +1,6 @@
 ﻿using Applications.Commons;
 using Applications.Interfaces;
+using Applications.ViewModels.ClassViewModels;
 using Applications.ViewModels.PracticeViewModels;
 using AutoMapper;
 using Domain.Entities;
@@ -62,6 +63,22 @@ namespace Applications.Services
             var practices = await _unitOfWork.PracticeRepository.GetEnablePractices();
             var result = _mapper.Map<Pagination<PracticeViewModel>>(practices);
             return result;
+        }
+
+        public async Task<UpdatePracticeViewModel> UpdatePractice(Guid UnitId, UpdatePracticeViewModel practiceDTO)
+        {
+            var classObj = await _unitOfWork.PracticeRepository.GetByIdAsync(UnitId);
+            if (classObj != null)
+            {
+                _mapper.Map(practiceDTO, classObj);
+                _unitOfWork.PracticeRepository.Update(classObj);
+                var isSuccess = await _unitOfWork.SaveChangeAsync() > 0;
+                if (isSuccess)
+                {
+                    return _mapper.Map<UpdatePracticeViewModel>(classObj);
+                }
+            }
+            return null;
         }
     }
 }

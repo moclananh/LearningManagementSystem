@@ -109,6 +109,20 @@ namespace Applications.Services
             }
             return null;
         }
+        public async Task<ModuleUnitViewModel> RemoveUnitToModule(Guid ModuleId, Guid UnitId)
+        {
+            var moduleOjb = await _unitOfWork.ModuleUnitRepository.GetModuleUnit(ModuleId, UnitId);
+            if (moduleOjb != null)
+            {
+                _unitOfWork.ModuleUnitRepository.SoftRemove(moduleOjb);
+                var isSucces = await _unitOfWork.SaveChangeAsync() > 0;
+                if (isSucces)
+                {
+                    return _mapper.Map<ModuleUnitViewModel>(moduleOjb);
+                }
+            }
+            return null;
+        }
 
 
     }
