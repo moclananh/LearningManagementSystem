@@ -56,6 +56,7 @@ namespace Infrastructures
             services.AddScoped<IAssignmentQuestionService, AssignmentQuestionService>();
             services.AddScoped<IClassTrainingProgramRepository, ClassTrainingProgramRepository>();
             services.AddScoped<ISyllabusOutputStandardRepository, SyllabusOutputStandardRepository>();
+            services.AddScoped<ISyllabusOutputStandardService, SyllabusOutputStandardService>();
             services.AddScoped<IPracticeRepository, PracticeRepository>();
             services.AddScoped<IPracticeService, PracticeService>();
             services.AddScoped<IAuditResultRepository, AuditResultRepository>();
