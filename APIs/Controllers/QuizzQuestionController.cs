@@ -11,7 +11,6 @@ namespace APIs.Controllers
     public class QuizzQuestionController : ControllerBase
     {
         private readonly IQuizzQuestionService _quizzQuestionService;
-        private readonly IQuizzQuestionService _quizzquestionService;
         public QuizzQuestionController(IQuizzQuestionService quizzQuestionService)
         {
             _quizzQuestionService = quizzQuestionService;
@@ -23,7 +22,7 @@ namespace APIs.Controllers
         [HttpGet("ExportQuizzQuestion/{QuizzId}")]
         public async Task<IActionResult> ExportQuizzQuestion(Guid QuizzId)
         {
-            var content = await _quizzquestionService.ExportQuizzQuestionByQuizzId(QuizzId);
+            var content = await _quizzQuestionService.ExportQuizzQuestionByQuizzId(QuizzId);
 
             var fileName = $"QuizzQuestions_{QuizzId}.xlsx";
             return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);

@@ -104,17 +104,22 @@ namespace Applications.Services
             var worksheet = workbook.Worksheets.Add("Quizz Questions");
 
             // Add the headers to the worksheet
-            worksheet.Cell(1, 1).Value = "Question";
-            worksheet.Cell(1, 2).Value = "Answer";
-            worksheet.Cell(1, 3).Value = "Note";
 
+            worksheet.Cell(1, 1).Value = "QuizzID";
+            worksheet.Cell(2, 1).Value = "Question";
+            worksheet.Cell(2, 2).Value = "Answer";
+            worksheet.Cell(2, 3).Value = "Note";
+
+            var questionss = questionViewModels[0];
+            string stringValue = questionss.QuizzId.ToString();
+            worksheet.Cell(1, 2).Value = stringValue;
             // Add the assignment questions to the worksheet
             for (var i = 0; i < questionViewModels.Count; i++)
             {
                 var question = questionViewModels[i];
-                worksheet.Cell(i + 2, 1).Value = question.Question;
-                worksheet.Cell(i + 2, 2).Value = question.Answer;
-                worksheet.Cell(i + 2, 3).Value = question.Note;
+                worksheet.Cell(i + 3, 1).Value = question.Question;
+                worksheet.Cell(i + 3, 2).Value = question.Answer;
+                worksheet.Cell(i + 3, 3).Value = question.Note;
             }
 
             // Convert the workbook to a byte array

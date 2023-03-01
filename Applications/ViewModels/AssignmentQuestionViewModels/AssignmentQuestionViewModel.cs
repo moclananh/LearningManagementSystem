@@ -11,5 +11,6 @@ namespace Applications.ViewModels.AssignmentQuestionViewModels
         public string Question { get; set; }
         public string Answer { get; set; }
         public string Note { get; set; }
+        public Guid AssignmentId { get; set; }
     }
 }
