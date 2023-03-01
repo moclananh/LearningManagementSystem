@@ -16,9 +16,9 @@ namespace APIs.Controllers
         }
 
         [HttpGet("GetAllSyllabusOutputStandard")]
-        public async Task<Pagination<SyllabusOutputStandardViewModel>> GetAllSyllabusOutputStandard(int pageIndex = 0, int pageSize = 10)
+        public async Task<Pagination<SyllabusOutputStandardViewModel>> GetAllSyllabusOutputStandards(int pageIndex = 0, int pageSize = 10)
         {
-            return await _syllabusOutputStandardService.GetSyllabusOutputStandardPagingsionAsync(pageIndex, pageSize);
+            return await _syllabusOutputStandardService.GetAllSyllabusOutputStandards(pageIndex, pageSize);
         }
     }
 }

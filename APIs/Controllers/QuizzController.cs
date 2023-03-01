@@ -24,7 +24,7 @@ namespace APIs.Controllers
         }
 
         [HttpGet("GetAllQuizz")]
-        public async Task<Pagination<QuizzViewModel>> GetQuizzPagingsion(int pageIndex = 0, int pageSize = 10) => await _quizzServices.GetAllQuizzes(pageIndex, pageSize);
+        public async Task<Pagination<QuizzViewModel>> GetQuizzPagination(int pageIndex = 0, int pageSize = 10) => await _quizzServices.GetAllQuizzes(pageIndex, pageSize);
 
         [HttpPost("CreateQuizz")]
         public async Task<IActionResult> CreateQuizz(CreateQuizzViewModel QuizzModel)

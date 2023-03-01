@@ -10,6 +10,6 @@ namespace Application.Interfaces
     {
         public Task<List<CreateClassUserViewModel>> ViewAllClassUserAsync();
         Task<Response> UploadClassUserFile(IFormFile formFile);
-        public Task<Pagination<CreateClassUserViewModel>> GetClassUserPagingsionAsync(int pageIndex = 0, int pageSize = 10);
+        public Task<Pagination<CreateClassUserViewModel>> GetAllClassUsersAsync(int pageIndex = 0, int pageSize = 10);
     }
 }

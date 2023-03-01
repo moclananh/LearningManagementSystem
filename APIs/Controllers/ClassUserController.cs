@@ -22,7 +22,7 @@ namespace APIs.Controllers
         [HttpGet("GetAllClassUser")]
         public async Task<Pagination<CreateClassUserViewModel>> GetAllClassUser(int pageIndex = 0, int pageSize = 10)
         {
-            return await _classUserServices.GetClassUserPagingsionAsync(pageIndex, pageSize);
+            return await _classUserServices.GetAllClassUsersAsync(pageIndex, pageSize);
         }
 
         [HttpPost("UploadClassUserFile")]

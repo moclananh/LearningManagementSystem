@@ -22,7 +22,7 @@ namespace Application.Services
             _mapper = mapper;
         }
 
-        public async Task<Pagination<CreateClassUserViewModel>> GetClassUserPagingsionAsync(int pageIndex = 0, int pageSize = 10)
+        public async Task<Pagination<CreateClassUserViewModel>> GetAllClassUsersAsync(int pageIndex = 0, int pageSize = 10)
         {
             var classUser = await _unitOfWork.ClassUserRepository.ToPagination(pageIndex, pageSize);
             var result = _mapper.Map<Pagination<CreateClassUserViewModel>>(classUser);
