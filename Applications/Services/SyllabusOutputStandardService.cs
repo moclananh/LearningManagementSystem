@@ -1,9 +1,8 @@
-﻿using Application.ViewModels.QuizzViewModels;
-using Applications.Commons;
+﻿using Applications.Commons;
 using Applications.Interfaces;
 using Applications.ViewModels.SyllabusOutputStandardViewModels;
 using AutoMapper;
-using Domain.Entities;
+
 
 namespace Applications.Services
 {
@@ -17,7 +16,6 @@ namespace Applications.Services
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
-
         public async Task<Pagination<SyllabusOutputStandardViewModel>> GetAllSyllabusOutputStandards(int pageIndex = 0, int pageSize = 10)
         {
             var syllabusOutputStandards = await _unitOfWork.SyllabusOutputStandardRepository.ToPagination(pageIndex, pageSize);

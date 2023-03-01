@@ -1,8 +1,10 @@
 ﻿using Applications.Commons;
 using Applications.Interfaces;
+using Applications.ViewModels.Response;
 using Applications.ViewModels.SyllabusViewModels;
 using AutoMapper;
 using Domain.Entities;
+using System.Net;
 
 namespace Applications.Services
 {
@@ -46,10 +48,12 @@ namespace Applications.Services
             return _mapper.Map<Pagination<SyllabusViewModel>>(syllabus);
         }
 
-        public async Task<SyllabusViewModel> GetSyllabusById(Guid SyllabusId)
+        public async Task<Response> GetSyllabusById(Guid SyllabusId) 
         {
+
             var syllabus = await _unitOfWork.SyllabusRepository.GetByIdAsync(SyllabusId);
-            return _mapper.Map<SyllabusViewModel>(syllabus);
+            if (syllabus == null) return new Response(HttpStatusCode.NoContent, "Id not found");
+            else return new Response(HttpStatusCode.OK, "Search succeed", syllabus);
         }
 
         public async Task<Pagination<SyllabusViewModel>> GetSyllabusByName(string Name, int pageNumber = 0, int pageSize = 10)
@@ -58,10 +62,11 @@ namespace Applications.Services
             return _mapper.Map<Pagination<SyllabusViewModel>>(syllabus);
         }
 
-        public async Task<Pagination<SyllabusViewModel>> GetSyllabusByOutputStandardId(Guid OutputStandardId, int pageNumber = 0, int pageSize = 10)
+        public async Task<Response> GetSyllabusByOutputStandardId(Guid OutputStandardId, int pageNumber = 0, int pageSize = 10)
         {
             var syllabus = await _unitOfWork.SyllabusRepository.GetSyllabusByOutputStandardId(OutputStandardId, pageNumber, pageSize);
-            return _mapper.Map<Pagination<SyllabusViewModel>>(syllabus);
+            if (syllabus.Items.Count() <1) return new Response(HttpStatusCode.NoContent, "Id not found");
+            else return new Response(HttpStatusCode.OK, "Search Succeed", syllabus);
         }
 
         public async Task<Pagination<SyllabusViewModel>> GetSyllabusByTrainingProgramId(Guid TrainingProgramId, int pageNumber = 0, int pageSize = 10)

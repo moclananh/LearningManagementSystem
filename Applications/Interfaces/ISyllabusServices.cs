@@ -1,4 +1,5 @@
 ﻿using Applications.Commons;
+using Applications.ViewModels.Response;
 using Applications.ViewModels.SyllabusViewModels;
 
 namespace Applications.Interfaces
@@ -10,9 +11,9 @@ namespace Applications.Interfaces
         public Task<Pagination<SyllabusViewModel>> GetAllSyllabus(int pageNumber = 0, int pageSize = 10);
         public Task<Pagination<SyllabusViewModel>> GetEnableSyllabus(int pageNumber = 0, int pageSize = 10);
         public Task<Pagination<SyllabusViewModel>> GetDisableSyllabus(int pageNumber = 0, int pageSize = 10);
-        public Task<SyllabusViewModel> GetSyllabusById(Guid SyllabusId);
+        public Task<Response> GetSyllabusById(Guid SyllabusId);
         public Task<Pagination<SyllabusViewModel>> GetSyllabusByName(string SyllabusName, int pageNumber = 0, int pageSize = 10);
         public Task<Pagination<SyllabusViewModel>> GetSyllabusByTrainingProgramId(Guid TrainingProgramId, int pageNumber = 0, int pageSize = 10);
-        public Task<Pagination<SyllabusViewModel>> GetSyllabusByOutputStandardId(Guid OutputStandardId, int pageNumber = 0, int pageSize = 10);
+        public Task<Response> GetSyllabusByOutputStandardId(Guid OutputStandardId, int pageNumber = 0, int pageSize = 10);
     }
 }
