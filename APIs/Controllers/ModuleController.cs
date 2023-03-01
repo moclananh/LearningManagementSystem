@@ -1,4 +1,5 @@
-﻿using Applications.Interfaces;
+﻿using Applications.Commons;
+using Applications.Interfaces;
 using Applications.Services;
 using Applications.ViewModels.ModuleViewModels;
 using Domain.Entities;
@@ -13,19 +14,23 @@ namespace APIs.Controllers
     public class ModuleController : ControllerBase
     {
         private readonly IModuleService _moduleServices;
-        private readonly IValidator<ModuleViewModels> _validator;
-        public ModuleController(IModuleService moduleServices, IValidator<ModuleViewModels> validator)
+        private readonly IValidator<CreateModuleViewModel> _validatorCreate;
+        private readonly IValidator<UpdateModuleViewModel> _validateUpdate;
+        public ModuleController(IModuleService moduleServices,
+                    IValidator<CreateModuleViewModel> validatorCreate,
+                    IValidator<UpdateModuleViewModel> validatorUpdate)
         {
             _moduleServices = moduleServices;
-            _validator = validator;
+            _validatorCreate = validatorCreate;
+            _validateUpdate = validatorUpdate;
         }
 
         [HttpPost("CreateModule")]
-        public async Task<IActionResult> CreateModule(ModuleViewModels moduleModel)
+        public async Task<IActionResult> CreateModule(CreateModuleViewModel moduleModel)
         {
             if(ModelState.IsValid)
             {
-                ValidationResult result = _validator.Validate(moduleModel);
+                ValidationResult result = _validatorCreate.Validate(moduleModel);
                 if (result.IsValid)
                 {
                     await _moduleServices.CreateModule(moduleModel);
@@ -39,17 +44,20 @@ namespace APIs.Controllers
         }
 
         [HttpGet("GetAllModules")]
-        public async Task<List<ModuleViewModels>> GetAllModules() => await _moduleServices.GetAllModules();
+        public async Task<Pagination<ModuleViewModels>> GetAllModules(int pageIndex = 0, int pageSize = 10) => await _moduleServices.GetAllModules(pageIndex,pageSize);
 
         [HttpGet("GetModulesBySyllabusId/{syllabusId}")]
-        public async Task<List<ModuleViewModels>> GetModulesBySyllabusId(Guid syllabusId) => await _moduleServices.GetModulesBySyllabusId(syllabusId);
+        public async Task<Pagination<ModuleViewModels>> GetModulesBySyllabusId(Guid syllabusId, int pageIndex = 0, int pageSize = 10) => await _moduleServices.GetModulesBySyllabusId(syllabusId, pageIndex, pageSize);
+
+        [HttpGet("GetModulesByName/{ModuleName}")]
+        public async Task<Pagination<ModuleViewModels>> GetModulesByName(string ModuleName, int pageIndex = 0, int pageSize = 10) => await _moduleServices.GetModulesByName(ModuleName, pageIndex, pageSize);
 
         [HttpPut("UpdateModule")]
-        public async Task<IActionResult> UpdateModule(Guid moduleId, ModuleViewModels module)
+        public async Task<IActionResult> UpdateModule(Guid moduleId, UpdateModuleViewModel module)
         {
             if (ModelState.IsValid)
             {
-                ValidationResult result = _validator.Validate(module);
+                ValidationResult result = _validateUpdate.Validate(module);
                 if(result.IsValid)
                 {
                     await _moduleServices.UpdateModule(moduleId, module);
@@ -63,10 +71,10 @@ namespace APIs.Controllers
         }
 
         [HttpGet("GetEnableModules")]
-        public async Task<List<ModuleViewModels>> GetEnableModules() => await _moduleServices.GetEnableModules();
+        public async Task<Pagination<ModuleViewModels>> GetEnableModules(int pageIndex = 0, int pageSize = 10) => await _moduleServices.GetEnableModules(pageIndex,pageSize);
 
         [HttpGet("GetDisableModules")]
-        public async Task<List<ModuleViewModels>> GetDisableModules() => await _moduleServices.GetDisableModules();
+        public async Task<Pagination<ModuleViewModels>> GetDisableModules(int pageIndex = 0, int pageSize = 10) => await _moduleServices.GetDisableModules(pageIndex,pageSize);
 
         [HttpPost("AddModuleUnit/{moduleId}/{unitId}")]
         public async Task<IActionResult> AddModuleUnit(Guid moduleId, Guid unitId)

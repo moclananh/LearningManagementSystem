@@ -17,14 +17,13 @@ using static Org.BouncyCastle.Math.EC.ECCurve;
 using Applications.Interfaces.EmailServicesInterface;
 using Applications.Services.EmailServices;
 using APIs.Validations.AuditPlanValidations;
-using APIs.Validations.ModuleValidations;
 using Application.ViewModels.QuizzViewModels;
 using APIs.Validations.QuizzValidations;
 using Application.ViewModels.UnitViewModels;
 using APIs.Validations.UnitValidations;
 using Applications.ViewModels.AssignmentViewModels;
 using APIs.Validations.AssignmentValidations;
-
+using APIs.Validations.ModulesValidations;
 
 namespace APIs;
 
@@ -45,7 +44,8 @@ public static class DependencyInjection
         services.AddScoped<IValidator<CreateClassViewModel>, CreateClassValidation>();
         services.AddScoped<IValidator<AuditPlanViewModel>, AuditPlanValidation>();
         services.AddScoped<IValidator<UpdateAuditPlanViewModel>, UpdateAuditPlanValidation>();
-        services.AddScoped<IValidator<ModuleViewModels>, ModuleValidation>();
+        services.AddScoped<IValidator<CreateModuleViewModel>, CreateModuleValidation>();
+        services.AddScoped<IValidator<UpdateModuleViewModel>, UpdateModuleValidation>();
         services.AddScoped<IValidator<UpdateSyllabusViewModel>, UpdateSyllabusValidation>();
         services.AddScoped<IValidator<CreateSyllabusViewModel>, CreateSyllabusValidation>();
         services.AddScoped<IValidator<CreateLectureViewModel>, CreateLectureValidation>();

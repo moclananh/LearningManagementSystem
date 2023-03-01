@@ -1,11 +1,11 @@
 ﻿using Applications.ViewModels.ModuleViewModels;
 using FluentValidation;
 
-namespace APIs.Validations.ModuleValidations
+namespace APIs.Validations.ModulesValidations
 {
-    public class ModuleValidation : AbstractValidator<ModuleViewModels>
+    public class UpdateModuleValidation : AbstractValidator<UpdateModuleViewModel>
     {
-        public ModuleValidation()
+        public UpdateModuleValidation()
         {
             RuleFor(x => x.ModuleName).NotEmpty().MaximumLength(100);
         }

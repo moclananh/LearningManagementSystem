@@ -56,6 +56,8 @@ namespace Infrastructures.Mappers
             CreateMap<Unit, UnitViewModel>()
                .ForMember(dest => dest.UnitId, src => src.MapFrom(x => x.Id));
             CreateMap<ModuleViewModels, Module>().ReverseMap();
+            CreateMap<CreateModuleViewModel, Module>().ReverseMap();
+            CreateMap<UpdateModuleViewModel, Module>().ReverseMap();
             CreateMap<ViewTrainingProgram, TrainingProgram>().ReverseMap();
             CreateMap<UpdateOutputStandardViewModel, OutputStandard>().ReverseMap();
             CreateMap<OutputStandardViewModel, OutputStandard>().ReverseMap();

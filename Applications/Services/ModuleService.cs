@@ -1,4 +1,5 @@
-﻿using Applications.Interfaces;
+﻿using Applications.Commons;
+using Applications.Interfaces;
 using Applications.ViewModels.ClassTrainingProgramViewModels;
 using Applications.ViewModels.ModuleViewModels;
 using Applications.ViewModels.UnitModuleViewModel;
@@ -18,36 +19,36 @@ namespace Applications.Services
             _mapper = mapper;
         }
 
-        public async Task<ModuleViewModels?> CreateModule(ModuleViewModels moduleDTO)
+        public async Task<CreateModuleViewModel?> CreateModule(CreateModuleViewModel moduleDTO)
         {
             var moduleMap = _mapper.Map<Module>(moduleDTO);
             await _unitOfWork.ModuleRepository.AddAsync(moduleMap);
             var isSuccess = await _unitOfWork.SaveChangeAsync() > 0;
             if(isSuccess)
             {
-                return _mapper.Map<ModuleViewModels>(moduleDTO);
+                return _mapper.Map<CreateModuleViewModel>(moduleDTO);
             }
             return null;
         }
 
-        public async Task<List<ModuleViewModels>> GetAllModules()
+        public async Task<Pagination<ModuleViewModels>> GetAllModules(int pageIndex = 0, int pageSize = 10)
         {
-            var modules = await _unitOfWork.ModuleRepository.GetAllAsync();
-            var result = _mapper.Map<List<ModuleViewModels>>(modules);
+            var modules = await _unitOfWork.ModuleRepository.ToPagination(pageIndex, pageSize);
+            var result = _mapper.Map<Pagination<ModuleViewModels>>(modules);
             return result;
         }
 
-        public async Task<List<ModuleViewModels>> GetDisableModules()
+        public async Task<Pagination<ModuleViewModels>> GetDisableModules(int pageIndex = 0, int pageSize = 10)
         {
             var module = await _unitOfWork.ModuleRepository.GetDisableModules();
-            var result = _mapper.Map<List<ModuleViewModels>>(module);
+            var result = _mapper.Map<Pagination<ModuleViewModels>>(module);
             return result;
         }
 
-        public async Task<List<ModuleViewModels>> GetEnableModules()
+        public async Task<Pagination<ModuleViewModels>> GetEnableModules(int pageIndex = 0, int pageSize = 10)
         {
             var module = await _unitOfWork.ModuleRepository.GetEnableModules();
-            var result = _mapper.Map<List<ModuleViewModels>>(module);
+            var result = _mapper.Map<Pagination<ModuleViewModels>>(module);
             return result;
         }
 
@@ -58,21 +59,21 @@ namespace Applications.Services
             return result;
         }
 
-        public async Task<List<ModuleViewModels>> GetModulesByName(string name)
+        public async Task<Pagination<ModuleViewModels>> GetModulesByName(string name, int pageIndex = 0, int pageSize = 10)
         {
-            var module = await _unitOfWork.ModuleRepository.GetModuleByName(name);
-            var result = _mapper.Map<List<ModuleViewModels>>(module);
+            var module = await _unitOfWork.ModuleRepository.GetModuleByName(name, pageIndex, pageSize);
+            var result = _mapper.Map<Pagination<ModuleViewModels>>(module);
             return result;
         }
 
-        public async Task<List<ModuleViewModels>> GetModulesBySyllabusId(Guid syllabusId)
+        public async Task<Pagination<ModuleViewModels>> GetModulesBySyllabusId(Guid syllabusId, int pageIndex = 0, int pageSize = 10)
         {
-            var module = await _unitOfWork.ModuleRepository.GetModulesBySyllabusId(syllabusId);
-            var result = _mapper.Map<List<ModuleViewModels>>(module);
+            var module = await _unitOfWork.ModuleRepository.GetModulesBySyllabusId(syllabusId, pageIndex, pageSize);
+            var result = _mapper.Map<Pagination<ModuleViewModels>>(module);
             return result;
         }
 
-        public async Task<ModuleViewModels> UpdateModule(Guid moduleId, ModuleViewModels moduleDTO)
+        public async Task<UpdateModuleViewModel> UpdateModule(Guid moduleId, UpdateModuleViewModel moduleDTO)
         {
             var module = await _unitOfWork.ModuleRepository.GetByIdAsync(moduleId);
             if(module != null)
@@ -82,7 +83,7 @@ namespace Applications.Services
                 var isSuccess = await _unitOfWork.SaveChangeAsync() > 0;
                 if(isSuccess)
                 {
-                    return _mapper.Map<ModuleViewModels>(module);
+                    return _mapper.Map<UpdateModuleViewModel>(module);
                 }
                 
             }
