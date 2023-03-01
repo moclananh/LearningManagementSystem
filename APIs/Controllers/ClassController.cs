@@ -1,5 +1,6 @@
 ﻿using Applications.Commons;
 using Applications.Interfaces;
+using Applications.Services;
 using Applications.ViewModels.ClassTrainingProgramViewModels;
 using Applications.ViewModels.ClassViewModels;
 using Domain.Enum.ClassEnum;
@@ -99,6 +100,18 @@ namespace APIs.Controllers
             }
             return BadRequest("Remove TrainingProgram Fail");
         }
+
+        [HttpDelete("Class/DeleteUser/{ClassId}/{UserId}")]
+        public async Task<IActionResult> DeleteUser(Guid ClassId, Guid UserId)
+        {
+            if (ModelState.IsValid)
+            {
+                await _classServices.RemoveUserToClass(ClassId, UserId);
+                return Ok("Remove Success");
+            }
+            return BadRequest("Remove User Fail");
+        }
+
         [HttpGet("GetClassByFilter")]
         public async Task<IActionResult> GetClassByFilter(LocationEnum locations, ClassTimeEnum classTime, Status status, AttendeeEnum attendee, FSUEnum fsu, DateTime? startDate, DateTime? endDate, int pageNumber = 0, int pageSize = 10)
         {

@@ -1,6 +1,7 @@
 ﻿using Applications.Commons;
 using Applications.Interfaces;
 using Applications.ViewModels.ClassTrainingProgramViewModels;
+using Applications.ViewModels.ClassUserViewModels;
 using Applications.ViewModels.ClassViewModels;
 using AutoMapper;
 using Domain.Entities;
@@ -114,6 +115,21 @@ namespace Applications.Services
                 if (isSucces)
                 {
                     return _mapper.Map<CreateClassTrainingProgramViewModel>(classTrainingProgram);
+                }
+            }
+            return null;
+        }
+
+        public async Task<CreateClassUserViewModel> RemoveUserToClass(Guid ClassId, Guid UserId)
+        {
+            var user = await _unitOfWork.ClassUserRepository.GetClassUser(ClassId, UserId);
+            if (user != null)
+            {
+                _unitOfWork.ClassUserRepository.SoftRemove(user);
+                var isSucces = await _unitOfWork.SaveChangeAsync() > 0;
+                if (isSucces)
+                {
+                    return _mapper.Map<CreateClassUserViewModel>(user);
                 }
             }
             return null;
