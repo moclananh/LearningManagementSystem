@@ -1,5 +1,4 @@
-﻿using Application.ViewModels.QuizzViewModels;
-using Application.ViewModels.UnitViewModels;
+﻿using Application.ViewModels.UnitViewModels;
 using AutoFixture;
 using Domain.Entities;
 using Domain.Tests;

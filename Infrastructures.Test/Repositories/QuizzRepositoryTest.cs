@@ -26,17 +26,10 @@ namespace Infrastructures.Tests.Repositories
             var mockData = _fixture.Build<Quizz>()
                 .Without(x => x.QuizzQuestions)
                 .Without(x => x.Unit)
+                .With(x => x.QuizzName, "Mock")
                 .CreateMany(30)
                 .ToList();
             await _dbContext.Quizzs.AddRangeAsync(mockData);
-            await _dbContext.SaveChangesAsync();
-            int i = 0;
-            foreach (var item in mockData)
-            {
-                item.QuizzName = $"Mock{i}";
-                i++;
-            }
-            _dbContext.UpdateRange(mockData);
             await _dbContext.SaveChangesAsync();
             var expected = mockData.Where(x => x.QuizzName.Contains("Mock"))
                                     .OrderByDescending(x => x.CreationDate)
@@ -63,15 +56,10 @@ namespace Infrastructures.Tests.Repositories
             var mockData = _fixture.Build<Quizz>()
                 .Without(x => x.QuizzQuestions)
                 .Without(x => x.Unit)
+                .With(x => x.Status, Domain.Enum.StatusEnum.Status.Enable)
                 .CreateMany(30)
                 .ToList();
             await _dbContext.Quizzs.AddRangeAsync(mockData);
-            await _dbContext.SaveChangesAsync();
-            foreach (var item in mockData)
-            {
-                item.Status = Domain.Enum.StatusEnum.Status.Enable;
-            }
-            _dbContext.UpdateRange(mockData);
             await _dbContext.SaveChangesAsync();
             var expected = mockData.Where(x => x.Status == Domain.Enum.StatusEnum.Status.Enable)
                                     .OrderByDescending(x => x.CreationDate)
@@ -98,15 +86,10 @@ namespace Infrastructures.Tests.Repositories
             var mockData = _fixture.Build<Quizz>()
                 .Without(x => x.QuizzQuestions)
                 .Without(x => x.Unit)
+                .With(x => x.Status, Domain.Enum.StatusEnum.Status.Disable)
                 .CreateMany(30)
                 .ToList();
             await _dbContext.Quizzs.AddRangeAsync(mockData);
-            await _dbContext.SaveChangesAsync();
-            foreach (var item in mockData)
-            {
-                item.Status = Domain.Enum.StatusEnum.Status.Disable;
-            }
-            _dbContext.UpdateRange(mockData);
             await _dbContext.SaveChangesAsync();
             var expected = mockData.Where(x => x.Status == Domain.Enum.StatusEnum.Status.Disable)
                                     .OrderByDescending(x => x.CreationDate)
@@ -130,19 +113,14 @@ namespace Infrastructures.Tests.Repositories
         public async Task QuizzRepository_GetQuizzByUnitId_ShouldReturnCorrectData()
         {
             //arrange
+            var i = Guid.NewGuid();
             var Mock = _fixture.Build<Quizz>()
                                 .Without(x => x.QuizzQuestions)
                                 .Without(x => x.Unit)
+                                .With(x => x.UnitId, i)
                                 .CreateMany(30)
                                 .ToList();
             await _dbContext.AddRangeAsync(Mock);
-            await _dbContext.SaveChangesAsync();
-            var i = Guid.NewGuid();
-            foreach (var item in Mock)
-            {
-                item.UnitId = i;
-            }
-            _dbContext.UpdateRange(Mock);
             await _dbContext.SaveChangesAsync();
             var expected = Mock.Where(x => x.UnitId.Equals(i))
                                         .OrderByDescending(x => x.CreationDate)

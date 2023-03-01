@@ -21,17 +21,14 @@ namespace Infrastructures.Tests.Repositories
         public async Task AssignmentQuestionRepository_GetAssignmentQuestionByAssignmentId_ShouldReturnCorrectData()
         {
             //arrange
+            var i = Guid.NewGuid();
             var assignmentQuestionMock = _fixture.Build<AssignmentQuestion>()
                                 .Without(x => x.Assignment)
+                                .With(x => x.AssignmentId, i)
                                 .CreateMany(30)
                                 .ToList();
             await _dbContext.AddRangeAsync(assignmentQuestionMock);
             await _dbContext.SaveChangesAsync();
-            var i = Guid.NewGuid();
-            foreach (var item in assignmentQuestionMock)
-            {
-                item.AssignmentId = i;
-            }
             _dbContext.UpdateRange(assignmentQuestionMock);
             await _dbContext.SaveChangesAsync();
             var expected = assignmentQuestionMock.Where(x => x.AssignmentId.Equals(i))
@@ -50,6 +47,29 @@ namespace Infrastructures.Tests.Repositories
             resultPaging.PageIndex.Should().Be(0);
             resultPaging.PageSize.Should().Be(10);
             result.Should().BeEquivalentTo(expected);
+        }
+
+
+        [Fact]
+        public async Task AssignmentQuestionRepository_GetAssignmentQuestionListByAssignmentId_ShouldReturnCorrectData()
+        {
+            //arrange
+            var i = Guid.NewGuid();
+            var assignmentQuestionMock = _fixture.Build<AssignmentQuestion>()
+                                .Without(x => x.Assignment)
+                                .With(x => x.AssignmentId, i)
+                                .CreateMany(30)
+                                .ToList();
+            await _dbContext.AddRangeAsync(assignmentQuestionMock);
+            await _dbContext.SaveChangesAsync();
+            _dbContext.UpdateRange(assignmentQuestionMock);
+            await _dbContext.SaveChangesAsync();
+            var expected = assignmentQuestionMock.Where(x => x.AssignmentId.Equals(i))
+                                        .OrderByDescending(x => x.CreationDate)
+                                        .Take(10)
+                                        .ToList();
+            //act
+            var resultPaging = await _assignmentQuestionRepository.GetAssignmentQuestionListByAssignmentId(i);
         }
     }
 }

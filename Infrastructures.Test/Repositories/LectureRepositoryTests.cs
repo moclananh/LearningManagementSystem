@@ -26,17 +26,11 @@ namespace Infrastructures.Tests.Repositories
             //arrange
             var mockData = _fixture.Build<Lecture>()
                             .Without(x => x.Unit)
+                            .With(x => x.LectureName, "Mock")
                             .CreateMany(30)
                             .ToList();
             await _dbContext.Lectures.AddRangeAsync(mockData);
             await _dbContext.SaveChangesAsync();
-            int i = 0;
-            foreach (var item in mockData)
-            {
-                item.LectureName = $"Mock{i}";
-                i++;
-            }
-            _dbContext.UpdateRange(mockData);
             await _dbContext.SaveChangesAsync();
             var expected = mockData.Where(x => x.LectureName.Contains("Mock"))
                                     .OrderByDescending(x => x.CreationDate)
@@ -58,18 +52,13 @@ namespace Infrastructures.Tests.Repositories
         [Fact]
         public async Task LectureRepository_GetLectureByUnitId_ShouldReturnCorrectData()
         {
+            var i = Guid.NewGuid();
             var mockData = _fixture.Build<Lecture>()
                             .Without(x => x.Unit)
+                            .With(x => x.UnitId, i)
                             .CreateMany(30)
                             .ToList();
             await _dbContext.Lectures.AddRangeAsync(mockData);
-            await _dbContext.SaveChangesAsync();
-            var i = Guid.NewGuid();
-            foreach (var item in mockData)
-            {
-                item.UnitId = i;
-            }
-            _dbContext.UpdateRange(mockData);
             await _dbContext.SaveChangesAsync();
             var expected = mockData.Where(x => x.UnitId.Equals(i))
                                     .OrderByDescending(x => x.CreationDate)
@@ -94,15 +83,10 @@ namespace Infrastructures.Tests.Repositories
             //arrange
             var mockData = _fixture.Build<Lecture>()
                             .Without(x => x.Unit)
+                            .With(x => x.Status, Domain.Enum.StatusEnum.Status.Enable)
                             .CreateMany(30)
                             .ToList();
             await _dbContext.Lectures.AddRangeAsync(mockData);
-            await _dbContext.SaveChangesAsync();
-            foreach (var item in mockData)
-            {
-                item.Status = Domain.Enum.StatusEnum.Status.Enable;
-            }
-            _dbContext.UpdateRange(mockData);
             await _dbContext.SaveChangesAsync();
             var expected = mockData.Where(x => x.Status == Domain.Enum.StatusEnum.Status.Enable)
                                     .OrderByDescending(x => x.CreationDate)
@@ -127,15 +111,11 @@ namespace Infrastructures.Tests.Repositories
             //arrange
             var mockData = _fixture.Build<Lecture>()
                             .Without(x => x.Unit)
+                            .With(x => x.Status, Domain.Enum.StatusEnum.Status.Disable)
                             .CreateMany(30)
                             .ToList();
             await _dbContext.Lectures.AddRangeAsync(mockData);
             await _dbContext.SaveChangesAsync();
-            foreach (var item in mockData)
-            {
-                item.Status = Domain.Enum.StatusEnum.Status.Disable;
-            }
-            _dbContext.UpdateRange(mockData);
             await _dbContext.SaveChangesAsync();
             var expected = mockData.Where(x => x.Status == Domain.Enum.StatusEnum.Status.Disable)
                                     .OrderByDescending(x => x.CreationDate)

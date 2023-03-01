@@ -27,15 +27,10 @@ namespace Infrastructures.Tests.Repositories
                            .Without(s => s.TrainingProgramSyllabi)
                            .Without(s => s.SyllabusOutputStandards)
                            .Without(s => s.SyllabusModules)
+                           .With(x => x.Status, Domain.Enum.StatusEnum.Status.Enable)
                            .CreateMany(30)
                            .ToList();
             await _dbContext.Syllabi.AddRangeAsync(mockData);
-            await _dbContext.SaveChangesAsync();
-            foreach (var item in mockData)
-            {
-                item.Status = Domain.Enum.StatusEnum.Status.Enable;
-            }
-            _dbContext.UpdateRange(mockData);
             await _dbContext.SaveChangesAsync();
             var expected = mockData.Where(s => s.Status == Domain.Enum.StatusEnum.Status.Enable)
                                    .OrderByDescending(s => s.CreationDate)
@@ -65,15 +60,10 @@ namespace Infrastructures.Tests.Repositories
                            .Without(s => s.TrainingProgramSyllabi)
                            .Without(s => s.SyllabusOutputStandards)
                            .Without(s => s.SyllabusModules)
+                           .With(x => x.Status, Domain.Enum.StatusEnum.Status.Disable)
                            .CreateMany(30)
                            .ToList();
             await _dbContext.Syllabi.AddRangeAsync(mockData);
-            await _dbContext.SaveChangesAsync();
-            foreach (var item in mockData)
-            {
-                item.Status = Domain.Enum.StatusEnum.Status.Disable;
-            }
-            _dbContext.UpdateRange(mockData);
             await _dbContext.SaveChangesAsync();
             var expected = mockData.Where(s => s.Status == Domain.Enum.StatusEnum.Status.Disable)
                                    .OrderByDescending(s => s.CreationDate)
@@ -103,17 +93,10 @@ namespace Infrastructures.Tests.Repositories
                            .Without(s => s.TrainingProgramSyllabi)
                            .Without(s => s.SyllabusOutputStandards)
                            .Without(s => s.SyllabusModules)
+                           .With(s => s.SyllabusName, "Mock")
                            .CreateMany(30)
                            .ToList();
             await _dbContext.Syllabi.AddRangeAsync(mockData);
-            await _dbContext.SaveChangesAsync();
-            int i = 0;
-            foreach (var item in mockData)
-            {
-                item.SyllabusName = $"Mock{i}";
-                i++;
-            }
-            _dbContext.UpdateRange(mockData);
             await _dbContext.SaveChangesAsync();
             var expected = mockData.Where(s => s.SyllabusName!.Contains("Mock"))
                                    .OrderByDescending(s => s.CreationDate)

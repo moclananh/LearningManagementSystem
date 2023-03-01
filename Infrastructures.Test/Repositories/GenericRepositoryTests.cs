@@ -188,14 +188,11 @@ namespace Infrastructures.Tests.Repositories
                             .Without(x => x.AuditPlans)
                             .Without(x => x.ClassUsers)
                             .Without(x => x.ClassTrainingPrograms)
+                            .With(x => x.IsDeleted, false)
                             .CreateMany(10)
                             .ToList();
             await _dbContext.Classes.AddRangeAsync(mockData);
             await _dbContext.SaveChangesAsync();
-            foreach (var item in mockData)
-            {
-                item.IsDeleted = false;
-            }
             //act
             _genericRepository.UpdateRange(mockData);
             var result = await _dbContext.SaveChangesAsync();

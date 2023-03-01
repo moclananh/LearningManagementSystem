@@ -27,17 +27,10 @@ namespace Infrastructures.Tests.Repositories
                             .Without(x => x.ModuleUnits)
                             .Without(x => x.AuditPlan)
                             .Without(x => x.SyllabusModules)
+                            .With(x => x.ModuleName, "Mock")
                             .CreateMany(30)
                             .ToList();
             await _dbContext.Modules.AddRangeAsync(mockData);
-            await _dbContext.SaveChangesAsync();
-            int i = 0;
-            foreach (var item in mockData)
-            {
-                item.ModuleName = $"Mock{i}";
-                i++;
-            }
-            _dbContext.UpdateRange(mockData);
             await _dbContext.SaveChangesAsync();
             var expected = mockData.Where(x => x.ModuleName.Contains("Mock"))
                                     .OrderByDescending(x => x.CreationDate)
@@ -65,15 +58,10 @@ namespace Infrastructures.Tests.Repositories
                                    .Without(x => x.ModuleUnits)
                                    .Without(x => x.AuditPlan)
                                    .Without(x => x.SyllabusModules)
+                                   .With(x => x.Status, Domain.Enum.StatusEnum.Status.Enable)
                                    .CreateMany(30)
                                    .ToList();
             await _dbContext.Modules.AddRangeAsync(mockData);
-            await _dbContext.SaveChangesAsync();
-            foreach (var item in mockData)
-            {
-                item.Status = Domain.Enum.StatusEnum.Status.Enable;
-            }
-            _dbContext.UpdateRange(mockData);
             await _dbContext.SaveChangesAsync();
             var expected = mockData.Where(x => x.Status == Domain.Enum.StatusEnum.Status.Enable)
                                     .OrderByDescending(x => x.CreationDate)
@@ -101,15 +89,10 @@ namespace Infrastructures.Tests.Repositories
                                    .Without(x => x.ModuleUnits)
                                    .Without(x => x.AuditPlan)
                                    .Without(x => x.SyllabusModules)
+                                   .With(x => x.Status, Domain.Enum.StatusEnum.Status.Disable)
                                    .CreateMany(30)
                                    .ToList();
             await _dbContext.Modules.AddRangeAsync(mockData);
-            await _dbContext.SaveChangesAsync();
-            foreach (var item in mockData)
-            {
-                item.Status = Domain.Enum.StatusEnum.Status.Disable;
-            }
-            _dbContext.UpdateRange(mockData);
             await _dbContext.SaveChangesAsync();
             var expected = mockData.Where(x => x.Status == Domain.Enum.StatusEnum.Status.Disable)
                                     .OrderByDescending(x => x.CreationDate)

@@ -23,22 +23,17 @@ namespace Infrastructures.Tests.Repositories
         public async Task AuditPlanRepository_GetAuditPlanByClassId_ShouldReturnCorrectData()
         {
             //arrange
+            var i = Guid.NewGuid();
             var auditplanMock = _fixture.Build<AuditPlan>()
                                 .Without(x => x.AuditResults)
                                 .Without(x => x.AuditQuestions)
                                 .Without(x => x.UserAuditPlans)
                                 .Without(x => x.Module)
                                 .Without(x => x.Class)
+                                .With(x => x.ClassId, i)
                                 .CreateMany(30)
                                 .ToList();
             await _dbContext.AddRangeAsync(auditplanMock);
-            await _dbContext.SaveChangesAsync();
-            var i = Guid.NewGuid();
-            foreach (var item in auditplanMock)
-            {
-                item.ClassId = i;
-            }
-            _dbContext.UpdateRange(auditplanMock);
             await _dbContext.SaveChangesAsync();
             var expected = auditplanMock.Where(x => x.ClassId.Equals(i))
                                         .OrderByDescending(x => x.CreationDate)
@@ -62,22 +57,17 @@ namespace Infrastructures.Tests.Repositories
         public async Task AuditPlanRepository_GetAuditPlanByModuleId_ShouldReturnCorrectData()
         {
             //arrange
+            var i = Guid.NewGuid();
             var auditplanMock = _fixture.Build<AuditPlan>()
                                 .Without(x => x.AuditResults)
                                 .Without(x => x.AuditQuestions)
                                 .Without(x => x.UserAuditPlans)
                                 .Without(x => x.Module)
                                 .Without(x => x.Class)
+                                .With(x => x.ModuleId, i)
                                 .CreateMany(30)
                                 .ToList();
             await _dbContext.AddRangeAsync(auditplanMock);
-            await _dbContext.SaveChangesAsync();
-            var i = Guid.NewGuid();
-            foreach (var item in auditplanMock)
-            {
-                item.ModuleId = i;
-            }
-            _dbContext.UpdateRange(auditplanMock);
             await _dbContext.SaveChangesAsync();
             var expected = auditplanMock.Where(x => x.ModuleId.Equals(i)).FirstOrDefault();
             //act
@@ -96,17 +86,10 @@ namespace Infrastructures.Tests.Repositories
                                 .Without(x => x.UserAuditPlans)
                                 .Without(x => x.Module)
                                 .Without(x => x.Class)
+                                .With(x => x.AuditPlanName, "Mock") 
                                 .CreateMany(30)
                                 .ToList();
             await _dbContext.AddRangeAsync(auditplanMock);
-            await _dbContext.SaveChangesAsync();
-            var i = 0;
-            foreach (var item in auditplanMock)
-            {
-                item.AuditPlanName = $"Mock{i}";
-                i++;
-            }
-            _dbContext.UpdateRange(auditplanMock);
             await _dbContext.SaveChangesAsync();
             var expected = auditplanMock.Where(x => x.AuditPlanName.Contains("Mock"))
                                         .OrderByDescending(x => x.CreationDate)
@@ -135,15 +118,10 @@ namespace Infrastructures.Tests.Repositories
                                 .Without(x => x.UserAuditPlans)
                                 .Without(x => x.Module)
                                 .Without(x => x.Class)
+                                .With(x => x.Status, Domain.Enum.StatusEnum.Status.Disable)
                                 .CreateMany(30)
                                 .ToList();
             await _dbContext.AddRangeAsync(auditplanMock);
-            await _dbContext.SaveChangesAsync();
-            foreach (var item in auditplanMock)
-            {
-                item.Status = Domain.Enum.StatusEnum.Status.Disable;
-            }
-            _dbContext.UpdateRange(auditplanMock);
             await _dbContext.SaveChangesAsync();
             var expected = auditplanMock.Where(x => x.Status == Domain.Enum.StatusEnum.Status.Disable)
                                         .OrderByDescending(x => x.CreationDate)
@@ -172,15 +150,10 @@ namespace Infrastructures.Tests.Repositories
                                 .Without(x => x.UserAuditPlans)
                                 .Without(x => x.Module)
                                 .Without(x => x.Class)
+                                .With(x => x.Status, Domain.Enum.StatusEnum.Status.Enable)
                                 .CreateMany(30)
                                 .ToList();
             await _dbContext.AddRangeAsync(auditplanMock);
-            await _dbContext.SaveChangesAsync();
-            foreach (var item in auditplanMock)
-            {
-                item.Status = Domain.Enum.StatusEnum.Status.Enable;
-            }
-            _dbContext.UpdateRange(auditplanMock);
             await _dbContext.SaveChangesAsync();
             var expected = auditplanMock.Where(x => x.Status == Domain.Enum.StatusEnum.Status.Enable)
                                         .OrderByDescending(x => x.CreationDate)

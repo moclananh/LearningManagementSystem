@@ -6,7 +6,6 @@ using Domain.Tests;
 using FluentAssertions;
 using Infrastructures.Repositories;
 
-
 namespace Infrastructures.Tests.Repositories
 {
     public class UnitRepositoryTest : SetupTest
@@ -32,6 +31,7 @@ namespace Infrastructures.Tests.Repositories
                 .Without(x => x.Assignments)
                 .Without(x => x.Quizzs)
                 .Without(x => x.ModuleUnits)
+                .With(x => x.UnitName, "Mock")
                 .CreateMany(30)
                 .ToList();
             await _dbContext.Units.AddRangeAsync(mockData);
@@ -72,6 +72,7 @@ namespace Infrastructures.Tests.Repositories
                 .Without(x => x.Assignments)
                 .Without(x => x.Quizzs)
                 .Without(x => x.ModuleUnits)
+                .With(x => x.Status, Domain.Enum.StatusEnum.Status.Enable)
                 .CreateMany(30)
                 .ToList();
             await _dbContext.Units.AddRangeAsync(mockData);
@@ -110,6 +111,7 @@ namespace Infrastructures.Tests.Repositories
                 .Without(x => x.Assignments)
                 .Without(x => x.Quizzs)
                 .Without(x => x.ModuleUnits)
+                .With(x => x.Status, Domain.Enum.StatusEnum.Status.Disable)
                 .CreateMany(30)
                 .ToList();
             await _dbContext.Units.AddRangeAsync(mockData);

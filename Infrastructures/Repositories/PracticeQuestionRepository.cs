@@ -18,7 +18,7 @@ namespace Infrastructures.Repositories
 
         public async Task<Pagination<PracticeQuestion>> GetAllPracticeQuestionById(Guid practiceId, int pageIndex = 0, int pageSize = 10)
         {
-            var itemCount = await _dbContext.Practices.CountAsync();
+            var itemCount = await _dbContext.PracticesQuestions.CountAsync();
             var items = await _dbSet.Where(x => x.PracticeId.Equals(practiceId))
                                     .OrderByDescending(x => x.CreationDate)
                                     .Skip(pageIndex * pageSize)
