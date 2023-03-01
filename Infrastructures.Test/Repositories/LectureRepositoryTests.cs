@@ -122,7 +122,7 @@ namespace Infrastructures.Tests.Repositories
             result.Should().BeEquivalentTo(expected);
         }
         [Fact]
-        public async Task ClassRepository_GetDiableLectures_ShoulReturnCorrectData()
+        public async Task LectureRepository_GetDisableLectures_ShoulReturnCorrectData()
         {
             //arrange
             var mockData = _fixture.Build<Lecture>()

@@ -21,4 +21,9 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Applications\Applications.csproj" />
+    <ProjectReference Include="..\Domain.Tests\Domain.Tests.csproj" />
+  </ItemGroup>
+
 </Project>
