@@ -9,8 +9,10 @@ namespace Applications.ViewModels.ClassViewModels
         public string ClassCode { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public string Location { get; set; }
+        public LocationEnum Location { get; set; }
         public ClassTimeEnum ClassTime { get; set; }
+        public FSUEnum FSU { get; set; }
+        public AttendeeEnum Attendee { get; set; }
         public Status Status { get; set; }
         public DateTime? ModificationDate { get; set; }
         public Guid? ModificationBy { get; set; }
