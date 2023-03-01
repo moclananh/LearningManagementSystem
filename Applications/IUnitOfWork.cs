@@ -28,6 +28,7 @@ namespace Applications
         public ISyllabusOutputStandardRepository SyllabusOutputStandardRepository { get; }
         public IModuleUnitRepository ModuleUnitRepository { get; }
         public IUserAuditPlanRepository UserAuditPlanRepository { get; }
+        public IQuizzQuestionRepository QuizzQuestionRepository { get; }
         public Task<int> SaveChangeAsync();
     }
 }
