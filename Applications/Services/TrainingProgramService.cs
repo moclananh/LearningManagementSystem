@@ -1,11 +1,11 @@
 ﻿using Application.ViewModels.TrainingProgramModels;
 using Applications.Commons;
 using Applications.Interfaces;
+using Applications.ViewModels.TrainingProgramModels;
 using Applications.ViewModels.TrainingProgramSyllabi;
 using AutoMapper;
 using Domain.Entities;
 using Domain.EntityRelationship;
-using OfficeOpenXml.DataValidation;
 
 namespace Applications.Services
 {
@@ -41,29 +41,29 @@ namespace Applications.Services
             return null;
         }
 
-        public async Task<ViewTrainingProgram?> CreateTrainingProgramAsync(ViewTrainingProgram TrainingProgramDTO)
+        public async Task<CreateTrainingProgramViewModel?> CreateTrainingProgramAsync(CreateTrainingProgramViewModel TrainingProgramDTO)
         {
             var TrainingProgramObj = _mapper.Map<TrainingProgram>(TrainingProgramDTO);
             await _unitOfWork.TrainingProgramRepository.AddAsync(TrainingProgramObj);
             var isSuccess = await _unitOfWork.SaveChangeAsync() > 0;
             if (isSuccess)
             {
-                return _mapper.Map<ViewTrainingProgram>(TrainingProgramObj);
+                return _mapper.Map<CreateTrainingProgramViewModel>(TrainingProgramObj);
             }
             return null;
         }
 
-        public async Task<Pagination<ViewTrainingProgram>> GetTrainingProgramByClassId(Guid ClassId, int pageIndex = 0, int pageSize = 10)
+        public async Task<Pagination<TrainingProgramViewModel>> GetTrainingProgramByClassId(Guid ClassId, int pageIndex = 0, int pageSize = 10)
         {
             var TrainingPrograms = await _unitOfWork.TrainingProgramRepository.GetTrainingProgramByClassId(ClassId);
-            var result = _mapper.Map<Pagination<ViewTrainingProgram>>(TrainingPrograms);
+            var result = _mapper.Map<Pagination<TrainingProgramViewModel>>(TrainingPrograms);
             return result;
         }
 
-        public async Task<ViewTrainingProgram> GetTrainingProgramById(Guid TrainingProramId)
+        public async Task<TrainingProgramViewModel> GetTrainingProgramById(Guid TrainingProramId)
         {
             var TrainingPrograms = await _unitOfWork.TrainingProgramRepository.GetByIdAsync(TrainingProramId);
-            var result = _mapper.Map<ViewTrainingProgram>(TrainingPrograms);
+            var result = _mapper.Map<TrainingProgramViewModel>(TrainingPrograms);
             return result;
         }
 
@@ -82,7 +82,7 @@ namespace Applications.Services
             return null;
         }
 
-        public async Task<ViewTrainingProgram?> UpdateTrainingProgramAsync(Guid TrainingProgramId, ViewTrainingProgram TrainingProgramDTO)
+        public async Task<UpdateTrainingProgramViewModel?> UpdateTrainingProgramAsync(Guid TrainingProgramId, UpdateTrainingProgramViewModel TrainingProgramDTO)
         {
             var TrainingProgramObj = await _unitOfWork.TrainingProgramRepository.GetByIdAsync(TrainingProgramId);
             if (TrainingProgramObj != null)
@@ -92,30 +92,30 @@ namespace Applications.Services
                 var isSuccess = await _unitOfWork.SaveChangeAsync() > 0;
                 if (isSuccess)
                 {
-                    return _mapper.Map<ViewTrainingProgram>(TrainingProgramObj);
+                    return _mapper.Map<UpdateTrainingProgramViewModel>(TrainingProgramObj);
                 }
             }
             return null;
         }
 
-        public async Task<Pagination<ViewTrainingProgram>> ViewAllTrainingProgramAsync(int pageIndex = 0, int pageSize = 10)
+        public async Task<Pagination<TrainingProgramViewModel>> ViewAllTrainingProgramAsync(int pageIndex = 0, int pageSize = 10)
         {
             var TrainingPrograms = await _unitOfWork.TrainingProgramRepository.ToPagination(pageIndex, pageSize);
-            var result = _mapper.Map<Pagination<ViewTrainingProgram>>(TrainingPrograms);
+            var result = _mapper.Map<Pagination<TrainingProgramViewModel>>(TrainingPrograms);
             return result;
         }
 
-        public async Task<Pagination<ViewTrainingProgram>> ViewTrainingProgramDisableAsync(int pageIndex = 0, int pageSize = 10)
+        public async Task<Pagination<TrainingProgramViewModel>> ViewTrainingProgramDisableAsync(int pageIndex = 0, int pageSize = 10)
         {
             var TrainingPrograms = await _unitOfWork.TrainingProgramRepository.GetTrainingProgramDisable(pageIndex,pageSize);
-            var result = _mapper.Map<Pagination<ViewTrainingProgram>>(TrainingPrograms);
+            var result = _mapper.Map<Pagination<TrainingProgramViewModel>>(TrainingPrograms);
             return result;
         }
 
-        public async Task<Pagination<ViewTrainingProgram>> ViewTrainingProgramEnableAsync(int pageIndex = 0, int pageSize = 10)
+        public async Task<Pagination<TrainingProgramViewModel>> ViewTrainingProgramEnableAsync(int pageIndex = 0, int pageSize = 10)
         {
             var TrainingPrograms = await _unitOfWork.TrainingProgramRepository.GetTrainingProgramEnable(pageIndex, pageSize);
-            var result = _mapper.Map<Pagination<ViewTrainingProgram>>(TrainingPrograms);
+            var result = _mapper.Map<Pagination<TrainingProgramViewModel>>(TrainingPrograms);
             return result;
         }
     }

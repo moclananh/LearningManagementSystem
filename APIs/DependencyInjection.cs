@@ -24,6 +24,9 @@ using APIs.Validations.UnitValidations;
 using Applications.ViewModels.AssignmentViewModels;
 using APIs.Validations.AssignmentValidations;
 using APIs.Validations.ModulesValidations;
+using APIs.Validations.TrainingProgramValidations;
+using Application.ViewModels.TrainingProgramModels;
+using Applications.ViewModels.TrainingProgramModels;
 
 
 namespace APIs;
@@ -56,6 +59,8 @@ public static class DependencyInjection
         services.AddScoped<IValidator<CreateUnitViewModel>, UnitValidation>();
         services.AddScoped<IValidator<CreateAssignmentViewModel>, CreateAssignmentValidation>();
         services.AddScoped<IValidator<UpdateAssignmentViewModel>, UpdateAssignmentValidation>();
+        services.AddScoped<IValidator<CreateTrainingProgramViewModel>, CreateTrainingProgramValidation>();
+        services.AddScoped<IValidator<UpdateTrainingProgramViewModel>, UpdateTrainingProgramValidation>();
         //---------------------------------------------------------------------------------------
         services.AddAuthentication(option =>
         {

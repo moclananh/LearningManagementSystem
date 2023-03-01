@@ -2,7 +2,7 @@
 
 namespace Application.ViewModels.TrainingProgramModels
 {
-    public class ViewTrainingProgram
+    public class CreateTrainingProgramViewModel
     {
         public string TrainingProgramName { get; set; }
         public string Duration { get; set; }
