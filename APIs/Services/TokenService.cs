@@ -28,10 +28,8 @@ public class TokenService : ITokenService
 
         var authClaims = new List<Claim>
         {
-            new Claim(ClaimTypes.Name,user.Email),
             new Claim("userID",user.Id.ToString()),
-            new Claim("firstName",user.firstName),
-            new Claim("lastName",user.lastName),
+            new Claim(ClaimTypes.Email,user.Email),
             new Claim(ClaimTypes.Role, user.Role.ToString())
         };
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("Jwt:SecretKey").Value!));

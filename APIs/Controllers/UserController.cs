@@ -42,7 +42,7 @@ public class UserController : Controller
     /// <param name="id"></param>
     /// <param name="user"></param>
     /// <returns></returns>
-    [HttpPut("UpdateUser/{UserId}")]
+    [HttpPut("UpdateUser/{UserId}"), Authorize(policy: "AuthUser")]
     public async Task<Response> UpdateUser(Guid UserId, [FromBody] UpdateUserViewModel user) => await _userService.UpdateUser(UserId, user);
 
     /// <summary>
@@ -67,9 +67,9 @@ public class UserController : Controller
     /// </summary>
     /// <param name="changePassword"></param>
     /// <returns></returns>
-    [HttpPut("Change-Password")]
+    [HttpPut("Change-Password/{UserId}")]
     [Authorize]
-    public async Task<Response> ChangePassword([FromBody] ChangePasswordViewModel changePassword) => await _userService.ChangePassword(changePassword);
+    public async Task<Response> ChangePassword(Guid UserId, [FromBody] ChangePasswordViewModel changePassword) => await _userService.ChangePassword(UserId, changePassword);
     
 
     

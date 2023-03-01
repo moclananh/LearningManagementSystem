@@ -16,6 +16,6 @@ public interface IUserService
     Task<Pagination<UserViewModel>> GetUsersByRole(Role role, int pageIndex = 0, int pageSize = 10);
     Task<Response> UploadFileExcel(IFormFile formFile, CancellationToken cancellationToken);
     Task<Pagination<UserViewModel>> GetUserByClassId(Guid ClassId, int pageIndex = 0, int pageSize = 10);
-    Task<Response> ChangePassword(ChangePasswordViewModel changePassword);
+    Task<Response> ChangePassword(Guid id, ChangePasswordViewModel changePassword);
 
 }

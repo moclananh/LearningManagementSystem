@@ -25,6 +25,7 @@ using Applications.ViewModels.AssignmentViewModels;
 using APIs.Validations.AssignmentValidations;
 using APIs.Validations.ModulesValidations;
 
+
 namespace APIs;
 
 public static class DependencyInjection
@@ -78,7 +79,7 @@ public static class DependencyInjection
         services.AddAuthorization(opt =>
         {
             // set Policy
-            //opt.AddPolicy("require", policy => policy.RequireRole("User"));
+            opt.AddPolicy("AuthUser", policy => policy.RequireAuthenticatedUser()); // only user already login
 
         });
         //-------------------------------------------------------------------------------------------

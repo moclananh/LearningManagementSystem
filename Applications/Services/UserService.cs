@@ -26,10 +26,11 @@ public class UserService : IUserService
     }
 
     // Change Password
-    public async Task<Response> ChangePassword(ChangePasswordViewModel changePassword)
+    public async Task<Response> ChangePassword(Guid id,ChangePasswordViewModel changePassword)
     {
-        var user = (await _unitOfWork.UserRepository.Find(x => x.Password == changePassword.OldPassword)).FirstOrDefault();
-        if (user == null) return new Response(HttpStatusCode.BadRequest, "wrong password!");
+        var user = (await _unitOfWork.UserRepository.Find(x => x.Id == id)).FirstOrDefault();
+        if (user == null) return new Response(HttpStatusCode.BadRequest, "forbidden exception!");
+        if (user.Password != changePassword.OldPassword) return new Response(HttpStatusCode.BadRequest, "Wrong password");
         if (string.Compare(changePassword.NewPassword, changePassword.ConfirmPassword) != 0)
         {
             return new Response(HttpStatusCode.BadRequest, "the new password and confirm password does not match!");
