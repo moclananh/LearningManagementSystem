@@ -23,7 +23,7 @@ namespace Infrastructures.Tests.Mappers.QuizzMapper
             result.QuizzId.Should().Be(quizzMock.Id.ToString());
         }
         [Fact]
-        public void TestQuizzLectureViewModel()
+        public void TestCreateQuizzViewModel()
         {
             //arrange
             var quizzMock = _fixture.Build<Quizz>()

@@ -5,7 +5,7 @@ using Domain.Tests;
 using FluentAssertions;
 
 
-namespace Infrastructures.Tests.Mappers.ClassMapper;
+namespace Infrastructures.Tests.Mappers.UserMapper;
 
 public class UserMapper : SetupTest
 {
