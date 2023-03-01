@@ -1,6 +1,7 @@
 ﻿using Applications.Commons;
 using Applications.Interfaces;
 using Applications.ViewModels.AuditPlanViewModel;
+using Applications.ViewModels.UserAuditPlanViewModels;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
@@ -101,6 +102,11 @@ namespace APIs.Controllers
                 return Ok("Remove Success");
             }
             return BadRequest("Remove User Fail");
+        }
+        [HttpGet("GetAllUserAuditPlan")]
+        public async Task<Pagination<UserAuditPlanViewModel>> GetAllUserAuditPlan(int pageIndex = 0, int pageSize = 10)
+        {
+            return await _auditPlanService.GetAllUserAuditPlanAsync(pageIndex, pageSize);
         }
     }
 }

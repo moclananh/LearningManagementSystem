@@ -75,6 +75,7 @@ namespace Infrastructures.Mappers
             CreateMap<CreateUserAuditPlanViewModel, UserAuditPlan>().ReverseMap();
             CreateMap<UpdatePracticeViewModel, Practice>().ReverseMap();
             CreateMap<UpdateAuditResultViewModel, AuditResult>().ReverseMap();
+            CreateMap<UserAuditPlanViewModel, UserAuditPlan>().ReverseMap();
             /* pagination */
             CreateMap(typeof(Pagination<>), typeof(Pagination<>));
         }

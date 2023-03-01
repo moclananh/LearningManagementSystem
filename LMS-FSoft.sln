@@ -13,11 +13,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "APIs", "APIs\APIs.csproj", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LMS-FSoftTests", "LMS-FSoftTests", "{ECDF42CC-77B5-4E84-96C9-58302D34A1ED}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain.Tests", "Domain.Tests\Domain.Tests.csproj", "{6A6CE552-3DC2-4D66-84F8-04184939A510}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain.Tests", "Domain.Tests\Domain.Tests.csproj", "{6A6CE552-3DC2-4D66-84F8-04184939A510}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructures.Tests", "Infrastructures.Test\Infrastructures.Tests.csproj", "{E536452C-8C55-4420-8A5E-7F5E2236D153}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructures.Tests", "Infrastructures.Test\Infrastructures.Tests.csproj", "{E536452C-8C55-4420-8A5E-7F5E2236D153}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Applications.Tests", "Applications.Test\Applications.Tests.csproj", "{ADF787BF-14DC-4145-9FA5-E7AE0A9D58A4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Applications.Tests", "Applications.Test\Applications.Tests.csproj", "{ADF787BF-14DC-4145-9FA5-E7AE0A9D58A4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

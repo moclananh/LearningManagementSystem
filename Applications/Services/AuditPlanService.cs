@@ -128,5 +128,11 @@ namespace Applications.Services
             }
             return null;
         }
+        public async Task<Pagination<UserAuditPlanViewModel>> GetAllUserAuditPlanAsync(int pageIndex = 0, int pageSize = 10)
+        {
+            var auditplans = await _unitOfWork.UserAuditPlanRepository.ToPagination(pageIndex, pageSize);
+            var result = _mapper.Map<Pagination<UserAuditPlanViewModel>>(auditplans);
+            return result;
+        }
     }
 }

@@ -18,5 +18,6 @@ namespace Applications.Interfaces
         public Task<UpdateAuditPlanViewModel?> UpdateAuditPlanAsync(Guid auditPlanId, UpdateAuditPlanViewModel updateAuditPlanView);
         public Task<CreateUserAuditPlanViewModel> AddUserToAuditPlan(Guid AuditPlanId, Guid UserId);
         public Task<CreateUserAuditPlanViewModel> RemoveUserToAuditPlan(Guid AuditPlanId, Guid UserId);
+        public Task<Pagination<UserAuditPlanViewModel>> GetAllUserAuditPlanAsync(int pageIndex = 0, int pageSize = 10);
     }
 }
