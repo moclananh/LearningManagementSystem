@@ -9,7 +9,7 @@ namespace APIs.Validations.ClassValidations
         {
             RuleFor(x => x.ClassName).NotNull().NotEmpty().MaximumLength(100);
             RuleFor(x => x.ClassCode).NotNull().NotEmpty().MaximumLength(50);
-            RuleFor(x => x.Location).NotNull().NotEmpty().MaximumLength(100);
+            
         }
     }
 }

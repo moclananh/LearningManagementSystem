@@ -35,6 +35,7 @@ namespace Domain.Tests
         protected readonly Mock<ITokenService> _tokenServiceMock;
         protected readonly Mock<ITrainingProgramService> _trainingProgramServiceMock;
         protected readonly Mock<IUnitServices> _unitServicesMock;
+        protected readonly Mock<IAuditResultServices> _auditResultServicesMock;
         //
         protected readonly Mock<IAssignmentQuestionRepository> _assignmentQuestionRepositoryMock;
         protected readonly Mock<IAssignmentRepository> _assignmentRepositoryMock;
@@ -50,6 +51,7 @@ namespace Domain.Tests
         protected readonly Mock<ISyllabusRepository> _syllabusRepositoryMock;
         protected readonly Mock<ITrainingProgramRepository> _trainingProgramRepositoryMock;
         protected readonly Mock<IUserRepository> _userRepositoryMock;
+        protected readonly Mock<IAuditResultRepository> _auditResultRepositoryMock;
         protected readonly AppDBContext _dbContext;
 
         public SetupTest()
@@ -63,6 +65,7 @@ namespace Domain.Tests
             _unitOfWorkMock = new Mock<IUnitOfWork>();
 
             //
+            _auditResultServicesMock = new Mock<IAuditResultServices>();
             _assignmentQuestionServiceMock = new Mock<IAssignmentQuestionService>();
             _assignmentServiceMock = new Mock<IAssignmentService>();
             _auditPlanServiceMock = new Mock<IAuditPlanService>();
@@ -80,6 +83,7 @@ namespace Domain.Tests
             _unitServicesMock = new Mock<IUnitServices>();
             _userServiceMock = new Mock<IUserService>();
             //
+            _auditResultRepositoryMock = new Mock<IAuditResultRepository>();
             _assignmentQuestionRepositoryMock = new Mock<IAssignmentQuestionRepository>();
             _assignmentRepositoryMock = new Mock<IAssignmentRepository>();
             _auditPlanRepositoryMock = new Mock<IAuditPlanRepository>();
