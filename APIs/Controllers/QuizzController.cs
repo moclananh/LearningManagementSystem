@@ -19,12 +19,12 @@ namespace APIs.Controllers
             IValidator<UpdateQuizzViewModel> UpdateQuizzValidator)
         {
             _quizzServices = quizzServices;
-            _createQuizzValidator= CreateQuizzValidator;
-            _updateQuizzValidator= UpdateQuizzValidator;
+            _createQuizzValidator = CreateQuizzValidator;
+            _updateQuizzValidator = UpdateQuizzValidator;
         }
 
         [HttpGet("GetAllQuizz")]
-        public async Task<Pagination<QuizzViewModel>> GetQuizzPagination(int pageIndex = 0, int pageSize = 10) => await _quizzServices.GetAllQuizzes(pageIndex, pageSize);
+        public async Task<Pagination<QuizzViewModel>> GetAllQuizz(int pageIndex = 0, int pageSize = 10) => await _quizzServices.GetAllQuizzes(pageIndex, pageSize);
 
         [HttpPost("CreateQuizz")]
         public async Task<IActionResult> CreateQuizz(CreateQuizzViewModel QuizzModel)

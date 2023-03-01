@@ -23,7 +23,7 @@ namespace API.Controllers
         }
 
         [HttpGet("GetAllUnit")]
-        public async Task<Pagination<UnitViewModel>> GetUnitsPagingsion(int pageIndex = 0, int pageSize = 10) => await _unitServices.GetAllUnits(pageIndex, pageSize);
+        public async Task<Pagination<UnitViewModel>> GetAllUnit(int pageIndex = 0, int pageSize = 10) => await _unitServices.GetAllUnits(pageIndex, pageSize);
 
         [HttpPost("CreateUnit")]
         public async Task<IActionResult> CreateUnit(CreateUnitViewModel UnitModel) {

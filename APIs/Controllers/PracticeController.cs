@@ -24,7 +24,7 @@ namespace APIs.Controllers
         public async Task<PracticeViewModel> GetPracticeById(Guid PracticeId) => await _service.GetPracticeById(PracticeId);
 
         [HttpGet("GetAllPractice")]
-        public async Task<Pagination<PracticeViewModel>> GetPracticePagingsion(int pageIndex = 0, int pageSize = 10) => await _service.GetAllPractice(pageIndex, pageSize);
+        public async Task<Pagination<PracticeViewModel>> GetAllPractice(int pageIndex = 0, int pageSize = 10) => await _service.GetAllPractice(pageIndex, pageSize);
 
         [HttpPost("CreatePractice")]
         public async Task<CreatePracticeViewModel> CreatePractice(CreatePracticeViewModel PracticeModel) => await _service.CreatePracticeAsync(PracticeModel);

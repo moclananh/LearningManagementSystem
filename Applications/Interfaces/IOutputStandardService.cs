@@ -1,7 +1,5 @@
 ﻿using Applications.Commons;
 using Applications.ViewModels.OutputStandardViewModels;
-using Applications.ViewModels.PracticeViewModels;
-﻿using Applications.ViewModels.OutputStandardViewModels;
 using Applications.ViewModels.SyllabusOutputStandardViewModels;
 namespace Applications.Interfaces
 {

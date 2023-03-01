@@ -28,7 +28,7 @@ namespace Applications.Services
             return null;
         }
 
-        public async Task<Pagination<SyllabusViewModel>> GetSyllabusToPagination(int pageNumber = 0, int pageSize = 10)
+        public async Task<Pagination<SyllabusViewModel>> GetAllSyllabus(int pageNumber = 0, int pageSize = 10)
         {
             var syllabus = await _unitOfWork.SyllabusRepository.ToPagination(pageNumber, pageSize);
             return _mapper.Map<Pagination<SyllabusViewModel>>(syllabus);
