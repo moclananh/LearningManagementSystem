@@ -102,7 +102,6 @@ namespace Infrastructures
         public ISyllabusOutputStandardRepository SyllabusOutputStandardRepository => _syllabusOutputStandardRepository;
         public IModuleUnitRepository ModuleUnitRepository => _moduleUnitRepository;
         public IUserAuditPlanRepository UserAuditPlanRepository => _userAuditPlanRepository;
-
         public IQuizzQuestionRepository QuizzQuestionRepository => _quizzQuestionRepository;
 
         public async Task<int> SaveChangeAsync() => await _appDBContext.SaveChangesAsync();

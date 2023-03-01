@@ -30,7 +30,5 @@ namespace Infrastructures.Repositories
         }
 
         public async Task<ClassTrainingProgram> GetClassTrainingProgram(Guid ClassId, Guid TrainingProgramId) => await _dbContext.ClassTrainingProgram.FirstOrDefaultAsync(x => x.ClassId == ClassId && x.TrainingProgramId == TrainingProgramId);
-
-
     }
 }

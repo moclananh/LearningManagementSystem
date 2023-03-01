@@ -15,7 +15,6 @@ namespace Infrastructures.Repositories
         {
             _dbContext = appDBContext;
         }
-
         public async Task<Pagination<Module>> GetDisableModules(int pageNumber = 0, int pageSize = 10)
         {
             var itemCount = await _dbContext.Modules.CountAsync();
@@ -36,7 +35,6 @@ namespace Infrastructures.Repositories
 
             return result;
         }
-
         public async Task<Pagination<Module>> GetEnableModules(int pageNumber = 0, int pageSize = 10)
         {
             var itemCount = await _dbContext.Modules.CountAsync();
@@ -57,7 +55,6 @@ namespace Infrastructures.Repositories
 
             return result;
         }
-
         public async Task<Pagination<Module>> GetModuleByName(string name, int pageNumber = 0, int pageSize = 10)
         {
             var itemCount = await _dbContext.Modules.CountAsync();
@@ -76,7 +73,6 @@ namespace Infrastructures.Repositories
             };
             return result;
         }
-
         public async Task<Pagination<Module>> GetModulesBySyllabusId(Guid syllabusId, int pageNumber = 0, int pageSize = 10)
         {
             var itemCount = await _dbContext.Modules.CountAsync();

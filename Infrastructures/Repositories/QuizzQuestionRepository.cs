@@ -15,7 +15,26 @@ namespace Infrastructures.Repositories
         {
             _dbContext = dbContext;
         }
+        public async Task<Pagination<QuizzQuestion>> GetQuestionByQuizzId(Guid QuizzId, int pageIndex = 0, int pageSize = 10)
+        {
+            var itemCount = await _dbContext.QuizzQuestions.Where(x => x.QuizzId == QuizzId).CountAsync();
+            var items = await _dbSet.Where(x => x.QuizzId.Equals(QuizzId))
+                                    .OrderByDescending(x => x.CreationDate)
+                                    .Skip(pageIndex * pageSize)
+                                    .Take(pageSize)
+                                    .AsNoTracking()
+                                    .ToListAsync();
 
+            var result = new Pagination<QuizzQuestion>()
+            {
+                PageIndex = pageIndex,
+                PageSize = pageSize,
+                TotalItemsCount = itemCount,
+                Items = items,
+            };
+
+            return result;
+        }
         public async Task<List<QuizzQuestion>> GetQuizzQuestionListByQuizzId(Guid QuizzId)
         {
             return await _dbContext.QuizzQuestions.Where(x => x.QuizzId == QuizzId).ToListAsync();

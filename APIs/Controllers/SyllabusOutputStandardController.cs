@@ -1,12 +1,7 @@
-﻿using Application.ViewModels.QuizzViewModels;
-using Applications.Commons;
+﻿using Applications.Commons;
 using Applications.Interfaces;
-using Applications.Services;
 using Applications.ViewModels.SyllabusOutputStandardViewModels;
-
 using Microsoft.AspNetCore.Mvc;
-
-using ValidationResult = FluentValidation.Results.ValidationResult;
 
 namespace APIs.Controllers
 {

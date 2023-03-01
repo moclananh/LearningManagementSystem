@@ -21,9 +21,7 @@ using Applications.ViewModels.PracticeViewModels;
 using Applications.ViewModels.PracticeQuestionViewModels;
 using Applications.ViewModels.TrainingProgramSyllabi;
 using Applications.ViewModels.SyllabusOutputStandardViewModels;
-
 using Applications.ViewModels.UnitModuleViewModel;
-
 using Applications.ViewModels.UserAuditPlanViewModels;
 using Applications.ViewModels.QuizzQuestionViewModels;
 
@@ -73,7 +71,7 @@ namespace Infrastructures.Mappers
             CreateMap<PracticeViewModel, Practice>().ReverseMap();
             CreateMap<AuditResultViewModel, AuditResult>().ReverseMap();
             CreateMap<PracticeQuestionViewModel, PracticeQuestion>().ReverseMap();
-            CreateMap<CreateTrainingProgramSyllabi,TrainingProgramSyllabus>().ReverseMap();
+            CreateMap<CreateTrainingProgramSyllabi, TrainingProgramSyllabus>().ReverseMap();
             CreateMap<ModuleUnitViewModel, ModuleUnit>().ReverseMap();
             CreateMap<CreateUserAuditPlanViewModel, UserAuditPlan>().ReverseMap();
             CreateMap<UpdateAuditResultViewModel, AuditResult>().ReverseMap();
@@ -81,8 +79,8 @@ namespace Infrastructures.Mappers
             CreateMap<CreateClassTrainingProgramViewModel, ClassTrainingProgram>().ReverseMap();
             CreateMap<UpdatePracticeViewModel, Practice>().ReverseMap();
             CreateMap<UpdateAuditResultViewModel, AuditResult>().ReverseMap();
-            CreateMap<QuizzQuestionViewModel, QuizzQuestion>().ReverseMap();
             CreateMap<UserAuditPlanViewModel, UserAuditPlan>().ReverseMap();
+            CreateMap<QuizzQuestionViewModel, QuizzQuestion>().ReverseMap();
             CreateMap<SyllabusOutputStandardViewModel, SyllabusOutputStandard>().ReverseMap();
 
             /* pagination */
