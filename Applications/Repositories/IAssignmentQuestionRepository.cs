@@ -8,5 +8,6 @@ namespace Applications.Repositories
     {
         Task<Pagination<AssignmentQuestion>> GetAllAssignmentQuestionByAssignmentId(Guid AssignmentId, int pageNumber = 0, int pageSize = 10);
         Task UploadAssignmentListAsync(List<AssignmentQuestion> assignmentQuestionList);
+        Task<List<AssignmentQuestion>> GetAssignmentQuestionListByAssignmentId(Guid AssignmentId);
     }
 }

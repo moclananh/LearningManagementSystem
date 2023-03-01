@@ -65,6 +65,8 @@ namespace Infrastructures
             services.AddScoped<ITrainingProgramSyllabiRepository, TrainingProgramSyllabiRepository>();
             services.AddScoped<IModuleUnitRepository, ModuleUnitRepository>();
             services.AddScoped<IUserAuditPlanRepository, UserAuditPlanRepository>();
+            services.AddScoped<IClassTrainingProgramRepository, ClassTrainingProgramRepository>();
+            services.AddScoped<IClassTrainingProgramService, ClassTrainingProgramService>();
             return services;
         }
     }

@@ -6,4 +6,3 @@
         public Guid TrainingProgramId { get; set; }
     }
 }
-

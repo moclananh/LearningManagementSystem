@@ -66,7 +66,7 @@ namespace Applications.Services
 
         public async Task<byte[]> ExportAssignmentQuestionByAssignmentId(Guid assignmentId)
         {
-            var questions = await _unitOfWork.AssignmentQuestionRepository.GetAllAssignmentQuestionByAssignmentId(assignmentId);
+            var questions = await _unitOfWork.AssignmentQuestionRepository.GetAssignmentQuestionListByAssignmentId(assignmentId);
             var questionViewModels = _mapper.Map<List<AssignmentQuestionViewModel>>(questions);
 
             // Create a new Excel workbook and worksheet

@@ -9,7 +9,7 @@ namespace Applications.Interfaces
     public interface IAssignmentQuestionService
     {
         public Task<Pagination<AssignmentQuestionViewModel>> GetAssignmentQuestionByAssignmentId(Guid AssignmentId, int pageIndex = 0, int pageSize = 10);
-        Task<Response> UploadAssignmentQuestions(IFormFile formFile);
+        Task<Response> UploadAssignmentQuestions(IFormFile formFile);        
         Task<byte[]> ExportAssignmentQuestionByAssignmentId(Guid assignmentId);
     }
 }

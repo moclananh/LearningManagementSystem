@@ -15,6 +15,12 @@ namespace Infrastructures.Repositories
         {
             _dbContext = dbContext;
         }
+
+        public async Task<List<AssignmentQuestion>> GetAssignmentQuestionListByAssignmentId(Guid AssignmentId)
+        {
+            return await _dbContext.AssignmentQuestions.Where(x => x.AssignmentId == AssignmentId).ToListAsync();
+        }
+
         public async Task<Pagination<AssignmentQuestion>> GetAllAssignmentQuestionByAssignmentId(Guid AssignmentId, int pageNumber = 0, int pageSize = 10)
         {
             var itemCount = await _dbContext.AssignmentQuestions.CountAsync();
