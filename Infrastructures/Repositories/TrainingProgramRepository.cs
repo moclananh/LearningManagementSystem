@@ -3,8 +3,6 @@ using Applications.Interfaces;
 using Applications.Repositories;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
-using System.Drawing.Printing;
-using System.Reflection;
 
 namespace Infrastructures.Repositories
 {

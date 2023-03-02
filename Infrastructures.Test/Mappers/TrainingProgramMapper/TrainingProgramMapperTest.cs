@@ -22,6 +22,7 @@ namespace Infrastructures.Tests.Mappers.TrainingProgramMapper
             //assert
             result.Id.Should().Be(TrainingProgramMock.Id.ToString());
         }
+
         [Fact]
         public void TestCreateTrainingProgramViewModelMapper()
         {
@@ -35,6 +36,7 @@ namespace Infrastructures.Tests.Mappers.TrainingProgramMapper
             //assert
             result.TrainingProgramName.Should().Be(TrainingProgramMock.TrainingProgramName.ToString());
         }
+
         [Fact]
         public void TestUpdateTrainingProgramViewModelMapper()
         {
