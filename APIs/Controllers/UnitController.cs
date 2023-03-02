@@ -1,11 +1,10 @@
 ﻿using Application.ViewModels.UnitViewModels;
-using Applications.Repositories;
 using Applications.Commons;
 using Microsoft.AspNetCore.Mvc;
 using FluentValidation.Results;
-using Application.ViewModels.QuizzViewModels;
 using FluentValidation;
-using Domain.Entities;
+using Applications.Interfaces;
+using Applications.ViewModels.Response;
 
 namespace API.Controllers
 {
@@ -23,7 +22,7 @@ namespace API.Controllers
         }
 
         [HttpGet("GetAllUnit")]
-        public async Task<Pagination<UnitViewModel>> GetAllUnit(int pageIndex = 0, int pageSize = 10) => await _unitServices.GetAllUnits(pageIndex, pageSize);
+        public async Task<Response> GetAllUnit(int pageIndex = 0, int pageSize = 10) => await _unitServices.GetAllUnits(pageIndex, pageSize);
 
         [HttpPost("CreateUnit")]
         public async Task<IActionResult> CreateUnit(CreateUnitViewModel UnitModel) {
@@ -36,14 +35,15 @@ namespace API.Controllers
                 }
                 else
                 {
-                    return BadRequest("Fail to create new Unit");
+                    var error = result.Errors.Select(x => x.ErrorMessage).ToList();
+                    return BadRequest(error);
                 }
             }
             return Ok("Create new Unit Success");
         }
 
         [HttpGet("ViewUnitById/{UnitId}")]
-        public async Task<UnitViewModel> GetUnitById(Guid UnitId) => await _unitServices.ViewUnitById(UnitId);
+        public async Task<Response> GetUnitById(Guid UnitId) => await _unitServices.GetUnitById(UnitId);
 
         [HttpPut("UpdateUnit/{UnitId}")]
         public async Task<IActionResult> UpdateUnit(Guid UnitId, CreateUnitViewModel UnitModel)
@@ -57,24 +57,25 @@ namespace API.Controllers
                 }
                 else
                 {
-                    return BadRequest("Update Quizz Fail");
+                    var error = result.Errors.Select(x => x.ErrorMessage).ToList();
+                    return BadRequest(error);
                 }
             }
             return Ok("Update Quizz Success");
         }
 
         [HttpGet("GetEnableUnits")]
-        public async Task<Pagination<UnitViewModel>> GetEnableUnits(int pageIndex = 0, int pageSize = 10) => await _unitServices.ViewEnableUnitsAsync(pageIndex, pageSize);
+        public async Task<Response> GetEnableUnits(int pageIndex = 0, int pageSize = 10) => await _unitServices.GetEnableUnitsAsync(pageIndex, pageSize);
         [HttpGet("GetDisableUnits")]
-        public async Task<Pagination<UnitViewModel>> GetDiableClasses(int pageIndex = 0, int pageSize = 10) => await _unitServices.ViewDisableUnitsAsync(pageIndex, pageSize);
+        public async Task<Response> GetDiableClasses(int pageIndex = 0, int pageSize = 10) => await _unitServices.GetDisableUnitsAsync(pageIndex, pageSize);
                
         [HttpGet("GetUnitsByModuleId/{ModuleId}")]
-        public async Task<Pagination<CreateUnitViewModel>> GetUnitByModuleIdAsync(Guid ModuleId, int pageIndex = 0, int pageSize = 10)
+        public async Task<Response> GetUnitByModuleIdAsync(Guid ModuleId, int pageIndex = 0, int pageSize = 10)
         {
             return await _unitServices.GetUnitByModuleIdAsync(ModuleId, pageIndex, pageSize);
         }
         [HttpGet("GetUnitsByName/{UnitName}")]
-        public async Task<Pagination<UnitViewModel>> GetUnitByNameAsync(string UnitName, int pageIndex = 0, int pageSize = 10)
+        public async Task<Response> GetUnitByNameAsync(string UnitName, int pageIndex = 0, int pageSize = 10)
         {
             return await _unitServices.GetUnitByNameAsync(UnitName, pageIndex, pageSize);
         }

@@ -1,10 +1,10 @@
 ﻿using Application.ViewModels.UnitViewModels;
-using Applications.Repositories;
 using Applications.Commons;
 using Applications.Interfaces;
+using Applications.ViewModels.Response;
 using AutoMapper;
 using Domain.Entities;
-using System.Drawing.Printing;
+using System.Net;
 
 namespace Applications.Services
 {
@@ -30,13 +30,6 @@ namespace Applications.Services
             return null;
         }
 
-        public async Task<Pagination<CreateUnitViewModel>> GetUnitByModuleIdAsync(Guid ModuleId, int pageIndex = 0, int pageSize = 10)
-        {
-            var units = await _unitOfWork.UnitRepository.ViewAllUnitByModuleIdAsync(ModuleId, pageIndex , pageSize);
-            var result = _mapper.Map<Pagination<CreateUnitViewModel>>(units);
-            return result;
-        }
-
         public async Task<CreateUnitViewModel> UpdateUnitAsync(Guid UnitId, CreateUnitViewModel UnitDTO)
         {
             var unit = await _unitOfWork.UnitRepository.GetByIdAsync(UnitId);
@@ -53,38 +46,46 @@ namespace Applications.Services
             return null;
         }
 
-        public async Task<Pagination<UnitViewModel>> GetAllUnits(int pageIndex = 0, int pageSize = 10)
+        public async Task<Response> GetUnitByModuleIdAsync(Guid ModuleId, int pageIndex = 0, int pageSize = 10)
         {
-            var units = await _unitOfWork.UnitRepository.ToPagination(pageIndex, pageSize);
-            var result = _mapper.Map<Pagination<UnitViewModel>>(units);
-            return result;
+            var units = await _unitOfWork.UnitRepository.ViewAllUnitByModuleIdAsync(ModuleId, pageIndex, pageSize);
+            if (units.Items.Count() < 1) return new Response(HttpStatusCode.NoContent, "Id not found");
+            else return new Response(HttpStatusCode.OK, "Search Succeed", _mapper.Map<Pagination<UnitViewModel>>(units));
         }
 
-        public async Task<Pagination<UnitViewModel>> ViewDisableUnitsAsync(int pageIndex = 0, int pageSize = 10)
-        {
-            var units = await _unitOfWork.UnitRepository.GetDisableUnits(pageIndex, pageSize);
-            var result = _mapper.Map<Pagination<UnitViewModel>>(units);
-            return result;
-        }
-
-        public async Task<Pagination<UnitViewModel>> ViewEnableUnitsAsync(int pageIndex = 0, int pageSize = 10)
-        {
-            var units = await _unitOfWork.UnitRepository.GetEnableUnits(pageIndex, pageSize);
-            var result = _mapper.Map<Pagination<UnitViewModel>>(units);
-            return result;
-        }
-
-        public async Task<UnitViewModel> ViewUnitById(Guid UnitId)
-        {
-            var unit = await _unitOfWork.UnitRepository.GetByIdAsync(UnitId);
-            return _mapper.Map<UnitViewModel>(unit);
-        }
-
-        public async Task<Pagination<UnitViewModel>> GetUnitByNameAsync(string UnitName, int pageIndex = 0, int pageSize = 10)
+        public async Task<Response> GetUnitByNameAsync(string UnitName, int pageIndex = 0, int pageSize = 10)
         {
             var units = await _unitOfWork.UnitRepository.GetUnitByNameAsync(UnitName, pageIndex, pageSize);
-            var result = _mapper.Map<Pagination<UnitViewModel>>(units);
-            return result;
+            if (units.Items.Count() < 1) return new Response(HttpStatusCode.NoContent, "Not Found");
+            else return new Response(HttpStatusCode.OK, "Search Succeed", _mapper.Map<Pagination<UnitViewModel>>(units));
+        }
+
+        public async Task<Response> GetDisableUnitsAsync(int pageIndex = 0, int pageSize = 10)
+        {
+            var units = await _unitOfWork.UnitRepository.GetDisableUnits(pageIndex, pageSize);
+            if (units.Items.Count() < 1) return new Response(HttpStatusCode.NoContent, "Not Found");
+            else return new Response(HttpStatusCode.OK, "Search Succeed", _mapper.Map<Pagination<UnitViewModel>>(units));
+        }
+
+        public async Task<Response> GetEnableUnitsAsync(int pageIndex = 0, int pageSize = 10)
+        {
+            var units = await _unitOfWork.UnitRepository.GetEnableUnits(pageIndex, pageSize);
+            if (units.Items.Count() < 1) return new Response(HttpStatusCode.NoContent, "Not Found");
+            else return new Response(HttpStatusCode.OK, "Search Succeed", _mapper.Map<Pagination<UnitViewModel>>(units));
+        }
+
+        public async Task<Response> GetUnitById(Guid UnitId)
+        {
+            var unit = await _unitOfWork.UnitRepository.GetByIdAsync(UnitId);
+            if (unit == null) return new Response(HttpStatusCode.NoContent, "Id not found");
+            else return new Response(HttpStatusCode.OK, "Search succeed", _mapper.Map<UnitViewModel>(unit));
+        }
+
+        public async Task<Response> GetAllUnits(int pageNumber = 0, int pageSize = 10)
+        {
+            var unit = await _unitOfWork.UnitRepository.ToPagination(pageNumber, pageSize);
+            if (unit.Items.Count() < 1) return new Response(HttpStatusCode.NoContent, "Not Found");
+            else return new Response(HttpStatusCode.OK, "Search Succeed", _mapper.Map<Pagination<UnitViewModel>>(unit));
         }
     }
 }

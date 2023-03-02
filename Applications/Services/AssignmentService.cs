@@ -3,10 +3,7 @@ using Applications.Interfaces;
 using Applications.ViewModels.AssignmentViewModels;
 using Applications.ViewModels.Response;
 using AutoMapper;
-using DocumentFormat.OpenXml.Spreadsheet;
-using DocumentFormat.OpenXml.Wordprocessing;
 using Domain.Entities;
-using System.Drawing.Printing;
 using System.Net;
 
 namespace Applications.Services

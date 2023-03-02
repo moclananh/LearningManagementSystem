@@ -2,7 +2,6 @@
 using Applications.ViewModels.Response;
 using Applications.ViewModels.SyllabusModuleViewModel;
 using Applications.ViewModels.SyllabusViewModels;
-using Applications.ViewModels.UnitModuleViewModel;
 
 namespace Applications.Interfaces
 {

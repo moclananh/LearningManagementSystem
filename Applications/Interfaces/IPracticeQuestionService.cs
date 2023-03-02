@@ -7,7 +7,7 @@ namespace Applications.Interfaces
 {
     public interface IPracticeQuestionService
     {
-        public Task<Pagination<PracticeQuestionViewModel>> GetPracticeQuestionByPracticeId(Guid PracticeId, int pageIndex = 0, int pageSize = 10);
+        public Task<Response> GetPracticeQuestionByPracticeId(Guid PracticeId, int pageIndex = 0, int pageSize = 10);
         Task<Response> UploadPracticeQuestions(IFormFile formFile);
         Task<List<PracticeQuestionViewModel>> PracticeQuestionByPracticeId(Guid practiceId);
         Task<byte[]> ExportPracticeQuestionByPracticeId(Guid practiceId);

@@ -18,7 +18,7 @@ namespace APIs.Controllers
         }
 
         [HttpGet("ViewPracticeQuestionsById/{PracticeId}")]
-        public async Task<Pagination<PracticeQuestionViewModel>> GetPracticeQuestionByPracticeId(Guid PracticeId, int pageIndex = 0, int pageSize = 10) => await _practicequestionService.GetPracticeQuestionByPracticeId(PracticeId, pageIndex, pageSize);
+        public async Task<Response> GetPracticeQuestionByPracticeId(Guid PracticeId, int pageIndex = 0, int pageSize = 10) => await _practicequestionService.GetPracticeQuestionByPracticeId(PracticeId, pageIndex, pageSize);
 
         [HttpPost("UploadPracticeQuestionFile")]
         public async Task<Response> UploadPracticeQuestionFile(IFormFile formFile) => await _practicequestionService.UploadPracticeQuestions(formFile);

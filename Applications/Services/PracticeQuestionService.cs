@@ -1,4 +1,5 @@
-﻿using Applications.Commons;
+﻿using Application.ViewModels.UnitViewModels;
+using Applications.Commons;
 using Applications.Interfaces;
 using Applications.ViewModels.PracticeQuestionViewModels;
 using Applications.ViewModels.Response;
@@ -21,11 +22,11 @@ namespace Applications.Services
             _mapper = mapper;
         }
 
-        public async Task<Pagination<PracticeQuestionViewModel>> GetPracticeQuestionByPracticeId(Guid PracticeId, int pageIndex = 0, int pageSize = 10)
+        public async Task<Response> GetPracticeQuestionByPracticeId(Guid PracticeId, int pageIndex = 0, int pageSize = 10)
         {
-            var practiceObj = await _unitOfWork.PracticeQuestionRepository.GetAllPracticeQuestionById(PracticeId, pageIndex, pageSize);
-            var result = _mapper.Map<Pagination<PracticeQuestionViewModel>>(practiceObj);
-            return result;
+            var practiceObj = await _unitOfWork.PracticeQuestionRepository.GetAllPracticeQuestionById(PracticeId, pageIndex, pageSize);        
+            if (practiceObj.Items.Count() < 1) return new Response(HttpStatusCode.NoContent, "Id not found");
+            else return new Response(HttpStatusCode.OK, "Search Succeed", _mapper.Map<Pagination<PracticeQuestionViewModel>>(practiceObj));
         }
 
         public async Task<Response> UploadPracticeQuestions(IFormFile formFile)
