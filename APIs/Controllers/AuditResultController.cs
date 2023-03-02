@@ -1,5 +1,7 @@
 ﻿using Application.Interfaces;
 using Applications.ViewModels.AuditResultViewModels;
+using FluentValidation;
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -9,10 +11,12 @@ namespace API.Controllers
     public class AuditResultController : ControllerBase
     {
         private readonly IAuditResultServices _service;
+        private readonly IValidator<UpdateAuditResultViewModel> _updateValidator;
 
-        public AuditResultController(IAuditResultServices service)
+        public AuditResultController(IAuditResultServices service, IValidator<UpdateAuditResultViewModel> validator)
         {
             _service = service;
+            _updateValidator = validator;
         }
 
         [HttpGet("GetByAuditPlanId")]
@@ -22,9 +26,20 @@ namespace API.Controllers
         }
 
         [HttpPut("UpdateAuditResult/{AuditResultId}")]
-        public async Task<UpdateAuditResultViewModel> UpdateAuditResult(Guid AuditResultId, UpdateAuditResultViewModel assignmentDTO)
+        public async Task<IActionResult> UpdateAuditResult(Guid AuditResultId, UpdateAuditResultViewModel assignmentDTO)
         {
-            return await _service.UpdateAuditResult(AuditResultId, assignmentDTO);
+            if (ModelState.IsValid)
+            {
+                ValidationResult result = _updateValidator.Validate(assignmentDTO);
+                if (result.IsValid)
+                {
+                    await _service.UpdateAuditResult(AuditResultId, assignmentDTO);
+                } else
+                {
+                    return BadRequest("Update AuditResult Fail");
+                }
+            }
+            return Ok("Update AuditResult Success");
         }
     }
 }
