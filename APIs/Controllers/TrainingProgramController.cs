@@ -36,6 +36,7 @@ namespace APIs.Controllers
                 else
                 {
                     var error = trainingprogram.Errors.Select(x => x.ErrorMessage).ToList();
+                    return BadRequest(error);
                 }
             }
             return Ok("Create new TrainningProgram Success");
