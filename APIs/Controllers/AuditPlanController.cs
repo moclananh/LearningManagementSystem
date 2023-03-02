@@ -1,7 +1,7 @@
 ﻿using Applications.Commons;
 using Applications.Interfaces;
 using Applications.ViewModels.AuditPlanViewModel;
-using Applications.ViewModels.UserAuditPlanViewModels;
+using Applications.ViewModels.Response;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
@@ -26,25 +26,25 @@ namespace APIs.Controllers
         }
 
         [HttpGet("GetAllAuditPlan")]
-        public async Task<Pagination<AuditPlanViewModel>> GetAllAuditPlanAsync(int pageIndex = 0, int pageSize = 10) => await _auditPlanService.GetAllAuditPlanAsync(pageIndex, pageSize);
+        public async Task<Response> GetAllAuditPlanAsync(int pageIndex = 0, int pageSize = 10) => await _auditPlanService.GetAllAuditPlanAsync(pageIndex, pageSize);
 
         [HttpGet("GetEnableAuditPlan")]
-        public async Task<Pagination<AuditPlanViewModel>> GetEnableClasses(int pageIndex = 0, int pageSize = 10) => await _auditPlanService.GetEnableAuditPlanAsync(pageIndex, pageSize);
+        public async Task<Response> GetEnableAuditPlans(int pageIndex = 0, int pageSize = 10) => await _auditPlanService.GetEnableAuditPlanAsync(pageIndex, pageSize);
 
         [HttpGet("GetDisableAuditPlan")]
-        public async Task<Pagination<AuditPlanViewModel>> GetDiableClasses(int pageIndex = 0, int pageSize = 10) => await _auditPlanService.GetDisableAuditPlanAsync(pageIndex, pageSize);
+        public async Task<Response> GetDiableAuditPlans(int pageIndex = 0, int pageSize = 10) => await _auditPlanService.GetDisableAuditPlanAsync(pageIndex, pageSize);
 
         [HttpGet("GetAuditPlanById/{AuditPlanId}")]
-        public async Task<AuditPlanViewModel> GetAuditPlanByIdAsync(Guid AuditPlanId) => await _auditPlanService.GetAuditPlanByIdAsync(AuditPlanId);
+        public async Task<Response> GetAuditPlanByIdAsync(Guid AuditPlanId) => await _auditPlanService.GetAuditPlanByIdAsync(AuditPlanId);
 
         [HttpGet("GetAuditPlanByModuleId/{ModuleId}")]
-        public async Task<AuditPlanViewModel> GetAuditPlanByModuleId(Guid ModuleId) => await _auditPlanService.GetAuditPlanByModuleIdAsync(ModuleId);
+        public async Task<Response> GetAuditPlanByModuleId(Guid ModuleId) => await _auditPlanService.GetAuditPlanByModuleIdAsync(ModuleId);
 
         [HttpGet("GetAuditPlanByClassId/{ClassId}")]
-        public async Task<Pagination<AuditPlanViewModel>> GetAuditPlanByClassId(Guid ClassId, int pageIndex = 0, int pageSize = 10) => await _auditPlanService.GetAuditPlanbyClassIdAsync(ClassId, pageIndex, pageSize);
+        public async Task<Response> GetAuditPlanByClassId(Guid ClassId, int pageIndex = 0, int pageSize = 10) => await _auditPlanService.GetAuditPlanbyClassIdAsync(ClassId, pageIndex, pageSize);
 
         [HttpGet("GetAuditPlanByName/{AuditPlanName}")]
-        public async Task<Pagination<AuditPlanViewModel>> GetAuditPlanByName(string AuditPlanName, int pageIndex = 0, int pageSize = 10) => await _auditPlanService.GetAuditPlanByName(AuditPlanName, pageIndex, pageSize);
+        public async Task<Response> GetAuditPlanByName(string AuditPlanName, int pageIndex = 0, int pageSize = 10) => await _auditPlanService.GetAuditPlanByName(AuditPlanName, pageIndex, pageSize);
 
         [HttpPost("CreateAuditPlan")]
         public async Task<IActionResult> CreateAuditPlan(AuditPlanViewModel createAuditPlanViewModel)
@@ -104,7 +104,7 @@ namespace APIs.Controllers
             return BadRequest("Remove User Fail");
         }
         [HttpGet("GetAllUserAuditPlan")]
-        public async Task<Pagination<UserAuditPlanViewModel>> GetAllUserAuditPlan(int pageIndex = 0, int pageSize = 10)
+        public async Task<Response> GetAllUserAuditPlan(int pageIndex = 0, int pageSize = 10)
         {
             return await _auditPlanService.GetAllUserAuditPlanAsync(pageIndex, pageSize);
         }

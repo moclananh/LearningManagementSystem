@@ -1,10 +1,13 @@
 ﻿using Applications.Commons;
 using Applications.Interfaces;
 using Applications.ViewModels.AuditPlanViewModel;
+using Applications.ViewModels.AuditResultViewModels;
+using Applications.ViewModels.Response;
 using Applications.ViewModels.UserAuditPlanViewModels;
 using AutoMapper;
 using Domain.Entities;
 using Domain.EntityRelationship;
+using System.Net;
 
 namespace Applications.Services
 {
@@ -30,53 +33,53 @@ namespace Applications.Services
             return null;
         }
 
-        public async Task<Pagination<AuditPlanViewModel>> GetAllAuditPlanAsync(int pageIndex = 0, int pageSize = 10)
+        public async Task<Response> GetAllAuditPlanAsync(int pageIndex = 0, int pageSize = 10)
         {
             var auditplans = await _unitOfWork.AuditPlanRepository.ToPagination(pageIndex, pageSize);
-            var result = _mapper.Map<Pagination<AuditPlanViewModel>>(auditplans);
-            return result;
+            if (auditplans.Items.Count() < 1) return new Response(HttpStatusCode.NoContent, "No AuditPlan Found");
+            else return new Response(HttpStatusCode.OK, "Search Succeed", _mapper.Map<Pagination<AuditPlanViewModel>>(auditplans));
         }
 
-        public async Task<Pagination<AuditPlanViewModel>> GetAuditPlanbyClassIdAsync(Guid ClassId, int pageIndex = 0, int pageSize = 10)
+        public async Task<Response> GetAuditPlanbyClassIdAsync(Guid ClassId, int pageIndex = 0, int pageSize = 10)
         {
             var auditplans = await _unitOfWork.AuditPlanRepository.GetAuditPlanByClassId(ClassId, pageIndex, pageSize);
-            var result = _mapper.Map<Pagination<AuditPlanViewModel>>(auditplans);
-            return result;
+            if (auditplans.Items.Count() < 1) return new Response(HttpStatusCode.NoContent, "No ClassId Found");
+            else return new Response(HttpStatusCode.OK, "Search Succeed", _mapper.Map<Pagination<AuditPlanViewModel>>(auditplans));
         }
 
-        public async Task<AuditPlanViewModel> GetAuditPlanByIdAsync(Guid AuditPlanId)
+        public async Task<Response> GetAuditPlanByIdAsync(Guid AuditPlanId)
         {
-            var AuditPlans = await _unitOfWork.AuditPlanRepository.GetByIdAsync(AuditPlanId);
-            var result = _mapper.Map<AuditPlanViewModel>(AuditPlans);
-            return result;
+            var auditplans = await _unitOfWork.AuditPlanRepository.GetByIdAsync(AuditPlanId);
+            if (auditplans == null) return new Response(HttpStatusCode.NoContent, "No AuditPlanId found");
+            else return new Response(HttpStatusCode.OK, "Search succeed", _mapper.Map<AuditPlanViewModel>(auditplans));
         }
 
-        public async Task<AuditPlanViewModel> GetAuditPlanByModuleIdAsync(Guid ModuleId)
+        public async Task<Response> GetAuditPlanByModuleIdAsync(Guid ModuleId)
         {
             var auditplans = await _unitOfWork.AuditPlanRepository.GetAuditPlanByModuleId(ModuleId);
-            var result = _mapper.Map<AuditPlanViewModel>(auditplans);
-            return result;
+            if (auditplans == null) return new Response(HttpStatusCode.NoContent, "No ModuleId found");
+            else return new Response(HttpStatusCode.OK, "Search succeed", _mapper.Map<AuditPlanViewModel>(auditplans));
         }
 
-        public async Task<Pagination<AuditPlanViewModel>> GetAuditPlanByName(string AuditPlanName, int pageIndex = 0, int pageSize = 10)
+        public async Task<Response> GetAuditPlanByName(string AuditPlanName, int pageIndex = 0, int pageSize = 10)
         {
             var auditplans = await _unitOfWork.AuditPlanRepository.GetAuditPlanByName(AuditPlanName, pageIndex, pageSize);
-            var result = _mapper.Map<Pagination<AuditPlanViewModel>>(auditplans);
-            return result;
+            if (auditplans.Items.Count() < 1) return new Response(HttpStatusCode.NoContent, "No AuditPlan Found");
+            else return new Response(HttpStatusCode.OK, "Search Succeed", _mapper.Map<Pagination<AuditPlanViewModel>>(auditplans));
         }
 
-        public async Task<Pagination<AuditPlanViewModel>> GetDisableAuditPlanAsync(int pageIndex = 0, int pageSize = 10)
+        public async Task<Response> GetDisableAuditPlanAsync(int pageIndex = 0, int pageSize = 10)
         {
             var auditplans = await _unitOfWork.AuditPlanRepository.GetDisableAuditPlans(pageIndex, pageSize);
-            var result = _mapper.Map<Pagination<AuditPlanViewModel>>(auditplans);
-            return result;
+            if (auditplans.Items.Count() < 1) return new Response(HttpStatusCode.NoContent, "No AuditPlan Found");
+            else return new Response(HttpStatusCode.OK, "Search Succeed", _mapper.Map<Pagination<AuditPlanViewModel>>(auditplans));
         }
 
-        public async Task<Pagination<AuditPlanViewModel>> GetEnableAuditPlanAsync(int pageIndex = 0, int pageSize = 10)
+        public async Task<Response> GetEnableAuditPlanAsync(int pageIndex = 0, int pageSize = 10)
         {
             var auditplans = await _unitOfWork.AuditPlanRepository.GetEnableAuditPlans(pageIndex, pageSize);
-            var result = _mapper.Map<Pagination<AuditPlanViewModel>>(auditplans);
-            return result;
+            if (auditplans.Items.Count() < 1) return new Response(HttpStatusCode.NoContent, "No AuditPlan Found");
+            else return new Response(HttpStatusCode.OK, "Search Succeed", _mapper.Map<Pagination<AuditPlanViewModel>>(auditplans));
         }
 
         public async Task<UpdateAuditPlanViewModel?> UpdateAuditPlanAsync(Guid AuditPlanId, UpdateAuditPlanViewModel AuditPlanDTO)
@@ -128,11 +131,11 @@ namespace Applications.Services
             }
             return null;
         }
-        public async Task<Pagination<UserAuditPlanViewModel>> GetAllUserAuditPlanAsync(int pageIndex = 0, int pageSize = 10)
+        public async Task<Response> GetAllUserAuditPlanAsync(int pageIndex = 0, int pageSize = 10)
         {
             var auditplans = await _unitOfWork.UserAuditPlanRepository.ToPagination(pageIndex, pageSize);
-            var result = _mapper.Map<Pagination<UserAuditPlanViewModel>>(auditplans);
-            return result;
+            if (auditplans.Items.Count() < 1) return new Response(HttpStatusCode.NoContent, "No User AuditPlan Found");
+            else return new Response(HttpStatusCode.OK, "Search Succeed", _mapper.Map<Pagination<AuditPlanViewModel>>(auditplans));
         }
     }
 }
