@@ -1,6 +1,7 @@
 ﻿using Applications.Repositories;
 using AutoFixture;
 using Domain.Entities;
+using Domain.EntityRelationship;
 using Domain.Tests;
 using FluentAssertions;
 using Infrastructures.Repositories;
@@ -116,6 +117,99 @@ namespace Infrastructures.Tests.Repositories
             resultPaging.PageIndex.Should().Be(0);
             resultPaging.PageSize.Should().Be(10);
             result.Should().BeEquivalentTo(expected);
+        }
+
+        [Fact]
+        public async Task SyllabusRepository_GetSyllabusByOutputStandardId_ShouldReturnCorrectData()
+        {
+            //arrange
+            var syllabusMockData = _fixture.Build<Syllabus>()
+                                       .Without(s => s.SyllabusModules)
+                                       .Without(S => S.SyllabusOutputStandards)
+                                       .Without(s => s.TrainingProgramSyllabi)
+                                       .CreateMany(10)
+                                       .ToList();
+            var outputStandardMockData = _fixture.Build<OutputStandard>()
+                                                 .Without(s => s.SyllabusOutputStandards)
+                                                 .Create();
+            await _dbContext.Syllabi.AddRangeAsync(syllabusMockData);
+            await _dbContext.OutputStandards.AddAsync(outputStandardMockData);
+            await _dbContext.SaveChangesAsync();
+            var dataList = new List<SyllabusOutputStandard>();
+            foreach (var item in syllabusMockData)
+            {
+                var data = new SyllabusOutputStandard
+                {
+                    OutputStandard = outputStandardMockData,
+                    Syllabus = item
+                };
+                dataList.Add(data);
+            }
+            await _dbContext.SyllabusOutputStandard.AddRangeAsync(dataList);
+            await _dbContext.SaveChangesAsync();
+
+            var expected = _dbContext.SyllabusOutputStandard.Where(s => s.OutputStandardId.Equals(outputStandardMockData.Id)).Select(s => s.Syllabus).ToList();
+
+            //act
+            var resultPaging = await _syllabusRepository.GetSyllabusByOutputStandardId(outputStandardMockData.Id);
+            var result = resultPaging.Items;
+
+            //assert
+            resultPaging.Previous.Should().BeFalse();
+            resultPaging.Next.Should().BeFalse();
+            resultPaging.Items.Count.Should().Be(10);
+            resultPaging.TotalItemsCount.Should().Be(10);
+            resultPaging.TotalPagesCount.Should().Be(1);
+            resultPaging.PageIndex.Should().Be(0);
+            resultPaging.PageSize.Should().Be(10);
+            result.Should().BeEquivalentTo(expected, op => op.Excluding(s => s.SyllabusOutputStandards));
+        }
+
+        [Fact]
+        public async Task SyllabusRepository_GetSyllabusByTrainingProgramId_ShouldReturnCorrectData()
+        {
+            //arrange
+            var syllabusMockData = _fixture.Build<Syllabus>()
+                                       .Without(s => s.SyllabusModules)
+                                       .Without(S => S.SyllabusOutputStandards)
+                                       .Without(s => s.TrainingProgramSyllabi)
+                                       .CreateMany(10)
+                                       .ToList();
+            var trainingProgramMockData = _fixture.Build<TrainingProgram>()
+                                                 .Without(s => s.ClassTrainingPrograms)
+                                                 .Without(s => s.TrainingProgramSyllabi)
+                                                 .Create();
+            await _dbContext.Syllabi.AddRangeAsync(syllabusMockData);
+            await _dbContext.TrainingPrograms.AddAsync(trainingProgramMockData);
+            await _dbContext.SaveChangesAsync();
+            var dataList = new List<TrainingProgramSyllabus>();
+            foreach (var item in syllabusMockData)
+            {
+                var data = new TrainingProgramSyllabus
+                {
+                    TrainingProgram = trainingProgramMockData,
+                    Syllabus = item
+                };
+                dataList.Add(data);
+            }
+            await _dbContext.TrainingProgramSyllabi.AddRangeAsync(dataList);
+            await _dbContext.SaveChangesAsync();
+
+            var expected = _dbContext.TrainingProgramSyllabi.Where(s => s.TrainingProgramId.Equals(trainingProgramMockData.Id)).Select(s => s.Syllabus).ToList();
+
+            //act
+            var resultPaging = await _syllabusRepository.GetSyllabusByTrainingProgramId(trainingProgramMockData.Id);
+            var result = resultPaging.Items;
+
+            //assert
+            resultPaging.Previous.Should().BeFalse();
+            resultPaging.Next.Should().BeFalse();
+            resultPaging.Items.Count.Should().Be(10);
+            resultPaging.TotalItemsCount.Should().Be(10);
+            resultPaging.TotalPagesCount.Should().Be(1);
+            resultPaging.PageIndex.Should().Be(0);
+            resultPaging.PageSize.Should().Be(10);
+            result.Should().BeEquivalentTo(expected, op => op.Excluding(s => s.TrainingProgramSyllabi));
         }
     }
 }
