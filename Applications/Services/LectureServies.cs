@@ -1,9 +1,10 @@
 ﻿using Applications.Commons;
 using Applications.Interfaces;
 using Applications.ViewModels.LectureViewModels;
+using Applications.ViewModels.Response;
 using AutoMapper;
 using Domain.Entities;
-using System.Drawing.Printing;
+using System.Net;
 
 namespace Applications.Services
 {
@@ -30,46 +31,44 @@ namespace Applications.Services
 
         }
 
-        public async Task<Pagination<LectureViewModel>> GetAllLectures(int pageIndex = 0, int pageSize = 10)
+        public async Task<Response> GetAllLectures(int pageIndex = 0, int pageSize = 10)
         {
             var lectures = await _unitOfWork.LectureRepository.ToPagination(pageIndex, pageSize);
-            var result = _mapper.Map<Pagination<LectureViewModel>>(lectures);
-            return result;
+            if (lectures.Items.Count() < 1) return new Response(HttpStatusCode.NoContent, "No Lecture Found");
+            else return new Response(HttpStatusCode.OK, "Search Succeed", _mapper.Map<Pagination<LectureViewModel>>(lectures));
         }
 
-        public async Task<LectureViewModel> GetLectureById(Guid LectureId)
+        public async Task<Response> GetLectureById(Guid LectureId)
         {
-            var lectureObj = await _unitOfWork.LectureRepository.GetByIdAsync(LectureId);
-            var result = _mapper.Map<LectureViewModel>(lectureObj);
-            return result;
+            var lectures = await _unitOfWork.LectureRepository.GetByIdAsync(LectureId);
+            if (lectures == null) return new Response(HttpStatusCode.NoContent, "Id not found");
+            else return new Response(HttpStatusCode.OK, "Search succeed", lectures);
         }
-        public async Task<Pagination<LectureViewModel>> GetLectureByUnitId(Guid UnitId, int pageIndex = 0, int pageSize = 10)
+        public async Task<Response> GetLectureByUnitId(Guid UnitId, int pageIndex = 0, int pageSize = 10)
         {
             var lectureObj = await _unitOfWork.LectureRepository.GetLectureByUnitId(UnitId, pageIndex, pageSize);
-            var result = _mapper.Map<Pagination<LectureViewModel>>(lectureObj);
-            return result;
+            if (lectureObj.Items.Count() < 1) return new Response(HttpStatusCode.NoContent, "Id not found");
+            else return new Response(HttpStatusCode.OK, "Search Succeed", _mapper.Map<Pagination<LectureViewModel>>(lectureObj));
         }
-        public async Task<Pagination<LectureViewModel>> GetLectureByName(string Name, int pageIndex = 0, int pageSize = 10)
+        public async Task<Response> GetLectureByName(string Name, int pageIndex = 0, int pageSize = 10)
         {
             var lectures = await _unitOfWork.LectureRepository.GetLectureByName(Name, pageIndex, pageSize);
-            var result = _mapper.Map<Pagination<LectureViewModel>>(lectures);
-            return result;
+            if (lectures.Items.Count() < 1) return new Response(HttpStatusCode.NoContent, "No Lecture Found");
+            else return new Response(HttpStatusCode.OK, "Search Succeed", _mapper.Map<Pagination<LectureViewModel>>(lectures));
         }
 
-        public async Task<Pagination<LectureViewModel>> GetDisableLectures(int pageIndex = 0, int pageSize = 10)
-        {
-            var lectures = await _unitOfWork.LectureRepository.GetDisableLectures(pageIndex, pageSize);
-            var result = _mapper.Map<Pagination<LectureViewModel>>(lectures);
-            return result;
-        }
-
-        public async Task<Pagination<LectureViewModel>> GetEnableLectures(int pageIndex = 0, int pageSize = 10)
+        public async Task<Response> GetEnableLectures(int pageIndex = 0, int pageSize = 10)
         {
             var lectures = await _unitOfWork.LectureRepository.GetEnableLectures(pageIndex, pageSize);
-            var result = _mapper.Map<Pagination<LectureViewModel>>(lectures);
-            return result;
+            if (lectures.Items.Count() < 1) return new Response(HttpStatusCode.NoContent, "No Lecture Found");
+            else return new Response(HttpStatusCode.OK, "Search Succeed", _mapper.Map<Pagination<LectureViewModel>>(lectures));
         }
-
+        public async Task<Response> GetDisableLectures(int pageIndex = 0, int pageSize = 10)
+        {
+            var lectures = await _unitOfWork.LectureRepository.GetDisableLectures(pageIndex, pageSize);
+            if (lectures == null) return new Response(HttpStatusCode.NoContent, "Id not found");
+            else return new Response(HttpStatusCode.OK, "Search succeed", _mapper.Map<Pagination<LectureViewModel>>(lectures));
+        }
         public async Task<UpdateLectureViewModel?> UpdateLecture(Guid LectureId, UpdateLectureViewModel lectureDTO)
         {
             var lectureObj = await _unitOfWork.LectureRepository.GetByIdAsync(LectureId);
@@ -84,12 +83,6 @@ namespace Applications.Services
                 }
             }
             return null;
-        }
-        public async Task<Pagination<LectureViewModel>> GetLecturePagingsionAsync(int pageIndex = 0, int pageSize = 10)
-        {
-            var lectures = await _unitOfWork.LectureRepository.ToPagination(pageIndex, pageSize);
-            var result = _mapper.Map<Pagination<LectureViewModel>>(lectures);
-            return result;
         }
     }
 }

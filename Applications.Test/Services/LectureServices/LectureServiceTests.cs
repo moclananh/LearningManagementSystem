@@ -7,7 +7,7 @@ using Domain.Entities;
 using Domain.Tests;
 using FluentAssertions;
 using Moq;
-using Org.BouncyCastle.Asn1.Pkcs;
+
 
 
 namespace Applications.Tests.Services.LectureServices
@@ -61,7 +61,7 @@ namespace Applications.Tests.Services.LectureServices
         }
 
         [Fact]
-        public async Task CreateChemicalAsync_ShouldReturnNull_WhenFailedSave()
+        public async Task CreateLecture_ShouldReturnNull_WhenFailedSave()
         {
             //arrange
             var mockData = _fixture.Build<CreateLectureViewModel>().Create();
@@ -80,9 +80,44 @@ namespace Applications.Tests.Services.LectureServices
 
             result.Should().BeNull();
         }
+        [Fact]
+        public async Task UpdateLecture_ShouldReturnCorrectData_WhenSuccessSaved()
+        {
+            //arrange
+            var lectureObj = _fixture.Build<Lecture>()
+                                   .Without(x => x.Unit)
+                                   .Create();
+            _unitOfWorkMock.Setup(x => x.LectureRepository.GetByIdAsync(lectureObj.Id)).ReturnsAsync(lectureObj);
+            var updateDataMock = _fixture.Build<UpdateLectureViewModel>().Create();
 
+            //act
+            await _lectureService.UpdateLecture(lectureObj.Id, updateDataMock);
+            var result = _mapperConfig.Map<UpdateLectureViewModel>(lectureObj);
 
+            //assert
+            result.Should().NotBeNull();
+            result.Should().BeOfType<UpdateLectureViewModel>();
+            result.LectureName.Should().Be(updateDataMock.LectureName);
+            // add more property ...
+            _unitOfWorkMock.Verify(x => x.LectureRepository.Update(lectureObj), Times.Once);
+            _unitOfWorkMock.Verify(x => x.SaveChangeAsync(), Times.Once);
+        }
+        [Fact]
+        public async Task UpdateLecture_ShouldReturnNull_WhenFailedSave()
+        {
+            //arrange
+            var lectureId = Guid.NewGuid();
+            _unitOfWorkMock.Setup(x => x.LectureRepository.GetByIdAsync(lectureId)).ReturnsAsync(null as Lecture);
+            var updateDataMock = _fixture.Build<UpdateLectureViewModel>().Create();
 
+            //act
+            var result = await _lectureService.UpdateLecture(lectureId, updateDataMock);
+
+            //assert
+            result.Should().BeNull();
+            _unitOfWorkMock.Verify(x => x.LectureRepository.Update(It.IsAny<Lecture>()), Times.Never);
+            _unitOfWorkMock.Verify(x => x.SaveChangeAsync(), Times.Never);
+        }
     }
 }
 

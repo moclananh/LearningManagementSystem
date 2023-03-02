@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using FluentValidation.Results;
 using Applications.Commons;
 using System.Drawing.Printing;
+using Applications.ViewModels.Response;
 
 namespace APIs.Controllers
 {
@@ -43,22 +44,22 @@ namespace APIs.Controllers
             }
             return Ok("Create new Lecture Success");
         }
-        [HttpGet("GetAllLecture")]
-        public async Task<Pagination<LectureViewModel>> GetAllLecture(int pageIndex = 0, int pageSize = 10) => await _lectureServices.GetAllLectures(pageIndex, pageSize);
+        [HttpGet("GetAllLectures")]
+        public async Task<Response> GetAllLectures(int pageIndex = 0, int pageSize = 10) => await _lectureServices.GetAllLectures(pageIndex, pageSize);
 
         [HttpGet("GetLectureById/{LectureId}")]
-        public async Task<LectureViewModel> GetLectureById(Guid LectureId) => await _lectureServices.GetLectureById(LectureId);
+        public async Task<Response> GetLectureById(Guid LectureId) => await _lectureServices.GetLectureById(LectureId);
 
         [HttpGet("GetLectureByUnitId/{UnitId}")]
-        public async Task<Pagination<LectureViewModel>> GetLectureByUnitId(Guid UnitId, int pageIndex = 0, int pageSize = 10) => await _lectureServices.GetLectureByUnitId(UnitId, pageIndex, pageSize);
+        public async Task<Response> GetLectureByUnitId(Guid UnitId, int pageIndex = 0, int pageSize = 10) => await _lectureServices.GetLectureByUnitId(UnitId, pageIndex, pageSize);
         [HttpGet("GetLectureByName/{LectureName}")]
-        public async Task<Pagination<LectureViewModel>> GetLectureByName(string LectureName, int pageIndex = 0, int pageSize = 10) => await _lectureServices.GetLectureByName(LectureName, pageIndex, pageSize);
+        public async Task<Response> GetLectureByName(string LectureName, int pageIndex = 0, int pageSize = 10) => await _lectureServices.GetLectureByName(LectureName, pageIndex, pageSize);
 
         [HttpGet("GetEnableLectures")]
-        public async Task<Pagination<LectureViewModel>> GetEnableLectures(int pageIndex = 0, int pageSize = 10) => await _lectureServices.GetEnableLectures(pageIndex, pageSize);
+        public async Task<Response> GetEnableLectures(int pageIndex = 0, int pageSize = 10) => await _lectureServices.GetEnableLectures(pageIndex, pageSize);
 
         [HttpGet("GetDisableLectures")]
-        public async Task<Pagination<LectureViewModel>> GetDisableLectures(int pageIndex = 0, int pageSize = 10) => await _lectureServices.GetDisableLectures(pageIndex, pageSize);
+        public async Task<Response> GetDisableLectures(int pageIndex = 0, int pageSize = 10) => await _lectureServices.GetDisableLectures(pageIndex, pageSize);
 
         [HttpPut("UpdateLecture/{LectureId}")]
         public async Task<IActionResult> UpdateLecture(Guid LectureId, UpdateLectureViewModel Lecture)
