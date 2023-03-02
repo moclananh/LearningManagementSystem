@@ -2,11 +2,9 @@
 using Applications.Interfaces;
 using Applications.ViewModels.ClassViewModels;
 using AutoFixture;
-using DocumentFormat.OpenXml.Spreadsheet;
 using Domain.Entities;
 using Domain.Tests;
 using FluentAssertions;
-using Microsoft.CodeAnalysis.CSharp;
 using Moq;
 
 namespace Applications.Tests.Services.ClassServices

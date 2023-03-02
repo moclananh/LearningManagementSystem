@@ -1,6 +1,5 @@
 ﻿using Applications.Commons;
 using Applications.Interfaces;
-using Applications.Services;
 using Applications.ViewModels.LectureViewModels;
 using AutoFixture;
 using Domain.Entities;
@@ -17,7 +16,7 @@ namespace Applications.Tests.Services.LectureServices
         private readonly ILectureService _lectureService;
         public LectureServiceTests()
         {
-            _lectureService = new LectureServies(_unitOfWorkMock.Object, _mapperConfig);
+            _lectureService = new Applications.Services.LectureServices(_unitOfWorkMock.Object, _mapperConfig);
         }
         [Fact]
         public async Task GetAllLectures_ShouldReturnCorrectData()

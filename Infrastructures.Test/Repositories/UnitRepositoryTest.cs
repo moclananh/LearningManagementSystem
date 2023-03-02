@@ -1,5 +1,4 @@
-﻿using Applications.Services;
-using AutoFixture;
+﻿using AutoFixture;
 using Domain.Entities;
 using Domain.EntityRelationship;
 using Domain.Tests;
@@ -11,7 +10,6 @@ namespace Infrastructures.Tests.Repositories
     public class UnitRepositoryTest : SetupTest
     {
         private readonly UnitRepository _unitRepository;
-        private readonly ModuleService _moduleService;
         public UnitRepositoryTest()
         {
             _unitRepository = new UnitRepository(
@@ -35,14 +33,6 @@ namespace Infrastructures.Tests.Repositories
                 .CreateMany(30)
                 .ToList();
             await _dbContext.Units.AddRangeAsync(mockData);
-            await _dbContext.SaveChangesAsync();
-            int i = 0;
-            foreach (var item in mockData)
-            {
-                item.UnitName = $"Mock{i}";
-                i++;
-            }
-            _dbContext.UpdateRange(mockData);
             await _dbContext.SaveChangesAsync();
             var expected = mockData.Where(x => x.UnitName.Contains("Mock"))
                                     .OrderByDescending(x => x.CreationDate)
@@ -77,12 +67,6 @@ namespace Infrastructures.Tests.Repositories
                 .ToList();
             await _dbContext.Units.AddRangeAsync(mockData);
             await _dbContext.SaveChangesAsync();
-            foreach (var item in mockData)
-            {
-                item.Status = Domain.Enum.StatusEnum.Status.Enable;
-            }
-            _dbContext.UpdateRange(mockData);
-            await _dbContext.SaveChangesAsync();
             var expected = mockData.Where(x => x.Status == Domain.Enum.StatusEnum.Status.Enable)
                                     .OrderByDescending(x => x.CreationDate)
                                     .Take(10)
@@ -115,12 +99,6 @@ namespace Infrastructures.Tests.Repositories
                 .CreateMany(30)
                 .ToList();
             await _dbContext.Units.AddRangeAsync(mockData);
-            await _dbContext.SaveChangesAsync();
-            foreach (var item in mockData)
-            {
-                item.Status = Domain.Enum.StatusEnum.Status.Disable;
-            }
-            _dbContext.UpdateRange(mockData);
             await _dbContext.SaveChangesAsync();
             var expected = mockData.Where(x => x.Status == Domain.Enum.StatusEnum.Status.Disable)
                                     .OrderByDescending(x => x.CreationDate)

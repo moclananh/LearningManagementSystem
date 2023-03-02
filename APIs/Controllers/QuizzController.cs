@@ -11,10 +11,10 @@ namespace APIs.Controllers
     [ApiController]
     public class QuizzController : ControllerBase
     {
-        private readonly IQuizzServices _quizzServices;
+        private readonly IQuizzService _quizzServices;
         private readonly IValidator<CreateQuizzViewModel> _createQuizzValidator;
         private readonly IValidator<UpdateQuizzViewModel> _updateQuizzValidator;
-        public QuizzController(IQuizzServices quizzServices,
+        public QuizzController(IQuizzService quizzServices,
             IValidator<CreateQuizzViewModel> CreateQuizzValidator,
             IValidator<UpdateQuizzViewModel> UpdateQuizzValidator)
         {

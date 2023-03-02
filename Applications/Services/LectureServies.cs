@@ -8,11 +8,11 @@ using System.Net;
 
 namespace Applications.Services
 {
-    public class LectureServies : ILectureService
+    public class LectureServices : ILectureService
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        public LectureServies(IUnitOfWork unitOfWork, IMapper mapper)
+        public LectureServices(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;

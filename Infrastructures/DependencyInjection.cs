@@ -11,10 +11,6 @@ using Application.Repositories;
 using Infrastructure.Repositories;
 using Application.Interfaces;
 using Application.Services;
-using Applications.Utils;
-using Applications.Interfaces.EmailServicesInterface;
-using Applications.Services.EmailServices;
-using Domain.Entities;
 
 namespace Infrastructures
 {
@@ -30,7 +26,7 @@ namespace Infrastructures
             // Add Object Services
             services.AddScoped<IClassService, ClassServices>();
             services.AddScoped<IClassRepository, ClassRepository>();
-            services.AddScoped<IQuizzServices, QuizzServices>();
+            services.AddScoped<IQuizzService, QuizzService>();
             services.AddScoped<IQuizzRepository, QuizzRepository>();
             services.AddScoped<IAssignmentRepository, AssignmentRepository>();
             services.AddScoped<IAssignmentService, AssignmentService>();
@@ -42,7 +38,7 @@ namespace Infrastructures
             services.AddScoped<IClassUserServices, ClassUserService>();
             services.AddScoped<IAuditPlanService, AuditPlanService>();
             services.AddScoped<IAuditPlanRepository, AuditPlanRepository>();
-            services.AddScoped<ILectureService, LectureServies>();
+            services.AddScoped<ILectureService, LectureServices>();
             services.AddScoped<ILectureRepository, LectureRepository>();
             services.AddScoped<IUnitRepository, UnitRepository>();
             services.AddScoped<IUnitServices, UnitServices>();

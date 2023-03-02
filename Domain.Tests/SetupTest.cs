@@ -30,7 +30,7 @@ namespace Domain.Tests
         protected readonly Mock<ILectureService> _lectureServiceMock;
         protected readonly Mock<IModuleService> _moduleServiceMock;
         protected readonly Mock<IOutputStandardService> _outputStandardServiceMock;
-        protected readonly Mock<IQuizzServices> _quizzServiceMock;
+        protected readonly Mock<IQuizzService> _quizzServiceMock;
         protected readonly Mock<ISyllabusServices> _syllabusServiceMock;
         protected readonly Mock<ITokenService> _tokenServiceMock;
         protected readonly Mock<ITrainingProgramService> _trainingProgramServiceMock;
@@ -76,7 +76,7 @@ namespace Domain.Tests
             _lectureServiceMock = new Mock<ILectureService>();
             _moduleServiceMock = new Mock<IModuleService>();
             _outputStandardServiceMock = new Mock<IOutputStandardService>();
-            _quizzServiceMock = new Mock<IQuizzServices>();
+            _quizzServiceMock = new Mock<IQuizzService>();
             _syllabusServiceMock = new Mock<ISyllabusServices>();
             _tokenServiceMock = new Mock<ITokenService>();
             _trainingProgramServiceMock = new Mock<ITrainingProgramService>();

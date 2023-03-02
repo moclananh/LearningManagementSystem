@@ -3,7 +3,7 @@ using Applications.ViewModels.Response;
 
 namespace Applications.Interfaces
 {
-    public interface IQuizzServices
+    public interface IQuizzService
     {
         public Task<Response> GetQuizzByQuizzIdAsync(Guid QuizzId);
         public Task<CreateQuizzViewModel> CreateQuizzAsync(CreateQuizzViewModel QuizzDTO);
