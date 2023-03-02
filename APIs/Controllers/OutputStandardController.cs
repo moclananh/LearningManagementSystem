@@ -2,6 +2,8 @@
 using Applications.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Applications.Commons;
+using FluentValidation.Results;
+using FluentValidation;
 
 namespace APIs.Controllers
 {
@@ -10,9 +12,12 @@ namespace APIs.Controllers
     public class OutputStandardController : ControllerBase
     {
         private readonly IOutputStandardService _outputStandardServices;
-        public OutputStandardController(IOutputStandardService outputStandardServices)
+        private readonly IValidator<UpdateOutputStandardViewModel> _updateOutputStandardValidator;
+        public OutputStandardController(IOutputStandardService outputStandardServices,
+            IValidator<UpdateOutputStandardViewModel> UpdateOutputStandardValidator)
         {
             _outputStandardServices = outputStandardServices;
+            _updateOutputStandardValidator = UpdateOutputStandardValidator;
         }
         [HttpGet("GetAllOutputStandard")]
         public async Task<List<OutputStandardViewModel>> ViewAllOutputStandardAsync() => await _outputStandardServices.ViewAllOutputStandardAsync();
@@ -24,7 +29,22 @@ namespace APIs.Controllers
         public async Task<OutputStandardViewModel> GetOutputStandardByOutputStandardId(Guid OutputStandardId) => await _outputStandardServices.GetOutputStandardByOutputStandardIdAsync(OutputStandardId);
 
         [HttpPut("UpdateOutputStandard/{OutputStandardId}")]
-        public async Task<UpdateOutputStandardViewModel> UpdateOutputStandard(Guid OutputStandardId, UpdateOutputStandardViewModel outputStandardModel) => await _outputStandardServices.UpdatOutputStandardAsync(OutputStandardId, outputStandardModel);
+        public async Task<IActionResult> UpdateOutputStandard(Guid OutputStandardId, UpdateOutputStandardViewModel updateOutputStandardView)
+        {
+            if (ModelState.IsValid)
+            {
+                ValidationResult result = _updateOutputStandardValidator.Validate(updateOutputStandardView);
+                if (result.IsValid)
+                {
+                    await _outputStandardServices.UpdatOutputStandardAsync(OutputStandardId, updateOutputStandardView);
+                }
+                else
+                {
+                    return BadRequest("Update OutputStandard Fail");
+                }
+            }
+            return Ok("Update OutputStandard Success");
+        }
         [HttpGet("GetOutputStandardBySyllabusId/{SyllabusId}")]
         public async Task<Pagination<OutputStandardViewModel>> GetOutputStandardBySyllabusId(Guid SyllabusId, int pageIndex = 0, int pageSize = 10) => await _outputStandardServices.GetOutputStandardBySyllabusIdAsync(SyllabusId, pageIndex, pageSize);
         [HttpPost("OutputStandard/AddOutputStandard/{SyllabusId}/{OutputStandardId}")]

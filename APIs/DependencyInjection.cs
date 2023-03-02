@@ -27,6 +27,8 @@ using APIs.Validations.ModulesValidations;
 using APIs.Validations.TrainingProgramValidations;
 using Application.ViewModels.TrainingProgramModels;
 using Applications.ViewModels.TrainingProgramModels;
+using Applications.ViewModels.OutputStandardViewModels;
+using APIs.Validations.OutputStandardValidations;
 using Applications.ViewModels.AuditResultViewModels;
 using APIs.Validations.AuditResultValidations;
 using Applications.ViewModels.PracticeViewModels;
@@ -64,6 +66,7 @@ public static class DependencyInjection
         services.AddScoped<IValidator<UpdateAssignmentViewModel>, UpdateAssignmentValidation>();
         services.AddScoped<IValidator<CreateTrainingProgramViewModel>, CreateTrainingProgramValidation>();
         services.AddScoped<IValidator<UpdateTrainingProgramViewModel>, UpdateTrainingProgramValidation>();
+        services.AddScoped<IValidator<UpdateOutputStandardViewModel>, UpdateOutputStandardValidation>();
         services.AddScoped<IValidator<UpdateAuditResultViewModel>, UpdateAuditResultValidation>();
         services.AddScoped<IValidator<CreatePracticeViewModel>, CreatePracticeValidation>();
         //---------------------------------------------------------------------------------------
