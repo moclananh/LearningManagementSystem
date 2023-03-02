@@ -33,6 +33,7 @@ using Applications.ViewModels.AuditResultViewModels;
 using APIs.Validations.AuditResultValidations;
 using Applications.ViewModels.PracticeViewModels;
 using APIs.Validations.PracticeValidations;
+using System.Text.Json.Serialization;
 
 namespace APIs;
 
@@ -42,7 +43,8 @@ public static class DependencyInjection
     {
         services.AddScoped<IClaimService, ClaimsService>();
         services.AddScoped<ITokenService, TokenService>();
-        services.AddControllers();
+        services.AddControllers().AddJsonOptions(opt =>
+            opt.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen();
         services.AddHealthChecks();

@@ -88,7 +88,7 @@ namespace Infrastructures.Mappers
             CreateMap<QuizzQuestionViewModel, QuizzQuestion>().ReverseMap();
             CreateMap<SyllabusOutputStandardViewModel, SyllabusOutputStandard>().ReverseMap();
             CreateMap<SyllabusModuleViewModel, SyllabusModule>().ReverseMap();
-
+            CreateMap<ClassDetailsViewModel, Class>().ReverseMap();
             /* pagination */
             CreateMap(typeof(Pagination<>), typeof(Pagination<>));
         }

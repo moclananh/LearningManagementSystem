@@ -5,7 +5,7 @@ using Domain.Enum.StatusEnum;
 
 namespace Applications.ViewModels.ClassViewModels
 {
-    public class ClassViewModel
+    public class ClassDetailsViewModel
     {
         public Guid Id { get; set; }
         public string ClassName { get; set; }
@@ -24,5 +24,11 @@ namespace Applications.ViewModels.ClassViewModels
         public DateTime? DeletionDate { get; set; }
         public Guid? DeleteBy { get; set; }
         public bool IsDeleted { get; set; }
+        public ICollection<User> Trainner { get; set; }
+        public ICollection<User> Admin { get; set; }
+        public ICollection<User> Trainee { get; set; }
+        public ICollection<ClassTrainingProgram> ClassTrainingPrograms { get; set; }
+        public ICollection<AuditPlan> AuditPlans { get; set; }
+        public ICollection<ClassUser> ClassUsers { get; set; }
     }
 }

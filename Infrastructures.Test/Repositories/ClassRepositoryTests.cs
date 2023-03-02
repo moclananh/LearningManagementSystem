@@ -1,6 +1,7 @@
 ﻿using Applications.Repositories;
 using AutoFixture;
 using Domain.Entities;
+using Domain.EntityRelationship;
 using Domain.Tests;
 using FluentAssertions;
 using Infrastructures.Repositories;
@@ -169,6 +170,25 @@ namespace Infrastructures.Tests.Repositories
             resultPaging.PageIndex.Should().Be(0);
             resultPaging.PageSize.Should().Be(10);
             result.Should().BeEquivalentTo(expected);
+        }
+        [Fact]
+        public async Task GetClassDetail_ShouldReturnCorrectData()
+        {
+            //arrange
+            var mockData = _fixture.Build<Class>()
+                                   .Without(x => x.AbsentRequests)
+                                   .Without(x => x.Attendences)
+                                   .Without(x => x.AuditPlans)
+                                   .Without(x => x.ClassUsers)
+                                   .Without(x => x.ClassTrainingPrograms)
+                                   .Create();
+            _dbContext.Classes.Add(mockData);
+            await _dbContext.SaveChangesAsync();
+            //act
+            var result = await _classRepository.GetClassDetails(mockData.Id);
+            //assert
+            result.Should().NotBeNull();
+            result.Id.Should().Be(mockData.Id);
         }
     }
 }

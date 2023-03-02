@@ -8,6 +8,7 @@ using Domain.Entities;
 using Domain.EntityRelationship;
 using Domain.Enum.ClassEnum;
 using Domain.Enum.StatusEnum;
+using MimeKit.Cryptography;
 
 namespace Applications.Services
 {
@@ -89,6 +90,31 @@ namespace Applications.Services
             var classes = await _unitOfWork.ClassRepository.GetClassByName(Name, pageIndex = 0, pageSize = 10);
             var result = _mapper.Map<Pagination<ClassViewModel>>(classes);
             return result;
+        }
+
+        public async Task<ClassDetailsViewModel> GetClassDetails(Guid ClassId)
+        {
+            var classObj = await _unitOfWork.ClassRepository.GetClassDetails(ClassId);
+
+            var classView = _mapper.Map<ClassDetailsViewModel>(classObj);
+
+            foreach (var user in classObj.ClassUsers)
+            {
+                var tempUser = await _unitOfWork.UserRepository.GetByIdAsync(user.UserId);
+                if (tempUser.Role == Domain.Enum.RoleEnum.Role.Trainer)
+                {
+                    classView.Trainner.Add(tempUser);
+                }
+                else if (tempUser.Role == Domain.Enum.RoleEnum.Role.Admin)
+                {
+                    classView.Admin.Add(tempUser);
+                }
+                else if (tempUser.Role == Domain.Enum.RoleEnum.Role.Trainee)
+                {
+                    classView.Trainee.Add(tempUser);
+                }
+            }
+            return classView;
         }
 
         public async Task<Pagination<ClassViewModel>> GetDisableClasses(int pageIndex = 0, int pageSize = 10)

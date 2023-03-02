@@ -122,5 +122,15 @@ namespace APIs.Controllers
             }
             return BadRequest("GetClassByFilter Fail");
         }
+        [HttpGet("GetClassDetails/{ClassId}")]
+        public async Task<IActionResult> GetClassDetails(Guid ClassId)
+        {
+            if (ModelState.IsValid)
+            {
+                var classObj = await _classServices.GetClassDetails(ClassId);
+                return Ok(classObj);
+            }
+            return BadRequest("GetClassDetails Fail");
+        }
     }
 }

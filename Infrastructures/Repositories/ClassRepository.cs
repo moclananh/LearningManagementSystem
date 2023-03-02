@@ -68,6 +68,16 @@ namespace Infrastructures.Repositories
 
             return result;
         }
+
+        public async Task<Class> GetClassDetails(Guid ClassId)
+        {
+            var result = _dbContext.Classes.Include(x => x.ClassUsers)
+                                           .Include(x => x.ClassTrainingPrograms)
+                                           .Include(x => x.AuditPlans)
+                                           .FirstOrDefault(x => x.Id == ClassId);
+            return result;
+        }
+
         public async Task<Pagination<Class>> GetDisableClasses(int pageNumber = 0, int pageSize = 10)
         {
             var itemCount = await _dbContext.Classes.CountAsync();
