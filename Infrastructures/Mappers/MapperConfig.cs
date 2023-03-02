@@ -84,6 +84,7 @@ namespace Infrastructures.Mappers
             CreateMap<UpdatePracticeViewModel, Practice>().ReverseMap();
             CreateMap<UpdateAuditResultViewModel, AuditResult>().ReverseMap();
             CreateMap<UserAuditPlanViewModel, UserAuditPlan>().ReverseMap();
+            CreateMap<CreatePracticeViewModel, Practice>().ReverseMap();
             CreateMap<QuizzQuestionViewModel, QuizzQuestion>().ReverseMap();
             CreateMap<SyllabusOutputStandardViewModel, SyllabusOutputStandard>().ReverseMap();
             CreateMap<SyllabusModuleViewModel, SyllabusModule>().ReverseMap();

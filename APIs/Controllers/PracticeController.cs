@@ -1,8 +1,7 @@
-﻿using Application.ViewModels.QuizzViewModels;
-using Applications.Commons;
+﻿using Applications.Commons;
 using Applications.Interfaces;
-using Applications.Services;
 using Applications.ViewModels.PracticeViewModels;
+using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 namespace APIs.Controllers
@@ -12,10 +11,15 @@ namespace APIs.Controllers
     public class PracticeController : ControllerBase
     {
         private readonly IPracticeService _service;
-        public PracticeController(IPracticeService service)
+        private readonly IValidator<CreatePracticeViewModel> _createPracticeValidator;
+        //private readonly IValidator<UpdatePracticeViewModel> _updatePracticeValidator;
+        public PracticeController(IPracticeService service,
+             IValidator<CreatePracticeViewModel> CreatePracticeValidator
+           /* IValidator<UpdatePracticeViewModel> UpdatePracticeValidator*/)
         {
             _service = service;
-           
+            _createPracticeValidator = CreatePracticeValidator;
+            //_updatePracticeValidator = UpdatePracticeValidator;
         }
         [HttpGet("GetPracticesByUnitId/{UnitId}")]
         public async Task<Pagination<PracticeViewModel>> GetPracticesByUnitId(Guid UnitId) => await _service.GetPracticeByUnitId(UnitId);
@@ -27,7 +31,23 @@ namespace APIs.Controllers
         public async Task<Pagination<PracticeViewModel>> GetAllPractice(int pageIndex = 0, int pageSize = 10) => await _service.GetAllPractice(pageIndex, pageSize);
 
         [HttpPost("CreatePractice")]
-        public async Task<CreatePracticeViewModel> CreatePractice(CreatePracticeViewModel PracticeModel) => await _service.CreatePracticeAsync(PracticeModel);
+        public async Task<IActionResult> CreatePractice(CreatePracticeViewModel PracticeModel)
+        {
+            if (ModelState.IsValid)
+            {
+                ValidationResult result = _createPracticeValidator.Validate(PracticeModel);
+                if (result.IsValid)
+                {
+                    await _service.CreatePracticeAsync(PracticeModel);
+                }
+                else
+                {
+                    return BadRequest("Fail to create new Practice");
+                }
+            }
+            return Ok("Create new Practice Success");
+        }
+
         [HttpGet("GetPracticeByName/{PracticeName}")]
         public async Task<Pagination<PracticeViewModel>> GetPracticeByName(string PracticeName, int pageIndex = 0, int pageSize = 10) => await _service.GetpracticeByName(PracticeName, pageIndex, pageSize);
         [HttpGet("GetEnablePractice")]
