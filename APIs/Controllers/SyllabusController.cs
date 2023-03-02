@@ -1,6 +1,4 @@
-﻿using Applications.Commons;
-using Applications.Interfaces;
-using Applications.Services;
+﻿using Applications.Interfaces;
 using Applications.ViewModels.Response;
 using Applications.ViewModels.SyllabusViewModels;
 using FluentValidation;

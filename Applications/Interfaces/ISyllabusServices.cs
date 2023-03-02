@@ -1,5 +1,4 @@
-﻿using Applications.Commons;
-using Applications.ViewModels.Response;
+﻿using Applications.ViewModels.Response;
 using Applications.ViewModels.SyllabusModuleViewModel;
 using Applications.ViewModels.SyllabusViewModels;
 

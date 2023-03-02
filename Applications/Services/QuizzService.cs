@@ -1,8 +1,11 @@
 ﻿using Application.ViewModels.QuizzViewModels;
 using Applications.Commons;
 using Applications.Interfaces;
+using Applications.ViewModels.Response;
 using AutoMapper;
 using Domain.Entities;
+using System.Net;
+
 namespace Applications.Services
 {
     public class QuizzServices : IQuizzServices
@@ -15,11 +18,11 @@ namespace Applications.Services
             _mapper = mapper;
         }
 
-        public async Task<QuizzViewModel> GetQuizzByQuizzIdAsync(Guid QuizzId)
+        public async Task<Response> GetQuizzByQuizzIdAsync(Guid QuizzId)
         {
             var quizz = await _unitOfWork.QuizzRepository.GetByIdAsync(QuizzId);
-            var result = _mapper.Map<QuizzViewModel>(quizz);
-            return result;
+            if (quizz == null) return new Response(HttpStatusCode.NoContent, "Id not found");
+            else return new Response(HttpStatusCode.OK, "Search succeed", _mapper.Map<QuizzViewModel>(quizz));
         }
 
         public async Task<CreateQuizzViewModel> CreateQuizzAsync(CreateQuizzViewModel QuizzDTO)
@@ -50,39 +53,39 @@ namespace Applications.Services
             return null;
         }
 
-        public async Task<Pagination<QuizzViewModel>> GetQuizzByName(string QuizzName, int pageIndex = 0, int pageSize = 10)
+        public async Task<Response> GetQuizzByName(string QuizzName, int pageIndex = 0, int pageSize = 10)
         {
             var quizzes = await _unitOfWork.QuizzRepository.GetQuizzByName(QuizzName, pageIndex, pageSize);
-            var result = _mapper.Map<Pagination<QuizzViewModel>>(quizzes);
-            return result;
+            if (quizzes.Items.Count() < 1) return new Response(HttpStatusCode.NoContent, "No Quizz Found");
+            else return new Response(HttpStatusCode.OK, "Search Succeed", _mapper.Map<Pagination<QuizzViewModel>>(quizzes));
         }
 
-        public async Task<Pagination<QuizzViewModel>> GetAllQuizzes(int pageIndex = 0, int pageSize = 10)
+        public async Task<Response> GetAllQuizzes(int pageIndex = 0, int pageSize = 10)
         {
             var quizzes = await _unitOfWork.QuizzRepository.ToPagination(pageIndex, pageSize);
-            var result = _mapper.Map<Pagination<QuizzViewModel>>(quizzes);
-            return result;
+            if (quizzes.Items.Count() < 1) return new Response(HttpStatusCode.NoContent, "No Quizz Found");
+            else return new Response(HttpStatusCode.OK, "Search Succeed", _mapper.Map<Pagination<QuizzViewModel>>(quizzes));
         }
 
-        public async Task<Pagination<QuizzViewModel>> GetEnableQuizzes(int pageIndex = 0, int pageSize = 10)
+        public async Task<Response> GetEnableQuizzes(int pageIndex = 0, int pageSize = 10)
         {
             var quizzes = await _unitOfWork.QuizzRepository.GetEnableQuizzes(pageIndex, pageSize);
-            var result = _mapper.Map<Pagination<QuizzViewModel>>(quizzes);
-            return result;
+            if (quizzes.Items.Count() < 1) return new Response(HttpStatusCode.NoContent, "No Quizz Found");
+            else return new Response(HttpStatusCode.OK, "Search Succeed", _mapper.Map<Pagination<QuizzViewModel>>(quizzes));
         }
 
-        public async Task<Pagination<QuizzViewModel>> GetDisableQuizzes(int pageIndex = 0, int pageSize = 10)
+        public async Task<Response> GetDisableQuizzes(int pageIndex = 0, int pageSize = 10)
         {
             var quizzes = await _unitOfWork.QuizzRepository.GetDisableQuizzes(pageIndex, pageSize);
-            var result = _mapper.Map<Pagination<QuizzViewModel>>(quizzes);
-            return result;
+            if (quizzes.Items.Count() < 1) return new Response(HttpStatusCode.NoContent, "No Quizz Found");
+            else return new Response(HttpStatusCode.OK, "Search Succeed", _mapper.Map<Pagination<QuizzViewModel>>(quizzes));
         }
 
-        public async Task<Pagination<QuizzViewModel>> GetQuizzByUnitIdAsync(Guid UnitId, int pageIndex = 0, int pageSize = 10)
+        public async Task<Response> GetQuizzByUnitIdAsync(Guid UnitId, int pageIndex = 0, int pageSize = 10)
         {
             var quizzes = await _unitOfWork.QuizzRepository.GetQuizzByUnitIdAsync(UnitId, pageIndex, pageSize);
-            var result = _mapper.Map<Pagination<QuizzViewModel>>(quizzes);
-            return result;
+            if (quizzes.Items.Count() < 1) return new Response(HttpStatusCode.NoContent, "Id not found");
+            else return new Response(HttpStatusCode.OK, "Search Succeed", _mapper.Map<Pagination<QuizzViewModel>>(quizzes));
         }
     }
 }
