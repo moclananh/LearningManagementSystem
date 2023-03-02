@@ -1,9 +1,12 @@
 ﻿using Applications.Commons;
 using Applications.Interfaces;
 using Applications.ViewModels.Response;
+using Applications.ViewModels.SyllabusModuleViewModel;
 using Applications.ViewModels.SyllabusViewModels;
+using Applications.ViewModels.UnitModuleViewModel;
 using AutoMapper;
 using Domain.Entities;
+using Domain.EntityRelationship;
 using System.Net;
 
 namespace Applications.Services
@@ -18,6 +21,28 @@ namespace Applications.Services
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
+
+        public async Task<SyllabusModuleViewModel> AddSyllabusModule(Guid SyllabusId, Guid ModuleId)
+        {
+            var moduleOjb = await _unitOfWork.SyllabusRepository.GetByIdAsync(SyllabusId);
+            var unitObj = await _unitOfWork.ModuleRepository.GetByIdAsync(ModuleId);
+            if (moduleOjb != null && unitObj != null)
+            {
+                var SyllabusModule = new SyllabusModule()
+                {
+                    Syllabus = moduleOjb,
+                    Module = unitObj
+                };
+                await _unitOfWork.SyllabusModuleRepository.AddAsync(SyllabusModule);
+                var isSuccess = await _unitOfWork.SaveChangeAsync() > 0;
+                if (isSuccess)
+                {
+                    return _mapper.Map<SyllabusModuleViewModel>(SyllabusModule);
+                }
+            }
+            return null;
+        }
+
         public async Task<CreateSyllabusViewModel?> CreateSyllabus(CreateSyllabusViewModel SyllabusDTO)
         {
             var syllabus = _mapper.Map<Syllabus>(SyllabusDTO);
@@ -86,6 +111,20 @@ namespace Applications.Services
                 if (isSuccess)
                 {
                     return _mapper.Map<UpdateSyllabusViewModel>(syllabus);
+                }
+            }
+            return null;
+        }
+        public async Task<SyllabusModuleViewModel> RemoveSyllabusModule(Guid SyllabusId, Guid ModuleId)
+        {
+            var moduleOjb = await _unitOfWork.SyllabusModuleRepository.GetSyllabusModule(SyllabusId, ModuleId);
+            if (moduleOjb != null)
+            {
+                _unitOfWork.SyllabusModuleRepository.SoftRemove(moduleOjb);
+                var isSucces = await _unitOfWork.SaveChangeAsync() > 0;
+                if (isSucces)
+                {
+                    return _mapper.Map<SyllabusModuleViewModel>(moduleOjb);
                 }
             }
             return null;

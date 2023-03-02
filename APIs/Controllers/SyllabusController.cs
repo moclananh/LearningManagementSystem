@@ -1,5 +1,6 @@
 ﻿using Applications.Commons;
 using Applications.Interfaces;
+using Applications.Services;
 using Applications.ViewModels.Response;
 using Applications.ViewModels.SyllabusViewModels;
 using FluentValidation;
@@ -81,5 +82,25 @@ namespace APIs.Controllers
 
         [HttpGet("GetSyllabusByOutputStandardId/{OutputStandardId}")]
         public async Task<Response> GetSyllabusByOutputStandardId(Guid OutputStandardId, int pageNumber = 0, int pageSize = 10) => await _syllabusServices.GetSyllabusByOutputStandardId(OutputStandardId, pageNumber, pageSize);
+        [HttpPost("AddSyllabusModule/{SyllabusId}/{moduleId}")]
+        public async Task<IActionResult> AddSyllabusModule(Guid SyllabusId, Guid moduleId)
+        {
+            if (ModelState.IsValid)
+            {
+                await _syllabusServices.AddSyllabusModule(SyllabusId, moduleId);
+                return Ok("Add Success");
+            }
+            return BadRequest("Add Fail");
+        }
+        [HttpDelete("DeleteModuleSyllabus/{SyllabusId}/{moduleId}")]
+        public async Task<IActionResult> DeleteUnit(Guid SyllabusId, Guid moduleId)
+        {
+            if (ModelState.IsValid)
+            {
+                await _syllabusServices.RemoveSyllabusModule(SyllabusId, moduleId);
+                return Ok("Remove Success");
+            }
+            return BadRequest("Remove Unit Fail");
+        }
     }
 }

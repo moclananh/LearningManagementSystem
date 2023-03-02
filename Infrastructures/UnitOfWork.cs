@@ -31,6 +31,7 @@ namespace Infrastructures
         private readonly IModuleUnitRepository _moduleUnitRepository;
         private readonly IUserAuditPlanRepository _userAuditPlanRepository;
         private readonly IQuizzQuestionRepository _quizzQuestionRepository;
+        private readonly ISyllabusModuleRepository _syllabusModuleRepository;
 
         public UnitOfWork(AppDBContext appDBContext,
             IClassRepository classRepository,
@@ -54,7 +55,8 @@ namespace Infrastructures
             IAuditResultRepository auditResultRepository,
             IModuleUnitRepository moduleUnitRepository,
             IUserAuditPlanRepository userAuditPlanRepository,
-            IQuizzQuestionRepository quizzQuestionRepository)
+            IQuizzQuestionRepository quizzQuestionRepository,
+            ISyllabusModuleRepository syllabusModuleRepository)
 
         {
             _appDBContext = appDBContext;
@@ -80,6 +82,7 @@ namespace Infrastructures
             _moduleUnitRepository = moduleUnitRepository;
             _userAuditPlanRepository = userAuditPlanRepository;
             _quizzQuestionRepository = quizzQuestionRepository;
+            _syllabusModuleRepository = syllabusModuleRepository;
         }
         public IClassRepository ClassRepository => _classRepository;
         public IPracticeRepository PracticeRepository => _practiceRepository;
@@ -103,6 +106,7 @@ namespace Infrastructures
         public IModuleUnitRepository ModuleUnitRepository => _moduleUnitRepository;
         public IUserAuditPlanRepository UserAuditPlanRepository => _userAuditPlanRepository;
         public IQuizzQuestionRepository QuizzQuestionRepository => _quizzQuestionRepository;
+        public ISyllabusModuleRepository SyllabusModuleRepository => _syllabusModuleRepository;
 
         public async Task<int> SaveChangeAsync() => await _appDBContext.SaveChangesAsync();
     }

@@ -71,6 +71,8 @@ namespace Infrastructures
             services.AddScoped<IQuizzQuestionService, QuizzQuestionService>();
             services.AddScoped<IClassTrainingProgramRepository, ClassTrainingProgramRepository>();
             services.AddScoped<IClassTrainingProgramService, ClassTrainingProgramService>();
+            services.AddScoped<ISyllabusModuleRepository, SyllabusModuleRepository>();
+            services.AddScoped<ISyllabusModuleService, SyllabusModuleService>();
             return services;
         }
     }
