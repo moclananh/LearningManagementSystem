@@ -28,7 +28,6 @@ using APIs.Validations.TrainingProgramValidations;
 using Application.ViewModels.TrainingProgramModels;
 using Applications.ViewModels.TrainingProgramModels;
 
-
 namespace APIs;
 
 public static class DependencyInjection

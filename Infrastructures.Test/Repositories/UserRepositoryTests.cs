@@ -1,5 +1,6 @@
 ﻿using Applications.Repositories;
 using AutoFixture;
+using DocumentFormat.OpenXml.Drawing;
 using Domain.Entities;
 using Domain.EntityRelationship;
 using Domain.Enum.RoleEnum;
@@ -79,5 +80,53 @@ public class UserRepositoryTests : SetupTest
         resultPaging.PageSize.Should().Be(10);
         result.Should().BeEquivalentTo(expected);
     }
-    
+    [Fact]
+    public async Task UserRepository_GetUserByClassId_ShouldReturnCorrectData()
+    {
+        //arrage
+        var mockDataUser = _fixture.Build<User>()
+            .Without(x => x.AbsentRequests)
+            .Without(x => x.Attendences)
+            .Without(x => x.UserAuditPlans)
+            .Without(x => x.ClassUsers)
+            .CreateMany(10)
+            .ToList();
+        var mockDataClass = _fixture.Build<Class>()
+            .Without(x => x.AuditPlans)
+            .Without(x => x.AbsentRequests)
+            .Without(x => x.Attendences)
+            .Without(x => x.ClassTrainingPrograms)
+            .Without(x => x.ClassUsers)
+            .Create();
+        await _dbContext.Users.AddRangeAsync(mockDataUser);
+        await _dbContext.Classes.AddAsync(mockDataClass);
+        await _dbContext.SaveChangesAsync();
+        var list = new List<ClassUser>();
+        foreach(var user in mockDataUser)
+        {
+            var data = new ClassUser
+            {
+                Class = mockDataClass,
+                User = user
+            };
+            list.Add(data);
+        }
+        await _dbContext.ClassUser.AddRangeAsync(list);
+        await _dbContext.SaveChangesAsync();
+        
+        var expected = _dbContext.ClassUser.Where(x => x.ClassId.Equals(mockDataClass.Id)).Select(x => x.User).ToList();
+
+        //act
+        var resultPaging = await _userRepository.GetUserByClassId(mockDataClass.Id);
+        var result = resultPaging.Items;
+        //assert
+        resultPaging.Previous.Should().BeFalse();
+        resultPaging.Next.Should().BeFalse();
+        resultPaging.Items.Count.Should().Be(10);
+        resultPaging.TotalItemsCount.Should().Be(10);
+        resultPaging.TotalPagesCount.Should().Be(1);
+        resultPaging.PageIndex.Should().Be(0);
+        resultPaging.PageSize.Should().Be(10);
+        result.Should().BeEquivalentTo(expected, op => op.Excluding(x => x.ClassUsers));
+    }
 }
