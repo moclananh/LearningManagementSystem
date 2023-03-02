@@ -27,7 +27,7 @@ public class MailService : IMailService
     {
         string mailTemplate = LoadTemplate(nameTemplate);
         var user = await _unitOfWork.UserRepository.GetUserByEmail(email);
-        if (user == null) throw new Exception("Account has not been registered.");
+        if (user == null) return null;
         
         // check 
         string code = await _tokenService.GetToken(user.Email);
@@ -47,8 +47,7 @@ public class MailService : IMailService
 
     private string LoadTemplate(string nameTemplate)
     {
-        string workingDirectory = Environment.CurrentDirectory;
-        string templatePath = Path.Combine(workingDirectory,"Templates",$"{nameTemplate}.cshtml");
+        string templatePath = Path.Combine(Directory.GetCurrentDirectory(), "Resources", "Templates", $"{nameTemplate}.cshtml");
         using FileStream fileStream = new FileStream(templatePath,FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
         using StreamReader sr = new StreamReader(fileStream, Encoding.Default);
 

@@ -20,6 +20,7 @@ public class MailController : Controller
 	public async Task<IActionResult> forgotPasswordByEmail(string email)
 	{
 		string body = await _mailService.GetEmailTemplate("forgotPassword", email);
+		if (body == null) return StatusCode(StatusCodes.Status400BadRequest, "Email does not exist in the system!!");
 
         MailDataViewModel mailData = new MailDataViewModel(
 			new List<string> { email },

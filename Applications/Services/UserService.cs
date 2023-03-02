@@ -10,6 +10,9 @@ using Domain.Enum.StatusEnum;
 using Domain.Enum.RoleEnum;
 using Applications.ViewModels.SyllabusViewModels;
 using Applications.Commons;
+using DocumentFormat.OpenXml.Spreadsheet;
+using DocumentFormat.OpenXml.Wordprocessing;
+using MimeKit.Cryptography;
 
 namespace Applications.Services;
 
@@ -121,22 +124,36 @@ public class UserService : IUserService
             {
                 ExcelWorksheet worksheet = package.Workbook.Worksheets[0];
                 var rowCount = worksheet.Dimension.Rows;
-
-                for (int row = 2; row <= rowCount; row++)
+                try
                 {
-                    list.Add(new User
+                    for (int row = 2; row <= rowCount; row++)
                     {
-                        firstName = worksheet.Cells[row, 1].Value.ToString().Trim() ?? string.Empty,
-                        lastName = worksheet.Cells[row, 2].Value.ToString().Trim() ?? string.Empty,
-                        Email = worksheet.Cells[row, 3].Value.ToString().Trim() ?? string.Empty,
-                        DOB = DateTime.Parse(worksheet.Cells[row, 4].Value.ToString() ?? string.Empty) ,
-                        Gender = bool.Parse(worksheet.Cells[row, 5].Value.ToString().Trim() ?? string.Empty),
-                        Role = (Role)Enum.Parse(typeof(Role), worksheet.Cells[row, 6].Value.ToString() ?? string.Empty),
-                        Image = string.Empty,
-                        Level = string.Empty,
-                        Password = "12345",
-                        Status = Status.Enable,
-                    });
+                        if (worksheet.Cells[row,1].Value is null)
+                        {
+                            break;
+                        }
+                        var emailEntity = _unitOfWork.UserRepository.GetUserByEmail(worksheet.Cells[row, 3].Value.ToString().Trim());
+                        if (emailEntity != null) return new Response(HttpStatusCode.BadRequest, "Email repeat with accounts in the system");
+
+                        User user = new User();
+                        user.firstName = worksheet.Cells[row, 1].Value.ToString().Trim();
+                        user.lastName = worksheet.Cells[row, 2].Value.ToString().Trim();
+                        user.Email = worksheet.Cells[row, 3].Value.ToString().Trim();
+                        user.DOB = DateTime.Parse(worksheet.Cells[row, 4].Value.ToString());
+                        var gender = true;
+                        if (worksheet.Cells[row, 5].Value.ToString().Trim().Contains("Female")) gender = false;
+                        user.Gender = gender;
+                        user.Role = (Role)Enum.Parse(typeof(Role), worksheet.Cells[row, 6].Value.ToString());
+                        user.Image = string.Empty;
+                        user.Level = string.Empty;
+                        user.Password = "12345";
+                        user.Status = Status.Enable;
+                        list.Add(user);
+                    }
+                }
+                catch(Exception ex)
+                {
+                    return new Response(HttpStatusCode.BadRequest, "data may be empty row. please check again your excel file!!!");
                 }
             }
         }
