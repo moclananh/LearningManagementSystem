@@ -30,7 +30,7 @@ namespace Application.Services
             return result;
         }
 
-        public async Task<UpdateAuditResultViewModel?> UpdateAuditResult(Guid AuditResultId, UpdateAuditResultViewModel classDTO)
+        public async Task<UpdateAuditResultViewModel> UpdateAuditResult(Guid AuditResultId, UpdateAuditResultViewModel classDTO)
         {
             var aditRsObj = await _unitOfWork.AuditResultRepository.GetByIdAsync(AuditResultId);
             if (aditRsObj != null)
