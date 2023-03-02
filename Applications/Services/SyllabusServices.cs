@@ -55,22 +55,26 @@ namespace Applications.Services
             return null;
         }
 
-        public async Task<Pagination<SyllabusViewModel>> GetAllSyllabus(int pageNumber = 0, int pageSize = 10)
+        public async Task<Response> GetAllSyllabus(int pageNumber = 0, int pageSize = 10)
         {
             var syllabus = await _unitOfWork.SyllabusRepository.ToPagination(pageNumber, pageSize);
-            return _mapper.Map<Pagination<SyllabusViewModel>>(syllabus);
+            if (syllabus.Items.Count() < 1) return new Response(HttpStatusCode.NoContent, "No Syllabus Found");
+            else return new Response(HttpStatusCode.OK, "Search Succeed", syllabus);
+
         }
 
-        public async Task<Pagination<SyllabusViewModel>> GetDisableSyllabus(int pageNumber = 0, int pageSize = 10)
+        public async Task<Response> GetDisableSyllabus(int pageNumber = 0, int pageSize = 10)
         {
             var syllabus = await _unitOfWork.SyllabusRepository.GetDisableSyllabus(pageNumber, pageSize);
-            return _mapper.Map<Pagination<SyllabusViewModel>>(syllabus);
+            if (syllabus.Items.Count() < 1) return new Response(HttpStatusCode.NoContent, "No Syllabus Found");
+            else return new Response(HttpStatusCode.OK, "Search Succeed", syllabus);
         }
 
-        public async Task<Pagination<SyllabusViewModel>> GetEnableSyllabus(int pageNumber = 0, int pageSize = 10)
+        public async Task<Response> GetEnableSyllabus(int pageNumber = 0, int pageSize = 10)
         {
             var syllabus = await _unitOfWork.SyllabusRepository.GetEnableSyllabus(pageNumber, pageSize);
-            return _mapper.Map<Pagination<SyllabusViewModel>>(syllabus);
+            if (syllabus.Items.Count() < 1) return new Response(HttpStatusCode.NoContent, "No Syllabus Found");
+            else return new Response(HttpStatusCode.OK, "Search Succeed", syllabus);
         }
 
         public async Task<Response> GetSyllabusById(Guid SyllabusId) 
@@ -81,10 +85,11 @@ namespace Applications.Services
             else return new Response(HttpStatusCode.OK, "Search succeed", syllabus);
         }
 
-        public async Task<Pagination<SyllabusViewModel>> GetSyllabusByName(string Name, int pageNumber = 0, int pageSize = 10)
+        public async Task<Response> GetSyllabusByName(string Name, int pageNumber = 0, int pageSize = 10)
         {
             var syllabus = await _unitOfWork.SyllabusRepository.GetSyllabusByName(Name, pageNumber, pageSize);
-            return _mapper.Map<Pagination<SyllabusViewModel>>(syllabus);
+            if (syllabus.Items.Count() < 1) return new Response(HttpStatusCode.NoContent, "No Syllabus Found");
+            else return new Response(HttpStatusCode.OK, "Search Succeed", syllabus);
         }
 
         public async Task<Response> GetSyllabusByOutputStandardId(Guid OutputStandardId, int pageNumber = 0, int pageSize = 10)
@@ -94,10 +99,11 @@ namespace Applications.Services
             else return new Response(HttpStatusCode.OK, "Search Succeed", syllabus);
         }
 
-        public async Task<Pagination<SyllabusViewModel>> GetSyllabusByTrainingProgramId(Guid TrainingProgramId, int pageNumber = 0, int pageSize = 10)
+        public async Task<Response> GetSyllabusByTrainingProgramId(Guid TrainingProgramId, int pageNumber = 0, int pageSize = 10)
         {
             var syllabus = await _unitOfWork.SyllabusRepository.GetSyllabusByTrainingProgramId(TrainingProgramId, pageNumber, pageSize);
-            return _mapper.Map<Pagination<SyllabusViewModel>>(syllabus);
+            if (syllabus.Items.Count() < 1) return new Response(HttpStatusCode.NoContent, "Id not found");
+            else return new Response(HttpStatusCode.OK, "Search Succeed", syllabus);
         }
 
         public async Task<UpdateSyllabusViewModel?> UpdateSyllabus(Guid SyllabusId, UpdateSyllabusViewModel SyllabusDTO)

@@ -63,22 +63,22 @@ namespace APIs.Controllers
         }
 
         [HttpGet("GetAllSyllabus")]
-        public async Task<Pagination<SyllabusViewModel>> GetAllSyllabus(int pageNumber = 0, int pageSize = 10) => await _syllabusServices.GetAllSyllabus(pageNumber, pageSize);
+        public async Task<Response> GetAllSyllabus(int pageNumber = 0, int pageSize = 10) => await _syllabusServices.GetAllSyllabus(pageNumber, pageSize);
 
         [HttpGet("GetEnableSyllabus")]
-        public async Task<Pagination<SyllabusViewModel>> GetEnableSyllabus(int pageNumber = 0, int pageSize = 10) => await _syllabusServices.GetEnableSyllabus(pageNumber, pageSize);
+        public async Task<Response> GetEnableSyllabus(int pageNumber = 0, int pageSize = 10) => await _syllabusServices.GetEnableSyllabus(pageNumber, pageSize);
 
         [HttpGet("GetDisableSyllabus")]
-        public async Task<Pagination<SyllabusViewModel>> GetDisableSyllabus(int pageNumber = 0, int pageSize = 10) => await _syllabusServices.GetDisableSyllabus(pageNumber, pageSize);
+        public async Task<Response> GetDisableSyllabus(int pageNumber = 0, int pageSize = 10) => await _syllabusServices.GetDisableSyllabus(pageNumber, pageSize);
 
         [HttpGet("GetSyllabusById/{SyllabusId}")]
         public async Task<Response> GetSyllabusById(Guid SyllabusId) => await _syllabusServices.GetSyllabusById(SyllabusId);
 
         [HttpGet("GetSyllabusByName/{SyllabusName}")]
-        public async Task<Pagination<SyllabusViewModel>> GetSyllabusByName(string SyllabusName, int pageNumber = 0, int pageSize = 10) => await _syllabusServices.GetSyllabusByName(SyllabusName, pageNumber, pageSize);
+        public async Task<Response> GetSyllabusByName(string SyllabusName, int pageNumber = 0, int pageSize = 10) => await _syllabusServices.GetSyllabusByName(SyllabusName, pageNumber, pageSize);
 
         [HttpGet("GetSyllabusByTrainingProgramId/{TrainingProgramId}")]
-        public async Task<Pagination<SyllabusViewModel>> GetSyllabusByTrainingProgramId(Guid TrainingProgramId, int pageNumber = 0, int pageSize = 10) => await _syllabusServices.GetSyllabusByTrainingProgramId(TrainingProgramId, pageNumber, pageSize);
+        public async Task<Response> GetSyllabusByTrainingProgramId(Guid TrainingProgramId, int pageNumber = 0, int pageSize = 10) => await _syllabusServices.GetSyllabusByTrainingProgramId(TrainingProgramId, pageNumber, pageSize);
 
         [HttpGet("GetSyllabusByOutputStandardId/{OutputStandardId}")]
         public async Task<Response> GetSyllabusByOutputStandardId(Guid OutputStandardId, int pageNumber = 0, int pageSize = 10) => await _syllabusServices.GetSyllabusByOutputStandardId(OutputStandardId, pageNumber, pageSize);
