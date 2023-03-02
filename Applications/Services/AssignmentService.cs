@@ -1,8 +1,13 @@
 ﻿using Applications.Commons;
 using Applications.Interfaces;
 using Applications.ViewModels.AssignmentViewModels;
+using Applications.ViewModels.Response;
 using AutoMapper;
+using DocumentFormat.OpenXml.Spreadsheet;
+using DocumentFormat.OpenXml.Wordprocessing;
 using Domain.Entities;
+using System.Drawing.Printing;
+using System.Net;
 
 namespace Applications.Services
 {
@@ -16,32 +21,32 @@ namespace Applications.Services
             _mapper = mapper;
         }
 
-        public async Task<UpdateAssignmentViewModel> GetAssignmentById(Guid AssignmentId)
+        public async Task<Response> GetAssignmentById(Guid AssignmentId)
         {
             var asmObj = await _unitOfWork.AssignmentRepository.GetByIdAsync(AssignmentId);
-            var result = _mapper.Map<UpdateAssignmentViewModel>(asmObj);
-            return result;
+            if (asmObj == null) return new Response(HttpStatusCode.NoContent, "Id not found");
+            else return new Response(HttpStatusCode.OK, "Search succeed", _mapper.Map<UpdateAssignmentViewModel>(asmObj));
         }
 
-        public async Task<Pagination<UpdateAssignmentViewModel>> GetAssignmentByUnitId(Guid UnitId, int pageIndex = 0, int pageSize = 10)
+        public async Task<Response> GetAssignmentByUnitId(Guid UnitId, int pageIndex = 0, int pageSize = 10)
         {
             var asmObj = await _unitOfWork.AssignmentRepository.GetAssignmentByUnitId(UnitId, pageIndex, pageSize);
-            var result = _mapper.Map<Pagination<UpdateAssignmentViewModel>>(asmObj);
-            return result;
+            if (asmObj.Items.Count() < 1) return new Response(HttpStatusCode.NoContent, "No Assignment Found");
+            else return new Response(HttpStatusCode.OK, "Search Succeed", _mapper.Map<Pagination<UpdateAssignmentViewModel>>(asmObj));
         }
 
-        public async Task<Pagination<UpdateAssignmentViewModel>> GetDisableAssignments(int pageIndex = 0, int pageSize = 10)
+        public async Task<Response> GetDisableAssignments(int pageIndex = 0, int pageSize = 10)
         {
             var asmObj = await _unitOfWork.AssignmentRepository.GetDisableAssignmentAsync(pageIndex, pageSize);
-            var result = _mapper.Map<Pagination<UpdateAssignmentViewModel>>(asmObj);
-            return result;
+            if (asmObj.Items.Count() < 1) return new Response(HttpStatusCode.NoContent, "No Assignment Found");
+            else return new Response(HttpStatusCode.OK, "Search Succeed", _mapper.Map<Pagination<UpdateAssignmentViewModel>>(asmObj));
         }
 
-        public async Task<Pagination<UpdateAssignmentViewModel>> GetEnableAssignments(int pageIndex = 0, int pageSize = 10)
+        public async Task<Response> GetEnableAssignments(int pageIndex = 0, int pageSize = 10)
         {
             var asmObj = await _unitOfWork.AssignmentRepository.GetEnableAssignmentAsync(pageIndex, pageSize);
-            var result = _mapper.Map<Pagination<UpdateAssignmentViewModel>>(asmObj);
-            return result;
+            if (asmObj.Items.Count() < 1) return new Response(HttpStatusCode.NoContent, "No Assignment Found");
+            else return new Response(HttpStatusCode.OK, "Search Succeed", _mapper.Map<Pagination<UpdateAssignmentViewModel>>(asmObj));
         }
 
         public async Task<UpdateAssignmentViewModel?> UpdateAssignment(Guid AssignmentId, UpdateAssignmentViewModel assignmentDTO)
@@ -59,11 +64,11 @@ namespace Applications.Services
             }
             return null;
         }
-        public async Task<Pagination<AssignmentViewModel>> ViewAllAssignmentAsync(int pageIndex = 0, int pageSize = 10)
+        public async Task<Response> ViewAllAssignmentAsync(int pageIndex = 0, int pageSize = 10)
         {
-            var assignment = await _unitOfWork.AssignmentRepository.ToPagination(pageIndex, pageSize);
-            var result = _mapper.Map<Pagination<AssignmentViewModel>>(assignment);
-            return result;
+            var asmObj = await _unitOfWork.AssignmentRepository.ToPagination(pageIndex, pageSize);
+            if (asmObj.Items.Count() < 1) return new Response(HttpStatusCode.NoContent, "No Assignment Found");
+            else return new Response(HttpStatusCode.OK, "Search Succeed", _mapper.Map<Pagination<AssignmentViewModel>>(asmObj));
         }
 
         public async Task<CreateAssignmentViewModel> CreateAssignmentAsync(CreateAssignmentViewModel AssignmentDTO)
@@ -78,11 +83,11 @@ namespace Applications.Services
             return null;
         }
 
-        public async Task<Pagination<UpdateAssignmentViewModel>> GetAssignmentByName(string Name, int pageIndex = 0, int pageSize = 10)
+        public async Task<Response> GetAssignmentByName(string Name, int pageIndex = 0, int pageSize = 10)
         {
             var asmObj = await _unitOfWork.AssignmentRepository.GetAssignmentByName(Name, pageIndex, pageSize);
-            var result = _mapper.Map<Pagination<UpdateAssignmentViewModel>>(asmObj);
-            return result;
+            if (asmObj.Items.Count() < 1) return new Response(HttpStatusCode.NoContent, "No Assignment Found");
+            else return new Response(HttpStatusCode.OK, "Search Succeed", _mapper.Map<Pagination<UpdateAssignmentViewModel>>(asmObj));
         }
     }
 }

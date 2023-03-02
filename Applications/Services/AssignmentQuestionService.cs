@@ -21,11 +21,11 @@ namespace Applications.Services
             _mapper = mapper;
         }
 
-        public async Task<Pagination<AssignmentQuestionViewModel>> GetAssignmentQuestionByAssignmentId(Guid AssignmentId, int pageIndex = 0, int pageSize = 10)
+        public async Task<Response> GetAssignmentQuestionByAssignmentId(Guid AssignmentId, int pageIndex = 0, int pageSize = 10)
         {
-            var asmQObj = await _unitOfWork.AssignmentQuestionRepository.GetAllAssignmentQuestionByAssignmentId(AssignmentId, pageIndex, pageSize);
-            var result = _mapper.Map<Pagination<AssignmentQuestionViewModel>>(asmQObj);
-            return result;
+            var asmObj = await _unitOfWork.AssignmentQuestionRepository.GetAllAssignmentQuestionByAssignmentId(AssignmentId, pageIndex, pageSize);
+            if (asmObj.Items.Count() < 1) return new Response(HttpStatusCode.NoContent, "No AssignmentQuestion Found");
+            else return new Response(HttpStatusCode.OK, "Search Succeed", _mapper.Map<Pagination<AssignmentQuestionViewModel>>(asmObj));
         }
 
         public async Task<Response> UploadAssignmentQuestions(IFormFile formFile)
