@@ -114,5 +114,59 @@ namespace Applications.Tests.Services.ClassServices
             _unitOfWorkMock.Verify(x => x.ClassRepository.Update(It.IsAny<Class>()), Times.Never);
             _unitOfWorkMock.Verify(x => x.SaveChangeAsync(), Times.Never);
         }
+        [Fact]
+        public async Task GetEnableClasses_ShouldReturnCorrectData()
+        {
+            //arrange
+            var classMockData = new Pagination<Class>
+            {
+                Items = _fixture.Build<Class>()
+                                .Without(x => x.AbsentRequests)
+                                .Without(x => x.Attendences)
+                                .Without(x => x.AuditPlans)
+                                .Without(x => x.ClassUsers)
+                                .Without(x => x.ClassTrainingPrograms)
+                                .With(x => x.Status, Domain.Enum.StatusEnum.Status.Enable)
+                                .CreateMany(30)
+                                .ToList(),
+                PageIndex = 0,
+                PageSize = 10,
+                TotalItemsCount = 30
+            };
+            var classes = _mapperConfig.Map<Pagination<Class>>(classMockData);
+            _unitOfWorkMock.Setup(x => x.ClassRepository.GetEnableClasses(0, 10)).ReturnsAsync(classMockData);
+            var expected = _mapperConfig.Map<Pagination<ClassViewModel>>(classes);
+            //act
+            var result = await _classService.GetEnableClasses(0, 10);
+            //assert
+            result.Should().BeEquivalentTo(expected);
+        }
+        [Fact]
+        public async Task GetDisableClasses_ShouldReturnCorrectData()
+        {
+            //arrange
+            var classMockData = new Pagination<Class>
+            {
+                Items = _fixture.Build<Class>()
+                                .Without(x => x.AbsentRequests)
+                                .Without(x => x.Attendences)
+                                .Without(x => x.AuditPlans)
+                                .Without(x => x.ClassUsers)
+                                .Without(x => x.ClassTrainingPrograms)
+                                .With(x => x.Status, Domain.Enum.StatusEnum.Status.Disable)
+                                .CreateMany(30)
+                                .ToList(),
+                PageIndex = 0,
+                PageSize = 10,
+                TotalItemsCount = 30
+            };
+            var classes = _mapperConfig.Map<Pagination<Class>>(classMockData);
+            _unitOfWorkMock.Setup(x => x.ClassRepository.GetDisableClasses(0, 10)).ReturnsAsync(classMockData);
+            var expected = _mapperConfig.Map<Pagination<ClassViewModel>>(classes);
+            //act
+            var result = await _classService.GetDisableClasses(0, 10);
+            //assert
+            result.Should().BeEquivalentTo(expected);
+        }
     }
 }
