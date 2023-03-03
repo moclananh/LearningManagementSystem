@@ -54,10 +54,11 @@ public class UserService : IUserService
     }
 
 
-    public async Task<Pagination<UserViewModel>> GetUserByClassId(Guid ClassId, int pageIndex = 0, int pageSize = 10)
+    public async Task<Response> GetUserByClassId(Guid ClassId, int pageIndex = 0, int pageSize = 10)
     {
         var Users = await _unitOfWork.UserRepository.GetUserByClassId(ClassId, pageIndex, pageSize);
-        return _mapper.Map<Pagination<UserViewModel>>(Users); ;
+        if (Users.Items.Count() < 1) return new Response(HttpStatusCode.NoContent, "not found");
+        return new Response(HttpStatusCode.OK, "ok", _mapper.Map<Pagination<UserViewModel>>(Users));
     }
 
 

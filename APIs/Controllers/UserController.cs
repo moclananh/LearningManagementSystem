@@ -76,7 +76,7 @@ public class UserController : Controller
     
 
     [HttpGet("GetUsersByClassId/{ClassId}")]
-    public async Task<Pagination<UserViewModel>> GetUnitByModuleIdAsync(Guid ClassId, int pageIndex = 0, int pageSize = 10)
+    public async Task<Response> GetUnitByModuleIdAsync(Guid ClassId, int pageIndex = 0, int pageSize = 10)
     {
         return await _userService.GetUserByClassId(ClassId, pageIndex, pageSize);
     }
