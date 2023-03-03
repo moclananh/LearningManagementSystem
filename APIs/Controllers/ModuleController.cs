@@ -2,6 +2,7 @@
 using Applications.Interfaces;
 using Applications.Services;
 using Applications.ViewModels.ModuleViewModels;
+using Applications.ViewModels.Response;
 using Domain.Entities;
 using FluentValidation;
 using FluentValidation.Results;
@@ -44,13 +45,13 @@ namespace APIs.Controllers
         }
 
         [HttpGet("GetAllModules")]
-        public async Task<Pagination<ModuleViewModels>> GetAllModules(int pageIndex = 0, int pageSize = 10) => await _moduleServices.GetAllModules(pageIndex,pageSize);
+        public async Task<Response> GetAllModules(int pageIndex = 0, int pageSize = 10) => await _moduleServices.GetAllModules(pageIndex,pageSize);
 
         [HttpGet("GetModulesBySyllabusId/{syllabusId}")]
-        public async Task<Pagination<ModuleViewModels>> GetModulesBySyllabusId(Guid syllabusId, int pageIndex = 0, int pageSize = 10) => await _moduleServices.GetModulesBySyllabusId(syllabusId, pageIndex, pageSize);
+        public async Task<Response> GetModulesBySyllabusId(Guid syllabusId, int pageIndex = 0, int pageSize = 10) => await _moduleServices.GetModulesBySyllabusId(syllabusId, pageIndex, pageSize);
 
         [HttpGet("GetModulesByName/{ModuleName}")]
-        public async Task<Pagination<ModuleViewModels>> GetModulesByName(string ModuleName, int pageIndex = 0, int pageSize = 10) => await _moduleServices.GetModulesByName(ModuleName, pageIndex, pageSize);
+        public async Task<Response> GetModulesByName(string ModuleName, int pageIndex = 0, int pageSize = 10) => await _moduleServices.GetModulesByName(ModuleName, pageIndex, pageSize);
 
         [HttpPut("UpdateModule")]
         public async Task<IActionResult> UpdateModule(Guid moduleId, UpdateModuleViewModel module)
@@ -71,10 +72,10 @@ namespace APIs.Controllers
         }
 
         [HttpGet("GetEnableModules")]
-        public async Task<Pagination<ModuleViewModels>> GetEnableModules(int pageIndex = 0, int pageSize = 10) => await _moduleServices.GetEnableModules(pageIndex,pageSize);
+        public async Task<Response> GetEnableModules(int pageIndex = 0, int pageSize = 10) => await _moduleServices.GetEnableModules(pageIndex,pageSize);
 
         [HttpGet("GetDisableModules")]
-        public async Task<Pagination<ModuleViewModels>> GetDisableModules(int pageIndex = 0, int pageSize = 10) => await _moduleServices.GetDisableModules(pageIndex,pageSize);
+        public async Task<Response> GetDisableModules(int pageIndex = 0, int pageSize = 10) => await _moduleServices.GetDisableModules(pageIndex,pageSize);
 
         [HttpPost("AddModuleUnit/{moduleId}/{unitId}")]
         public async Task<IActionResult> AddModuleUnit(Guid moduleId, Guid unitId)

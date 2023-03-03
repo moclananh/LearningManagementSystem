@@ -8,8 +8,7 @@ namespace APIs.Validations.ClassValidations
         public UpdateClassValidation()
         {
             RuleFor(x => x.ClassName).NotNull().NotEmpty().MaximumLength(100);
-            RuleFor(x => x.ClassCode).NotNull().NotEmpty().MaximumLength(50);
-            
+            RuleFor(x => x.ClassCode).NotNull().NotEmpty().MaximumLength(50);         
         }
     }
 }

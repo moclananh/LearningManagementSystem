@@ -1,11 +1,12 @@
 ﻿using Applications.Commons;
 using Applications.Interfaces;
-using Applications.ViewModels.ClassTrainingProgramViewModels;
 using Applications.ViewModels.ModuleViewModels;
+using Applications.ViewModels.Response;
 using Applications.ViewModels.UnitModuleViewModel;
 using AutoMapper;
 using Domain.Entities;
 using Domain.EntityRelationship;
+using System.Net;
 
 namespace Applications.Services
 {
@@ -31,46 +32,46 @@ namespace Applications.Services
             return null;
         }
 
-        public async Task<Pagination<ModuleViewModels>> GetAllModules(int pageIndex = 0, int pageSize = 10)
+        public async Task<Response> GetAllModules(int pageIndex = 0, int pageSize = 10)
         {
             var modules = await _unitOfWork.ModuleRepository.ToPagination(pageIndex, pageSize);
-            var result = _mapper.Map<Pagination<ModuleViewModels>>(modules);
-            return result;
+            if (modules.Items.Count < 1) return new Response(HttpStatusCode.NoContent, "Not Found");
+            else return new Response(HttpStatusCode.OK, "Search Succeed", _mapper.Map<Pagination<ModuleViewModels>>(modules));
         }
 
-        public async Task<Pagination<ModuleViewModels>> GetDisableModules(int pageIndex = 0, int pageSize = 10)
+        public async Task<Response> GetDisableModules(int pageIndex = 0, int pageSize = 10)
         {
             var module = await _unitOfWork.ModuleRepository.GetDisableModules();
-            var result = _mapper.Map<Pagination<ModuleViewModels>>(module);
-            return result;
+            if (module.Items.Count() < 1) return new Response(HttpStatusCode.NoContent, "Not Found");
+            else return new Response(HttpStatusCode.OK, "Search Succeed", _mapper.Map<Pagination<ModuleViewModels>>(module));
         }
 
-        public async Task<Pagination<ModuleViewModels>> GetEnableModules(int pageIndex = 0, int pageSize = 10)
+        public async Task<Response> GetEnableModules(int pageIndex = 0, int pageSize = 10)
         {
             var module = await _unitOfWork.ModuleRepository.GetEnableModules();
-            var result = _mapper.Map<Pagination<ModuleViewModels>>(module);
-            return result;
+            if (module.Items.Count() < 1) return new Response(HttpStatusCode.NoContent, "Not Found");
+            else return new Response(HttpStatusCode.OK, "Search Succeed", _mapper.Map<Pagination<ModuleViewModels>>(module));
         }
 
-        public async Task<ModuleViewModels> GetModuleById(Guid moduleId)
+        public async Task<Response> GetModuleById(Guid moduleId)
         {
             var module = await _unitOfWork.ModuleRepository.GetByIdAsync(moduleId);
-            var result = _mapper.Map<ModuleViewModels>(module);
-            return result;
+            if (module == null) return new Response(HttpStatusCode.NoContent, "Id Not Found");
+            else return new Response(HttpStatusCode.OK, "Search Succeed", _mapper.Map<ModuleViewModels>(module));
         }
 
-        public async Task<Pagination<ModuleViewModels>> GetModulesByName(string name, int pageIndex = 0, int pageSize = 10)
+        public async Task<Response> GetModulesByName(string name, int pageIndex = 0, int pageSize = 10)
         {
             var module = await _unitOfWork.ModuleRepository.GetModuleByName(name, pageIndex, pageSize);
-            var result = _mapper.Map<Pagination<ModuleViewModels>>(module);
-            return result;
+            if (module.Items.Count() < 1) return new Response(HttpStatusCode.NoContent, "Not Found");
+            else return new Response(HttpStatusCode.OK, "Search Succeed", _mapper.Map<Pagination<ModuleViewModels>>(module));
         }
 
-        public async Task<Pagination<ModuleViewModels>> GetModulesBySyllabusId(Guid syllabusId, int pageIndex = 0, int pageSize = 10)
+        public async Task<Response> GetModulesBySyllabusId(Guid syllabusId, int pageIndex = 0, int pageSize = 10)
         {
             var module = await _unitOfWork.ModuleRepository.GetModulesBySyllabusId(syllabusId, pageIndex, pageSize);
-            var result = _mapper.Map<Pagination<ModuleViewModels>>(module);
-            return result;
+            if (module.Items.Count() < 1) return new Response(HttpStatusCode.NoContent, "Id Not Found");
+            else return new Response(HttpStatusCode.OK, "Search Succeed", _mapper.Map<Pagination<ModuleViewModels>>(module));
         }
 
         public async Task<UpdateModuleViewModel> UpdateModule(Guid moduleId, UpdateModuleViewModel moduleDTO)
@@ -124,7 +125,5 @@ namespace Applications.Services
             }
             return null;
         }
-
-
     }
 }

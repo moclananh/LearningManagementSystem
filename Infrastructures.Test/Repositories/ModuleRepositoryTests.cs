@@ -1,6 +1,7 @@
 ﻿using Applications.Repositories;
 using AutoFixture;
 using Domain.Entities;
+using Domain.EntityRelationship;
 using Domain.Tests;
 using FluentAssertions;
 using Infrastructures.Repositories;
@@ -110,6 +111,52 @@ namespace Infrastructures.Tests.Repositories
             resultPaging.PageIndex.Should().Be(0);
             resultPaging.PageSize.Should().Be(10);
             result.Should().BeEquivalentTo(expected);
+        }
+
+        [Fact]
+        public async Task ModuleRepository_GetModulesBySyllabusId_ShouldReturnCorrectData()
+        {
+            //arrange
+            var moduleMockData = _fixture.Build<Module>()
+                                         .Without(x => x.AuditPlan)
+                                         .Without(x => x.ModuleUnits)
+                                         .Without(x => x.SyllabusModules)
+                                         .CreateMany(10)
+                                         .ToList();
+            var syllabusMockData = _fixture.Build<Syllabus>()
+                                           .Without(x => x.TrainingProgramSyllabi)
+                                           .Without(x => x.SyllabusOutputStandards)
+                                           .Without(x => x.SyllabusModules)
+                                           .Create();
+            await _dbContext.Modules.AddRangeAsync(moduleMockData);
+            await _dbContext.Syllabi.AddAsync(syllabusMockData);
+            await _dbContext.SaveChangesAsync();
+            var dataList = new List<SyllabusModule>();
+            foreach(var item in moduleMockData)
+            {
+                var data = new SyllabusModule
+                {
+                    Syllabus = syllabusMockData,
+                    Module = item
+                };
+                dataList.Add(data);
+            }
+            await _dbContext.SyllabusModule.AddRangeAsync(dataList);
+            await _dbContext.SaveChangesAsync();
+            var expected = _dbContext.SyllabusModule.Where(x => x.SyllabusId.Equals(syllabusMockData.Id))
+                                                    .Select(x => x.Module).ToList();
+            //act
+            var resultPaging = await _moduleRepository.GetModulesBySyllabusId(syllabusMockData.Id);
+            var result = resultPaging.Items;
+            //assert
+            resultPaging.Previous.Should().BeFalse();
+            resultPaging.Next.Should().BeFalse();
+            resultPaging.Items.Count.Should().Be(10);
+            resultPaging.TotalItemsCount.Should().Be(10);
+            resultPaging.TotalPagesCount.Should().Be(1);
+            resultPaging.PageIndex.Should().Be(0);
+            resultPaging.PageSize.Should().Be(10);
+            result.Should().BeEquivalentTo(expected, op => op.Excluding(x => x.SyllabusModules));
         }
     }
 }
