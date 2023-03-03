@@ -1,6 +1,6 @@
 ﻿using Application.ViewModels.TrainingProgramModels;
-using Applications.Commons;
 using Applications.Interfaces;
+using Applications.ViewModels.Response;
 using Applications.ViewModels.TrainingProgramModels;
 using FluentValidation;
 using FluentValidation.Results;
@@ -62,18 +62,18 @@ namespace APIs.Controllers
         }
 
         [HttpGet("GetAllTrainingProgram")]
-        public async Task<Pagination<TrainingProgramViewModel>> ViewAllTrainingProgram(int pageIndex = 0, int pageSize = 10) => await _trainingProgramService.ViewAllTrainingProgramAsync(pageIndex, pageSize);
+        public async Task<Response> ViewAllTrainingProgram(int pageIndex = 0, int pageSize = 10) => await _trainingProgramService.ViewAllTrainingProgramAsync(pageIndex, pageSize);
 
         [HttpGet("GetTrainingProgramDisable")]
-        public async Task<Pagination<TrainingProgramViewModel>> ViewTrainingProgramDisable(int pageIndex = 0, int pageSize = 10) => await _trainingProgramService.ViewTrainingProgramDisableAsync(pageIndex, pageSize);
+        public async Task<Response> ViewTrainingProgramDisable(int pageIndex = 0, int pageSize = 10) => await _trainingProgramService.ViewTrainingProgramDisableAsync(pageIndex, pageSize);
 
         [HttpGet("GetTrainingProgramEnable")]
-        public async Task<Pagination<TrainingProgramViewModel>> ViewTrainingProgramEnable(int pageIndex = 0, int pageSize = 10) => await _trainingProgramService.ViewTrainingProgramEnableAsync(pageIndex, pageSize);
+        public async Task<Response> ViewTrainingProgramEnable(int pageIndex = 0, int pageSize = 10) => await _trainingProgramService.ViewTrainingProgramEnableAsync(pageIndex, pageSize);
 
         [HttpGet("GetTrainingProgramById/{TrainingProgramId}")]
-        public async Task<TrainingProgramViewModel> GetTrainingProgramById(Guid TrainingProgramId) => await _trainingProgramService.GetTrainingProgramById(TrainingProgramId);
+        public async Task<Response> GetTrainingProgramById(Guid TrainingProgramId) => await _trainingProgramService.GetTrainingProgramById(TrainingProgramId);
         [HttpGet("GetTrainingProgramByClassId/{ClassId}")]
-        public async Task<Pagination<TrainingProgramViewModel>> GetTrainingProgramByClassId(Guid ClassId, int pageIndex = 0, int pageSize = 10) => await _trainingProgramService.GetTrainingProgramByClassId(ClassId, pageIndex, pageSize);
+        public async Task<Response> GetTrainingProgramByClassId(Guid ClassId, int pageIndex = 0, int pageSize = 10) => await _trainingProgramService.GetTrainingProgramByClassId(ClassId, pageIndex, pageSize);
 
         [HttpPost("AddTrainingProgramSyllabus/{SyllabusId}/{TrainingProgramId}")]
         public async Task<IActionResult> AddSyllabusToTrainingProgram(Guid SyllabusId, Guid TrainingProgramId)
