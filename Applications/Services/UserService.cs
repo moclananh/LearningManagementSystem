@@ -133,7 +133,7 @@ public class UserService : IUserService
                         {
                             break;
                         }
-                        var emailEntity = _unitOfWork.UserRepository.GetUserByEmail(worksheet.Cells[row, 3].Value.ToString().Trim());
+                        var emailEntity = await _unitOfWork.UserRepository.GetUserByEmail(worksheet.Cells[row, 3].Value.ToString().Trim());
                         if (emailEntity != null) return new Response(HttpStatusCode.BadRequest, "Email repeat with accounts in the system");
 
                         User user = new User();
