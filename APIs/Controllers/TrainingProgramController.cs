@@ -80,10 +80,13 @@ namespace APIs.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _trainingProgramService.AddSyllabusToTrainingProgram(SyllabusId, TrainingProgramId);
-                return Ok("Add Syllabus to TrainingProgram Success");
+                var result = await _trainingProgramService.AddSyllabusToTrainingProgram(SyllabusId, TrainingProgramId);
+                if (result == null)
+                {
+                    return BadRequest("Add Syllabus to TrainingProgram Fail");
+                }
             }
-            return BadRequest("Add Syllabus to TrainingProgram Fail");
+            return Ok("Add Syllabus to TrainingProgram Success");
         }
 
         [HttpDelete("DeleteTrainingProgramSyllabus/{SyllabusId}/{TrainingProgramId}")]
@@ -91,10 +94,14 @@ namespace APIs.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _trainingProgramService.RemoveSyllabusToTrainingProgram(SyllabusId, TrainingProgramId);
-                return Ok("Remove Syllabus from TrainingProgram Success");
+                var result = await _trainingProgramService.RemoveSyllabusToTrainingProgram(SyllabusId, TrainingProgramId);
+                if (result == null)
+                {
+                    return BadRequest("Remove Syllabus from TrainingProgram Fail");
+                }
             }
-            return BadRequest("Remove Syllabus from TrainingProgram Fail");
+            return Ok("Remove Syllabus from TrainingProgram Success");
         }
+
     }
 }

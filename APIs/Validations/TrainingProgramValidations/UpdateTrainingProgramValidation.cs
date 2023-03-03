@@ -16,7 +16,8 @@ namespace APIs.Validations.TrainingProgramValidations
                 .NotEmpty()
                 .WithMessage("The 'Duration' should not be empty")
                 .MaximumLength(150);
-            RuleFor(x => x.Status).NotNull();
+            RuleFor(x => x.Status).NotNull().Must(x => x == Domain.Enum.StatusEnum.Status.Enable || x == Domain.Enum.StatusEnum.Status.Disable)
+                              .WithMessage("Status must be either Enable or Disable");
         }
     }
 }
