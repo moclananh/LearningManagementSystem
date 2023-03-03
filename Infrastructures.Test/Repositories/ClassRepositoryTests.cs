@@ -138,22 +138,17 @@ namespace Infrastructures.Tests.Repositories
                             .Without(x => x.AuditPlans)
                             .Without(x => x.ClassUsers)
                             .Without(x => x.ClassTrainingPrograms)
+                            .With(x => x.StartDate, startDate)
+                            .With(x => x.EndDate, endDate)
+                            .With(x => x.Location, Domain.Enum.ClassEnum.LocationEnum.Hanoi)
+                            .With(x => x.ClassTime, Domain.Enum.ClassEnum.ClassTimeEnum.Morning)
+                            .With(x => x.FSU, Domain.Enum.ClassEnum.FSUEnum.FHM)
+                            .With(x => x.Attendee, Domain.Enum.ClassEnum.AttendeeEnum.Intern)
+                            .With(x => x.Status, Domain.Enum.StatusEnum.Status.Enable)
                             .CreateMany(10)
                             .ToList();
             await _dbContext.Classes.AddRangeAsync(mockData1);
             await _dbContext.Classes.AddRangeAsync(mockData2);
-            await _dbContext.SaveChangesAsync();
-            foreach (var item in mockData2)
-            {
-                item.StartDate = startDate;
-                item.EndDate = endDate;
-                item.Location = Domain.Enum.ClassEnum.LocationEnum.Hanoi;
-                item.ClassTime = Domain.Enum.ClassEnum.ClassTimeEnum.Morning;
-                item.FSU = Domain.Enum.ClassEnum.FSUEnum.FHM;
-                item.Attendee = Domain.Enum.ClassEnum.AttendeeEnum.Intern;
-                item.Status = Domain.Enum.StatusEnum.Status.Enable;
-            }
-            _dbContext.UpdateRange(mockData2);
             await _dbContext.SaveChangesAsync();
             var expected = mockData2.OrderByDescending(x => x.CreationDate)
                                     .Take(10)
