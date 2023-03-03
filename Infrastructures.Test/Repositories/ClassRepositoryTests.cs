@@ -147,8 +147,8 @@ namespace Infrastructures.Tests.Repositories
                             .With(x => x.Status, Domain.Enum.StatusEnum.Status.Enable)
                             .CreateMany(10)
                             .ToList();
-            await _dbContext.Classes.AddRangeAsync(mockData1);
-            await _dbContext.Classes.AddRangeAsync(mockData2);
+            await _dbContext.AddRangeAsync(mockData1);
+            await _dbContext.AddRangeAsync(mockData2);
             await _dbContext.SaveChangesAsync();
             var expected = mockData2.OrderByDescending(x => x.CreationDate)
                                     .Take(10)
