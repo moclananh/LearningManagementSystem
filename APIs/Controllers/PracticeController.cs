@@ -11,6 +11,14 @@ namespace APIs.Controllers
     public class PracticeController : ControllerBase
     {
         private readonly IPracticeService _service;
+        private readonly IValidator<UpdatePracticeViewModel> _updatePracticeValidator;
+        public PracticeController(IPracticeService service, IValidator<UpdatePracticeViewModel> UpdatePracticeValidator)
+        {
+            _service = service;
+            _updatePracticeValidator = UpdatePracticeValidator;
+        }
+
+
         private readonly IValidator<CreatePracticeViewModel> _createPracticeValidator;
         //private readonly IValidator<UpdatePracticeViewModel> _updatePracticeValidator;
         public PracticeController(IPracticeService service,
@@ -55,6 +63,23 @@ namespace APIs.Controllers
         [HttpGet("GetDisablePractice")]
         public async Task<Pagination<PracticeViewModel>> GetDisablePractice(int pageIndex = 0, int pageSize = 10) => await _service.GetDisablePractice(pageIndex, pageSize);
         [HttpPut("UpdatePractice/{PracticeId}")]
-        public async Task<UpdatePracticeViewModel> UpdatePractice(Guid PracticeId, UpdatePracticeViewModel practiceDTO) => await _service.UpdatePractice(PracticeId, practiceDTO);
+        public async Task<IActionResult> UpdatePractice(Guid PracticeId, UpdatePracticeViewModel practiceDTO)
+        {
+            if (ModelState.IsValid)
+            {
+                ValidationResult result = _updatePracticeValidator.Validate(practiceDTO);
+                if (result.IsValid)
+                {
+                    await _service.UpdatePractice(PracticeId, practiceDTO);
+                }
+                else
+                {
+                    return BadRequest("Update Practice Fail");
+                }
+            }
+            return Ok("Update Practice Success");
+        }
     }
 }
+
+
