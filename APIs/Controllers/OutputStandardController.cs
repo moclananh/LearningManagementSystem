@@ -1,7 +1,6 @@
 ﻿using Applications.ViewModels.OutputStandardViewModels;
 using Applications.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Applications.Commons;
 using FluentValidation.Results;
 using FluentValidation;
 using Applications.ViewModels.Response;
@@ -20,8 +19,9 @@ namespace APIs.Controllers
             _outputStandardServices = outputStandardServices;
             _updateOutputStandardValidator = UpdateOutputStandardValidator;
         }
+
         [HttpGet("GetAllOutputStandard")]
-        public async Task<List<OutputStandardViewModel>> ViewAllOutputStandardAsync() => await _outputStandardServices.ViewAllOutputStandardAsync();
+        public async Task<Response> GetAllOutputStandard(int pageIndex = 0, int pageSize = 10) => await _outputStandardServices.GetAllOutputStandardAsync(pageIndex, pageSize);
 
         [HttpPost("CreateOutputStandard")]
         public async Task<CreateOutputStandardViewModel> CreateOutputStandard(CreateOutputStandardViewModel OutputStandardModel) => await _outputStandardServices.CreateOutputStandardAsync(OutputStandardModel);

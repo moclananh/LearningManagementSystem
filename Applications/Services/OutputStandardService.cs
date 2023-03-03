@@ -19,12 +19,7 @@ namespace Applications.Services
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
-        public async Task<List<OutputStandardViewModel>> ViewAllOutputStandardAsync()
-        {
-            var outputStandard = await _unitOfWork.OutputStandardRepository.GetAllAsync();
-            var result = _mapper.Map<List<OutputStandardViewModel>>(outputStandard);
-            return result;
-        }
+
         public async Task<Response> GetOutputStandardByOutputStandardIdAsync(Guid OutputStandardId)
         {
             var outputStandard = await _unitOfWork.OutputStandardRepository.GetByIdAsync(OutputStandardId);
@@ -95,6 +90,13 @@ namespace Applications.Services
         {
             var outputStandard = await _unitOfWork.OutputStandardRepository.GetOutputStandardBySyllabusIdAsync(SyllabusId, pageIndex, pageSize);
             if (outputStandard.Items.Count() < 1) return new Response(HttpStatusCode.NoContent, "Id not found");
+            else return new Response(HttpStatusCode.OK, "Search Succeed", _mapper.Map<Pagination<OutputStandardViewModel>>(outputStandard));
+        }
+
+        public async Task<Response> GetAllOutputStandardAsync(int pageIndex = 0, int pageSize = 10)
+        {
+            var outputStandard = await _unitOfWork.OutputStandardRepository.ToPagination(pageIndex, pageSize);
+            if (outputStandard.Items.Count() < 1) return new Response(HttpStatusCode.NoContent, "Not Found");
             else return new Response(HttpStatusCode.OK, "Search Succeed", _mapper.Map<Pagination<OutputStandardViewModel>>(outputStandard));
         }
     }
