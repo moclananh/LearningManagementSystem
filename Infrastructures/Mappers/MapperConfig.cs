@@ -62,6 +62,7 @@ namespace Infrastructures.Mappers
             CreateMap<CreateTrainingProgramViewModel, TrainingProgram>().ReverseMap();
             CreateMap<UpdateTrainingProgramViewModel, TrainingProgram>().ReverseMap();
             CreateMap<TrainingProgramViewModel, TrainingProgram>().ReverseMap();
+            CreateMap<TrainingProgramSyllabiView, TrainingProgramSyllabus>().ReverseMap();
             CreateMap<UpdateOutputStandardViewModel, OutputStandard>().ReverseMap();
             CreateMap<OutputStandardViewModel, OutputStandard>().ReverseMap();
             CreateMap<CreateOutputStandardViewModel, OutputStandard>().ReverseMap();

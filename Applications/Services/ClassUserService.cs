@@ -4,7 +4,9 @@ using Applications;
 using Applications.Commons;
 using Applications.ViewModels.ClassUserViewModels;
 using Applications.ViewModels.Response;
+using Applications.ViewModels.SyllabusViewModels;
 using AutoMapper;
+using DocumentFormat.OpenXml.Wordprocessing;
 using Domain.EntityRelationship;
 using Microsoft.AspNetCore.Http;
 using OfficeOpenXml;
@@ -22,11 +24,11 @@ namespace Application.Services
             _mapper = mapper;
         }
 
-        public async Task<Pagination<CreateClassUserViewModel>> GetAllClassUsersAsync(int pageIndex = 0, int pageSize = 10)
+        public async Task<Response> GetAllClassUsersAsync(int pageIndex = 0, int pageSize = 10)
         {
             var classUser = await _unitOfWork.ClassUserRepository.ToPagination(pageIndex, pageSize);
-            var result = _mapper.Map<Pagination<CreateClassUserViewModel>>(classUser);
-            return result;
+            if (classUser.Items.Count() < 1) return new Response(HttpStatusCode.NoContent, "No ClassUsers Found");
+            else return new Response(HttpStatusCode.OK, "Search Succeed", _mapper.Map<Pagination<CreateClassUserViewModel>>(classUser));
         }
 
         public async Task<Response> UploadClassUserFile(IFormFile formFile)

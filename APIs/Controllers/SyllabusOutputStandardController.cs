@@ -1,5 +1,6 @@
 ﻿using Applications.Commons;
 using Applications.Interfaces;
+using Applications.ViewModels.Response;
 using Applications.ViewModels.SyllabusOutputStandardViewModels;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,7 +17,7 @@ namespace APIs.Controllers
         }
 
         [HttpGet("GetAllSyllabusOutputStandard")]
-        public async Task<Pagination<SyllabusOutputStandardViewModel>> GetAllSyllabusOutputStandards(int pageIndex = 0, int pageSize = 10)
+        public async Task<Response> GetAllSyllabusOutputStandards(int pageIndex = 0, int pageSize = 10)
         {
             return await _syllabusOutputStandardService.GetAllSyllabusOutputStandards(pageIndex, pageSize);
         }

@@ -1,8 +1,9 @@
 ﻿using Applications.Commons;
 using Applications.Interfaces;
+using Applications.ViewModels.Response;
 using Applications.ViewModels.SyllabusOutputStandardViewModels;
 using AutoMapper;
-
+using System.Net;
 
 namespace Applications.Services
 {
@@ -16,11 +17,11 @@ namespace Applications.Services
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
-        public async Task<Pagination<SyllabusOutputStandardViewModel>> GetAllSyllabusOutputStandards(int pageIndex = 0, int pageSize = 10)
+        public async Task<Response> GetAllSyllabusOutputStandards(int pageIndex = 0, int pageSize = 10)
         {
             var syllabusOutputStandards = await _unitOfWork.SyllabusOutputStandardRepository.ToPagination(pageIndex, pageSize);
-            var result = _mapper.Map<Pagination<SyllabusOutputStandardViewModel>>(syllabusOutputStandards);
-            return result;
+            if (syllabusOutputStandards.Items.Count() < 1) return new Response(HttpStatusCode.NoContent, "No Syllabus Found");
+            else return new Response(HttpStatusCode.OK, "Search Succeed", _mapper.Map<Pagination<SyllabusOutputStandardViewModel>>(syllabusOutputStandards));
         }
 
         public async Task<SyllabusOutputStandardViewModel> UpdatSyllabusOutputStandardAsync(Guid SyllabusOutputStandardId, Guid OutputStandardId, SyllabusOutputStandardViewModel SyllabusOutputStandardDTO)

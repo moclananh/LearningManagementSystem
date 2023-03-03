@@ -20,11 +20,10 @@ namespace Infrastructures.Tests.Mappers.SyllabusOutputStandardMapper
                                .Create();
 
             //act
-            var result1 = _mapperConfig.Map<SyllabusOutputStandardViewModel>(syllabusOutputStandardMock);
-            var result2 = _mapperConfig.Map<SyllabusOutputStandardViewModel>(syllabusOutputStandardMock);
+            var result = _mapperConfig.Map<SyllabusOutputStandardViewModel>(syllabusOutputStandardMock);
             //assert
-            result1.SyllabusId.Should().Be(syllabusOutputStandardMock.SyllabusId.ToString());
-            result2.OutputStandardId.Should().Be(syllabusOutputStandardMock.OutputStandardId.ToString());
+            result.SyllabusId.Should().Be(syllabusOutputStandardMock.SyllabusId.ToString());
+            result.OutputStandardId.Should().Be(syllabusOutputStandardMock.OutputStandardId.ToString());
         }
     }
 }

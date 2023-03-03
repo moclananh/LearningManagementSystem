@@ -18,11 +18,10 @@ namespace Infrastructures.Tests.Mappers.ClassUserMapper
                                .Without(s => s.User)
                                .Create();
             //act
-            var result1 = _mapperConfig.Map<CreateClassUserViewModel>(ClasUserMock);
-            var result2 = _mapperConfig.Map<CreateClassUserViewModel>(ClasUserMock);
+            var result = _mapperConfig.Map<CreateClassUserViewModel>(ClasUserMock);
             //assert
-            result1.ClassId.Should().Be(ClasUserMock.ClassId.ToString());
-            result2.UserId.Should().Be(ClasUserMock.UserId.ToString());
+            result.ClassId.Should().Be(ClasUserMock.ClassId.ToString());
+            result.UserId.Should().Be(ClasUserMock.UserId.ToString());
         }
     }
 }

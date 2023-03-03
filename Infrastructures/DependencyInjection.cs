@@ -60,6 +60,7 @@ namespace Infrastructures
             services.AddScoped<IPracticeQuestionRepository, PracticeQuestionRepository>();
             services.AddScoped<IPracticeQuestionService, PracticeQuestionService>();
             services.AddScoped<ITrainingProgramSyllabiRepository, TrainingProgramSyllabiRepository>();
+            services.AddScoped<ISyllabusTrainingProgramService, SyllabusTrainingProgramService>();
             services.AddScoped<IModuleUnitRepository, ModuleUnitRepository>();
             services.AddScoped<IModuleUnitService, ModuleUnitService>();
             services.AddScoped<IUserAuditPlanRepository, UserAuditPlanRepository>();

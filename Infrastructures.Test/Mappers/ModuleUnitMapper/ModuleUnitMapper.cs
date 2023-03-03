@@ -17,11 +17,10 @@ namespace Infrastructures.Tests.Mappers.ModuleUnitMapper
                                .Without(s => s.Unit)
                                .Create();
             //act
-            var result1 = _mapperConfig.Map<ModuleUnitViewModel>(ModuleUnitMock);
-            var result2 = _mapperConfig.Map<ModuleUnitViewModel>(ModuleUnitMock);
+            var result = _mapperConfig.Map<ModuleUnitViewModel>(ModuleUnitMock);
             //assert
-            result1.ModuleId.Should().Be(ModuleUnitMock.ModuleId.ToString());
-            result2.UnitId.Should().Be(ModuleUnitMock.UnitId.ToString());
+            result.ModuleId.Should().Be(ModuleUnitMock.ModuleId.ToString());
+            result.UnitId.Should().Be(ModuleUnitMock.UnitId.ToString());
         }
     }
 }
