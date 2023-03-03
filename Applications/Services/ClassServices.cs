@@ -95,9 +95,7 @@ namespace Applications.Services
         public async Task<ClassDetailsViewModel> GetClassDetails(Guid ClassId)
         {
             var classObj = await _unitOfWork.ClassRepository.GetClassDetails(ClassId);
-
             var classView = _mapper.Map<ClassDetailsViewModel>(classObj);
-
             foreach (var user in classObj.ClassUsers)
             {
                 var tempUser = await _unitOfWork.UserRepository.GetByIdAsync(user.UserId);
@@ -112,6 +110,10 @@ namespace Applications.Services
                 else if (tempUser.Role == Domain.Enum.RoleEnum.Role.Trainee)
                 {
                     classView.Trainee.Add(tempUser);
+                }
+                else
+                {
+                    return null;
                 }
             }
             return classView;

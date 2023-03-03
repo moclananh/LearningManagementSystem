@@ -1,14 +1,11 @@
 ﻿using Applications.Commons;
 using Applications.Interfaces;
-using Applications.Services;
-using Applications.ViewModels.ClassTrainingProgramViewModels;
 using Applications.ViewModels.ClassViewModels;
 using Domain.Enum.ClassEnum;
 using Domain.Enum.StatusEnum;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
-using System.Drawing.Printing;
 
 namespace APIs.Controllers
 {
@@ -84,10 +81,13 @@ namespace APIs.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _classServices.AddTrainingProgramToClass(ClassId, TrainingProgramId);
-                return Ok("Add Success");
+                var result = await _classServices.AddTrainingProgramToClass(ClassId, TrainingProgramId);
+                if (result == null)
+                {
+                    return BadRequest("Add TrainingProgram Fail");
+                }
             }
-            return BadRequest("Add TrainingProgram Fail");
+            return Ok("Add Success");
         }
 
         [HttpDelete("Class/DeleteTrainingProgram/{ClassId}/{TrainingProgramId}")]
@@ -95,10 +95,13 @@ namespace APIs.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _classServices.RemoveTrainingProgramToClass(ClassId, TrainingProgramId);
-                return Ok("Remove Success");
+                var result = await _classServices.RemoveTrainingProgramToClass(ClassId, TrainingProgramId);
+                if (result == null)
+                {
+                    return BadRequest("Remove TrainingProgram Fail");
+                }
             }
-            return BadRequest("Remove TrainingProgram Fail");
+            return Ok("Remove Success");
         }
 
         [HttpDelete("Class/DeleteUser/{ClassId}/{UserId}")]
@@ -118,7 +121,10 @@ namespace APIs.Controllers
             if (ModelState.IsValid)
             {
                 var classes = await _classServices.GetClassByFilter(locations, classTime, status, attendee, fsu, startDate, endDate, pageNumber = 0, pageSize = 10);
-                return Ok(classes);
+                if (classes != null)
+                {
+                    return Ok(classes);
+                }
             }
             return BadRequest("GetClassByFilter Fail");
         }
@@ -128,7 +134,10 @@ namespace APIs.Controllers
             if (ModelState.IsValid)
             {
                 var classObj = await _classServices.GetClassDetails(ClassId);
-                return Ok(classObj);
+                if (classObj != null)
+                {
+                    return Ok(classObj);
+                }
             }
             return BadRequest("GetClassDetails Fail");
         }

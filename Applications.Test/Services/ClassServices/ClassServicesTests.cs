@@ -3,6 +3,7 @@ using Applications.Interfaces;
 using Applications.ViewModels.ClassViewModels;
 using AutoFixture;
 using Domain.Entities;
+using Domain.EntityRelationship;
 using Domain.Tests;
 using FluentAssertions;
 using Moq;
@@ -165,6 +166,44 @@ namespace Applications.Tests.Services.ClassServices
             var expected = _mapperConfig.Map<Pagination<ClassViewModel>>(classes);
             //act
             var result = await _classService.GetDisableClasses(0, 10);
+            //assert
+            result.Should().BeEquivalentTo(expected);
+        }
+        [Fact]
+        public async Task GetClassDetails_ShouldReturnCorrectData()
+        {
+            //arrange
+            var mocks = _fixture.Build<Class>()
+                                .Without(x => x.AbsentRequests)
+                                .Without(x => x.Attendences)
+                                .Without(x => x.AuditPlans)
+                                .Without(x => x.ClassUsers)
+                                .Without(x => x.ClassTrainingPrograms)
+                                .Create();
+            var user = _fixture.Build<User>()
+                               .Without(x => x.UserAuditPlans)
+                               .Without(x => x.AbsentRequests)
+                               .Without(x => x.Attendences)
+                               .Without(x => x.ClassUsers)
+                               .CreateMany(10)
+                               .ToList();
+            var listUser = new List<ClassUser>();
+            foreach (var item in user)
+            {
+                var classUser = new ClassUser()
+                {
+                    Class = mocks,
+                    User = item,
+                };
+                listUser.Add(classUser);
+            }
+            mocks.ClassUsers = new List<ClassUser>();
+            mocks.ClassUsers.ToList().AddRange(listUser);
+            _unitOfWorkMock.Setup(x => x.ClassRepository.GetClassDetails(It.IsAny<Guid>())).ReturnsAsync(mocks);
+            _unitOfWorkMock.Setup(x => x.UserRepository.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(user[0]);
+            var expected = _mapperConfig.Map<ClassDetailsViewModel>(mocks);
+            //act
+            var result = await _classService.GetClassDetails(mocks.Id);
             //assert
             result.Should().BeEquivalentTo(expected);
         }
