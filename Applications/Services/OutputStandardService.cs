@@ -1,10 +1,12 @@
 ﻿using Applications.Commons;
 using Applications.Interfaces;
 using Applications.ViewModels.OutputStandardViewModels;
+using Applications.ViewModels.Response;
 using Applications.ViewModels.SyllabusOutputStandardViewModels;
 using AutoMapper;
 using Domain.Entities;
 using Domain.EntityRelationship;
+using System.Net;
 
 namespace Applications.Services
 {
@@ -23,11 +25,11 @@ namespace Applications.Services
             var result = _mapper.Map<List<OutputStandardViewModel>>(outputStandard);
             return result;
         }
-        public async Task<OutputStandardViewModel> GetOutputStandardByOutputStandardIdAsync(Guid OutputStandardId)
+        public async Task<Response> GetOutputStandardByOutputStandardIdAsync(Guid OutputStandardId)
         {
             var outputStandard = await _unitOfWork.OutputStandardRepository.GetByIdAsync(OutputStandardId);
-            var result = _mapper.Map<OutputStandardViewModel>(outputStandard);
-            return result;
+            if (outputStandard == null) return new Response(HttpStatusCode.NoContent, "Id not found");
+            else return new Response(HttpStatusCode.OK, "Search succeed", _mapper.Map<OutputStandardViewModel>(outputStandard));
         }
         public async Task<CreateOutputStandardViewModel> CreateOutputStandardAsync(CreateOutputStandardViewModel OutputStandardDTO)
         {
@@ -89,11 +91,11 @@ namespace Applications.Services
             }
             return null;
         }
-        public async Task<Pagination<OutputStandardViewModel>> GetOutputStandardBySyllabusIdAsync(Guid SyllabusId, int pageIndex, int pageSize)
+        public async Task<Response> GetOutputStandardBySyllabusIdAsync(Guid SyllabusId, int pageIndex, int pageSize)
         {
-            var outputStandardOjb = await _unitOfWork.OutputStandardRepository.GetOutputStandardBySyllabusIdAsync(SyllabusId, pageIndex, pageSize);
-            var result = _mapper.Map<Pagination<OutputStandardViewModel>>(outputStandardOjb);
-            return result;
+            var outputStandard = await _unitOfWork.OutputStandardRepository.GetOutputStandardBySyllabusIdAsync(SyllabusId, pageIndex, pageSize);
+            if (outputStandard.Items.Count() < 1) return new Response(HttpStatusCode.NoContent, "Id not found");
+            else return new Response(HttpStatusCode.OK, "Search Succeed", _mapper.Map<Pagination<OutputStandardViewModel>>(outputStandard));
         }
     }
 }

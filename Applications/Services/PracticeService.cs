@@ -1,9 +1,10 @@
 ﻿using Applications.Commons;
 using Applications.Interfaces;
-using Applications.ViewModels.ClassViewModels;
 using Applications.ViewModels.PracticeViewModels;
+using Applications.ViewModels.Response;
 using AutoMapper;
 using Domain.Entities;
+using System.Net;
 
 namespace Applications.Services
 {
@@ -40,17 +41,17 @@ namespace Applications.Services
             }
             return null;
         }
-        public async Task<Pagination<PracticeViewModel>> GetAllPractice(int pageIndex = 0, int pageSize = 10)
+        public async Task<Response> GetAllPractice(int pageIndex = 0, int pageSize = 10)
         {
             var practiceOjb = await _unitOfWork.PracticeRepository.ToPagination(pageIndex, pageSize);
-            var result = _mapper.Map<Pagination<PracticeViewModel>>(practiceOjb);
-            return result;
+            if (practiceOjb.Items.Count() < 1) return new Response(HttpStatusCode.NoContent, "No Practice Found");
+            else return new Response(HttpStatusCode.OK, "Search Succeed", _mapper.Map<Pagination<PracticeViewModel>>(practiceOjb));
         }
-        public async Task<Pagination<PracticeViewModel>> GetpracticeByName(string Name, int pageIndex = 0, int pageSize = 10)
+        public async Task<Response> GetPracticeByName(string Name, int pageIndex = 0, int pageSize = 10)
         {
             var practiceOjb = await _unitOfWork.PracticeRepository.GetPracticeByName(Name, pageIndex, pageSize);
-            var result = _mapper.Map<Pagination<PracticeViewModel>>(practiceOjb);
-            return result;
+            if (practiceOjb.Items.Count() < 1) return new Response(HttpStatusCode.NoContent, "No Practcie Found");
+            else return new Response(HttpStatusCode.OK, "Search Succeed", _mapper.Map<Pagination<PracticeViewModel>>(practiceOjb));
         }
         public async Task<Pagination<PracticeViewModel>> GetDisablePractice(int pageIndex = 0, int pageSize = 10)
         {

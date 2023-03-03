@@ -1,6 +1,7 @@
 ﻿using Applications.Commons;
 using Applications.Interfaces;
 using Applications.ViewModels.PracticeViewModels;
+using Applications.ViewModels.Response;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
@@ -12,22 +13,12 @@ namespace APIs.Controllers
     {
         private readonly IPracticeService _service;
         private readonly IValidator<UpdatePracticeViewModel> _updatePracticeValidator;
-        public PracticeController(IPracticeService service, IValidator<UpdatePracticeViewModel> UpdatePracticeValidator)
+        private readonly IValidator<CreatePracticeViewModel> _createPracticeValidator;
+        public PracticeController(IPracticeService service, IValidator<UpdatePracticeViewModel> UpdatePracticeValidator, IValidator<CreatePracticeViewModel> CreatePracticeValidator)
         {
             _service = service;
             _updatePracticeValidator = UpdatePracticeValidator;
-        }
-
-
-        private readonly IValidator<CreatePracticeViewModel> _createPracticeValidator;
-        //private readonly IValidator<UpdatePracticeViewModel> _updatePracticeValidator;
-        public PracticeController(IPracticeService service,
-             IValidator<CreatePracticeViewModel> CreatePracticeValidator
-           /* IValidator<UpdatePracticeViewModel> UpdatePracticeValidator*/)
-        {
-            _service = service;
             _createPracticeValidator = CreatePracticeValidator;
-            //_updatePracticeValidator = UpdatePracticeValidator;
         }
         [HttpGet("GetPracticesByUnitId/{UnitId}")]
         public async Task<Pagination<PracticeViewModel>> GetPracticesByUnitId(Guid UnitId) => await _service.GetPracticeByUnitId(UnitId);
@@ -36,7 +27,7 @@ namespace APIs.Controllers
         public async Task<PracticeViewModel> GetPracticeById(Guid PracticeId) => await _service.GetPracticeById(PracticeId);
 
         [HttpGet("GetAllPractice")]
-        public async Task<Pagination<PracticeViewModel>> GetAllPractice(int pageIndex = 0, int pageSize = 10) => await _service.GetAllPractice(pageIndex, pageSize);
+        public async Task<Response> GetAllPractice(int pageIndex = 0, int pageSize = 10) => await _service.GetAllPractice(pageIndex, pageSize);
 
         [HttpPost("CreatePractice")]
         public async Task<IActionResult> CreatePractice(CreatePracticeViewModel PracticeModel)
@@ -57,7 +48,7 @@ namespace APIs.Controllers
         }
 
         [HttpGet("GetPracticeByName/{PracticeName}")]
-        public async Task<Pagination<PracticeViewModel>> GetPracticeByName(string PracticeName, int pageIndex = 0, int pageSize = 10) => await _service.GetpracticeByName(PracticeName, pageIndex, pageSize);
+        public async Task<Response> GetPracticeByName(string PracticeName, int pageIndex = 0, int pageSize = 10) => await _service.GetPracticeByName(PracticeName, pageIndex, pageSize);
         [HttpGet("GetEnablePractice")]
         public async Task<Pagination<PracticeViewModel>> GetEnablePractices(int pageIndex = 0, int pageSize = 10) => await _service.GetEnablePractice(pageIndex, pageSize);
         [HttpGet("GetDisablePractice")]

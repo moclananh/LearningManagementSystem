@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Applications.Commons;
 using FluentValidation.Results;
 using FluentValidation;
+using Applications.ViewModels.Response;
 
 namespace APIs.Controllers
 {
@@ -26,7 +27,7 @@ namespace APIs.Controllers
         public async Task<CreateOutputStandardViewModel> CreateOutputStandard(CreateOutputStandardViewModel OutputStandardModel) => await _outputStandardServices.CreateOutputStandardAsync(OutputStandardModel);
 
         [HttpGet("GetOutputStandardByOutputStandardId/{OutputStandardId}")]
-        public async Task<OutputStandardViewModel> GetOutputStandardByOutputStandardId(Guid OutputStandardId) => await _outputStandardServices.GetOutputStandardByOutputStandardIdAsync(OutputStandardId);
+        public async Task<Response> GetOutputStandardByOutputStandardId(Guid OutputStandardId) => await _outputStandardServices.GetOutputStandardByOutputStandardIdAsync(OutputStandardId);
 
         [HttpPut("UpdateOutputStandard/{OutputStandardId}")]
         public async Task<IActionResult> UpdateOutputStandard(Guid OutputStandardId, UpdateOutputStandardViewModel updateOutputStandardView)
@@ -46,7 +47,7 @@ namespace APIs.Controllers
             return Ok("Update OutputStandard Success");
         }
         [HttpGet("GetOutputStandardBySyllabusId/{SyllabusId}")]
-        public async Task<Pagination<OutputStandardViewModel>> GetOutputStandardBySyllabusId(Guid SyllabusId, int pageIndex = 0, int pageSize = 10) => await _outputStandardServices.GetOutputStandardBySyllabusIdAsync(SyllabusId, pageIndex, pageSize);
+        public async Task<Response> GetOutputStandardBySyllabusId(Guid SyllabusId, int pageIndex = 0, int pageSize = 10) => await _outputStandardServices.GetOutputStandardBySyllabusIdAsync(SyllabusId, pageIndex, pageSize);
         [HttpPost("OutputStandard/AddOutputStandard/{SyllabusId}/{OutputStandardId}")]
         public async Task<IActionResult> AddOutputStandard(Guid SyllabusId, Guid OutputStandardId)
         {
