@@ -1,4 +1,5 @@
-﻿using AutoFixture;
+﻿using Applications.Repositories;
+using AutoFixture;
 using Domain.Entities;
 using Domain.Tests;
 using FluentAssertions;
@@ -36,6 +37,36 @@ namespace Infrastructures.Tests.Repositories
             //act
             var resultPaging = await _practiceRepository.GetPracticeByName("Mock");
             var result = resultPaging.Items;
+            //assert
+            resultPaging.Previous.Should().BeFalse();
+            resultPaging.Next.Should().BeTrue();
+            resultPaging.Items.Count.Should().Be(10);
+            resultPaging.TotalItemsCount.Should().Be(30);
+            resultPaging.TotalPagesCount.Should().Be(3);
+            resultPaging.PageIndex.Should().Be(0);
+            resultPaging.PageSize.Should().Be(10);
+            result.Should().BeEquivalentTo(expected);
+        }
+
+        [Fact]
+        public async Task PracticetRepository_GetPracticeByUnitId_ShouldReturnCorrectData()
+        {
+            var i = Guid.NewGuid();
+            var practiceMock = _fixture.Build<Practice>()
+                                .Without(x => x.Unit)
+                                .Without(x => x.PracticeQuestions)
+                                .With(x => x.UnitId, i)
+                                .CreateMany(30)
+                                .ToList();
+            await _dbContext.AddRangeAsync(practiceMock);
+            await _dbContext.SaveChangesAsync();
+            var expected = practiceMock.Where(x => x.UnitId.Equals(i))
+                                        .OrderByDescending(x => x.CreationDate)
+                                        .Take(10)
+                                        .ToList();
+            //act
+            var resultPaging = await _practiceRepository.GetPracticeByUnitId(i);
+            var result = resultPaging.Items.ToList();
             //assert
             resultPaging.Previous.Should().BeFalse();
             resultPaging.Next.Should().BeTrue();
