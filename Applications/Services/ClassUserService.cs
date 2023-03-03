@@ -11,6 +11,8 @@ using Domain.EntityRelationship;
 using Microsoft.AspNetCore.Http;
 using OfficeOpenXml;
 using System.Net;
+using Applications.Interfaces;
+using Domain.Entities;
 
 namespace Application.Services
 {
@@ -18,10 +20,12 @@ namespace Application.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        public ClassUserService(IUnitOfWork unitOfWork, IMapper mapper)
+        private readonly IClassService _classService;
+        public ClassUserService(IUnitOfWork unitOfWork, IMapper mapper,IClassService classService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _classService = classService;
         }
 
         public async Task<Response> GetAllClassUsersAsync(int pageIndex = 0, int pageSize = 10)
@@ -38,28 +42,38 @@ namespace Application.Services
             if (!Path.GetExtension(formFile.FileName).Equals(".xlsx", StringComparison.OrdinalIgnoreCase)) return new Response(HttpStatusCode.Conflict, "Not Support file extension");
 
             var list = new List<ClassUser>();
-
             using (var stream = new MemoryStream())
             {
                 await formFile.CopyToAsync(stream);
-
+            
                 using (var package = new ExcelPackage(stream))
                 {
                     ExcelWorksheet worksheet = package.Workbook.Worksheets[0];
                     var rowCount = worksheet.Dimension.Rows;
-                    for (int row = 2; row <= rowCount; row++)
+                    var clas = await _classService.GetClassByClassCode(worksheet.Cells[1,2].Value.ToString().Trim());
+                    if (clas is null)
                     {
-                        list.Add(new ClassUser
+                        return new Response(HttpStatusCode.Conflict, "code fail");
+                    }
+                    // get list user in excel file
+                    for (int row = 3; row <= rowCount; row++)
+                    {
+                        if (worksheet.Cells[row,1].Value is null)
                         {
-                            ClassId = Guid.Parse(worksheet.Cells[row, 1].Value.ToString().Trim()),
-                            UserId = Guid.Parse(worksheet.Cells[row, 2].Value.ToString().Trim()),
-                            CreationDate = DateTime.Parse(worksheet.Cells[row, 3].Value.ToString()),
-                            IsDeleted = bool.Parse(worksheet.Cells[row, 4].Value.ToString()),
-                        });
+                            break;
+                        }
+                        var user = await _unitOfWork.UserRepository.GetUserByEmail(worksheet.Cells[row, 3].Value.ToString().Trim());
+                        if (user == null) return new Response(HttpStatusCode.BadRequest, $"user with email {worksheet.Cells[row, 3].Value.ToString().Trim()} not exit in system");
+                        var clasUser = new ClassUser()
+                        {
+                            Class = clas,
+                            User = user,
+                        };
+                        list.Add(clasUser);
                     }
                 }
             }
-            await _unitOfWork.ClassUserRepository.UploadClassUserListAsync(list);
+            await _unitOfWork.ClassUserRepository.AddRangeAsync(list);
             await _unitOfWork.SaveChangeAsync();
             return new Response(HttpStatusCode.OK, "OK");
         }

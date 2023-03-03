@@ -12,5 +12,6 @@ namespace Applications.Repositories
         Task<Pagination<Class>> GetClassByName(string Name, int pageNumber = 0, int pageSize = 10);
         Task<Pagination<Class>> GetClassByFilter(LocationEnum locations, ClassTimeEnum classTime, Status status, AttendeeEnum attendee, FSUEnum fsu, DateTime? startDate, DateTime? endDate, int pageNumber = 0, int pageSize = 10);
         Task<Class> GetClassDetails(Guid ClassId);
+        Task<Class?> GetClassByClassCode(string ClassCode);
     }
 }

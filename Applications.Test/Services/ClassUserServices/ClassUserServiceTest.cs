@@ -13,9 +13,10 @@ namespace Applications.Tests.Services.ClassUserServices
     public class ClassUserServiceTest : SetupTest
     {
         private readonly IClassUserServices _classUserServices;
+
         public ClassUserServiceTest()
         {
-            _classUserServices = new ClassUserService(_unitOfWorkMock.Object, _mapperConfig);
+            _classUserServices = new ClassUserService(_unitOfWorkMock.Object, _mapperConfig,_classServiceMock.Object);
         }
 
         [Fact]

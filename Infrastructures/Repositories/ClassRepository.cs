@@ -78,6 +78,11 @@ namespace Infrastructures.Repositories
             return result;
         }
 
+        public async Task<Class?> GetClassByClassCode(string ClassCode)
+        {
+            return  _dbContext.Classes.FirstOrDefault(x => x.ClassCode == ClassCode);
+        }
+
         public async Task<Pagination<Class>> GetDisableClasses(int pageNumber = 0, int pageSize = 10)
         {
             var itemCount = await _dbContext.Classes.Where(x => x.Status == Status.Disable).CountAsync();
