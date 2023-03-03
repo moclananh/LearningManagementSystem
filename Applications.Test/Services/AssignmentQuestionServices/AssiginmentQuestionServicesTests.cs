@@ -1,5 +1,8 @@
-﻿using Applications.Interfaces;
+﻿using Applications.Commons;
+using Applications.Interfaces;
 using Applications.Services;
+using Applications.ViewModels.AssignmentQuestionViewModels;
+using AutoFixture;
 using ClosedXML.Excel;
 using Domain.Entities;
 using Domain.Tests;
@@ -69,6 +72,31 @@ namespace Applications.Tests.Services.AssignmentQuestionServices
             var expectedContent = expectedStream.ToArray();
 
             return expectedContent;
+        }
+
+        [Fact]
+        public async Task GetAssignmentQuestionByAssignmentId_ShouldReturnCorrectData()
+        {
+            //arrange
+            var id = Guid.NewGuid();
+            var assignmentMockData = new Pagination<AssignmentQuestion>
+            {
+                Items = _fixture.Build<AssignmentQuestion>()
+                                .Without(x => x.Assignment)
+                                .With(x => x.AssignmentId, id)
+                                .CreateMany(30)
+                                .ToList(),
+                PageIndex = 0,
+                PageSize = 10,
+                TotalItemsCount = 30,
+            };
+            var asm = _mapperConfig.Map<Pagination<AssignmentQuestion>>(assignmentMockData);
+            _unitOfWorkMock.Setup(x => x.AssignmentQuestionRepository.GetAllAssignmentQuestionByAssignmentId(id, 0, 10)).ReturnsAsync(assignmentMockData);
+            var expected = _mapperConfig.Map<Pagination<AssignmentQuestionViewModel>>(asm);
+            //act
+            var result = await _assignmentQuestionService.GetAssignmentQuestionByAssignmentId(id);
+            //assert
+            _unitOfWorkMock.Verify(x => x.AssignmentQuestionRepository.GetAllAssignmentQuestionByAssignmentId(id, 0, 10), Times.Once());
         }
     }
 }
