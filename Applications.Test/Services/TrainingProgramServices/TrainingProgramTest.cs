@@ -1,9 +1,13 @@
 ﻿using Application.ViewModels.TrainingProgramModels;
 using Applications.Commons;
 using Applications.Interfaces;
+using Applications.Services;
+using Applications.ViewModels.ClassTrainingProgramViewModels;
 using Applications.ViewModels.TrainingProgramModels;
+using Applications.ViewModels.TrainingProgramSyllabi;
 using AutoFixture;
 using Domain.Entities;
+using Domain.EntityRelationship;
 using Domain.Tests;
 using FluentAssertions;
 using Moq;
@@ -206,6 +210,183 @@ namespace Applications.Tests.Services.TrainingProgramServices
             var result = await _trainingProgramService.GetTrainingProgramByClassId(classId);
             //assert
             _unitOfWorkMock.Verify(x => x.TrainingProgramRepository.GetTrainingProgramByClassId(classId, 0, 10), Times.Once());
+        }
+        [Fact]
+        public async Task AddSyllabusToTrainingProgram_ShouldReturnCorrectData()
+        {
+            //arrange
+            var syllabusMock = _fixture.Build<Syllabus>()
+                               .Without(s => s.TrainingProgramSyllabi)
+                               .Without(s => s.SyllabusOutputStandards)
+                               .Without(s => s.SyllabusModules)
+                               .Create();
+            var trainingProgramMocks = _fixture.Build<TrainingProgram>()
+                                               .Without(x => x.ClassTrainingPrograms)
+                                               .Without(x => x.TrainingProgramSyllabi)
+                                               .Create();
+            var trainingProgramSyllabi = new TrainingProgramSyllabus()
+            {
+                TrainingProgram = trainingProgramMocks,
+                Syllabus = syllabusMock
+            };
+            _unitOfWorkMock.Setup(x => x.SyllabusRepository.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(syllabusMock);
+            _unitOfWorkMock.Setup(x => x.TrainingProgramRepository.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(trainingProgramMocks);
+            _unitOfWorkMock.Setup(x => x.TrainingProgramSyllabiRepository.AddAsync(It.IsAny<TrainingProgramSyllabus>())).Returns(Task.CompletedTask);
+            _unitOfWorkMock.Setup(x => x.SaveChangeAsync()).ReturnsAsync(1);
+            var expected = _mapperConfig.Map<CreateTrainingProgramSyllabi>(trainingProgramSyllabi);
+            //act
+            var result = await _trainingProgramService.AddSyllabusToTrainingProgram(trainingProgramMocks.Id, syllabusMock.Id);
+            //assert
+            result.Should().BeEquivalentTo(expected);
+        }
+
+        [Fact]
+        public async Task AddSyllabusToTrainingProgram_ShouldReturnNull_WhenNotFoundClass()
+        {
+            //arrange
+            var syllabusMock = _fixture.Build<Syllabus>()
+                               .Without(s => s.TrainingProgramSyllabi)
+                               .Without(s => s.SyllabusOutputStandards)
+                               .Without(s => s.SyllabusModules)
+                               .Create();
+            var trainingProgramMocks = _fixture.Build<TrainingProgram>()
+                                               .Without(x => x.ClassTrainingPrograms)
+                                               .Without(x => x.TrainingProgramSyllabi)
+                                               .Create();
+            var trainingProgramSyllabi = new TrainingProgramSyllabus()
+            {
+                TrainingProgram = trainingProgramMocks,
+                Syllabus = syllabusMock
+            };
+            _unitOfWorkMock.Setup(x => x.SyllabusRepository.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(syllabusMock);
+            _unitOfWorkMock.Setup(x => x.TrainingProgramRepository.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(trainingProgramMocks);
+            _unitOfWorkMock.Setup(x => x.TrainingProgramSyllabiRepository.AddAsync(It.IsAny<TrainingProgramSyllabus>())).Returns(Task.CompletedTask);
+            _unitOfWorkMock.Setup(x => x.SaveChangeAsync()).ReturnsAsync(0);
+            var expected = _mapperConfig.Map<CreateTrainingProgramSyllabi>(trainingProgramSyllabi);
+            //act
+            var result = await _trainingProgramService.AddSyllabusToTrainingProgram(trainingProgramMocks.Id, syllabusMock.Id);
+            //assert
+            result.Should().BeNull();
+        }
+
+        [Fact]
+        public async Task RemoveTrainingProgramToClass_ShouldReturnCorrectData()
+        {
+            //arrange
+            var syllabusMock = _fixture.Build<Syllabus>()
+                               .Without(s => s.TrainingProgramSyllabi)
+                               .Without(s => s.SyllabusOutputStandards)
+                               .Without(s => s.SyllabusModules)
+                               .Create();
+            var trainingProgramMocks = _fixture.Build<TrainingProgram>()
+                                               .Without(x => x.ClassTrainingPrograms)
+                                               .Without(x => x.TrainingProgramSyllabi)
+                                               .Create();
+            var trainingProgramSyllabi = new TrainingProgramSyllabus()
+            {
+                TrainingProgramId = trainingProgramMocks.Id,
+                SyllabusId = trainingProgramMocks.Id,
+                TrainingProgram = trainingProgramMocks,
+                Syllabus = syllabusMock
+            };
+            _unitOfWorkMock.Setup(x => x.TrainingProgramSyllabiRepository.GetTrainingProgramSyllabus(syllabusMock.Id, trainingProgramMocks.Id)).ReturnsAsync(trainingProgramSyllabi);
+            _unitOfWorkMock.Setup(x => x.TrainingProgramSyllabiRepository.SoftRemove(It.IsAny<TrainingProgramSyllabus>()));
+            _unitOfWorkMock.Setup(x => x.SaveChangeAsync()).ReturnsAsync(1);
+            var expected = _mapperConfig.Map<CreateTrainingProgramSyllabi>(trainingProgramSyllabi);
+            //act
+            var result = await _trainingProgramService.RemoveSyllabusToTrainingProgram(syllabusMock.Id, trainingProgramMocks.Id);
+            //assert
+            result.Should().BeEquivalentTo(expected);
+        }
+
+        [Fact]
+        public async Task RemoveTrainingProgramToClass_ShouldReturnNull_WhenNotFoundClass()
+        {
+            //arrange
+            var syllabusMock = _fixture.Build<Syllabus>()
+                               .Without(s => s.TrainingProgramSyllabi)
+                               .Without(s => s.SyllabusOutputStandards)
+                               .Without(s => s.SyllabusModules)
+                               .Create();
+            var trainingProgramMocks = _fixture.Build<TrainingProgram>()
+                                               .Without(x => x.ClassTrainingPrograms)
+                                               .Without(x => x.TrainingProgramSyllabi)
+                                               .Create();
+            var trainingProgramSyllabi = new TrainingProgramSyllabus()
+            {
+                TrainingProgramId = trainingProgramMocks.Id,
+                SyllabusId = trainingProgramMocks.Id,
+                TrainingProgram = trainingProgramMocks,
+                Syllabus = syllabusMock
+            };
+            _unitOfWorkMock.Setup(x => x.TrainingProgramSyllabiRepository.GetTrainingProgramSyllabus(It.IsAny<Guid>(), It.IsAny<Guid>())).ReturnsAsync(() => null);
+            _unitOfWorkMock.Setup(x => x.TrainingProgramSyllabiRepository.SoftRemove(It.IsAny<TrainingProgramSyllabus>()));
+            _unitOfWorkMock.Setup(x => x.SaveChangeAsync()).ReturnsAsync(1);
+            var expected = _mapperConfig.Map<CreateTrainingProgramSyllabi>(trainingProgramSyllabi);
+            //act
+            var result = await _trainingProgramService.RemoveSyllabusToTrainingProgram(syllabusMock.Id, trainingProgramMocks.Id);
+            //assert
+            result.Should().BeNull();
+        }
+
+        [Fact]
+        public async Task RemoveTrainingProgramToClass_ShouldReturnNull_WhenSavedFail()
+        {
+            //arrange
+            var syllabusMock = _fixture.Build<Syllabus>()
+                               .Without(s => s.TrainingProgramSyllabi)
+                               .Without(s => s.SyllabusOutputStandards)
+                               .Without(s => s.SyllabusModules)
+                               .Create();
+            var trainingProgramMocks = _fixture.Build<TrainingProgram>()
+                                               .Without(x => x.ClassTrainingPrograms)
+                                               .Without(x => x.TrainingProgramSyllabi)
+                                               .Create();
+            var trainingProgramSyllabi = new TrainingProgramSyllabus()
+            {
+                TrainingProgramId = trainingProgramMocks.Id,
+                SyllabusId = trainingProgramMocks.Id,
+                TrainingProgram = trainingProgramMocks,
+                Syllabus = syllabusMock
+            };
+            _unitOfWorkMock.Setup(x => x.TrainingProgramSyllabiRepository.GetTrainingProgramSyllabus(It.IsAny<Guid>(), It.IsAny<Guid>())).ReturnsAsync(trainingProgramSyllabi);
+            _unitOfWorkMock.Setup(x => x.TrainingProgramSyllabiRepository.SoftRemove(It.IsAny<TrainingProgramSyllabus>()));
+            _unitOfWorkMock.Setup(x => x.SaveChangeAsync()).ReturnsAsync(0);
+            var expected = _mapperConfig.Map<CreateTrainingProgramSyllabi>(trainingProgramSyllabi);
+            //act
+            var result = await _trainingProgramService.RemoveSyllabusToTrainingProgram(syllabusMock.Id, trainingProgramMocks.Id);
+            //assert
+            result.Should().BeNull();
+        }
+
+        [Fact]
+        public async Task RemoveTrainingProgramToClass_ShouldReturnNull_WhenSaveChangedFailed()
+        {
+            //arrange
+            var syllabusMock = _fixture.Build<Syllabus>()
+                               .Without(s => s.TrainingProgramSyllabi)
+                               .Without(s => s.SyllabusOutputStandards)
+                               .Without(s => s.SyllabusModules)
+                               .Create();
+            var trainingProgramMocks = _fixture.Build<TrainingProgram>()
+                                               .Without(x => x.ClassTrainingPrograms)
+                                               .Without(x => x.TrainingProgramSyllabi)
+                                               .Create();
+            var trainingProgramSyllabi = new TrainingProgramSyllabus()
+            {
+                TrainingProgramId = trainingProgramMocks.Id,
+                SyllabusId = trainingProgramMocks.Id,
+                TrainingProgram = trainingProgramMocks,
+                Syllabus = syllabusMock
+            };
+            _unitOfWorkMock.Setup(x => x.TrainingProgramSyllabiRepository.GetTrainingProgramSyllabus(It.IsAny<Guid>(), It.IsAny<Guid>())).ReturnsAsync(() => null);
+            _unitOfWorkMock.Setup(x => x.TrainingProgramSyllabiRepository.SoftRemove(It.IsAny<TrainingProgramSyllabus>()));
+            _unitOfWorkMock.Setup(x => x.SaveChangeAsync()).ReturnsAsync(0);
+            var expected = _mapperConfig.Map<CreateTrainingProgramSyllabi>(trainingProgramSyllabi);
+            //act
+            var result = await _trainingProgramService.RemoveSyllabusToTrainingProgram(syllabusMock.Id, trainingProgramMocks.Id);
+            //assert
+            result.Should().BeNull();
         }
     }
 }
