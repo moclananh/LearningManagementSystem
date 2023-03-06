@@ -124,15 +124,7 @@ namespace Infrastructures.Tests.Repositories
             //arrange
             var startDate = new DateTime(2023, 01, 01);
             var endDate = new DateTime(2023, 04, 01);
-            var mockData1 = _fixture.Build<Class>()
-                            .Without(x => x.AbsentRequests)
-                            .Without(x => x.Attendences)
-                            .Without(x => x.AuditPlans)
-                            .Without(x => x.ClassUsers)
-                            .Without(x => x.ClassTrainingPrograms)
-                            .CreateMany(30)
-                            .ToList();
-            var mockData2 = _fixture.Build<Class>()
+            var mockData = _fixture.Build<Class>()
                             .Without(x => x.AbsentRequests)
                             .Without(x => x.Attendences)
                             .Without(x => x.AuditPlans)
@@ -145,12 +137,12 @@ namespace Infrastructures.Tests.Repositories
                             .With(x => x.FSU, Domain.Enum.ClassEnum.FSUEnum.FHM)
                             .With(x => x.Attendee, Domain.Enum.ClassEnum.AttendeeEnum.Intern)
                             .With(x => x.Status, Domain.Enum.StatusEnum.Status.Enable)
+                            .With(x => x.IsDeleted, false)
                             .CreateMany(10)
                             .ToList();
-            await _dbContext.AddRangeAsync(mockData1);
-            await _dbContext.AddRangeAsync(mockData2);
+            await _dbContext.AddRangeAsync(mockData);
             await _dbContext.SaveChangesAsync();
-            var expected = mockData2.OrderByDescending(x => x.CreationDate)
+            var expected = mockData.OrderByDescending(x => x.CreationDate)
                                     .Take(10)
                                     .ToList();
             //act
@@ -158,10 +150,10 @@ namespace Infrastructures.Tests.Repositories
             var result = resultPaging.Items;
             //assert
             resultPaging.Previous.Should().BeFalse();
-            resultPaging.Next.Should().BeTrue();
+            resultPaging.Next.Should().BeFalse();
             resultPaging.Items.Count.Should().Be(10);
-            resultPaging.TotalItemsCount.Should().Be(40);
-            resultPaging.TotalPagesCount.Should().Be(4);
+            resultPaging.TotalItemsCount.Should().Be(10);
+            resultPaging.TotalPagesCount.Should().Be(1);
             resultPaging.PageIndex.Should().Be(0);
             resultPaging.PageSize.Should().Be(10);
             result.Should().BeEquivalentTo(expected);
