@@ -19,7 +19,12 @@ namespace Applications.Services
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
-
+        public async Task<List<OutputStandardViewModel>> ViewAllOutputStandardAsync()
+        {
+            var outputStandard = await _unitOfWork.OutputStandardRepository.GetAllAsync();
+            var result = _mapper.Map<List<OutputStandardViewModel>>(outputStandard);
+            return result;
+        }
         public async Task<Response> GetOutputStandardByOutputStandardIdAsync(Guid OutputStandardId)
         {
             var outputStandard = await _unitOfWork.OutputStandardRepository.GetByIdAsync(OutputStandardId);

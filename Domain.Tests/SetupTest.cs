@@ -36,6 +36,7 @@ namespace Domain.Tests
         protected readonly Mock<ITrainingProgramService> _trainingProgramServiceMock;
         protected readonly Mock<IUnitServices> _unitServicesMock;
         protected readonly Mock<IAuditResultServices> _auditResultServicesMock;
+        protected readonly Mock<IPracticeService> _practiceServiceMock;
         //
         protected readonly Mock<IAssignmentQuestionRepository> _assignmentQuestionRepositoryMock;
         protected readonly Mock<IAssignmentRepository> _assignmentRepositoryMock;
@@ -52,6 +53,7 @@ namespace Domain.Tests
         protected readonly Mock<ITrainingProgramRepository> _trainingProgramRepositoryMock;
         protected readonly Mock<IUserRepository> _userRepositoryMock;
         protected readonly Mock<IAuditResultRepository> _auditResultRepositoryMock;
+        protected readonly Mock<IPracticeRepository> _practiceRepositoryMock;
         protected readonly AppDBContext _dbContext;
 
         public SetupTest()
@@ -82,6 +84,7 @@ namespace Domain.Tests
             _trainingProgramServiceMock = new Mock<ITrainingProgramService>();
             _unitServicesMock = new Mock<IUnitServices>();
             _userServiceMock = new Mock<IUserService>();
+            _practiceServiceMock = new Mock<IPracticeService>();    
             //
             _auditResultRepositoryMock = new Mock<IAuditResultRepository>();
             _assignmentQuestionRepositoryMock = new Mock<IAssignmentQuestionRepository>();
@@ -98,6 +101,7 @@ namespace Domain.Tests
             _trainingProgramRepositoryMock = new Mock<ITrainingProgramRepository>();
             _unitRepositoryMock = new Mock<IUnitRepository>();
             _userRepositoryMock = new Mock<IUserRepository>();
+            _practiceRepositoryMock= new Mock<IPracticeRepository>();   
 
             var options = new DbContextOptionsBuilder<AppDBContext>()
                 .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
