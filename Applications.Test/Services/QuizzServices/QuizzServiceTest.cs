@@ -2,7 +2,6 @@
 using Applications.Commons;
 using Applications.Interfaces;
 using Applications.Services;
-using Applications.ViewModels.AuditPlanViewModel;
 using AutoFixture;
 using Domain.Entities;
 using Domain.Tests;
@@ -73,6 +72,47 @@ namespace Applications.Tests.Services.QuizzServices
             _unitOfWorkMock.Verify(x => x.QuizzRepository.AddAsync(It.IsAny<Quizz>()), Times.Once());
             _unitOfWorkMock.Verify(x => x.SaveChangeAsync(), Times.Once());
             result.Should().BeNull();
+        }
+
+        [Fact]
+        public async Task UpdateQuizz_ShouldReturnCorrectData_WhenSuccessSaved()
+        {
+            //arrange
+            var quizzObj = _fixture.Build<Quizz>()
+                                   .Without(x => x.QuizzQuestions)
+                                   .Without(x => x.Unit)
+                                   .Create();
+            _unitOfWorkMock.Setup(x => x.QuizzRepository.GetByIdAsync(quizzObj.Id))
+                           .ReturnsAsync(quizzObj);
+            var updateQuizzDataMock = _fixture.Build<UpdateQuizzViewModel>()
+                                         .Create();
+            //act
+            await _quizzService.UpdatQuizzAsync(quizzObj.Id, updateQuizzDataMock);
+            var result = _mapperConfig.Map<UpdateQuizzViewModel>(quizzObj);
+            //assert
+            result.Should().NotBeNull();
+            result.Should().BeOfType<UpdateQuizzViewModel>();
+            result.QuizzName.Should().Be(updateQuizzDataMock.QuizzName);
+            // add more property ...
+            _unitOfWorkMock.Verify(x => x.QuizzRepository.Update(quizzObj), Times.Once);
+            _unitOfWorkMock.Verify(x => x.SaveChangeAsync(), Times.Once);
+        }
+
+        [Fact]
+        public async Task UpdateQuizz_ShouldReturnNull_WhenFailedSave()
+        {
+            //arrange
+            var quizzId = Guid.NewGuid();
+            _unitOfWorkMock.Setup(x => x.QuizzRepository.GetByIdAsync(quizzId))
+                            .ReturnsAsync(null as Quizz);
+            var updateQuizzDataMock = _fixture.Build<UpdateQuizzViewModel>()
+                                                    .Create();
+            //act
+            var result = await _quizzService.UpdatQuizzAsync(quizzId, updateQuizzDataMock);
+            //assert
+            result.Should().BeNull();
+            _unitOfWorkMock.Verify(x => x.QuizzRepository.Update(It.IsAny<Quizz>()), Times.Never);
+            _unitOfWorkMock.Verify(x => x.SaveChangeAsync(), Times.Never);
         }
 
         [Fact]

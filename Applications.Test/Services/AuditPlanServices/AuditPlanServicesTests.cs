@@ -3,8 +3,10 @@ using Applications.Services;
 using Applications.ViewModels.AuditPlanViewModel;
 using AutoFixture;
 using Domain.Entities;
+using Domain.EntityRelationship;
 using Domain.Tests;
 using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
 using Moq;
 
 namespace Applications.Tests.Services.AuditPlanServices
@@ -265,6 +267,130 @@ namespace Applications.Tests.Services.AuditPlanServices
             result.Should().BeNull();
             _unitOfWorkMock.Verify(x => x.AuditPlanRepository.Update(It.IsAny<AuditPlan>()), Times.Never);
             _unitOfWorkMock.Verify(x => x.SaveChangeAsync(), Times.Never);
+        }
+
+        [Fact]
+        public async Task AddUserToAuditPlan_ShouldReturnCorrcetData()
+        {
+            //arrange
+            var userMockData = _fixture.Build<User>()
+                                        .Without(x => x.AbsentRequests)
+                                        .Without(x => x.Attendences)
+                                        .Without(x => x.UserAuditPlans)
+                                        .Without(x => x.ClassUsers)
+                                        .Create();
+            var auditPLanMockData = _fixture.Build<AuditPlan>()
+                                                  .Without(x => x.Module)
+                                                  .Without(x => x.AuditResults)
+                                                  .Without(x => x.AuditQuestions)
+                                                  .Without(x => x.UserAuditPlans)
+                                                  .Without(x => x.Class)
+                                                  .Create();
+            _unitOfWorkMock.Setup(x => x.AuditPlanRepository.GetByIdAsync(auditPLanMockData.Id))
+                           .ReturnsAsync(auditPLanMockData);
+            _unitOfWorkMock.Setup(x => x.UserRepository.GetByIdAsync(userMockData.Id))
+                           .ReturnsAsync(userMockData);
+            var mockData = new UserAuditPlan()
+            {
+                User = userMockData,
+                AuditPlan = auditPLanMockData
+            };
+            await _dbContext.AddAsync(mockData);
+            await _dbContext.SaveChangesAsync();
+            _unitOfWorkMock.Setup(x => x.UserAuditPlanRepository.AddAsync(It.IsAny<UserAuditPlan>()))
+                            .Returns(Task.CompletedTask);
+            _unitOfWorkMock.Setup(x => x.SaveChangeAsync()).ReturnsAsync(1);
+            //act
+            var result = await _auditPlanService.AddUserToAuditPlan(auditPLanMockData.Id, userMockData.Id);
+            //assert
+            _unitOfWorkMock.Verify(x => x.UserAuditPlanRepository.AddAsync(It.IsAny<UserAuditPlan>()), Times.Once());
+            _unitOfWorkMock.Verify(x => x.SaveChangeAsync(), Times.Once());
+        }
+
+        [Fact]
+        public async Task RemoveUserToAuditPlan_ShouldReturnCorrectData()
+        {
+            //arrange
+            var userMockData = _fixture.Build<User>()
+                                        .Without(x => x.AbsentRequests)
+                                        .Without(x => x.Attendences)
+                                        .Without(x => x.UserAuditPlans)
+                                        .Without(x => x.ClassUsers)
+                                        .Create();
+            var auditPLanMockData = _fixture.Build<AuditPlan>()
+                                                  .Without(x => x.Module)
+                                                  .Without(x => x.AuditResults)
+                                                  .Without(x => x.AuditQuestions)
+                                                  .Without(x => x.UserAuditPlans)
+                                                  .Without(x => x.Class)
+                                                  .Create();
+            var mockData = new UserAuditPlan()
+            {
+                User = userMockData,
+                AuditPlan = auditPLanMockData
+            };
+            await _dbContext.AddAsync(mockData);
+            await _dbContext.SaveChangesAsync();
+            _unitOfWorkMock.Setup(x => x.UserAuditPlanRepository.GetUserAuditPlan(auditPLanMockData.Id, userMockData.Id))
+                           .ReturnsAsync(mockData);
+            _unitOfWorkMock.Setup(x => x.UserAuditPlanRepository.SoftRemove(It.IsAny<UserAuditPlan>()));
+            _unitOfWorkMock.Setup(x => x.SaveChangeAsync());
+            //act
+            var result = await _auditPlanService.RemoveUserToAuditPlan(auditPLanMockData.Id, userMockData.Id);
+            //assert
+            _unitOfWorkMock.Verify(x => x.UserAuditPlanRepository.SoftRemove(It.IsAny<UserAuditPlan>()), Times.Once());
+            _unitOfWorkMock.Verify(x => x.SaveChangeAsync(), Times.Once());
+        }
+
+        [Fact]
+        public async Task GetAllUserAuditPlan_ShouldReturnCorrectData()
+        {
+            //arrange
+            var userMockData = _fixture.Build<User>()
+                                        .Without(x => x.AbsentRequests)
+                                        .Without(x => x.Attendences)
+                                        .Without(x => x.UserAuditPlans)
+                                        .Without(x => x.ClassUsers)
+                                        .CreateMany(30)
+                                        .ToList();
+            var auditPlanMockData = _fixture.Build<AuditPlan>()
+                                        .Without(x => x.Module)
+                                        .Without(x => x.Class)
+                                        .Without(x => x.UserAuditPlans)
+                                        .Without(x => x.AuditResults)
+                                        .Without(x => x.AuditQuestions)
+                                        .Create();
+            await _dbContext.Users.AddRangeAsync(userMockData);
+            await _dbContext.AuditPlans.AddAsync(auditPlanMockData);
+            await _dbContext.SaveChangesAsync();
+            var MockData = new List<UserAuditPlan>();
+            foreach (var item in userMockData)
+            {
+                var data = new UserAuditPlan
+                {
+                    User = item,
+                    AuditPlan = auditPlanMockData
+                };
+                MockData.Add(data);
+            }
+            var itemCount = await _dbContext.UserAuditPlan.CountAsync();
+            var items = await _dbContext.UserAuditPlan.OrderByDescending(x => x.CreationDate)
+                                                      .Take(10)
+                                                      .AsNoTracking()
+                                                      .ToListAsync();
+            var userAuditPlans = new Pagination<UserAuditPlan>()
+            {
+                PageIndex = 0,
+                PageSize = 10,
+                TotalItemsCount = itemCount,
+                Items = items,
+            };
+            var expected = _mapperConfig.Map<Pagination<UserAuditPlan>>(userAuditPlans);
+            _unitOfWorkMock.Setup(x => x.UserAuditPlanRepository.ToPagination(0, 10)).ReturnsAsync(userAuditPlans);
+            //act
+            var result = await _auditPlanService.GetAllUserAuditPlanAsync();
+            //assert
+            _unitOfWorkMock.Verify(x => x.UserAuditPlanRepository.ToPagination(0, 10), Times.Once());
         }
     }
 }
