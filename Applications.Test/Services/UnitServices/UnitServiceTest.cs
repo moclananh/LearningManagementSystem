@@ -134,6 +134,7 @@ namespace Applications.Tests.Services.UnitServices
                                 .Without(x => x.Assignments)
                                 .Without(x => x.Quizzs)
                                 .Without(x => x.ModuleUnits)
+                                .With(x => x.Status, Domain.Enum.StatusEnum.Status.Disable)
                                 .CreateMany(30)
                                 .ToList(),
                 PageIndex = 0,
@@ -161,6 +162,7 @@ namespace Applications.Tests.Services.UnitServices
                                 .Without(x => x.Assignments)
                                 .Without(x => x.Quizzs)
                                 .Without(x => x.ModuleUnits)
+                                .With(x => x.Status, Domain.Enum.StatusEnum.Status.Enable)
                                 .CreateMany(30)
                                 .ToList(),
                 PageIndex = 0,

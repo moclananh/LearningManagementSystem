@@ -1,7 +1,6 @@
 ﻿using Applications.Commons;
 using Applications.Interfaces;
 using Applications.ViewModels.AuditPlanViewModel;
-using Applications.ViewModels.AuditResultViewModels;
 using Applications.ViewModels.Response;
 using Applications.ViewModels.UserAuditPlanViewModels;
 using AutoMapper;

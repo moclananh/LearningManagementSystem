@@ -107,6 +107,7 @@ namespace Applications.Tests.Services.AssignmentServices
                 Items = _fixture.Build<Assignment>()
                                 .Without(x => x.AssignmentQuestions)
                                 .Without(x => x.Unit)
+                                .With(x => x.Status, Domain.Enum.StatusEnum.Status.Enable)
                                 .CreateMany(30)
                                 .ToList(),
                 PageIndex = 0,
@@ -130,6 +131,7 @@ namespace Applications.Tests.Services.AssignmentServices
                 Items = _fixture.Build<Assignment>()
                                 .Without(x => x.AssignmentQuestions)
                                 .Without(x => x.Unit)
+                                .With(x => x.Status, Domain.Enum.StatusEnum.Status.Disable)
                                 .CreateMany(30)
                                 .ToList(),
                 PageIndex = 0,

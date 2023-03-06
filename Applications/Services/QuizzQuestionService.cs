@@ -32,11 +32,6 @@ namespace Applications.Services
             return null;
         }
 
-        public Task<Response> ExportQuizzQuestion()
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<Pagination<QuizzQuestionViewModel>> GetQuizzQuestionByQuizzId(Guid QuizzId, int pageIndex = 0, int pageSize = 10)
         {
             var questionObj = await _unitOfWork.QuizzQuestionRepository.GetQuestionByQuizzId(QuizzId, pageIndex, pageSize);

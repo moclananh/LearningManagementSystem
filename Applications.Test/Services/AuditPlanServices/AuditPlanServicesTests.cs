@@ -58,6 +58,7 @@ namespace Applications.Tests.Services.AuditPlanServices
                                 .Without(x => x.UserAuditPlans)
                                 .Without(x => x.AuditResults)
                                 .Without(x => x.AuditQuestions)
+                                .With(x => x.Status, Domain.Enum.StatusEnum.Status.Disable)
                                 .CreateMany(30)
                                 .ToList(),
                 PageIndex = 0,
@@ -85,11 +86,12 @@ namespace Applications.Tests.Services.AuditPlanServices
                                 .Without(x => x.UserAuditPlans)
                                 .Without(x => x.AuditResults)
                                 .Without(x => x.AuditQuestions)
+                                .With(x => x.Status, Domain.Enum.StatusEnum.Status.Enable)
                                 .CreateMany(30)
                                 .ToList(),
                 PageIndex = 0,
                 PageSize = 10,
-                TotalItemsCount = 30,
+                TotalItemsCount = 30
             };
             var auditPlans = _mapperConfig.Map<Pagination<AuditPlan>>(auditPlanMockData);
             _unitOfWorkMock.Setup(x => x.AuditPlanRepository.GetEnableAuditPlans(0, 10)).ReturnsAsync(auditPlanMockData);
