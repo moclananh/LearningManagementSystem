@@ -75,9 +75,13 @@ namespace Application.Services
             return new Response(HttpStatusCode.OK, "OK");
         }
 
-        public async Task<byte[]> ExportClassUserByClassId(Guid classId)
+        public async Task<byte[]> ExportClassUserByClassId(Guid ClassId)
         {
-            var users = await _unitOfWork.ClassUserRepository.GetClassUserListByClassId(classId);
+            var users = await _unitOfWork.ClassUserRepository.GetClassUserListByClassId(ClassId);
+            if (users.Count() < 1)
+            {
+                return null;
+            }
             var createClassUserViewModel = _mapper.Map<List<CreateClassUserViewModel>>(users);
 
             // Create a new Excel workbook and worksheet

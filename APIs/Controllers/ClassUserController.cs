@@ -1,4 +1,5 @@
 ﻿using Application.Interfaces;
+using Applications.Interfaces;
 using Applications.ViewModels.Response;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,9 +10,11 @@ namespace APIs.Controllers
     public class ClassUserController : ControllerBase
     {
         private readonly IClassUserServices _classUserServices;
-        public ClassUserController(IClassUserServices classuserServices)
+        private readonly IClassService _classService;
+        public ClassUserController(IClassUserServices classuserServices, IClassService classService)
         {
             _classUserServices = classuserServices;
+            _classService = classService;
         }
 
         [HttpGet("GetAllClassUser")]
@@ -23,13 +26,24 @@ namespace APIs.Controllers
         [HttpPost("UploadClassUserFile")]
         public async Task<Response> Import(IFormFile formFile) => await _classUserServices.UploadClassUserFile(formFile);
 
-        [HttpGet("{ClassId}/export")]
-        public async Task<IActionResult> Export(Guid ClassId)
+        [HttpGet("{ClassCode}/export")]
+        public async Task<IActionResult> Export(string ClassCode)
         {
-            var content = await _classUserServices.ExportClassUserByClassId(ClassId);
-
-            var fileName = $"ClassUsers_{ClassId}.xlsx";
-            return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+            var clas = await _classService.GetClassByClassCode(ClassCode);
+            if (clas is null)
+            {
+                return BadRequest("ClassCode Not Exist");
+            }
+            var content = await _classUserServices.ExportClassUserByClassId(clas.Id);
+            if (content == null)
+            {
+                return NotFound("Something wrong while exporting file, please remake the export command");
+            }
+            else
+            {
+                var fileName = $"ClassUsers_{ClassCode}.xlsx";
+                return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+            }
         }
     }
 }
