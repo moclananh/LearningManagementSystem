@@ -10,5 +10,7 @@ namespace Applications.Repositories
         Task<Pagination<Syllabus>> GetSyllabusByName(string SyllabusName, int pageNumber = 0, int pageSize = 10);
         Task<Pagination<Syllabus>> GetSyllabusByTrainingProgramId(Guid TrainingProgramId, int pageNumber = 0, int pageSize = 10);
         Task<Pagination<Syllabus>> GetSyllabusByOutputStandardId(Guid OutputStandardId, int pageNumber = 0, int pageSize = 10);
+        Task<Syllabus> GetSyllabusDetails(Guid syllabusId);
+        Task<Pagination<Syllabus>> GetAllSyllabusDetail(int pageNumber = 0, int pageSize = 10);
     }
 }

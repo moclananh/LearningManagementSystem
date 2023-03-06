@@ -21,8 +21,8 @@ namespace Applications.ViewModels.SyllabusViewModels
         public DateTime? DeletionDate { get; set; }
         public Guid? DeleteBy { get; set; }
         public bool IsDeleted { get; set; }
-        public ICollection<TrainingProgramSyllabus?> TrainingProgramSyllabi { get; set; }
-        public ICollection<SyllabusOutputStandard?> SyllabusOutputStandards { get; set; }
-        public ICollection<SyllabusModule?> SyllabusModules { get; set; }
+        public ICollection<TrainingProgramSyllabus> TrainingProgramSyllabi { get; set; }
+        public ICollection<SyllabusOutputStandard> SyllabusOutputStandards { get; set; }
+        public ICollection<SyllabusModule> SyllabusModules { get; set; }
     }
 }

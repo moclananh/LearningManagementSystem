@@ -134,5 +134,19 @@ namespace Applications.Services
             }
             return null;
         }
+
+        public async Task<Response> GetSyllabusDetails(Guid syllabusId)
+        {
+            var syllabus = await _unitOfWork.SyllabusRepository.GetSyllabusDetails(syllabusId);
+            if (syllabus == null) return new Response(HttpStatusCode.NoContent, "Id not found");
+            else return new Response(HttpStatusCode.OK, "Search succeed", _mapper.Map<SyllabusViewModel>(syllabus));
+        }
+
+        public async Task<Response> GetAllSyllabusDetail(int pageNumber = 0, int pageSize = 10)
+        {
+            var syllabus = await _unitOfWork.SyllabusRepository.GetAllSyllabusDetail(pageNumber, pageSize);
+            if (syllabus.Items.Count() < 1) return new Response(HttpStatusCode.NoContent, "No Syllabus Found");
+            else return new Response(HttpStatusCode.OK, "Search Succeed", syllabus/*_mapper.Map<Pagination<SyllabusViewModel>>(syllabus)*/);
+        }
     }
 }

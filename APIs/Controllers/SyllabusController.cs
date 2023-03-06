@@ -60,8 +60,15 @@ namespace APIs.Controllers
             return Ok("Update Syllabus Success");
         }
 
-        [HttpGet("GetAllSyllabus")]
-        public async Task<Response> GetAllSyllabus(int pageNumber = 0, int pageSize = 10) => await _syllabusServices.GetAllSyllabus(pageNumber, pageSize);
+       /* [HttpGet("GetAllSyllabus")]
+        public async Task<Response> GetAllSyllabus(int pageNumber = 0, int pageSize = 10) => await _syllabusServices.GetAllSyllabus(pageNumber, pageSize);*/
+
+
+        [HttpGet("GetAllSyllabusDetail")]
+        public async Task<Response> GetAllSyllabusDetail(int pageNumber = 0, int pageSize = 10) => await _syllabusServices.GetAllSyllabusDetail(pageNumber, pageSize);
+
+        [HttpGet("GetSyllabusDetailById/{SyllabusId}")]
+        public async Task<Response> GetSyllabusDetailById(Guid SyllabusId) => await _syllabusServices.GetSyllabusDetails(SyllabusId);
 
         [HttpGet("GetEnableSyllabus")]
         public async Task<Response> GetEnableSyllabus(int pageNumber = 0, int pageSize = 10) => await _syllabusServices.GetEnableSyllabus(pageNumber, pageSize);

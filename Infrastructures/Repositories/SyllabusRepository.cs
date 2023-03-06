@@ -121,5 +121,40 @@ namespace Infrastructures.Repositories
 
             return result;
         }
+
+        public async Task<Syllabus> GetSyllabusDetails(Guid syllabusId)
+        {
+
+            var result = _dbContext.Syllabi.Include(x => x.SyllabusOutputStandards).ThenInclude(x => x.OutputStandard)
+                                                    .Include(x => x.SyllabusModules).ThenInclude(x => x.Module).ThenInclude(x => x.ModuleUnits).ThenInclude(x => x.Unit).ThenInclude(x => x.Quizzs)
+                                                    .Include(x => x.SyllabusModules).ThenInclude(x => x.Module).ThenInclude(x => x.ModuleUnits).ThenInclude(x => x.Unit).ThenInclude(x => x.Assignments)
+                                                    .Include(x => x.SyllabusModules).ThenInclude(x => x.Module).ThenInclude(x => x.ModuleUnits).ThenInclude(x => x.Unit).ThenInclude(x => x.Practices)
+                                                    .Include(x => x.TrainingProgramSyllabi)
+                                           .FirstOrDefault(x => x.Id == syllabusId);
+            return result;
+        }
+
+        public async Task<Pagination<Syllabus>> GetAllSyllabusDetail(int pageNumber = 0, int pageSize = 10)
+        {
+            var itemCount = await _dbContext.Syllabi.CountAsync();
+            var items = await _dbContext.Syllabi.Include(x => x.SyllabusOutputStandards).ThenInclude(x => x.OutputStandard)
+                                                    .Include(x => x.SyllabusModules)
+                                                    .Include(x => x.TrainingProgramSyllabi)
+                                                    .OrderByDescending(x => x.CreationDate)
+                                                    .Skip(pageNumber * pageSize)
+                                                    .Take(pageSize)
+                                                    .AsNoTracking()
+                                                    .ToListAsync();
+
+            var result = new Pagination<Syllabus>()
+            {
+                PageIndex = pageNumber,
+                PageSize = pageSize,
+                TotalItemsCount = itemCount,
+                Items = items,
+            };
+
+            return result;
+        }
     }
 }

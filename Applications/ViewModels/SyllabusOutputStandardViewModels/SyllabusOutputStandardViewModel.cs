@@ -1,4 +1,6 @@
-﻿namespace Applications.ViewModels.SyllabusOutputStandardViewModels
+﻿using Domain.Entities;
+
+namespace Applications.ViewModels.SyllabusOutputStandardViewModels
 {
     public class SyllabusOutputStandardViewModel
     {
@@ -11,5 +13,6 @@
         public DateTime? DeletionDate { get; set; }
         public Guid? DeleteBy { get; set; }
         public bool IsDeleted { get; set; }
+        public OutputStandard OutputStandard { get; set; }
     }
 }
