@@ -7,5 +7,6 @@ namespace Application.Repositories
     {
         Task UploadClassUserListAsync(List<ClassUser> classUser);
         Task<ClassUser> GetClassUser(Guid ClassId, Guid UserId);
+        Task<List<ClassUser>> GetClassUserListByClassId(Guid ClassId);
     }
 }

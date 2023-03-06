@@ -1,9 +1,4 @@
 ﻿using Application.Interfaces;
-using Application.ViewModels.QuizzViewModels;
-using Applications.Commons;
-using Applications.Interfaces;
-using Applications.Services;
-using Applications.ViewModels.ClassUserViewModels;
 using Applications.ViewModels.Response;
 using Microsoft.AspNetCore.Mvc;
 
@@ -27,5 +22,14 @@ namespace APIs.Controllers
 
         [HttpPost("UploadClassUserFile")]
         public async Task<Response> Import(IFormFile formFile) => await _classUserServices.UploadClassUserFile(formFile);
+
+        [HttpGet("{ClassId}/export")]
+        public async Task<IActionResult> Export(Guid ClassId)
+        {
+            var content = await _classUserServices.ExportClassUserByClassId(ClassId);
+
+            var fileName = $"ClassUsers_{ClassId}.xlsx";
+            return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+        }
     }
 }

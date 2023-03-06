@@ -1,18 +1,15 @@
 ﻿using Application.Interfaces;
-using Application.ViewModels.QuizzViewModels;
 using Applications;
 using Applications.Commons;
 using Applications.ViewModels.ClassUserViewModels;
 using Applications.ViewModels.Response;
-using Applications.ViewModels.SyllabusViewModels;
 using AutoMapper;
-using DocumentFormat.OpenXml.Wordprocessing;
 using Domain.EntityRelationship;
 using Microsoft.AspNetCore.Http;
 using OfficeOpenXml;
 using System.Net;
 using Applications.Interfaces;
-using Domain.Entities;
+using ClosedXML.Excel;
 
 namespace Application.Services
 {
@@ -76,6 +73,39 @@ namespace Application.Services
             await _unitOfWork.ClassUserRepository.AddRangeAsync(list);
             await _unitOfWork.SaveChangeAsync();
             return new Response(HttpStatusCode.OK, "OK");
+        }
+
+        public async Task<byte[]> ExportClassUserByClassId(Guid classId)
+        {
+            var users = await _unitOfWork.ClassUserRepository.GetClassUserListByClassId(classId);
+            var createClassUserViewModel = _mapper.Map<List<CreateClassUserViewModel>>(users);
+
+            // Create a new Excel workbook and worksheet
+            using var workbook = new XLWorkbook();
+            var worksheet = workbook.Worksheets.Add("List Class User");
+
+            // Add the headers to the worksheet
+            worksheet.Cell(1, 1).Value = "ClassId";
+            worksheet.Cell(2, 1).Value = "StudentId";
+            worksheet.Cell(2, 2).Value = "IsDeleted";
+
+            var userss = createClassUserViewModel[0];
+            string stringValue = userss.ClassId.ToString();
+            worksheet.Cell(1, 2).Value = stringValue;
+            // Add the assignment questions to the worksheet
+            for (var i = 0; i < createClassUserViewModel.Count; i++)
+            {
+                var user = createClassUserViewModel[i];
+                worksheet.Cell(i + 3, 1).Value = userss.UserId.ToString();
+                worksheet.Cell(i + 3, 2).Value = userss.IsDeleted;
+            }
+
+            // Convert the workbook to a byte array
+            using var stream = new MemoryStream();
+            workbook.SaveAs(stream);
+            var content = stream.ToArray();
+
+            return content;
         }
 
         public async Task<List<CreateClassUserViewModel>> ViewAllClassUserAsync()
