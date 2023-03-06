@@ -112,7 +112,7 @@ namespace Infrastructures.Repositories
                                     .ToListAsync();
 
             var result = new Pagination<Syllabus>()
-            {
+            { 
                 PageIndex = pageNumber,
                 PageSize = pageSize,
                 TotalItemsCount = itemCount,

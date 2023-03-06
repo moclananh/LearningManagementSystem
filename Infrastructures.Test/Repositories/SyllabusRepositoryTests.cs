@@ -1,10 +1,14 @@
-﻿using Applications.Repositories;
+﻿using Applications.Commons;
+using Applications.Repositories;
 using AutoFixture;
+using DocumentFormat.OpenXml.Office2010.Excel;
+using DocumentFormat.OpenXml.Wordprocessing;
 using Domain.Entities;
 using Domain.EntityRelationship;
 using Domain.Tests;
 using FluentAssertions;
 using Infrastructures.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructures.Tests.Repositories
 {
@@ -210,6 +214,55 @@ namespace Infrastructures.Tests.Repositories
             resultPaging.PageIndex.Should().Be(0);
             resultPaging.PageSize.Should().Be(10);
             result.Should().BeEquivalentTo(expected, op => op.Excluding(s => s.TrainingProgramSyllabi));
+        }
+
+        [Fact]
+        public async Task GetSyllabusDetail_ShouldReturnCorrectData()
+        {
+            //arrange
+            var mockData = _fixture.Build<Syllabus>()
+                                    .Without(s => s.SyllabusModules)
+                                    .Without(S => S.SyllabusOutputStandards)
+                                    .Without(s => s.TrainingProgramSyllabi)
+                                   .Create();
+            _dbContext.Syllabi.Add(mockData);
+            await _dbContext.SaveChangesAsync();
+            //act
+            var result = await _syllabusRepository.GetSyllabusDetails(mockData.Id);
+            //assert
+            result.Should().NotBeNull();
+            result.Id.Should().Be(mockData.Id);
+        }
+
+        [Fact]
+        public async Task GetAllSyllabusDetail_ShouldReturnCorrectData()
+        {
+            //arrange
+            var syllabusMockData = _fixture.Build<Syllabus>()
+                                   .Without(s => s.TrainingProgramSyllabi)
+                                   .Without(s => s.SyllabusModules)
+                                   .Without(s => s.SyllabusOutputStandards)
+                                   .CreateMany(30);
+
+            await _dbContext.AddRangeAsync(syllabusMockData);
+            await _dbContext.SaveChangesAsync();
+
+            var expected = _dbContext.Syllabi.Include(x => x.SyllabusOutputStandards).ThenInclude(x => x.OutputStandard)
+                                                    .Include(x => x.SyllabusModules)
+                                                    .Include(x => x.TrainingProgramSyllabi).OrderByDescending(x => x.CreationDate).Take(10).ToList();
+
+            //act
+            var resultPaging = await _syllabusRepository.GetAllSyllabusDetail();
+            var result = resultPaging.Items;
+            //assert
+            resultPaging.Previous.Should().BeFalse();
+            resultPaging.Next.Should().BeTrue();
+            resultPaging.Items.Count.Should().Be(10);
+            resultPaging.TotalItemsCount.Should().Be(30);
+            resultPaging.TotalPagesCount.Should().Be(3);
+            resultPaging.PageIndex.Should().Be(0);
+            resultPaging.PageSize.Should().Be(10);
+            result.Should().BeEquivalentTo(expected);
         }
     }
 }
