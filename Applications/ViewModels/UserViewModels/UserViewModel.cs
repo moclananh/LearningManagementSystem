@@ -17,8 +17,8 @@ public class UserViewModel
     public string Password { get; set; }
     public DateTime DOB { get; set; }
     public string Gender { get; set; }
-    public Role Role { get; set; }
-
+    public string Role { get; set; }
     public string Image { get; set; }
     public string Level { get; set; }
+    public string Status { get; set; }
 }

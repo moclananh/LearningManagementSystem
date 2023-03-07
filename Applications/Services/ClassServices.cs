@@ -103,13 +103,17 @@ namespace Applications.Services
                 {
                     classView.Trainner.Add(tempUser);
                 }
-                else if (tempUser.Role == Domain.Enum.RoleEnum.Role.Admin)
+                else if (tempUser.Role == Domain.Enum.RoleEnum.Role.SuperAdmin)
                 {
-                    classView.Admin.Add(tempUser);
+                    classView.SuperAdmin.Add(tempUser);
                 }
-                else if (tempUser.Role == Domain.Enum.RoleEnum.Role.Trainee)
+                else if (tempUser.Role == Domain.Enum.RoleEnum.Role.ClassAdmin)
                 {
-                    classView.Trainee.Add(tempUser);
+                    classView.ClassAdmin.Add(tempUser);
+                }
+                else if (tempUser.Role == Domain.Enum.RoleEnum.Role.Student)
+                {
+                    classView.Student.Add(tempUser);
                 }
                 else
                 {

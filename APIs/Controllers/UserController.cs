@@ -72,13 +72,30 @@ public class UserController : Controller
     public async Task<Response> ChangePassword(Guid UserId, [FromBody] ChangePasswordViewModel changePassword) => await _userService.ChangePassword(UserId, changePassword);
     
 
-    
-    
-
+    /// <summary>
+    /// Get User by classId
+    /// </summary>
+    /// <param name="ClassId"></param>
+    /// <param name="pageIndex"></param>
+    /// <param name="pageSize"></param>
+    /// <returns></returns>
     [HttpGet("GetUsersByClassId/{ClassId}")]
     public async Task<Response> GetUnitByModuleIdAsync(Guid ClassId, int pageIndex = 0, int pageSize = 10)
     {
         return await _userService.GetUserByClassId(ClassId, pageIndex, pageSize);
+    }
+
+    /// <summary>
+    /// Search Users By Name
+    /// </summary>
+    /// <param name="name"></param>
+    /// <param name="pageIndex"></param>
+    /// <param name="pageSize"></param>
+    /// <returns></returns>
+    [HttpGet("SearchUserByName/{name}")]
+    public Task<Pagination<UserViewModel>> SearchByName(string name, int pageIndex = 0, int pageSize = 10)
+    {
+        return _userService.SearchUserByName(name, pageIndex, pageSize);
     }
 }
 

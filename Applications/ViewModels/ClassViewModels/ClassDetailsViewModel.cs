@@ -25,8 +25,9 @@ namespace Applications.ViewModels.ClassViewModels
         public Guid? DeleteBy { get; set; }
         public bool IsDeleted { get; set; }
         public ICollection<User> Trainner { get; set; }
-        public ICollection<User> Admin { get; set; }
-        public ICollection<User> Trainee { get; set; }
+        public ICollection<User> SuperAdmin { get; set; }
+        public ICollection<User> Student { get; set; }
+        public ICollection<User> ClassAdmin { get; set; }
         public ICollection<ClassTrainingProgram> ClassTrainingPrograms { get; set; }
         public ICollection<AuditPlan> AuditPlans { get; set; }
         public ICollection<ClassUser> ClassUsers { get; set; }

@@ -57,17 +57,17 @@ public class UserRepositoryTests : SetupTest
         await _dbContext.SaveChangesAsync();
         foreach(var item in mockData)
         {
-            item.Role = Role.Admin;
+            item.Role = Role.SuperAdmin;
         }
         _dbContext.UpdateRange(mockData);
         await _dbContext.SaveChangesAsync();
-        var expected = mockData.Where(x => x.Role == Role.Admin)
+        var expected = mockData.Where(x => x.Role == Role.SuperAdmin)
             .OrderByDescending(x => x.CreationDate)
             .Take(10)
             .ToList();
 
         //act
-        var resultPaging = await _userRepository.GetUsersByRole(Role.Admin);
+        var resultPaging = await _userRepository.GetUsersByRole(Role.SuperAdmin);
         var result = resultPaging.Items;
 
         //assert

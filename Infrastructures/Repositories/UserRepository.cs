@@ -39,8 +39,28 @@ public class UserRepository : GenericRepository<User>, IUserRepository
         return result;
     }
 
-   
-	public async Task<Pagination<User>> GetUserByClassId(Guid ClassId, int pageNumber = 0, int pageSize = 10)
+    public async Task<Pagination<User>> SearchUserByName(string name, int pageNumber = 0, int pageSize = 10)
+    {
+        var itemCount = await _dbContext.Users.CountAsync();
+        var items = await _dbContext.Users.Where(x => x.firstName.Contains(name) || x.lastName.Contains(name))
+            .OrderByDescending(x => x.CreationDate)
+            .Skip(pageNumber *pageSize)
+            .Take(pageSize)
+            .AsNoTracking()
+            .ToListAsync();
+
+        var result = new Pagination<User>()
+        {
+            PageIndex = pageNumber,
+            PageSize = pageSize,
+            TotalItemsCount = itemCount,
+            Items = items
+        };
+        return result;
+    }
+
+
+    public async Task<Pagination<User>> GetUserByClassId(Guid ClassId, int pageNumber = 0, int pageSize = 10)
 	{
         var itemCount = await _dbContext.Users.CountAsync();
         var items = await _dbContext.ClassUser.Where(x => x.ClassId.Equals(ClassId))

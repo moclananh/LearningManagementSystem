@@ -2,10 +2,11 @@
 {
     public enum Role
     {
-        Admin, 
+        SuperAdmin,
+        ClassAdmin,
         Trainer,
+        Student,
         Mentor, 
-        Auditor, 
-        Trainee
+        Auditor,
     }
 }

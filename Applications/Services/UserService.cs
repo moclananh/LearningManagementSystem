@@ -45,7 +45,14 @@ public class UserService : IUserService
         return new Response(HttpStatusCode.BadRequest, "Not Success");
     }
     
-        
+    // Search Users by Name
+    public async Task<Pagination<UserViewModel>> SearchUserByName(string name, int pageIndex = 0, int pageSize = 10)
+    {
+        var users = await _unitOfWork.UserRepository.SearchUserByName(name, pageIndex, pageSize);
+        return _mapper.Map<Pagination<UserViewModel>>(users) ;
+    }
+
+
     // Get All Users 
     public async Task<Pagination<UserViewModel>> GetAllUsers(int pageIndex = 0, int pageSize = 10)
     {
@@ -53,7 +60,7 @@ public class UserService : IUserService
         return _mapper.Map<Pagination<UserViewModel>>(users);
     }
 
-
+    //get user by classid
     public async Task<Response> GetUserByClassId(Guid ClassId, int pageIndex = 0, int pageSize = 10)
     {
         var Users = await _unitOfWork.UserRepository.GetUserByClassId(ClassId, pageIndex, pageSize);
