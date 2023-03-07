@@ -5,7 +5,6 @@ using Applications.ViewModels.ClassViewModels;
 using Domain.Entities;
 using Domain.Enum.ClassEnum;
 using Domain.Enum.StatusEnum;
-using Task = DocumentFormat.OpenXml.Office2021.DocumentTasks.Task;
 
 namespace Applications.Interfaces
 {

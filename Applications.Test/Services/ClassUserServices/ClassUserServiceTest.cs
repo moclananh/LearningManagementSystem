@@ -5,6 +5,7 @@ using AutoFixture;
 using Domain.Entities;
 using Domain.EntityRelationship;
 using Domain.Tests;
+using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 
@@ -62,7 +63,6 @@ namespace Applications.Tests.Services.ClassUserServices
                 TotalItemsCount = itemCount,
                 Items = items,
             };
-            var expected = _mapperConfig.Map<Pagination<ClassUser>>(resultset);
             _unitOfWorkMock.Setup(x => x.ClassUserRepository.ToPagination(0, 10)).ReturnsAsync(resultset);
             //act
             var result = await _classUserServices.GetAllClassUsersAsync();

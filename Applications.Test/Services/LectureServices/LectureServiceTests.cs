@@ -180,7 +180,6 @@ namespace Applications.Tests.Services.LectureServices
             };
             var lectures = _mapperConfig.Map<Pagination<Lecture>>(MockData);
             _unitOfWorkMock.Setup(x => x.LectureRepository.GetLectureByName("Mock", 0, 10)).ReturnsAsync(MockData);
-            var expected = _mapperConfig.Map<Pagination<LectureViewModel>>(lectures);
             //act
             var result = await _lectureService.GetLectureByName("Mock");
             //assert

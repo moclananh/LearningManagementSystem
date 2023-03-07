@@ -421,5 +421,47 @@ namespace Applications.Tests.Services.SyllabusServices
             _unitOfWorkMock.Verify(s => s.SaveChangeAsync(), Times.Once());
             result.Should().BeNull();
         }
+
+        [Fact]
+        public async Task GetAllSyllabusDetail_ShouldReturnCorrectData()
+        {
+            //arrange
+            var syllabusMockData = new Pagination<Syllabus>
+            {
+                Items = _fixture.Build<Syllabus>()
+                                .Without(s => s.SyllabusModules)
+                                .Without(s => s.SyllabusOutputStandards)
+                                .Without(s => s.TrainingProgramSyllabi)
+                                .CreateMany(30)
+                                .ToList(),
+                PageIndex = 0,
+                PageSize = 10,
+                TotalItemsCount = 30,
+            };
+            var expected = _mapperConfig.Map<Pagination<SyllabusViewModel>>(syllabusMockData);
+            _unitOfWorkMock.Setup(s => s.SyllabusRepository.GetAllSyllabusDetail(0, 10)).ReturnsAsync(syllabusMockData);
+            //act
+            var result = await _syllabusService.GetAllSyllabusDetail();
+            //assert
+            _unitOfWorkMock.Verify(s => s.SyllabusRepository.GetAllSyllabusDetail(0, 10), Times.Once());
+        }
+
+        [Fact]
+        public async Task GetSyllabusDetails_ShouldReturnCorrectData()
+        {
+            //arrange
+            var mocks = _fixture.Build<Syllabus>()
+                                 .Without(s => s.SyllabusModules)
+                                 .Without(S => S.SyllabusOutputStandards)
+                                 .Without(s => s.TrainingProgramSyllabi)
+                                .Create();
+
+            _unitOfWorkMock.Setup(x => x.SyllabusRepository.GetSyllabusDetails(It.IsAny<Guid>())).ReturnsAsync(mocks);
+            var expected = _mapperConfig.Map<SyllabusViewModel>(mocks);
+            //act
+            var result = await _syllabusService.GetSyllabusDetails(mocks.Id);
+            //assert
+            _unitOfWorkMock.Verify(x => x.SyllabusRepository.GetSyllabusDetails(mocks.Id), Times.Once());
+        }
     }
 }
