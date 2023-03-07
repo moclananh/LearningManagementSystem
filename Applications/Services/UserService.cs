@@ -149,10 +149,9 @@ public class UserService : IUserService
                         user.lastName = worksheet.Cells[row, 2].Value.ToString().Trim();
                         user.Email = worksheet.Cells[row, 3].Value.ToString().Trim();
                         user.DOB = DateTime.Parse(worksheet.Cells[row, 4].Value.ToString());
-                        var gender = true;
-                        if (worksheet.Cells[row, 5].Value.ToString().Trim().Contains("Female")) gender = false;
-                        user.Gender = gender;
+                        user.Gender =  worksheet.Cells[row, 5].Value.ToString().Trim().ToLower().Contains("Female".ToLower()) ? false : true;
                         user.Role = (Role)Enum.Parse(typeof(Role), worksheet.Cells[row, 6].Value.ToString());
+                        user.OverallStatus = user.Role == Role.SuperAdmin ? OverallStatus.Active : OverallStatus.OffClass;
                         user.Image = string.Empty;
                         user.Level = string.Empty;
                         user.Password = "12345";

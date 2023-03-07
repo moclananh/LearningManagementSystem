@@ -10,6 +10,8 @@ using OfficeOpenXml;
 using System.Net;
 using Applications.Interfaces;
 using ClosedXML.Excel;
+using Domain.Enum.RoleEnum;
+using Domain.Enum.StatusEnum;
 
 namespace Application.Services
 {
@@ -61,6 +63,10 @@ namespace Application.Services
                         }
                         var user = await _unitOfWork.UserRepository.GetUserByEmail(worksheet.Cells[row, 3].Value.ToString().Trim());
                         if (user == null) return new Response(HttpStatusCode.BadRequest, $"user with email {worksheet.Cells[row, 3].Value.ToString().Trim()} not exit in system");
+                        if(user.Role == Role.Student)
+                        user.OverallStatus = OverallStatus.InClass;
+                        _unitOfWork.UserRepository.Update(user);
+                        await _unitOfWork.SaveChangeAsync();
                         var clasUser = new ClassUser()
                         {
                             Class = clas,

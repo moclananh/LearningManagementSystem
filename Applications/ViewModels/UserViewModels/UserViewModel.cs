@@ -21,4 +21,6 @@ public class UserViewModel
     public string Image { get; set; }
     public string Level { get; set; }
     public string Status { get; set; }
+    public string? OverallStatus { get; set; }
+
 }

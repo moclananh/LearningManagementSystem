@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructures.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20230228073226_NewMigration")]
+    [Migration("20230307061805_NewMigration")]
     partial class NewMigration
     {
         /// <inheritdoc />
@@ -993,6 +993,9 @@ namespace Infrastructures.Migrations
 
                     b.Property<DateTime?>("ModificationDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("OverallStatus")
+                        .HasColumnType("int");
 
                     b.Property<string>("Password")
                         .IsRequired()

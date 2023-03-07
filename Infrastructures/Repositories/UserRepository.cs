@@ -42,7 +42,7 @@ public class UserRepository : GenericRepository<User>, IUserRepository
     public async Task<Pagination<User>> SearchUserByName(string name, int pageNumber = 0, int pageSize = 10)
     {
         var itemCount = await _dbContext.Users.CountAsync();
-        var items = await _dbContext.Users.Where(x => x.firstName.Contains(name) || x.lastName.Contains(name))
+        var items = await _dbContext.Users.Where(x => x.firstName.ToLower().Contains(name.ToLower()) || x.lastName.ToLower().Contains(name.ToLower()))
             .OrderByDescending(x => x.CreationDate)
             .Skip(pageNumber *pageSize)
             .Take(pageSize)
