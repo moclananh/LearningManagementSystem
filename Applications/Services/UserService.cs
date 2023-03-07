@@ -87,8 +87,9 @@ public class UserService : IUserService
             Email = user.Email,
             Password = user.Password,
             DOB = user.DOB,
-            Gender = user.Gender,
-            Role = user.Role,
+            Gender = user.Gender == true ? "male":"female",
+            Role = user.Role.ToString(),
+            Status = user.Status.ToString(),
             Token = token
         };
         return new Response(HttpStatusCode.OK, "authorized", loginResult);
