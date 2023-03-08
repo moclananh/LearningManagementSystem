@@ -93,9 +93,20 @@ public class UserController : Controller
     /// <param name="pageSize"></param>
     /// <returns></returns>
     [HttpGet("SearchUserByName/{name}")]
-    public Task<Pagination<UserViewModel>> SearchByName(string name, int pageIndex = 0, int pageSize = 10)
+    public async Task<Pagination<UserViewModel>> SearchByName(string name, int pageIndex = 0, int pageSize = 10)
     {
-        return _userService.SearchUserByName(name, pageIndex, pageSize);
+        return await _userService.SearchUserByName(name, pageIndex, pageSize);
+    }
+
+    /// <summary>
+    /// Filter Users 
+    /// </summary>
+    /// <param name="filterUserRequest"></param>
+    /// <returns></returns>
+    [HttpGet("Filter")]
+    public async Task<Pagination<UserViewModel>> FilterUser([FromQuery] FilterUserRequest filterUserRequest,int pageNumber = 0, int pageSize = 10)
+    {
+        return await _userService.FilterUser(filterUserRequest,pageNumber,pageSize);
     }
 }
 

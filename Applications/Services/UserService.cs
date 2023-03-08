@@ -51,6 +51,13 @@ public class UserService : IUserService
         var users = await _unitOfWork.UserRepository.SearchUserByName(name, pageIndex, pageSize);
         return _mapper.Map<Pagination<UserViewModel>>(users) ;
     }
+    
+    // Filter User
+    public async Task<Pagination<UserViewModel>> FilterUser(FilterUserRequest filterUserRequest,int pageNumber = 0, int pageSize = 10)
+    {
+        var user = await _unitOfWork.UserRepository.FilterUser(filterUserRequest,pageNumber,pageSize);
+        return _mapper.Map<Pagination<UserViewModel>>(user);
+    }
 
 
     // Get All Users 

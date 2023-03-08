@@ -4,8 +4,8 @@ using Applications.Repositories;
 using Domain.Entities;
 using Domain.Enum.RoleEnum;
 using Microsoft.EntityFrameworkCore;
-using System.Drawing.Printing;
-using System.Reflection;
+
+using Applications.ViewModels.UserViewModels;
 
 namespace Infrastructures.Repositories;
 
@@ -48,6 +48,48 @@ public class UserRepository : GenericRepository<User>, IUserRepository
             .Take(pageSize)
             .AsNoTracking()
             .ToListAsync();
+
+        var result = new Pagination<User>()
+        {
+            PageIndex = pageNumber,
+            PageSize = pageSize,
+            TotalItemsCount = itemCount,
+            Items = items
+        };
+        return result;
+    }
+
+    public async Task<Pagination<User>> FilterUser(FilterUserRequest filterUserRequest,int pageNumber = 0, int pageSize = 10)
+    {
+        var itemCount = await _dbContext.Users.CountAsync();
+        var query =  _dbContext.Users.AsQueryable();
+        if(filterUserRequest.FullName is not null)
+        query = query.Where(x => x.firstName.ToLower().Contains(filterUserRequest.FullName.ToLower()) || x.lastName.ToLower().Contains(filterUserRequest.FullName.ToLower()));
+        if(filterUserRequest.Email is not null)
+        query = query.Where(user => user.Email.ToLower().Contains(filterUserRequest.Email.ToLower()));
+        if(filterUserRequest.DOB is not null)
+        query = query.Where(user => user.DOB.Equals(filterUserRequest.DOB));
+        foreach (var role in filterUserRequest.Roles)
+        {
+            if(!role.HasValue) break;
+            query = query.Where(user => user.Role == role);
+        }
+        foreach (var overallStatus in filterUserRequest.OverallStatus)
+        {
+            if(!overallStatus.HasValue) break;
+            query = query.Where(user => user.OverallStatus == overallStatus);
+        }
+        foreach (var gender in filterUserRequest.Genders)
+        {
+            if(!gender.HasValue) break;
+            query = query.Where(user => user.Gender == gender);
+        }
+        var items = await query
+                .OrderByDescending(x => x.CreationDate)
+                .Skip(pageNumber *pageSize)
+                .Take(pageSize)
+                .AsNoTracking()
+                .ToListAsync();
 
         var result = new Pagination<User>()
         {

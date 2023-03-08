@@ -823,9 +823,8 @@ namespace Infrastructures.Migrations
                     b.Property<DateTime?>("DeletionDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Duration")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<float>("Duration")
+                        .HasColumnType("real");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -852,6 +851,10 @@ namespace Infrastructures.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Version")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("techicalrequirement")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

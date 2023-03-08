@@ -18,4 +18,5 @@ public interface IUserService
     Task<Response> GetUserByClassId(Guid ClassId, int pageIndex = 0, int pageSize = 10);
     Task<Response> ChangePassword(Guid id, ChangePasswordViewModel changePassword);
     Task<Pagination<UserViewModel>> SearchUserByName(string name, int pageIndex = 0, int pageSize = 10);
+    Task<Pagination<UserViewModel>> FilterUser(FilterUserRequest filterUserRequest,int pageNumber = 0, int pageSize = 10);
 }
