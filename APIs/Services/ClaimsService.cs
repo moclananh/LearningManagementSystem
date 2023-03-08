@@ -11,4 +11,5 @@ public class ClaimsService : IClaimService
         GetCurrentUserId = string.IsNullOrEmpty(Id) ? Guid.Empty : Guid.Parse(Id);
     }
     public Guid GetCurrentUserId { get; }
+    
 }

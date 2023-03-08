@@ -8,8 +8,8 @@ public class FilterUserRequest
     public string? FullName { get; set; }
     public string? Email { get; set; }
     public DateTime? DOB { get; set; }
-    public List<Role?> Roles { get; set; } 
-    public List<OverallStatus?> OverallStatus { get; set; }
-    public List<bool?> Genders { get; set; }
+    public List<Role?> Roles { get; set; } = new List<Role?>();
+    public List<OverallStatus?> OverallStatus { get; set; } = new List<OverallStatus?>();
+    public List<bool?> Genders { get; set; } = new List<bool?>();
     public string? Level { get; set; }
 }

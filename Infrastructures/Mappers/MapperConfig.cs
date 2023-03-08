@@ -70,7 +70,7 @@ namespace Infrastructures.Mappers
             CreateMap<CreateOutputStandardViewModel, OutputStandard>().ReverseMap();
             CreateMap<CreateSyllabusViewModel, Syllabus>().ReverseMap();
             CreateMap<UpdateSyllabusViewModel, Syllabus>().ReverseMap();
-            CreateMap<SyllabusViewModel, Syllabus>().ReverseMap();
+            CreateMap<Syllabus, SyllabusViewModel>().ReverseMap();
             CreateMap<CreateUnitViewModel, Unit>().ReverseMap();
             CreateMap<AssignmentQuestionViewModel, AssignmentQuestion>().ReverseMap();
             CreateMap<CreateClassTrainingProgramViewModel, ClassTrainingProgram>().ReverseMap();
