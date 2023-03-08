@@ -41,7 +41,7 @@ namespace Infrastructures.Repositories
 
         public Task<List<TEntity>> GetAllAsync() => _dbSet.ToListAsync();
 
-        public async Task<TEntity?> GetByIdAsync(Guid id)
+        public async Task<TEntity?> GetByIdAsync(Guid? id)
         {
             var result = await _dbSet.FirstOrDefaultAsync(x => x.Id == id);
             return result;

@@ -76,7 +76,7 @@ namespace Applications.Services
             else return new Response(HttpStatusCode.OK, "Search Succeed", _mapper.Map<Pagination<SyllabusViewModel>>(syllabus));
         }
 
-        public async Task<Response> GetSyllabusById(Guid SyllabusId) 
+        public async Task<Response> GetSyllabusById(Guid SyllabusId)
         {
 
             var syllabus = await _unitOfWork.SyllabusRepository.GetByIdAsync(SyllabusId);
@@ -94,7 +94,7 @@ namespace Applications.Services
         public async Task<Response> GetSyllabusByOutputStandardId(Guid OutputStandardId, int pageNumber = 0, int pageSize = 10)
         {
             var syllabus = await _unitOfWork.SyllabusRepository.GetSyllabusByOutputStandardId(OutputStandardId, pageNumber, pageSize);
-            if (syllabus.Items.Count() <1) return new Response(HttpStatusCode.NoContent, "Id not found");
+            if (syllabus.Items.Count() < 1) return new Response(HttpStatusCode.NoContent, "Id not found");
             else return new Response(HttpStatusCode.OK, "Search Succeed", _mapper.Map<Pagination<SyllabusViewModel>>(syllabus));
         }
 
@@ -145,8 +145,19 @@ namespace Applications.Services
         public async Task<Response> GetAllSyllabusDetail(int pageNumber = 0, int pageSize = 10)
         {
             var syllabus = await _unitOfWork.SyllabusRepository.GetAllSyllabusDetail(pageNumber, pageSize);
+            var result = _mapper.Map<Pagination<SyllabusViewModel>>(syllabus);
+            var guidList = syllabus.Items.Select(x => x.CreatedBy).ToList();
+            var userList = new List<string>();
+            foreach (var item in result.Items)
+            {
+                foreach (var user in guidList)
+                {
+                    var createBy = await _unitOfWork.UserRepository.GetByIdAsync(user);
+                    item.CreatedBy = createBy.Email;
+                }
+            }
             if (syllabus.Items.Count() < 1) return new Response(HttpStatusCode.NoContent, "No Syllabus Found");
-            else return new Response(HttpStatusCode.OK, "Search Succeed", _mapper.Map<Pagination<SyllabusViewModel>>(syllabus));
+            else return new Response(HttpStatusCode.OK, "Search Succeed", result);
         }
     }
 }

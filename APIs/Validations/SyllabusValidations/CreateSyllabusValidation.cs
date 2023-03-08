@@ -15,9 +15,6 @@ namespace APIs.Validations.SyllabusValidations
                 .NotEmpty()
                 .WithMessage("The 'SyllabusCode' should not empty")
                 .Length(3, 4);
-            RuleFor(x => x.Duration)
-                .NotEmpty()
-                .WithMessage("The 'Duration' should not empty");
             RuleFor(x => x.Level)
                 .NotEmpty()
                 .WithMessage("The 'Level' should not empty");
