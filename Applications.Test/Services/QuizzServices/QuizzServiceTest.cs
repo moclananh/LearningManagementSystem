@@ -139,5 +139,55 @@ namespace Applications.Tests.Services.QuizzServices
             //assert
             _unitOfWorkMock.Verify(x => x.QuizzRepository.GetQuizzByName("Mock", 0, 10), Times.Once());
         }
+
+        [Fact]
+        public async Task GetEnableQuizz_ShouldReturnCorrectData()
+        {
+            //arrange
+            var MockData = new Pagination<Quizz>
+            {
+                Items = _fixture.Build<Quizz>()
+                                .Without(x => x.QuizzQuestions)
+                                .Without(x => x.Unit)
+                                .CreateMany(30)
+                                .ToList(),
+                PageIndex = 0,
+                PageSize = 10,
+                TotalItemsCount = 30,
+            };
+            var units = _mapperConfig.Map<Pagination<Quizz>>(MockData);
+            _unitOfWorkMock.Setup(x => x.QuizzRepository.GetEnableQuizzes(0, 10)).ReturnsAsync(MockData);
+            var expected = _mapperConfig.Map<Pagination<QuizzViewModel>>(units);
+            //act
+            var result = await _quizzService.GetEnableQuizzes();
+            //assert
+            _unitOfWorkMock.Verify(x => x.QuizzRepository.GetEnableQuizzes(0, 10), Times.Once());
+        }
+
+        [Fact]
+        public async Task GetDisableQuizz_ShouldReturnCorrectData()
+        {
+            //arrange
+            var MockData = new Pagination<Quizz>
+            {
+                Items = _fixture.Build<Quizz>()
+                                .Without(x => x.QuizzQuestions)
+                                .Without(x => x.Unit)
+                                .CreateMany(30)
+                                .ToList(),
+                PageIndex = 0,
+                PageSize = 10,
+                TotalItemsCount = 30,
+            };
+            var units = _mapperConfig.Map<Pagination<Quizz>>(MockData);
+            _unitOfWorkMock.Setup(x => x.QuizzRepository.GetDisableQuizzes(0, 10)).ReturnsAsync(MockData);
+            var expected = _mapperConfig.Map<Pagination<QuizzViewModel>>(units);
+            //act
+            var result = await _quizzService.GetDisableQuizzes();
+            //assert
+            _unitOfWorkMock.Verify(x => x.QuizzRepository.GetDisableQuizzes(0, 10), Times.Once());
+        }
+
     }
 }
+
