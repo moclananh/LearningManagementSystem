@@ -40,7 +40,7 @@ namespace APIs.Controllers
                 {
                     return BadRequest("Fail to create new Quizz");
                 }
-            }
+            }     
             return Ok("Create new Quizz Success");
         }
 

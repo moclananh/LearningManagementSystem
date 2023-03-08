@@ -7,7 +7,7 @@ namespace Applications.ViewModels.TrainingProgramModels
     {
         public Guid Id { get; set; }
         public string TrainingProgramName { get; set; }
-        public string Duration { get; set; }
+        public double Duration { get; set; }
         public Status Status { get; set; }
         public DateTime CreationDate { get; set; }
         public Guid? CreatedBy { get; set; }

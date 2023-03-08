@@ -10,7 +10,7 @@ namespace Applications.ViewModels.LectureViewModels
     public class UpdateLectureViewModel
     {
         public string LectureName { get; set; }
-        public string Duration { get; set; }
+        public double Duration { get; set; }
         public string Description { get; set; }
         public string Type { get; set; }
         public Status Status { get; set; }

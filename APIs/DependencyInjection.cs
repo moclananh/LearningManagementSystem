@@ -12,8 +12,6 @@ using APIs.Validations.SyllabusValidations;
 using Applications.ViewModels.SyllabusViewModels;
 using APIs.Validations.LectureValidations;
 using Applications.ViewModels.LectureViewModels;
-using Applications.Utils;
-using static Org.BouncyCastle.Math.EC.ECCurve;
 using Applications.Interfaces.EmailServicesInterface;
 using Applications.Services.EmailServices;
 using APIs.Validations.AuditPlanValidations;
@@ -33,8 +31,6 @@ using Applications.ViewModels.OutputStandardViewModels;
 using APIs.Validations.OutputStandardValidations;
 using Applications.ViewModels.AuditResultViewModels;
 using APIs.Validations.AuditResultValidations;
-using Applications.ViewModels.PracticeViewModels;
-using APIs.Validations.PracticeValidations;
 using System.Text.Json.Serialization;
 
 namespace APIs;
