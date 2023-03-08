@@ -105,14 +105,14 @@ namespace APIs.Controllers
         }
 
         [HttpDelete("Class/DeleteUser/{ClassId}/{UserId}")]
-        public async Task<IActionResult> DeleteUser(Guid ClassId, Guid UserId)
+        public async Task<IActionResult> DeleteClassUser(Guid ClassId, Guid UserId)
         {
-            if (ModelState.IsValid)
+            var result = await _classServices.RemoveUserToClass(ClassId, UserId);
+            if (result == null)
             {
-                await _classServices.RemoveUserToClass(ClassId, UserId);
-                return Ok("Remove Success");
+                return BadRequest("Remove UserFromClass Fail");
             }
-            return BadRequest("Remove User Fail");
+            return Ok("Remove Success");
         }
 
         [HttpGet("GetClassByFilter")]

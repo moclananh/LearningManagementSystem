@@ -421,8 +421,7 @@ namespace Applications.Tests.Services.SyllabusServices
             _unitOfWorkMock.Verify(s => s.SaveChangeAsync(), Times.Once());
             result.Should().BeNull();
         }
-/*
-        [Fact]
+        /*[Fact]
         public async Task GetAllSyllabusDetail_ShouldReturnCorrectData()
         {
             //arrange

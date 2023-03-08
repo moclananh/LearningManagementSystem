@@ -4,6 +4,7 @@ namespace Applications.ViewModels.PracticeViewModels
 {
     public class PracticeViewModel
     {
+        public Guid Id { get; set; }
         public string PracticeName { get; set; }
         public string Description { get; set; }
         public string Note { get; set; }

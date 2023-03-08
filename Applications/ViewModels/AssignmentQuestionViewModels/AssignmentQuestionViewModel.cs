@@ -8,6 +8,7 @@ namespace Applications.ViewModels.AssignmentQuestionViewModels
 {
     public class AssignmentQuestionViewModel
     {
+        public Guid id { get; set; }
         public string Question { get; set; }
         public string Answer { get; set; }
         public string Note { get; set; }

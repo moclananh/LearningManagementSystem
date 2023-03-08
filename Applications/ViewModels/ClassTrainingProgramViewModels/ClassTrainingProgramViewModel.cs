@@ -2,6 +2,7 @@
 {
     public class ClassTrainingProgramViewModel
     {
+        public Guid Id { get; set; }
         public Guid ClassId { get; set; }
         public Guid TrainingProgramId { get; set; }
         public DateTime CreationDate { get; set; }

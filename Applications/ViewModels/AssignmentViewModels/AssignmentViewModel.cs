@@ -9,6 +9,7 @@ namespace Applications.ViewModels.AssignmentViewModels
 {
     public class AssignmentViewModel
     {
+        public Guid Id { get; set; }
         public string AssignmentName { get; set; }
         public string Description { get; set; }
         public string Note { get; set; }

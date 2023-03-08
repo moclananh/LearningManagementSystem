@@ -147,7 +147,6 @@ namespace Applications.Services
             var syllabus = await _unitOfWork.SyllabusRepository.GetAllSyllabusDetail(pageNumber, pageSize);
             var result = _mapper.Map<Pagination<SyllabusViewModel>>(syllabus);
             var guidList = syllabus.Items.Select(x => x.CreatedBy).ToList();
-            var userList = new List<string>();
             foreach (var item in result.Items)
             {
                 foreach (var user in guidList)
@@ -158,7 +157,6 @@ namespace Applications.Services
             }
             if (syllabus.Items.Count() < 1) return new Response(HttpStatusCode.NoContent, "No Syllabus Found");
             else return new Response(HttpStatusCode.OK, "Search Succeed", result);
-
         }
     }
 }
