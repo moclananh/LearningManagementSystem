@@ -8,7 +8,7 @@ namespace Domain.Entities
     {
         public string SyllabusName { get; set; }
         public string SyllabusCode { get; set; }
-        public float Duration { get; set; }
+        public double Duration { get; set; }
         public string Level { get; set; }
         public string CourseObjective { get; set; }
         public string Version { get; set; }

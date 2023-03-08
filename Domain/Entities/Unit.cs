@@ -7,7 +7,7 @@ namespace Domain.Entities
     public class Unit : BaseEntity
     {
         public string UnitName { get; set; }
-        public string Duration { get; set; }
+        public double Duration { get; set; }
         public Status Status { get; set; }
         public ICollection<ModuleUnit?> ModuleUnits { get; set; }
         public ICollection<Lecture> Lectures { get; set; }
