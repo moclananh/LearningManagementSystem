@@ -3,6 +3,7 @@ using Applications.ViewModels.Response;
 using Applications.ViewModels.SyllabusViewModels;
 using FluentValidation;
 using FluentValidation.Results;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace APIs.Controllers
@@ -23,7 +24,7 @@ namespace APIs.Controllers
             _validatorUpdate = validatorUpdate;
         }
 
-        [HttpPost("CreateSyllabus")]
+        [HttpPost("CreateSyllabus")/*, Authorize(policy: "AuthUser")*/]
         public async Task<IActionResult> CreateSyllabus(CreateSyllabusViewModel SyllabusModel)
         {
             if (ModelState.IsValid)

@@ -421,7 +421,7 @@ namespace Applications.Tests.Services.SyllabusServices
             _unitOfWorkMock.Verify(s => s.SaveChangeAsync(), Times.Once());
             result.Should().BeNull();
         }
-        /*[Fact]
+        [Fact]
         public async Task GetAllSyllabusDetail_ShouldReturnCorrectData()
         {
             //arrange
@@ -443,7 +443,7 @@ namespace Applications.Tests.Services.SyllabusServices
             var result = await _syllabusService.GetAllSyllabusDetail();
             //assert
             _unitOfWorkMock.Verify(s => s.SyllabusRepository.GetAllSyllabusDetail(0, 10), Times.Once());
-        }*/
+        }
 
         [Fact]
         public async Task GetSyllabusDetails_ShouldReturnCorrectData()
