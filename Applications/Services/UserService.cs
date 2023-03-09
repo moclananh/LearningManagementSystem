@@ -10,6 +10,7 @@ using Domain.Enum.StatusEnum;
 using Domain.Enum.RoleEnum;
 using Applications.ViewModels.SyllabusViewModels;
 using Applications.Commons;
+using Applications.Utils;
 using DocumentFormat.OpenXml.Spreadsheet;
 using DocumentFormat.OpenXml.Wordprocessing;
 using MimeKit.Cryptography;
@@ -92,7 +93,7 @@ public class UserService : IUserService
         var user = await _unitOfWork.UserRepository.GetUserByEmail(userLoginViewModel.Email);
 
         if (user == null) return new Response(HttpStatusCode.BadRequest, "Invalid Email");
-        if (user.Password != userLoginViewModel.Password) return new Response(HttpStatusCode.BadRequest, "Invalid Password");
+        if (!StringUtils.Verify(userLoginViewModel.Password,user.Password)) return new Response(HttpStatusCode.BadRequest, "Invalid Password");
         var token = await _tokenService.GetToken(user.Email);
         if (string.IsNullOrEmpty(token)) return new Response(HttpStatusCode.Unauthorized, "Invalid password or username");
 
@@ -161,7 +162,7 @@ public class UserService : IUserService
                         user.OverallStatus = user.Role == Role.SuperAdmin ? OverallStatus.Active : OverallStatus.OffClass;
                         user.Image = string.Empty;
                         user.Level = string.Empty;
-                        user.Password = "12345";
+                        user.Password = StringUtils.Hash("12345");
                         user.Status = Status.Enable;
                         list.Add(user);
                     }
