@@ -12,5 +12,6 @@ namespace Applications.Repositories
         Task<Pagination<Syllabus>> GetSyllabusByOutputStandardId(Guid OutputStandardId, int pageNumber = 0, int pageSize = 10);
         Task<Syllabus> GetSyllabusDetails(Guid syllabusId);
         Task<Pagination<Syllabus>> GetAllSyllabusDetail(int pageNumber = 0, int pageSize = 10);
+        Task<Pagination<Syllabus>> GetSyllabusByCreationDate(DateTime startDate, DateTime endDate, int pageNumber = 0, int pageSize = 10);
     }
 }

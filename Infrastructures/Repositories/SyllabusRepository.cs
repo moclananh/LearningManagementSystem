@@ -156,5 +156,20 @@ namespace Infrastructures.Repositories
 
             return result;
         }
+
+        public async Task<Pagination<Syllabus>> GetSyllabusByCreationDate(DateTime startDate, DateTime endDate, int pageNumber = 0, int pageSize = 10)
+        {
+            var itemCount = await _dbContext.Syllabi.CountAsync();
+            var items = await _dbContext.Syllabi.Where(x => x.CreationDate >= startDate && x.CreationDate <= endDate).ToListAsync();
+
+            var result = new Pagination<Syllabus>()
+            {
+                PageIndex = pageNumber,
+                PageSize = pageSize,
+                TotalItemsCount = itemCount,
+                Items = items,
+            };
+            return result;
+        }
     }
 }

@@ -148,5 +148,14 @@ namespace Applications.Services
             if (syllabus.Items.Count() < 1) return new Response(HttpStatusCode.NoContent, "No Syllabus Found");
             else return new Response(HttpStatusCode.OK, "Search Succeed", _mapper.Map<Pagination<SyllabusViewModel>>(syllabus));
         }
+
+        public async Task<Response> GetSyllabusByCreationDate(DateTime startDate, DateTime endDate, int pageNumber = 0, int pageSize = 10)
+        {
+            var syllabus = await _unitOfWork.SyllabusRepository.GetSyllabusByCreationDate(startDate, endDate, pageNumber, pageSize);
+            if (syllabus.Items.Count() < 1)
+                return new Response(HttpStatusCode.NoContent, "No Syllabus Found");
+            else
+                return new Response(HttpStatusCode.OK, "Search Succeed", _mapper.Map<Pagination<SyllabusViewModel>>(syllabus));
+        }
     }
 }

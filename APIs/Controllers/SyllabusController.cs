@@ -5,6 +5,8 @@ using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Globalization;
+using System.Web;
 
 namespace APIs.Controllers
 {
@@ -108,6 +110,12 @@ namespace APIs.Controllers
                 return Ok("Remove Success");
             }
             return BadRequest("Remove Unit Fail");
+        }
+
+        [HttpGet("GetSyllabusByCreationDate/{startDate}/{endDate}")]
+        public async Task<Response> GetSyllabusByCreationDate(DateTime startDate, DateTime endDate, int pageNumber = 0, int pageSize = 10)
+        {
+            return await _syllabusServices.GetSyllabusByCreationDate(startDate, endDate, pageNumber, pageSize);
         }
     }
 }
