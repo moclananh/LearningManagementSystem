@@ -1,4 +1,5 @@
-﻿using Domain.Enum.ClassEnum;
+﻿using Domain.Entities;
+using Domain.Enum.ClassEnum;
 using Domain.Enum.StatusEnum;
 
 namespace Applications.ViewModels.ClassViewModels

@@ -10,6 +10,7 @@ namespace Applications.Repositories
         Task<TEntity?> GetByIdAsync(Guid? id);
         Task AddAsync(TEntity entity);
         void Update(TEntity entity);
+        void Approve(TEntity entity);
         void UpdateRange(List<TEntity> entities);
         void SoftRemove(TEntity entity);
         Task AddRangeAsync(List<TEntity> entities);

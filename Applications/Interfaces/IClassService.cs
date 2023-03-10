@@ -23,5 +23,7 @@ namespace Applications.Interfaces
         public Task<Pagination<ClassViewModel>> GetClassByFilter(LocationEnum locations, ClassTimeEnum classTime, Status status, AttendeeEnum attendee, FSUEnum fsu, DateTime? startDate, DateTime? endDate, int pageNumber = 0, int pageSize = 10);
         public Task<ClassDetailsViewModel> GetClassDetails(Guid ClassId);
         public Task<Class?> GetClassByClassCode(string classCode);
+        public Task<ClassViewModel> ApprovedClass(Guid ClassId);
+        public Task<ClassViewModel> AddUserToClass(Guid ClassId, Guid UserId);
     }
 }

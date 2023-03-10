@@ -13,8 +13,8 @@ namespace Infrastructures.Repositories
         private ICurrentTime _timeService;
         private IClaimService _claimService;
 
-        public GenericRepository(AppDBContext appDBContext, 
-            ICurrentTime currentTime, 
+        public GenericRepository(AppDBContext appDBContext,
+            ICurrentTime currentTime,
             IClaimService claimService) // contructor 3 param
         {
             _dbSet = appDBContext.Set<TEntity>();
@@ -110,6 +110,13 @@ namespace Infrastructures.Repositories
             };
 
             return result;
+        }
+
+        public void Approve(TEntity entity)
+        {
+            entity.ApprovedDate = _timeService.CurrentTime();
+            entity.ApprovedBy = _claimService.GetCurrentUserId;
+            _dbSet.Update(entity);
         }
     }
 }

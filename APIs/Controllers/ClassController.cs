@@ -141,5 +141,25 @@ namespace APIs.Controllers
             }
             return BadRequest("GetClassDetails Fail");
         }
+        [HttpPost("AddUserToClass/{ClassId}/{UserId}")]
+        public async Task<IActionResult> AddUserToClass(Guid ClassId, Guid UserId)
+        {
+            if (ModelState.IsValid)
+            {
+                var classObj = await _classServices.AddUserToClass(ClassId, UserId);
+                return Ok(classObj);
+            }
+            return BadRequest("Add Fail");
+        }
+        [HttpPut("ApprovedClass/{ClassId}")]
+        public async Task<IActionResult> ApprovedClass(Guid ClassId)
+        {
+            if (ModelState.IsValid)
+            {
+                var classObj = await _classServices.ApprovedClass(ClassId);
+                return Ok(classObj);
+            }
+            return BadRequest("Approved Fail");
+        }
     }
 }

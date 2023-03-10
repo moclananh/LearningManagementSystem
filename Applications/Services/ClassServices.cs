@@ -69,7 +69,7 @@ namespace Applications.Services
             {
                 startDate = new DateTime(1999, 01, 01);
             }
-            if (endDate == null)
+            else if (endDate == null)
             {
                 endDate = new DateTime(3999, 01, 01);
             }
@@ -125,7 +125,7 @@ namespace Applications.Services
 
         public async Task<Class?> GetClassByClassCode(string classCode)
         {
-           return await _unitOfWork.ClassRepository.GetClassByClassCode(classCode);
+            return await _unitOfWork.ClassRepository.GetClassByClassCode(classCode);
         }
 
         public async Task<Pagination<ClassViewModel>> GetDisableClasses(int pageIndex = 0, int pageSize = 10)
@@ -186,6 +186,44 @@ namespace Applications.Services
                 }
             }
             return null;
+        }
+
+        public async Task<ClassViewModel> ApprovedClass(Guid ClassId)
+        {
+            var classObj = await _unitOfWork.ClassRepository.GetByIdAsync(ClassId);
+            if (classObj != null)
+            {
+                _unitOfWork.ClassRepository.Approve(classObj);
+                classObj.Status = Status.Enable;
+                _unitOfWork.SaveChangeAsync();
+                return _mapper.Map<ClassViewModel>(classObj);
+            }
+            return null;
+        }
+
+        public async Task<ClassViewModel> AddUserToClass(Guid ClassId, Guid UserId)
+        {
+            try
+            {
+                var classObj = await _unitOfWork.ClassRepository.GetByIdAsync(ClassId);
+                var user = await _unitOfWork.UserRepository.GetByIdAsync(UserId);
+                if (classObj != null && user != null)
+                {
+                    var classUser = new ClassUser()
+                    {
+                        Class = classObj,
+                        User = user
+                    };
+                    await _unitOfWork.ClassUserRepository.AddAsync(classUser);
+                    await _unitOfWork.SaveChangeAsync();
+                    return _mapper.Map<ClassViewModel>(classObj);
+                }
+                return null;
+            }
+            catch (Exception ex)
+            {
+                throw new AggregateException("Error from AddUserToClass:" + ex.Message);
+            }
         }
     }
 }
