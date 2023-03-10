@@ -1,5 +1,6 @@
 ﻿using Applications.Commons;
 using Applications.Interfaces;
+using Applications.ViewModels.ModuleUnitViewModels;
 using Applications.ViewModels.ModuleViewModels;
 using Applications.ViewModels.Response;
 using Applications.ViewModels.UnitModuleViewModel;
@@ -91,7 +92,7 @@ namespace Applications.Services
             return null;
         }
 
-        public async Task<ModuleUnitViewModel> AddUnitToModule(Guid ModuleId, Guid UnitId)
+        public async Task<CreateModuleUnitViewModel> AddUnitToModule(Guid ModuleId, Guid UnitId)
         {
             var moduleOjb = await _unitOfWork.ModuleRepository.GetByIdAsync(ModuleId);
             var unitObj = await _unitOfWork.UnitRepository.GetByIdAsync(UnitId);
@@ -106,12 +107,12 @@ namespace Applications.Services
                 var isSuccess = await _unitOfWork.SaveChangeAsync() > 0;
                 if (isSuccess)
                 {
-                    return _mapper.Map<ModuleUnitViewModel>(moduleUnit);
+                    return _mapper.Map<CreateModuleUnitViewModel>(moduleUnit);
                 }
             }
             return null;
         }
-        public async Task<ModuleUnitViewModel> RemoveUnitToModule(Guid ModuleId, Guid UnitId)
+        public async Task<CreateModuleUnitViewModel> RemoveUnitToModule(Guid ModuleId, Guid UnitId)
         {
             var moduleOjb = await _unitOfWork.ModuleUnitRepository.GetModuleUnit(ModuleId, UnitId);
             if (moduleOjb != null)
@@ -120,7 +121,7 @@ namespace Applications.Services
                 var isSucces = await _unitOfWork.SaveChangeAsync() > 0;
                 if (isSucces)
                 {
-                    return _mapper.Map<ModuleUnitViewModel>(moduleOjb);
+                    return _mapper.Map<CreateModuleUnitViewModel>(moduleOjb);
                 }
             }
             return null;
