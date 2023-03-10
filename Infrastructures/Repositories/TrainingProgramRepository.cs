@@ -34,6 +34,26 @@ namespace Infrastructures.Repositories
 
             return result;
         }
+
+        public async Task<Pagination<TrainingProgram>> GetTrainingProgramByName(string name, int pageNumber = 0, int pageSize = 10)
+        {
+            var itemCount = await _dbContext.TrainingPrograms.CountAsync();
+            var items = await _dbContext.TrainingPrograms.Where(x => x.TrainingProgramName.Contains(name))
+                                                                .OrderByDescending(x => x.CreationDate)
+                                                                .Skip(pageNumber * pageSize)
+                                                                .Take(pageSize)
+                                                                .AsNoTracking()
+                                                                .ToListAsync();
+            var result = new Pagination<TrainingProgram>()
+            {
+                PageIndex = pageNumber,
+                PageSize = pageSize,
+                TotalItemsCount = itemCount,
+                Items = items
+            };
+            return result;
+        }
+
         public async Task<Pagination<TrainingProgram>> GetTrainingProgramDisable(int pageNumber = 0, int pageSize = 10)
         {
             var itemCount = await _dbContext.TrainingPrograms.CountAsync();

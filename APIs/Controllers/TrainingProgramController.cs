@@ -1,4 +1,5 @@
 ﻿using Application.ViewModels.TrainingProgramModels;
+using Applications.Commons;
 using Applications.Interfaces;
 using Applications.ViewModels.Response;
 using Applications.ViewModels.TrainingProgramModels;
@@ -102,6 +103,9 @@ namespace APIs.Controllers
             }
             return Ok("Remove Syllabus from TrainingProgram Success");
         }
+
+        [HttpGet("GetTrainingProgramByName/{trainingProgramName}")]
+        public async Task<Pagination<TrainingProgramViewModel>> GetTrainingProgramByName(string trainingProgramName, int pageIndex = 0, int pageSize = 10) => await _trainingProgramService.GetByName(trainingProgramName, pageIndex, pageSize);
 
     }
 }

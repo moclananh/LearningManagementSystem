@@ -17,5 +17,6 @@ namespace Applications.Interfaces
         Task<UpdateTrainingProgramViewModel?> UpdateTrainingProgramAsync(Guid TrainingProgramId, UpdateTrainingProgramViewModel TrainingProgramDTO);
         Task<CreateTrainingProgramSyllabi> AddSyllabusToTrainingProgram(Guid SyllabusId, Guid TrainingProgramId);
         Task<CreateTrainingProgramSyllabi> RemoveSyllabusToTrainingProgram(Guid SyllabusId, Guid TrainingProgramId);
+        Task<Pagination<TrainingProgramViewModel>> GetByName(string name, int pageIndex = 0, int pageSize = 10);
     }
 }

@@ -55,6 +55,13 @@ namespace Applications.Services
             return null;
         }
 
+        public async Task<Pagination<TrainingProgramViewModel>> GetByName(string name, int pageIndex = 0, int pageSize = 10)
+        {
+            var trainingPrograms = await _unitOfWork.TrainingProgramRepository.GetTrainingProgramByName(name, pageIndex, pageSize);
+            var result = _mapper.Map<Pagination<TrainingProgramViewModel>>(trainingPrograms);
+            return result;
+        }
+
         public async Task<Response> GetTrainingProgramByClassId(Guid ClassId, int pageIndex = 0, int pageSize = 10)
         {
             var TrainingPrograms = await _unitOfWork.TrainingProgramRepository.GetTrainingProgramByClassId(ClassId, pageIndex, pageSize);
