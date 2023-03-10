@@ -294,5 +294,38 @@ namespace Infrastructures.Tests.Repositories
             resultPaging.PageSize.Should().Be(10);
             result.Should().BeEquivalentTo(expected);
         }
+
+        [Fact]
+        public async Task GetSyllabusByCreationDate_ShouldReturnCorrectData()
+        {
+            var startDate = new DateTime(2023, 3, 1);
+            var endDate = new DateTime(2023, 3, 31);
+
+            var syllabusMockdata = _fixture.Build<Syllabus>()
+                .Without(s => s.TrainingProgramSyllabi)
+                .Without(s => s.SyllabusModules)
+                .Without(s => s.SyllabusOutputStandards)
+                .With(s => s.CreationDate, new DateTime(2023, 3, 10))
+                .CreateMany(30)
+                .ToList();
+
+            await _dbContext.AddRangeAsync(syllabusMockdata);
+            await _dbContext.SaveChangesAsync();
+
+            var expected = syllabusMockdata.Where(x => x.CreationDate == new DateTime(2023, 3, 10)).ToList();
+
+            var pageNumber = 0;
+            var pageSize = 10;
+            var result = await _syllabusRepository.GetSyllabusByCreationDate(startDate, endDate, pageNumber, pageSize);
+
+            result.PageIndex.Should().Be(pageNumber);
+            result.PageSize.Should().Be(pageSize);
+            result.TotalItemsCount.Should().Be(expected.Count);
+
+            var expectedPageCount = (int)Math.Ceiling((double)expected.Count / pageSize);
+            result.TotalPagesCount.Should().Be(expectedPageCount);
+
+            result.Items.Should().BeEquivalentTo(expected);
+        }
     }
 }
