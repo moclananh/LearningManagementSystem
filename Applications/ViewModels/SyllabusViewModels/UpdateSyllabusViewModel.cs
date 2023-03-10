@@ -13,7 +13,5 @@ namespace Applications.ViewModels.SyllabusViewModels
         public string techicalrequirement { get; set; }
         public string Version { get; set; }
         public Status Status { get; set; }
-        public DateTime? ModificationDate { get; set; }
-        public Guid? ModificationBy { get; set; }
     }
 }
