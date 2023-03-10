@@ -1,5 +1,7 @@
 ﻿using Domain.Base;
 using Domain.EntityRelationship;
+using Domain.Enum;
+using Domain.Enum.LevelEnum;
 using Domain.Enum.RoleEnum;
 using Domain.Enum.StatusEnum;
 
@@ -14,7 +16,7 @@ namespace Domain.Entities
         public DateTime DOB { get; set; }
         public bool Gender { get; set; }
         public string Image { get; set; }
-        public string Level { get; set; }
+        public Level? Level { get; set; }
         public Role Role { get; set; }
         public Status Status { get; set; }
         public OverallStatus OverallStatus { get; set; }

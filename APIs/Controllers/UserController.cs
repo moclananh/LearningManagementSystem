@@ -11,7 +11,7 @@ namespace APIs.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-//[Authorize()]
+[Authorize(policy: "AuthUser")]
 public class UserController : Controller
 {
     private readonly IUserService _userService;
@@ -26,6 +26,7 @@ public class UserController : Controller
     /// </summary>
     /// <returns></returns>
     [HttpGet("GetAllUsers")]
+    [AllowAnonymous]
     public async Task<Pagination<UserViewModel>> GetAllUsers(int pageIndex = 0, int pageSize = 10) => await _userService.GetAllUsers(pageIndex, pageSize);
 
     /// <summary>
@@ -34,6 +35,7 @@ public class UserController : Controller
     /// <param name="id"></param>
     /// <returns></returns>
     [HttpGet("GetUserById/{UserId}")]
+    [AllowAnonymous]
     public async Task<UserViewModel> GetUserById(Guid UserId) => await _userService.GetUserById(UserId);
 
     /// <summary>
@@ -42,7 +44,8 @@ public class UserController : Controller
     /// <param name="id"></param>
     /// <param name="user"></param>
     /// <returns></returns>
-    [HttpPut("UpdateUser/{UserId}"), Authorize(policy: "AuthUser")]
+    [HttpPut("UpdateUser/{UserId}")]
+    [AllowAnonymous]
     public async Task<Response> UpdateUser(Guid UserId, [FromBody] UpdateUserViewModel user) => await _userService.UpdateUser(UserId, user);
 
     /// <summary>
@@ -51,6 +54,7 @@ public class UserController : Controller
     /// <param name="role"></param>
     /// <returns></returns>
     [HttpGet("GetUserByRole/{role}")]
+    [AllowAnonymous]
     public async Task<Pagination<UserViewModel>> GetUsersByRole(Role role, int pageIndex = 0, int pageSize = 10) => await _userService.GetUsersByRole(role,pageIndex,pageSize);
 
     /// <summary>
@@ -68,7 +72,6 @@ public class UserController : Controller
     /// <param name="changePassword"></param>
     /// <returns></returns>
     [HttpPut("Change-Password/{UserId}")]
-    [Authorize]
     public async Task<Response> ChangePassword(Guid UserId, [FromBody] ChangePasswordViewModel changePassword) => await _userService.ChangePassword(UserId, changePassword);
     
 
@@ -80,10 +83,9 @@ public class UserController : Controller
     /// <param name="pageSize"></param>
     /// <returns></returns>
     [HttpGet("GetUsersByClassId/{ClassId}")]
-    public async Task<Response> GetUnitByModuleIdAsync(Guid ClassId, int pageIndex = 0, int pageSize = 10)
-    {
-        return await _userService.GetUserByClassId(ClassId, pageIndex, pageSize);
-    }
+    [AllowAnonymous]
+    public async Task<Response> GetUnitByModuleIdAsync(Guid ClassId, int pageIndex = 0, int pageSize = 10) => await _userService.GetUserByClassId(ClassId, pageIndex, pageSize);
+    
 
     /// <summary>
     /// Search Users By Name
@@ -93,10 +95,9 @@ public class UserController : Controller
     /// <param name="pageSize"></param>
     /// <returns></returns>
     [HttpGet("SearchUserByName/{name}")]
-    public async Task<Pagination<UserViewModel>> SearchByName(string name, int pageIndex = 0, int pageSize = 10)
-    {
-        return await _userService.SearchUserByName(name, pageIndex, pageSize);
-    }
+    [AllowAnonymous]
+    public async Task<Pagination<UserViewModel>> SearchByName(string name, int pageIndex = 0, int pageSize = 10) => await _userService.SearchUserByName(name, pageIndex, pageSize);
+    
 
     /// <summary>
     /// Filter Users 
@@ -104,9 +105,18 @@ public class UserController : Controller
     /// <param name="filterUserRequest"></param>
     /// <returns></returns>
     [HttpGet("Filter")]
-    public async Task<Pagination<UserViewModel>> FilterUser([FromQuery] FilterUserRequest filterUserRequest,int pageNumber = 0, int pageSize = 10)
-    {
-        return await _userService.FilterUser(filterUserRequest,pageNumber,pageSize);
-    }
+    [AllowAnonymous]
+    public async Task<Pagination<UserViewModel>> FilterUser([FromQuery] FilterUserRequest filterUserRequest,int pageNumber = 0, int pageSize = 10) => await _userService.FilterUser(filterUserRequest,pageNumber,pageSize);
+    
+
+    /// <summary>
+    /// Register
+    /// </summary>
+    /// <param name="createUserViewModel"></param>
+    /// <returns></returns>
+    [HttpPost("Register")]
+    [AllowAnonymous]
+    public async Task<Response> Register(CreateUserViewModel createUserViewModel)=> await _userService.AddUser(createUserViewModel);
+    
 }
 

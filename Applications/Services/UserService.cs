@@ -8,12 +8,9 @@ using Microsoft.AspNetCore.Http;
 using OfficeOpenXml;
 using Domain.Enum.StatusEnum;
 using Domain.Enum.RoleEnum;
-using Applications.ViewModels.SyllabusViewModels;
 using Applications.Commons;
 using Applications.Utils;
-using DocumentFormat.OpenXml.Spreadsheet;
-using DocumentFormat.OpenXml.Wordprocessing;
-using MimeKit.Cryptography;
+
 
 namespace Applications.Services;
 
@@ -58,6 +55,30 @@ public class UserService : IUserService
     {
         var user = await _unitOfWork.UserRepository.FilterUser(filterUserRequest,pageNumber,pageSize);
         return _mapper.Map<Pagination<UserViewModel>>(user);
+    }
+
+    // add user
+    public async Task<Response> AddUser(CreateUserViewModel createUserViewModel)
+    {
+        var entity  = await _unitOfWork.UserRepository.GetUserByEmail(createUserViewModel.Email);
+        if (entity is not null) return new Response(HttpStatusCode.BadRequest, $"The account with email {createUserViewModel.Email} already exists in the system");
+        User user = new User()
+        {
+            firstName = createUserViewModel.firstName,
+            lastName = createUserViewModel.lastName,
+            Email = createUserViewModel.Email,
+            DOB = createUserViewModel.DOB,
+            Gender = createUserViewModel.Gender,
+            Role = createUserViewModel.Role,
+            Level = createUserViewModel.Level,
+            OverallStatus = createUserViewModel.OverallStatus,
+            Password = StringUtils.Hash("12345"),
+            Status = Status.Enable,
+            Image = string.Empty,
+        };
+        await _unitOfWork.UserRepository.AddAsync(user);
+        var isSuccess = await _unitOfWork.SaveChangeAsync() > 0;
+        return !isSuccess ? new Response(HttpStatusCode.Conflict, "Create user failed!!") : new Response(HttpStatusCode.OK, "ok");
     }
 
 
@@ -161,7 +182,7 @@ public class UserService : IUserService
                         user.Role = (Role)Enum.Parse(typeof(Role), worksheet.Cells[row, 6].Value.ToString());
                         user.OverallStatus = user.Role == Role.SuperAdmin ? OverallStatus.Active : OverallStatus.OffClass;
                         user.Image = string.Empty;
-                        user.Level = string.Empty;
+                        user.Level = null;
                         user.Password = StringUtils.Hash("12345");
                         user.Status = Status.Enable;
                         list.Add(user);
