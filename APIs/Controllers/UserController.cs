@@ -116,7 +116,7 @@ public class UserController : Controller
     /// <returns></returns>
     [HttpPost("Register")]
     [AllowAnonymous]
-    public async Task<Response> Register(CreateUserViewModel createUserViewModel)=> await _userService.AddUser(createUserViewModel);
+    public async Task<Response> Register([FromForm]CreateUserViewModel createUserViewModel)=> await _userService.AddUser(createUserViewModel);
     
 }
 

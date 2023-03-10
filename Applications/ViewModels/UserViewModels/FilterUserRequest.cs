@@ -1,4 +1,5 @@
-﻿using Domain.Enum.RoleEnum;
+﻿using Domain.Enum.LevelEnum;
+using Domain.Enum.RoleEnum;
 using Domain.Enum.StatusEnum;
 
 namespace Applications.ViewModels.UserViewModels;
@@ -11,5 +12,6 @@ public class FilterUserRequest
     public List<Role?> Roles { get; set; } = new List<Role?>();
     public List<OverallStatus?> OverallStatus { get; set; } = new List<OverallStatus?>();
     public List<bool?> Genders { get; set; } = new List<bool?>();
-    public string? Level { get; set; }
+    public List<Level?> Levels { get; set; } = new List<Level?>();
+
 }
