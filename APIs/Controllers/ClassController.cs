@@ -116,7 +116,7 @@ namespace APIs.Controllers
         }
 
         [HttpGet("GetClassByFilter")]
-        public async Task<IActionResult> GetClassByFilter(LocationEnum locations, ClassTimeEnum classTime, Status status, AttendeeEnum attendee, FSUEnum fsu, DateTime? startDate, DateTime? endDate, int pageNumber = 0, int pageSize = 10)
+        public async Task<IActionResult> GetClassByFilter(LocationEnum? locations, ClassTimeEnum? classTime, Status? status, AttendeeEnum? attendee, FSUEnum? fsu, DateTime? startDate, DateTime? endDate, int pageNumber = 0, int pageSize = 10)
         {
             if (ModelState.IsValid)
             {

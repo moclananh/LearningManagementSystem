@@ -16,27 +16,73 @@ namespace Infrastructures.Repositories
             _dbContext = dbContext;
         }
 
-        public async Task<Pagination<Class>> GetClassByFilter(LocationEnum locations,
-                                                        ClassTimeEnum classTime,
-                                                        Status status,
-                                                        AttendeeEnum attendee,
-                                                        FSUEnum fsu,
+        public async Task<Pagination<Class>> GetClassByFilter(LocationEnum? locations,
+                                                        ClassTimeEnum? classTime,
+                                                        Status? status,
+                                                        AttendeeEnum? attendee,
+                                                        FSUEnum? fsu,
                                                         DateTime? startDate,
                                                         DateTime? endDate,
                                                         int pageNumber = 0, int pageSize = 10)
         {
             var itemCount = await _dbContext.Classes.CountAsync();
-            var items = await _dbContext.Classes.Where(x => x.Location == locations)
-                                          .Where(x => x.ClassTime == classTime)
-                                          .Where(x => x.StartDate >= startDate && x.EndDate <= endDate)
-                                          .Where(x => x.Status == status)
-                                          .Where(x => x.Attendee == attendee)
-                                          .Where(x => x.FSU == fsu)
-                                          .OrderByDescending(x => x.CreationDate)
-                                          .Skip(pageNumber * pageSize)
-                                          .Take(pageSize)
-                                          .AsNoTracking()
-                                          .ToListAsync();
+            var items = await _dbContext.Classes.Where(x => x.StartDate >= startDate && x.EndDate <= endDate)
+                                                .OrderByDescending(x => x.CreationDate)
+                                                .Skip(pageNumber * pageSize)
+                                                .Take(pageSize)
+                                                .AsNoTracking()
+                                                .ToListAsync();
+            if (locations.HasValue)
+            {
+                items = await _dbContext.Classes.Where(x => x.StartDate >= startDate && x.EndDate <= endDate)
+                                                .Where(x => x.Location == locations)
+                                                .OrderByDescending(x => x.CreationDate)
+                                                .Skip(pageNumber * pageSize)
+                                                .Take(pageSize)
+                                                .AsNoTracking()
+                                                .ToListAsync();
+            }
+            if (classTime.HasValue)
+            {
+                items = await _dbContext.Classes.Where(x => x.StartDate >= startDate && x.EndDate <= endDate)
+                                                .Where(x => x.ClassTime == classTime)
+                                                .OrderByDescending(x => x.CreationDate)
+                                                .Skip(pageNumber * pageSize)
+                                                .Take(pageSize)
+                                                .AsNoTracking()
+                                                .ToListAsync();
+            }
+            if (status.HasValue)
+            {
+                items = await _dbContext.Classes.Where(x => x.StartDate >= startDate && x.EndDate <= endDate)
+                                                .Where(x => x.Status == status)
+                                                .OrderByDescending(x => x.CreationDate)
+                                                .Skip(pageNumber * pageSize)
+                                                .Take(pageSize)
+                                                .AsNoTracking()
+                                                .ToListAsync();
+            }
+            if (attendee.HasValue)
+            {
+                items = await _dbContext.Classes.Where(x => x.StartDate >= startDate && x.EndDate <= endDate)
+                                                .Where(x => x.Attendee == attendee)
+                                                .OrderByDescending(x => x.CreationDate)
+                                                .Skip(pageNumber * pageSize)
+                                                .Take(pageSize)
+                                                .AsNoTracking()
+                                                .ToListAsync();
+            }
+            if (fsu.HasValue)
+            {
+                items = await _dbContext.Classes.Where(x => x.StartDate >= startDate && x.EndDate <= endDate)
+                                                .Where(x => x.FSU == fsu)
+                                                .OrderByDescending(x => x.CreationDate)
+                                                .Skip(pageNumber * pageSize)
+                                                .Take(pageSize)
+                                                .AsNoTracking()
+                                                .ToListAsync();
+            }
+
             var result = new Pagination<Class>()
             {
                 PageIndex = pageNumber,
@@ -80,7 +126,7 @@ namespace Infrastructures.Repositories
 
         public async Task<Class?> GetClassByClassCode(string ClassCode)
         {
-            return  _dbContext.Classes.FirstOrDefault(x => x.ClassCode == ClassCode);
+            return _dbContext.Classes.FirstOrDefault(x => x.ClassCode == ClassCode);
         }
 
         public async Task<Pagination<Class>> GetDisableClasses(int pageNumber = 0, int pageSize = 10)
