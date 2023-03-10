@@ -35,7 +35,7 @@ namespace Infrastructures.Tests.Mappers.LectureMapper
             //assert
             result.LectureName.Should().Be(lectureMock.LectureName.ToString());
         }
-        /*[Fact]
+        [Fact]
         public void TestUpdateLectureViewModel()
         {
             //arrange
@@ -46,7 +46,7 @@ namespace Infrastructures.Tests.Mappers.LectureMapper
             var result = _mapperConfig.Map<UpdateLectureViewModel>(lectureMock);
 
             //assert
-            result.Duration.Should().Be(lectureMock.Duration.ToString());
-        }*/
+            result.LectureName.Should().Be(lectureMock.LectureName.ToString());
+        }
     }
 }
