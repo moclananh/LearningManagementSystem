@@ -69,7 +69,7 @@ namespace Applications.Services
             {
                 startDate = new DateTime(1999, 01, 01);
             }
-            else if (endDate == null)
+            if (endDate == null)
             {
                 endDate = new DateTime(3999, 01, 01);
             }
