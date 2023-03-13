@@ -388,5 +388,29 @@ namespace Applications.Tests.Services.TrainingProgramServices
             //assert
             result.Should().BeNull();
         }
+        [Fact]
+        public async Task GetTrainingProgramByName_ShouldReturnCorrectData()
+        {
+            //arrange
+            var trainingProgramMockData = new Pagination<TrainingProgram>
+            {
+                Items = _fixture.Build<TrainingProgram>()
+                                .Without(x => x.ClassTrainingPrograms)
+                                .Without(x => x.TrainingProgramSyllabi)
+                                .With(x => x.TrainingProgramName, "NetCore")
+                                .CreateMany(30)
+                                .ToList(),
+                PageIndex = 0,
+                PageSize = 10,
+                TotalItemsCount = 30
+            };
+            var trainingprograms = _mapperConfig.Map<Pagination<TrainingProgram>>(trainingProgramMockData);
+            _unitOfWorkMock.Setup(x => x.TrainingProgramRepository.GetTrainingProgramByName(It.IsAny<string>(), 0, 10)).ReturnsAsync(trainingProgramMockData);
+            var expected = _mapperConfig.Map<Pagination<TrainingProgramViewModel>>(trainingprograms);
+            //act
+            var result = await _trainingProgramService.GetByName("Net", 0, 10);
+            //assert
+            result.Should().BeEquivalentTo(expected);
+        }
     }
 }
