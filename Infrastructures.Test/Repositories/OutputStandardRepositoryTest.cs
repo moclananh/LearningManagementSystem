@@ -19,7 +19,7 @@ namespace Infrastructures.Tests.Repositories
             );
         }
         [Fact]
-        public async Task PracticeRepository_GetOutputStandardBySyllabusId_ShouldReturnCorrectData()
+        public async Task OutputStandardRepository_GetOutputStandardBySyllabusId_ShouldReturnCorrectData()
         {
             //arrange
             var outputStandardsMockData = _fixture.Build<OutputStandard>()
