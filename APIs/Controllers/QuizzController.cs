@@ -3,12 +3,14 @@ using Applications.Interfaces;
 using Applications.ViewModels.Response;
 using FluentValidation;
 using FluentValidation.Results;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace APIs.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(policy: "AuthUser")]
     public class QuizzController : ControllerBase
     {
         private readonly IQuizzService _quizzServices;

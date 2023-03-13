@@ -2,6 +2,7 @@
 using Applications.Commons;
 using Applications.Interfaces;
 using Applications.ViewModels.Response;
+using Applications.ViewModels.SyllabusViewModels;
 using AutoMapper;
 using Domain.Entities;
 using System.Net;
@@ -63,8 +64,18 @@ namespace Applications.Services
         public async Task<Response> GetAllQuizzes(int pageIndex = 0, int pageSize = 10)
         {
             var quizzes = await _unitOfWork.QuizzRepository.ToPagination(pageIndex, pageSize);
+            var result = _mapper.Map<Pagination<QuizzViewModel>>(quizzes);
+            var guidList = quizzes.Items.Select(x => x.CreatedBy).ToList();
+            foreach (var item in result.Items)
+            {
+                foreach (var user in guidList)
+                {
+                    var createBy = await _unitOfWork.UserRepository.GetByIdAsync(user);
+                    item.CreatedBy = createBy.Email;
+                }
+            }
             if (quizzes.Items.Count() < 1) return new Response(HttpStatusCode.NoContent, "No Quizz Found");
-            else return new Response(HttpStatusCode.OK, "Search Succeed", _mapper.Map<Pagination<QuizzViewModel>>(quizzes));
+            else return new Response(HttpStatusCode.OK, "Search Succeed", result);
         }
 
         public async Task<Response> GetEnableQuizzes(int pageIndex = 0, int pageSize = 10)

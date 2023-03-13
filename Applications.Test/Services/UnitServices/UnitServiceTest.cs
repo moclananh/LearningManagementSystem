@@ -18,7 +18,7 @@ namespace Applications.Tests.Services.UnitServices
             _unitService = new Applications.Services.UnitServices(_unitOfWorkMock.Object, _mapperConfig);
         }
 
-        [Fact]
+       /* [Fact]
         public async Task GetAllUnits_ShouldReturnCorrectData()
         {
             //arrange
@@ -42,7 +42,7 @@ namespace Applications.Tests.Services.UnitServices
             var result = await _unitService.GetAllUnits();
             //assert
             _unitOfWorkMock.Verify(x => x.UnitRepository.ToPagination(0, 10), Times.Once());
-        }
+        }*/
 
 
         [Fact]

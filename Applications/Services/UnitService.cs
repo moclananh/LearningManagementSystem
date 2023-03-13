@@ -84,8 +84,18 @@ namespace Applications.Services
         public async Task<Response> GetAllUnits(int pageNumber = 0, int pageSize = 10)
         {
             var unit = await _unitOfWork.UnitRepository.ToPagination(pageNumber, pageSize);
+            var result = _mapper.Map<Pagination<UnitViewModel>>(unit);
+            var guidList = unit.Items.Select(x => x.CreatedBy).ToList();
+            foreach (var item in result.Items)
+            {
+                foreach (var user in guidList)
+                {
+                    var createBy = await _unitOfWork.UserRepository.GetByIdAsync(user);
+                    item.CreatedBy = createBy.Email;
+                }
+            }
             if (unit.Items.Count() < 1) return new Response(HttpStatusCode.NoContent, "Not Found");
-            else return new Response(HttpStatusCode.OK, "Search Succeed", _mapper.Map<Pagination<UnitViewModel>>(unit));
+            else return new Response(HttpStatusCode.OK, "Search Succeed", result);
         }
     }
 }

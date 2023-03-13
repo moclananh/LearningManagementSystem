@@ -19,6 +19,9 @@ namespace Application.ViewModels.QuizzViewModels
         public string Deadline { get; set; }
         public bool isDone { get; set; }
         public Status Status { get; set; }
+        public DateTime CreationDate { get; set; }
+        public string? CreatedBy { get; set; }
+        public bool IsDeleted { get; set; }
 
     }
 }
