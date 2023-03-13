@@ -34,52 +34,27 @@ namespace Infrastructures.Repositories
                                                 .ToListAsync();
             if (locations.HasValue)
             {
-                items = await _dbContext.Classes.Where(x => x.StartDate >= startDate && x.EndDate <= endDate)
-                                                .Where(x => x.Location == locations)
-                                                .OrderByDescending(x => x.CreationDate)
-                                                .Skip(pageNumber * pageSize)
-                                                .Take(pageSize)
-                                                .AsNoTracking()
+                items = await _dbContext.Classes.Where(x => x.Location == locations)
                                                 .ToListAsync();
             }
             if (classTime.HasValue)
             {
-                items = await _dbContext.Classes.Where(x => x.StartDate >= startDate && x.EndDate <= endDate)
-                                                .Where(x => x.ClassTime == classTime)
-                                                .OrderByDescending(x => x.CreationDate)
-                                                .Skip(pageNumber * pageSize)
-                                                .Take(pageSize)
-                                                .AsNoTracking()
+                items = await _dbContext.Classes.Where(x => x.ClassTime == classTime)
                                                 .ToListAsync();
             }
             if (status.HasValue)
             {
-                items = await _dbContext.Classes.Where(x => x.StartDate >= startDate && x.EndDate <= endDate)
-                                                .Where(x => x.Status == status)
-                                                .OrderByDescending(x => x.CreationDate)
-                                                .Skip(pageNumber * pageSize)
-                                                .Take(pageSize)
-                                                .AsNoTracking()
+                items = await _dbContext.Classes.Where(x => x.Status == status)
                                                 .ToListAsync();
             }
             if (attendee.HasValue)
             {
-                items = await _dbContext.Classes.Where(x => x.StartDate >= startDate && x.EndDate <= endDate)
-                                                .Where(x => x.Attendee == attendee)
-                                                .OrderByDescending(x => x.CreationDate)
-                                                .Skip(pageNumber * pageSize)
-                                                .Take(pageSize)
-                                                .AsNoTracking()
+                items = await _dbContext.Classes.Where(x => x.Attendee == attendee)
                                                 .ToListAsync();
             }
             if (fsu.HasValue)
             {
-                items = await _dbContext.Classes.Where(x => x.StartDate >= startDate && x.EndDate <= endDate)
-                                                .Where(x => x.FSU == fsu)
-                                                .OrderByDescending(x => x.CreationDate)
-                                                .Skip(pageNumber * pageSize)
-                                                .Take(pageSize)
-                                                .AsNoTracking()
+                items = await _dbContext.Classes.Where(x => x.FSU == fsu)
                                                 .ToListAsync();
             }
 

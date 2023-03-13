@@ -1,6 +1,4 @@
-﻿using Domain.Entities;
-using Domain.EntityRelationship;
-using Domain.Enum.ClassEnum;
+﻿using Domain.Enum.ClassEnum;
 using Domain.Enum.StatusEnum;
 
 namespace Applications.ViewModels.ClassViewModels
@@ -12,6 +10,14 @@ namespace Applications.ViewModels.ClassViewModels
         public string ClassCode { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
+        public int Durations
+        {
+            get
+            {
+                TimeSpan durations = EndDate - StartDate;
+                return durations.Days;
+            }
+        }
         public LocationEnum Location { get; set; }
         public DateTime CreationDate { get; set; }
         public Guid? CreatedBy { get; set; }
