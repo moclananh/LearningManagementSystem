@@ -3,12 +3,13 @@ using Applications.Interfaces;
 using Applications.ViewModels.ClassTrainingProgramViewModels;
 using Applications.ViewModels.ClassUserViewModels;
 using Applications.ViewModels.ClassViewModels;
+using Applications.ViewModels.UserViewModels;
 using AutoMapper;
 using Domain.Entities;
 using Domain.EntityRelationship;
 using Domain.Enum.ClassEnum;
+using Domain.Enum.RoleEnum;
 using Domain.Enum.StatusEnum;
-using MimeKit.Cryptography;
 
 namespace Applications.Services
 {
@@ -24,181 +25,299 @@ namespace Applications.Services
 
         public async Task<CreateClassTrainingProgramViewModel> AddTrainingProgramToClass(Guid ClassId, Guid TrainingProgramId)
         {
-            var classOjb = await _unitOfWork.ClassRepository.GetByIdAsync(ClassId);
-            var trainingProgram = await _unitOfWork.TrainingProgramRepository.GetByIdAsync(TrainingProgramId);
-            if (classOjb != null && trainingProgram != null)
+            try
             {
-                var classTrainingProgram = new ClassTrainingProgram()
+                var classOjb = await _unitOfWork.ClassRepository.GetByIdAsync(ClassId);
+                var trainingProgram = await _unitOfWork.TrainingProgramRepository.GetByIdAsync(TrainingProgramId);
+
+                if (classOjb != null && trainingProgram != null)
                 {
-                    Class = classOjb,
-                    TrainingProgram = trainingProgram
-                };
-                await _unitOfWork.ClassTrainingProgramRepository.AddAsync(classTrainingProgram);
-                var isSuccess = await _unitOfWork.SaveChangeAsync() > 0;
-                if (isSuccess)
-                {
-                    return _mapper.Map<CreateClassTrainingProgramViewModel>(classTrainingProgram);
+                    var classTrainingProgram = new ClassTrainingProgram()
+                    {
+                        Class = classOjb,
+                        TrainingProgram = trainingProgram
+                    };
+                    await _unitOfWork.ClassTrainingProgramRepository.AddAsync(classTrainingProgram);
+                    var isSuccess = await _unitOfWork.SaveChangeAsync() > 0;
+                    if (isSuccess)
+                    {
+                        return _mapper.Map<CreateClassTrainingProgramViewModel>(classTrainingProgram);
+                    }
                 }
+
+                return null;
             }
-            return null;
+            catch (Exception)
+            {
+                throw new ArgumentException("Error at AddTrainingProgramToClass");
+            }
         }
 
         public async Task<CreateClassViewModel?> CreateClass(CreateClassViewModel classDTO)
         {
-            var classOjb = _mapper.Map<Class>(classDTO);
-            await _unitOfWork.ClassRepository.AddAsync(classOjb);
-            var isSuccess = await _unitOfWork.SaveChangeAsync() > 0;
-            if (isSuccess)
+            try
             {
-                return _mapper.Map<CreateClassViewModel>(classOjb);
-            }
-            return null;
+                var classOjb = _mapper.Map<Class>(classDTO);
+                await _unitOfWork.ClassRepository.AddAsync(classOjb);
+                var isSuccess = await _unitOfWork.SaveChangeAsync() > 0;
 
+                if (isSuccess)
+                {
+                    return _mapper.Map<CreateClassViewModel>(classOjb);
+                }
+
+                return null;
+            }
+            catch (Exception)
+            {
+                throw new ArgumentException("Error at CreateClass");
+            }
         }
 
         public async Task<Pagination<ClassViewModel>> GetAllClasses(int pageIndex = 0, int pageSize = 10)
         {
-            var classes = await _unitOfWork.ClassRepository.ToPagination(pageIndex = 0, pageSize = 10);
-            var result = _mapper.Map<Pagination<ClassViewModel>>(classes);
-            return result;
+            try
+            {
+                var classes = await _unitOfWork.ClassRepository.ToPagination(pageIndex = 0, pageSize = 10);
+                var result = _mapper.Map<Pagination<ClassViewModel>>(classes);
+
+                return result;
+            }
+            catch (Exception)
+            {
+                throw new ArgumentException("Error at GetAllClasses");
+            }
         }
 
         public async Task<Pagination<ClassViewModel>> GetClassByFilter(LocationEnum? locations, ClassTimeEnum? classTime, Status? status, AttendeeEnum? attendee, FSUEnum? fsu, DateTime? startDate, DateTime? endDate, int pageNumber = 0, int pageSize = 10)
         {
-            if (startDate == null)
+            try
             {
-                startDate = new DateTime(1999, 01, 01);
+                if (startDate == null)
+                {
+                    startDate = new DateTime(1999, 01, 01);
+                }
+                if (endDate == null)
+                {
+                    endDate = new DateTime(3999, 01, 01);
+                }
+
+                var classes = await _unitOfWork.ClassRepository.GetClassByFilter(locations, classTime, status, attendee, fsu, startDate, endDate, pageNumber = 0, pageSize = 10);
+                var result = _mapper.Map<Pagination<ClassViewModel>>(classes);
+
+                return result;
             }
-            if (endDate == null)
+            catch (Exception)
             {
-                endDate = new DateTime(3999, 01, 01);
+                throw new ArgumentException("Error at GetClassByFilter");
             }
-            var classes = await _unitOfWork.ClassRepository.GetClassByFilter(locations, classTime, status, attendee, fsu, startDate, endDate, pageNumber = 0, pageSize = 10);
-            var result = _mapper.Map<Pagination<ClassViewModel>>(classes);
-            return result;
         }
 
         public async Task<ClassViewModel> GetClassById(Guid ClassId)
         {
-            var classObj = await _unitOfWork.ClassRepository.GetByIdAsync(ClassId);
-            var result = _mapper.Map<ClassViewModel>(classObj);
-            return result;
+            try
+            {
+                var classObj = await _unitOfWork.ClassRepository.GetByIdAsync(ClassId);
+                var result = _mapper.Map<ClassViewModel>(classObj);
+
+                return result;
+            }
+            catch (Exception)
+            {
+                throw new ArgumentException("Error at GetClassById");
+            }
         }
 
         public async Task<Pagination<ClassViewModel>> GetClassByName(string Name, int pageIndex = 0, int pageSize = 10)
         {
-            var classes = await _unitOfWork.ClassRepository.GetClassByName(Name, pageIndex = 0, pageSize = 10);
-            var result = _mapper.Map<Pagination<ClassViewModel>>(classes);
-            return result;
+            try
+            {
+                var classes = await _unitOfWork.ClassRepository.GetClassByName(Name, pageIndex = 0, pageSize = 10);
+                var result = _mapper.Map<Pagination<ClassViewModel>>(classes);
+
+                return result;
+            }
+            catch (Exception)
+            {
+                throw new ArgumentException("Error at GetClassByName");
+            }
         }
 
         public async Task<ClassDetailsViewModel> GetClassDetails(Guid ClassId)
         {
-            var classObj = await _unitOfWork.ClassRepository.GetClassDetails(ClassId);
-            var classView = _mapper.Map<ClassDetailsViewModel>(classObj);
-            foreach (var user in classObj.ClassUsers)
+            try
             {
-                var tempUser = await _unitOfWork.UserRepository.GetByIdAsync(user.UserId);
-                if (tempUser.Role == Domain.Enum.RoleEnum.Role.Trainer)
+                var classObj = await _unitOfWork.ClassRepository.GetClassDetails(ClassId);
+                var classView = _mapper.Map<ClassDetailsViewModel>(classObj);
+
+                classView.Trainner = new List<User>();
+                classView.SuperAdmin = new List<User>();
+                classView.ClassAdmin = new List<User>();
+                classView.Student = new List<User>();
+
+                foreach (var user in classObj.ClassUsers)
                 {
-                    classView.Trainner.Add(tempUser);
+                    var tempUser = await _unitOfWork.UserRepository.GetByIdAsync(user.UserId);
+                    if (tempUser.Role == Role.Trainer)
+                    {
+                        classView.Trainner.Add(tempUser);
+                    }
+                    else if (tempUser.Role == Role.SuperAdmin)
+                    {
+                        classView.SuperAdmin.Add(tempUser);
+                    }
+                    else if (tempUser.Role == Role.ClassAdmin)
+                    {
+                        classView.ClassAdmin.Add(tempUser);
+                    }
+                    else if (tempUser.Role == Role.Student)
+                    {
+                        classView.Student.Add(tempUser);
+                    }
                 }
-                else if (tempUser.Role == Domain.Enum.RoleEnum.Role.SuperAdmin)
-                {
-                    classView.SuperAdmin.Add(tempUser);
-                }
-                else if (tempUser.Role == Domain.Enum.RoleEnum.Role.ClassAdmin)
-                {
-                    classView.ClassAdmin.Add(tempUser);
-                }
-                else if (tempUser.Role == Domain.Enum.RoleEnum.Role.Student)
-                {
-                    classView.Student.Add(tempUser);
-                }
-                else
-                {
-                    return null;
-                }
+
+                var CreatedBy = await _unitOfWork.UserRepository.GetByIdAsync(classObj.CreatedBy);
+                if (CreatedBy != null) { classView.CreatedBy = CreatedBy.Email; }
+
+                var ModificationBy = await _unitOfWork.UserRepository.GetByIdAsync(classObj.ModificationBy);
+                if (ModificationBy != null) { classView.ModificationBy = ModificationBy.Email; }
+
+                var DeletedBy = await _unitOfWork.UserRepository.GetByIdAsync(classObj.DeleteBy);
+                if (DeletedBy != null) { classView.DeleteBy = DeletedBy.Email; }
+
+                return classView;
             }
-            return classView;
+            catch (Exception)
+            {
+                throw new ArgumentException("Error at GetClassDetails");
+            }
         }
 
-        public async Task<Class?> GetClassByClassCode(string classCode)
-        {
-            return await _unitOfWork.ClassRepository.GetClassByClassCode(classCode);
-        }
+        public async Task<Class?> GetClassByClassCode(string classCode) => await _unitOfWork.ClassRepository.GetClassByClassCode(classCode);
 
         public async Task<Pagination<ClassViewModel>> GetDisableClasses(int pageIndex = 0, int pageSize = 10)
         {
-            var classes = await _unitOfWork.ClassRepository.GetDisableClasses(pageIndex = 0, pageSize = 10);
-            var result = _mapper.Map<Pagination<ClassViewModel>>(classes);
-            return result;
+            try
+            {
+                var classes = await _unitOfWork.ClassRepository.GetDisableClasses(pageIndex = 0, pageSize = 10);
+                var result = _mapper.Map<Pagination<ClassViewModel>>(classes);
+
+                return result;
+            }
+            catch (Exception)
+            {
+                throw new ArgumentException("Error at GetDisableClasses");
+            }
         }
 
         public async Task<Pagination<ClassViewModel>> GetEnableClasses(int pageIndex = 0, int pageSize = 10)
         {
-            var classes = await _unitOfWork.ClassRepository.GetEnableClasses(pageIndex = 0, pageSize = 10);
-            var result = _mapper.Map<Pagination<ClassViewModel>>(classes);
-            return result;
+            try
+            {
+                var classes = await _unitOfWork.ClassRepository.GetEnableClasses(pageIndex = 0, pageSize = 10);
+                var result = _mapper.Map<Pagination<ClassViewModel>>(classes);
+
+                return result;
+            }
+            catch (Exception)
+            {
+                throw new ArgumentException("Error at GetEnableClasses");
+            }
         }
 
         public async Task<CreateClassTrainingProgramViewModel> RemoveTrainingProgramToClass(Guid ClassId, Guid TrainingProgramId)
         {
-            var classTrainingProgram = await _unitOfWork.ClassTrainingProgramRepository.GetClassTrainingProgram(ClassId, TrainingProgramId);
-            if (classTrainingProgram != null)
+            try
             {
-                _unitOfWork.ClassTrainingProgramRepository.SoftRemove(classTrainingProgram);
-                var isSucces = await _unitOfWork.SaveChangeAsync() > 0;
-                if (isSucces)
+                var classTrainingProgram = await _unitOfWork.ClassTrainingProgramRepository.GetClassTrainingProgram(ClassId, TrainingProgramId);
+
+                if (classTrainingProgram != null)
                 {
-                    return _mapper.Map<CreateClassTrainingProgramViewModel>(classTrainingProgram);
+                    _unitOfWork.ClassTrainingProgramRepository.SoftRemove(classTrainingProgram);
+                    var isSucces = await _unitOfWork.SaveChangeAsync() > 0;
+                    if (isSucces)
+                    {
+                        return _mapper.Map<CreateClassTrainingProgramViewModel>(classTrainingProgram);
+                    }
                 }
+
+                return null;
             }
-            return null;
+            catch (Exception)
+            {
+                throw new ArgumentException("Error at RemoveTrainingProgramToClass");
+            }
         }
 
         public async Task<CreateClassUserViewModel> RemoveUserToClass(Guid ClassId, Guid UserId)
         {
-            var user = await _unitOfWork.ClassUserRepository.GetClassUser(ClassId, UserId);
-            if (user != null)
+            try
             {
-                _unitOfWork.ClassUserRepository.SoftRemove(user);
-                var isSucces = await _unitOfWork.SaveChangeAsync() > 0;
-                if (isSucces)
+                var user = await _unitOfWork.ClassUserRepository.GetClassUser(ClassId, UserId);
+
+                if (user != null)
                 {
-                    return _mapper.Map<CreateClassUserViewModel>(user);
+                    _unitOfWork.ClassUserRepository.SoftRemove(user);
+                    var isSucces = await _unitOfWork.SaveChangeAsync() > 0;
+                    if (isSucces)
+                    {
+                        return _mapper.Map<CreateClassUserViewModel>(user);
+                    }
                 }
+
+                return null;
             }
-            return null;
+            catch (Exception)
+            {
+                throw new ArgumentException("Error at RemoverUserToClass");
+            }
         }
 
         public async Task<UpdateClassViewModel?> UpdateClass(Guid ClassId, UpdateClassViewModel classDTO)
         {
-            var classObj = await _unitOfWork.ClassRepository.GetByIdAsync(ClassId);
-            if (classObj != null)
+            try
             {
-                _mapper.Map(classDTO, classObj);
-                _unitOfWork.ClassRepository.Update(classObj);
-                var isSuccess = await _unitOfWork.SaveChangeAsync() > 0;
-                if (isSuccess)
+                var classObj = await _unitOfWork.ClassRepository.GetByIdAsync(ClassId);
+
+                if (classObj != null)
                 {
-                    return _mapper.Map<UpdateClassViewModel>(classObj);
+                    _mapper.Map(classDTO, classObj);
+                    _unitOfWork.ClassRepository.Update(classObj);
+                    var isSuccess = await _unitOfWork.SaveChangeAsync() > 0;
+                    if (isSuccess)
+                    {
+                        return _mapper.Map<UpdateClassViewModel>(classObj);
+                    }
                 }
+
+                return null;
             }
-            return null;
+            catch (Exception)
+            {
+                throw new ArgumentException("Error at UpdateClass");
+            }
         }
 
         public async Task<ClassViewModel> ApprovedClass(Guid ClassId)
         {
-            var classObj = await _unitOfWork.ClassRepository.GetByIdAsync(ClassId);
-            if (classObj != null)
+            try
             {
-                _unitOfWork.ClassRepository.Approve(classObj);
-                classObj.Status = Status.Enable;
-                _unitOfWork.SaveChangeAsync();
-                return _mapper.Map<ClassViewModel>(classObj);
+                var classObj = await _unitOfWork.ClassRepository.GetByIdAsync(ClassId);
+
+                if (classObj != null)
+                {
+                    _unitOfWork.ClassRepository.Approve(classObj);
+                    classObj.Status = Status.Enable;
+                    _unitOfWork.SaveChangeAsync();
+                    return _mapper.Map<ClassViewModel>(classObj);
+                }
+
+                return null;
             }
-            return null;
+            catch (Exception)
+            {
+                throw new ArgumentException("Error at ApproverdClass");
+            }
         }
 
         public async Task<ClassViewModel> AddUserToClass(Guid ClassId, Guid UserId)
@@ -222,7 +341,7 @@ namespace Applications.Services
             }
             catch (Exception ex)
             {
-                throw new AggregateException("Error from AddUserToClass:" + ex.Message);
+                throw new ArgumentException("Error from AddUserToClass:" + ex.Message);
             }
         }
     }

@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Applications.ViewModels.UserViewModels;
+using Domain.Entities;
 using Domain.EntityRelationship;
 using Domain.Enum.ClassEnum;
 using Domain.Enum.StatusEnum;
@@ -14,20 +15,20 @@ namespace Applications.ViewModels.ClassViewModels
         public DateTime EndDate { get; set; }
         public LocationEnum Location { get; set; }
         public DateTime CreationDate { get; set; }
-        public Guid? CreatedBy { get; set; }
+        public string? CreatedBy { get; set; }
         public ClassTimeEnum ClassTime { get; set; }
         public FSUEnum FSU { get; set; }
         public AttendeeEnum Attendee { get; set; }
         public Status Status { get; set; }
         public DateTime? ModificationDate { get; set; }
-        public Guid? ModificationBy { get; set; }
+        public string? ModificationBy { get; set; }
         public DateTime? DeletionDate { get; set; }
-        public Guid? DeleteBy { get; set; }
+        public string? DeleteBy { get; set; }
         public bool IsDeleted { get; set; }
-        public ICollection<User> Trainner { get; set; }
-        public ICollection<User> SuperAdmin { get; set; }
-        public ICollection<User> Student { get; set; }
-        public ICollection<User> ClassAdmin { get; set; }
+        public ICollection<User>? Trainner { get; set; }
+        public ICollection<User>? SuperAdmin { get; set; }
+        public ICollection<User>? Student { get; set; }
+        public ICollection<User>? ClassAdmin { get; set; }
         public ICollection<ClassTrainingProgram> ClassTrainingPrograms { get; set; }
         public ICollection<AuditPlan> AuditPlans { get; set; }
         public ICollection<ClassUser> ClassUsers { get; set; }

@@ -107,7 +107,7 @@ namespace Infrastructures.Repositories
         public async Task<Pagination<Class>> GetDisableClasses(int pageNumber = 0, int pageSize = 10)
         {
             var itemCount = await _dbContext.Classes.Where(x => x.Status == Status.Disable).CountAsync();
-            var items = await _dbContext.Classes.Where(x => x.Status == Domain.Enum.StatusEnum.Status.Disable)
+            var items = await _dbContext.Classes.Where(x => x.Status == Status.Disable)
                                     .OrderByDescending(x => x.CreationDate)
                                     .Skip(pageNumber * pageSize)
                                     .Take(pageSize)
@@ -127,7 +127,7 @@ namespace Infrastructures.Repositories
         public async Task<Pagination<Class>> GetEnableClasses(int pageNumber = 0, int pageSize = 10)
         {
             var itemCount = await _dbContext.Classes.Where(x => x.Status == Status.Enable).CountAsync();
-            var items = await _dbContext.Classes.Where(x => x.Status == Domain.Enum.StatusEnum.Status.Enable)
+            var items = await _dbContext.Classes.Where(x => x.Status == Status.Enable)
                                     .OrderByDescending(x => x.CreationDate)
                                     .Skip(pageNumber * pageSize)
                                     .Take(pageSize)

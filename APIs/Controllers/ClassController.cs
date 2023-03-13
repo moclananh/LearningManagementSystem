@@ -40,6 +40,7 @@ namespace APIs.Controllers
                     return BadRequest("Fail to create new Class");
                 }
             }
+
             return Ok("Create new Class Success");
         }
 
@@ -128,6 +129,7 @@ namespace APIs.Controllers
             }
             return BadRequest("GetClassByFilter Fail");
         }
+
         [HttpGet("GetClassDetails/{ClassId}")]
         public async Task<IActionResult> GetClassDetails(Guid ClassId)
         {
@@ -139,8 +141,10 @@ namespace APIs.Controllers
                     return Ok(classObj);
                 }
             }
+
             return BadRequest("GetClassDetails Fail");
         }
+
         [HttpPost("AddUserToClass/{ClassId}/{UserId}")]
         public async Task<IActionResult> AddUserToClass(Guid ClassId, Guid UserId)
         {
@@ -151,6 +155,7 @@ namespace APIs.Controllers
             }
             return BadRequest("Add Fail");
         }
+
         [HttpPut("ApprovedClass/{ClassId}")]
         public async Task<IActionResult> ApprovedClass(Guid ClassId)
         {
