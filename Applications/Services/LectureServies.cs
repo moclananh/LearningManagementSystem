@@ -5,6 +5,7 @@ using Applications.ViewModels.Response;
 using AutoMapper;
 using Domain.Entities;
 using System.Net;
+using System.Security.AccessControl;
 
 namespace Applications.Services
 {
@@ -34,15 +35,28 @@ namespace Applications.Services
         public async Task<Response> GetAllLectures(int pageIndex = 0, int pageSize = 10)
         {
             var lectures = await _unitOfWork.LectureRepository.ToPagination(pageIndex, pageSize);
+            var result = _mapper.Map<Pagination<LectureViewModel>>(lectures);
+            var guidList = lectures.Items.Select(x => x.CreatedBy).ToList();
+            foreach (var item in result.Items)
+            {
+                foreach (var user in guidList)
+                {
+                    var createBy = await _unitOfWork.UserRepository.GetByIdAsync(user);
+                    item.CreatedBy = createBy.Email;
+                }
+            }
             if (lectures.Items.Count() < 1) return new Response(HttpStatusCode.NoContent, "No Lecture Found");
-            else return new Response(HttpStatusCode.OK, "Search Succeed", _mapper.Map<Pagination<LectureViewModel>>(lectures));
+            else return new Response(HttpStatusCode.OK, "Search Succeed", result);
         }
 
         public async Task<Response> GetLectureById(Guid LectureId)
         {
             var lectures = await _unitOfWork.LectureRepository.GetByIdAsync(LectureId);
+            var result = _mapper.Map<LectureViewModel>(lectures);
+            var createBy = await _unitOfWork.UserRepository.GetByIdAsync(lectures.CreatedBy);
+            result.CreatedBy = createBy.Email;
             if (lectures == null) return new Response(HttpStatusCode.NoContent, "Id not found");
-            else return new Response(HttpStatusCode.OK, "Search succeed", lectures);
+            else return new Response(HttpStatusCode.OK, "Search succeed", result);
         }
         public async Task<Response> GetLectureByUnitId(Guid UnitId, int pageIndex = 0, int pageSize = 10)
         {

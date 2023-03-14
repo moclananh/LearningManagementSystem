@@ -8,11 +8,13 @@ using FluentValidation.Results;
 using Applications.Commons;
 using System.Drawing.Printing;
 using Applications.ViewModels.Response;
+using Microsoft.AspNetCore.Authorization;
 
 namespace APIs.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(policy: "AuthUser")]
     public class LectureController : ControllerBase
     {
         private readonly ILectureService _lectureServices;
