@@ -5,6 +5,8 @@ using Applications.ViewModels.ClassViewModels;
 using AutoFixture;
 using Domain.Entities;
 using Domain.EntityRelationship;
+using Domain.Enum.RoleEnum;
+using Domain.Enum.StatusEnum;
 using Domain.Tests;
 using FluentAssertions;
 using Moq;
@@ -75,6 +77,19 @@ namespace Applications.Tests.Services.ClassServices
             result.Should().BeNull();
         }
         [Fact]
+        public async Task CreateClass_ShouldThrowException_WhenFailed()
+        {
+            //arrange
+            var mocks = _fixture.Build<CreateClassViewModel>()
+                                .Create();
+            _unitOfWorkMock.Setup(x => x.ClassRepository.AddAsync(It.IsAny<Class>()))
+                   .Throws(new ArgumentException("Error at CreateClass"));
+            //act
+            //assert
+            var ex = await Assert.ThrowsAsync<ArgumentException>(() => _classService.CreateClass(mocks));
+            Assert.Equal("Error at CreateClass", ex.Message);
+        }
+        [Fact]
         public async Task UpdateClass_ShouldReturnCorrectData_WhenSuccessSaved()
         {
             //arrange
@@ -105,19 +120,13 @@ namespace Applications.Tests.Services.ClassServices
         public async Task UpdateClass_ShouldReturnNull_WhenNotFoundClass()
         {
             //arrange
-            var classObj = _fixture.Build<Class>()
-                                   .Without(x => x.AbsentRequests)
-                                   .Without(x => x.Attendences)
-                                   .Without(x => x.AuditPlans)
-                                   .Without(x => x.ClassUsers)
-                                   .Without(x => x.ClassTrainingPrograms)
-                                   .Create();
+            var classId = _fixture.Create<Guid>();
             _unitOfWorkMock.Setup(x => x.ClassRepository.GetByIdAsync(It.IsAny<Guid>()))
-                           .ReturnsAsync(classObj);
+                           .ReturnsAsync(null as Class);
             var updateDataMock = _fixture.Build<UpdateClassViewModel>()
                                          .Create();
             //act
-            var result = await _classService.UpdateClass(classObj.Id, updateDataMock);
+            var result = await _classService.UpdateClass(classId, updateDataMock);
             //assert
             result.Should().BeNull();
         }
@@ -154,7 +163,7 @@ namespace Applications.Tests.Services.ClassServices
                                 .Without(x => x.AuditPlans)
                                 .Without(x => x.ClassUsers)
                                 .Without(x => x.ClassTrainingPrograms)
-                                .With(x => x.Status, Domain.Enum.StatusEnum.Status.Enable)
+                                .With(x => x.Status, Status.Enable)
                                 .CreateMany(30)
                                 .ToList(),
                 PageIndex = 0,
@@ -181,7 +190,7 @@ namespace Applications.Tests.Services.ClassServices
                                 .Without(x => x.AuditPlans)
                                 .Without(x => x.ClassUsers)
                                 .Without(x => x.ClassTrainingPrograms)
-                                .With(x => x.Status, Domain.Enum.StatusEnum.Status.Disable)
+                                .With(x => x.Status, Status.Disable)
                                 .CreateMany(30)
                                 .ToList(),
                 PageIndex = 0,
@@ -200,6 +209,35 @@ namespace Applications.Tests.Services.ClassServices
         public async Task GetClassDetails_ShouldReturnCorrectData()
         {
             //arrange
+            var supperAdmin = _fixture.Build<User>()
+                               .Without(x => x.UserAuditPlans)
+                               .Without(x => x.AbsentRequests)
+                               .Without(x => x.Attendences)
+                               .Without(x => x.ClassUsers)
+                               .With(x => x.Role, Role.SuperAdmin)
+                               .Create();
+            var classAdmin = _fixture.Build<User>()
+                               .Without(x => x.UserAuditPlans)
+                               .Without(x => x.AbsentRequests)
+                               .Without(x => x.Attendences)
+                               .Without(x => x.ClassUsers)
+                               .With(x => x.Role, Role.ClassAdmin)
+                               .Create();
+            var trainer = _fixture.Build<User>()
+                               .Without(x => x.UserAuditPlans)
+                               .Without(x => x.AbsentRequests)
+                               .Without(x => x.Attendences)
+                               .Without(x => x.ClassUsers)
+                               .With(x => x.Role, Role.Trainer)
+                               .Create();
+            var student = _fixture.Build<User>()
+                               .Without(x => x.UserAuditPlans)
+                               .Without(x => x.AbsentRequests)
+                               .Without(x => x.Attendences)
+                               .Without(x => x.ClassUsers)
+                               .With(x => x.Role, Role.Student)
+                               .CreateMany(10)
+                               .ToList();
             var mocks = _fixture.Build<Class>()
                                 .Without(x => x.AbsentRequests)
                                 .Without(x => x.Attendences)
@@ -207,32 +245,56 @@ namespace Applications.Tests.Services.ClassServices
                                 .Without(x => x.ClassUsers)
                                 .Without(x => x.ClassTrainingPrograms)
                                 .Create();
-            var user = _fixture.Build<User>()
-                               .Without(x => x.UserAuditPlans)
-                               .Without(x => x.AbsentRequests)
-                               .Without(x => x.Attendences)
-                               .Without(x => x.ClassUsers)
-                               .CreateMany(10)
-                               .ToList();
+
             var listUser = new List<ClassUser>();
-            foreach (var item in user)
+            foreach (var item in student)
             {
-                var classUser = new ClassUser()
+                var classStudent = new ClassUser()
                 {
+                    ClassId = mocks.Id,
+                    UserId = item.Id,
                     Class = mocks,
                     User = item,
                 };
-                listUser.Add(classUser);
+                listUser.Add(classStudent);
             }
-            mocks.ClassUsers = new List<ClassUser>();
-            mocks.ClassUsers.ToList().AddRange(listUser);
+
+            listUser.AddRange(new List<ClassUser>
+            {
+                new ClassUser
+                {
+                    ClassId = mocks.Id,
+                    UserId = supperAdmin.Id,
+                    Class = mocks,
+                    User = supperAdmin
+                },
+                new ClassUser
+                {
+                    ClassId = mocks.Id,
+                    UserId = classAdmin.Id,
+                    Class = mocks,
+                    User = classAdmin
+                },
+                new ClassUser
+                {
+                    ClassId = mocks.Id,
+                    UserId = trainer.Id,
+                    Class = mocks,
+                    User = trainer
+                }
+            });
+
+            mocks.ClassUsers = listUser;
+
             _unitOfWorkMock.Setup(x => x.ClassRepository.GetClassDetails(It.IsAny<Guid>())).ReturnsAsync(mocks);
-            _unitOfWorkMock.Setup(x => x.UserRepository.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(user[0]);
+            _unitOfWorkMock.Setup(x => x.UserRepository.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(supperAdmin);
             var expected = _mapperConfig.Map<ClassDetailsViewModel>(mocks);
+
             //act
             var result = await _classService.GetClassDetails(mocks.Id);
+            
             //assert
-            result.Should().BeEquivalentTo(expected);
+            result.ClassUsers.Should().BeEquivalentTo(expected.ClassUsers);
         }
         [Fact]
         public async Task AddTrainingProgramToClass_ShouldReturnCorrectData()
@@ -295,6 +357,18 @@ namespace Applications.Tests.Services.ClassServices
             result.Should().BeNull();
         }
         [Fact]
+        public async Task AddTrainingProgramToClass_ShouldThrowException_WhenFail()
+        {
+            //arrange
+            var classId = _fixture.Create<Guid>();
+            var trainingProgramId = _fixture.Create<Guid>();
+            _unitOfWorkMock.Setup(x => x.ClassTrainingProgramRepository.AddAsync(It.IsAny<ClassTrainingProgram>())).Throws(new ArgumentException("Error at AddTrainingProgramToClass"));
+            //act 
+            var ex = await Assert.ThrowsAsync<ArgumentException>(() => _classService.AddTrainingProgramToClass(classId, trainingProgramId));
+            //assert
+            Assert.Equal("Error at AddTrainingProgramToClass", ex.Message);
+        }
+        [Fact]
         public async Task RemoveTrainingProgramToClass_ShouldReturnCorrectData()
         {
             //arrange
@@ -321,7 +395,7 @@ namespace Applications.Tests.Services.ClassServices
             _unitOfWorkMock.Setup(x => x.SaveChangeAsync()).ReturnsAsync(1);
             var expected = _mapperConfig.Map<CreateClassTrainingProgramViewModel>(classTrainingProgram);
             //act
-            var result = await _classService.RemoveTrainingProgramToClass(classMocks.Id, trainingProgramMocks.Id);
+            var result = await _classService.RemoveTrainingProgramFromClass(classMocks.Id, trainingProgramMocks.Id);
             //assert
             result.Should().BeEquivalentTo(expected);
         }
@@ -352,7 +426,7 @@ namespace Applications.Tests.Services.ClassServices
             _unitOfWorkMock.Setup(x => x.SaveChangeAsync()).ReturnsAsync(1);
             var expected = _mapperConfig.Map<CreateClassTrainingProgramViewModel>(classTrainingProgram);
             //act
-            var result = await _classService.RemoveTrainingProgramToClass(classMocks.Id, trainingProgramMocks.Id);
+            var result = await _classService.RemoveTrainingProgramFromClass(classMocks.Id, trainingProgramMocks.Id);
             //assert
             result.Should().BeNull();
         }
@@ -383,7 +457,7 @@ namespace Applications.Tests.Services.ClassServices
             _unitOfWorkMock.Setup(x => x.SaveChangeAsync()).ReturnsAsync(0);
             var expected = _mapperConfig.Map<CreateClassTrainingProgramViewModel>(classTrainingProgram);
             //act
-            var result = await _classService.RemoveTrainingProgramToClass(classMocks.Id, trainingProgramMocks.Id);
+            var result = await _classService.RemoveTrainingProgramFromClass(classMocks.Id, trainingProgramMocks.Id);
             //assert
             result.Should().BeNull();
         }
@@ -414,7 +488,7 @@ namespace Applications.Tests.Services.ClassServices
             _unitOfWorkMock.Setup(x => x.SaveChangeAsync()).ReturnsAsync(0);
             var expected = _mapperConfig.Map<CreateClassTrainingProgramViewModel>(classTrainingProgram);
             //act
-            var result = await _classService.RemoveTrainingProgramToClass(classMocks.Id, trainingProgramMocks.Id);
+            var result = await _classService.RemoveTrainingProgramFromClass(classMocks.Id, trainingProgramMocks.Id);
             //assert
             result.Should().BeNull();
         }

@@ -76,156 +76,109 @@ namespace Applications.Services
 
         public async Task<Pagination<ClassViewModel>> GetAllClasses(int pageIndex = 0, int pageSize = 10)
         {
-            try
-            {
-                var classes = await _unitOfWork.ClassRepository.ToPagination(pageIndex = 0, pageSize = 10);
-                var result = _mapper.Map<Pagination<ClassViewModel>>(classes);
+            var classes = await _unitOfWork.ClassRepository.ToPagination(pageIndex = 0, pageSize = 10);
+            var result = _mapper.Map<Pagination<ClassViewModel>>(classes);
 
-                return result;
-            }
-            catch (Exception)
-            {
-                throw new ArgumentException("Error at GetAllClasses");
-            }
+            return result;
         }
 
         public async Task<Pagination<ClassViewModel>> GetClassByFilter(LocationEnum? locations, ClassTimeEnum? classTime, Status? status, AttendeeEnum? attendee, FSUEnum? fsu, DateTime? startDate, DateTime? endDate, int pageNumber = 0, int pageSize = 10)
         {
-            try
+            if (startDate == null)
             {
-                if (startDate == null)
-                {
-                    startDate = new DateTime(1999, 01, 01);
-                }
-                if (endDate == null)
-                {
-                    endDate = new DateTime(3999, 01, 01);
-                }
-
-                var classes = await _unitOfWork.ClassRepository.GetClassByFilter(locations, classTime, status, attendee, fsu, startDate, endDate, pageNumber = 0, pageSize = 10);
-                var result = _mapper.Map<Pagination<ClassViewModel>>(classes);
-
-                return result;
+                startDate = DateTime.MinValue;
             }
-            catch (Exception)
+            if (endDate == null)
             {
-                throw new ArgumentException("Error at GetClassByFilter");
+                endDate = DateTime.MaxValue;
             }
+
+            var classes = await _unitOfWork.ClassRepository.GetClassByFilter(locations, classTime, status, attendee, fsu, startDate, endDate, pageNumber = 0, pageSize = 10);
+            var result = _mapper.Map<Pagination<ClassViewModel>>(classes);
+
+            return result;
         }
 
         public async Task<ClassViewModel> GetClassById(Guid ClassId)
         {
-            try
-            {
-                var classObj = await _unitOfWork.ClassRepository.GetByIdAsync(ClassId);
-                var result = _mapper.Map<ClassViewModel>(classObj);
+            var classObj = await _unitOfWork.ClassRepository.GetByIdAsync(ClassId);
+            var result = _mapper.Map<ClassViewModel>(classObj);
 
-                return result;
-            }
-            catch (Exception)
-            {
-                throw new ArgumentException("Error at GetClassById");
-            }
+            return result;
         }
 
         public async Task<Pagination<ClassViewModel>> GetClassByName(string Name, int pageIndex = 0, int pageSize = 10)
         {
-            try
-            {
-                var classes = await _unitOfWork.ClassRepository.GetClassByName(Name, pageIndex = 0, pageSize = 10);
-                var result = _mapper.Map<Pagination<ClassViewModel>>(classes);
+            var classes = await _unitOfWork.ClassRepository.GetClassByName(Name, pageIndex = 0, pageSize = 10);
+            var result = _mapper.Map<Pagination<ClassViewModel>>(classes);
 
-                return result;
-            }
-            catch (Exception)
-            {
-                throw new ArgumentException("Error at GetClassByName");
-            }
+            return result;
         }
 
         public async Task<ClassDetailsViewModel> GetClassDetails(Guid ClassId)
         {
-            try
+            var classObj = await _unitOfWork.ClassRepository.GetClassDetails(ClassId);
+            var classView = _mapper.Map<ClassDetailsViewModel>(classObj);
+
+            classView.Trainner = new List<User>();
+            classView.SuperAdmin = new List<User>();
+            classView.ClassAdmin = new List<User>();
+            classView.Student = new List<User>();
+
+            foreach (var user in classObj.ClassUsers)
             {
-                var classObj = await _unitOfWork.ClassRepository.GetClassDetails(ClassId);
-                var classView = _mapper.Map<ClassDetailsViewModel>(classObj);
-
-                classView.Trainner = new List<User>();
-                classView.SuperAdmin = new List<User>();
-                classView.ClassAdmin = new List<User>();
-                classView.Student = new List<User>();
-
-                foreach (var user in classObj.ClassUsers)
+                var tempUser = await _unitOfWork.UserRepository.GetByIdAsync(user.UserId);
+                if (tempUser.Role == Role.Trainer)
                 {
-                    var tempUser = await _unitOfWork.UserRepository.GetByIdAsync(user.UserId);
-                    if (tempUser.Role == Role.Trainer)
-                    {
-                        classView.Trainner.Add(tempUser);
-                    }
-                    else if (tempUser.Role == Role.SuperAdmin)
-                    {
-                        classView.SuperAdmin.Add(tempUser);
-                    }
-                    else if (tempUser.Role == Role.ClassAdmin)
-                    {
-                        classView.ClassAdmin.Add(tempUser);
-                    }
-                    else if (tempUser.Role == Role.Student)
-                    {
-                        classView.Student.Add(tempUser);
-                    }
+                    classView.Trainner.Add(tempUser);
                 }
-
-                var CreatedBy = await _unitOfWork.UserRepository.GetByIdAsync(classObj.CreatedBy);
-                if (CreatedBy != null) { classView.CreatedBy = CreatedBy.Email; }
-
-                var ModificationBy = await _unitOfWork.UserRepository.GetByIdAsync(classObj.ModificationBy);
-                if (ModificationBy != null) { classView.ModificationBy = ModificationBy.Email; }
-
-                var DeletedBy = await _unitOfWork.UserRepository.GetByIdAsync(classObj.DeleteBy);
-                if (DeletedBy != null) { classView.DeleteBy = DeletedBy.Email; }
-
-                return classView;
+                else if (tempUser.Role == Role.SuperAdmin)
+                {
+                    classView.SuperAdmin.Add(tempUser);
+                }
+                else if (tempUser.Role == Role.ClassAdmin)
+                {
+                    classView.ClassAdmin.Add(tempUser);
+                }
+                else if (tempUser.Role == Role.Student)
+                {
+                    classView.Student.Add(tempUser);
+                }
             }
-            catch (Exception)
-            {
-                throw new ArgumentException("Error at GetClassDetails");
-            }
+
+            var CreatedBy = await _unitOfWork.UserRepository.GetByIdAsync(classObj.CreatedBy);
+            if (CreatedBy != null) { classView.CreatedBy = CreatedBy.Email; }
+
+            var ModificationBy = await _unitOfWork.UserRepository.GetByIdAsync(classObj.ModificationBy);
+            if (ModificationBy != null) { classView.ModificationBy = ModificationBy.Email; }
+
+            var DeletedBy = await _unitOfWork.UserRepository.GetByIdAsync(classObj.DeleteBy);
+            if (DeletedBy != null) { classView.DeleteBy = DeletedBy.Email; }
+
+            return classView;
         }
+
+        public async Task<Class?> GetClassByClassCode(string classCode) => await _unitOfWork.ClassRepository.GetClassByClassCode(classCode);
 
         public async Task<Class?> GetClassByClassCode(string classCode) => await _unitOfWork.ClassRepository.GetClassByClassCode(classCode);
 
         public async Task<Pagination<ClassViewModel>> GetDisableClasses(int pageIndex = 0, int pageSize = 10)
         {
-            try
-            {
-                var classes = await _unitOfWork.ClassRepository.GetDisableClasses(pageIndex = 0, pageSize = 10);
-                var result = _mapper.Map<Pagination<ClassViewModel>>(classes);
+            var classes = await _unitOfWork.ClassRepository.GetDisableClasses(pageIndex = 0, pageSize = 10);
+            var result = _mapper.Map<Pagination<ClassViewModel>>(classes);
 
-                return result;
-            }
-            catch (Exception)
-            {
-                throw new ArgumentException("Error at GetDisableClasses");
-            }
+            return result;
         }
 
         public async Task<Pagination<ClassViewModel>> GetEnableClasses(int pageIndex = 0, int pageSize = 10)
         {
-            try
-            {
-                var classes = await _unitOfWork.ClassRepository.GetEnableClasses(pageIndex = 0, pageSize = 10);
-                var result = _mapper.Map<Pagination<ClassViewModel>>(classes);
+            var classes = await _unitOfWork.ClassRepository.GetEnableClasses(pageIndex = 0, pageSize = 10);
+            var result = _mapper.Map<Pagination<ClassViewModel>>(classes);
 
-                return result;
-            }
-            catch (Exception)
-            {
-                throw new ArgumentException("Error at GetEnableClasses");
-            }
+            return result;
         }
 
-        public async Task<CreateClassTrainingProgramViewModel> RemoveTrainingProgramToClass(Guid ClassId, Guid TrainingProgramId)
+        public async Task<CreateClassTrainingProgramViewModel> RemoveTrainingProgramFromClass(Guid ClassId, Guid TrainingProgramId)
         {
             try
             {
@@ -249,7 +202,7 @@ namespace Applications.Services
             }
         }
 
-        public async Task<CreateClassUserViewModel> RemoveUserToClass(Guid ClassId, Guid UserId)
+        public async Task<CreateClassUserViewModel> RemoveUserFromClass(Guid ClassId, Guid UserId)
         {
             try
             {
@@ -269,7 +222,7 @@ namespace Applications.Services
             }
             catch (Exception)
             {
-                throw new ArgumentException("Error at RemoverUserToClass");
+                throw new ArgumentException("Error at RemoverUserFromClass");
             }
         }
 

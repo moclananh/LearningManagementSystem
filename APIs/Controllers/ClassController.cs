@@ -96,7 +96,7 @@ namespace APIs.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = await _classServices.RemoveTrainingProgramToClass(ClassId, TrainingProgramId);
+                var result = await _classServices.RemoveTrainingProgramFromClass(ClassId, TrainingProgramId);
                 if (result == null)
                 {
                     return BadRequest("Remove TrainingProgram Fail");
@@ -108,7 +108,7 @@ namespace APIs.Controllers
         [HttpDelete("Class/DeleteUser/{ClassId}/{UserId}")]
         public async Task<IActionResult> DeleteClassUser(Guid ClassId, Guid UserId)
         {
-            var result = await _classServices.RemoveUserToClass(ClassId, UserId);
+            var result = await _classServices.RemoveUserFromClass(ClassId, UserId);
             if (result == null)
             {
                 return BadRequest("Remove UserFromClass Fail");
