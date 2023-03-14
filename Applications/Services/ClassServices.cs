@@ -160,8 +160,6 @@ namespace Applications.Services
 
         public async Task<Class?> GetClassByClassCode(string classCode) => await _unitOfWork.ClassRepository.GetClassByClassCode(classCode);
 
-        public async Task<Class?> GetClassByClassCode(string classCode) => await _unitOfWork.ClassRepository.GetClassByClassCode(classCode);
-
         public async Task<Pagination<ClassViewModel>> GetDisableClasses(int pageIndex = 0, int pageSize = 10)
         {
             var classes = await _unitOfWork.ClassRepository.GetDisableClasses(pageIndex = 0, pageSize = 10);
