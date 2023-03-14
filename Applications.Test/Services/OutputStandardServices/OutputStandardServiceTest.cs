@@ -1,4 +1,6 @@
 ﻿using Applications.Interfaces;
+using Applications.Services;
+using Applications.ViewModels.ClassViewModels;
 using Applications.ViewModels.OutputStandardViewModels;
 using AutoFixture;
 using Domain.Entities;
@@ -56,6 +58,37 @@ namespace Applications.Tests.Services.OutputStandardServices
             result.Should().BeNull();
             _unitOfWorkMock.Verify(x => x.OutputStandardRepository.Update(It.IsAny<OutputStandard>()), Times.Never);
             _unitOfWorkMock.Verify(x => x.SaveChangeAsync(), Times.Never);
+        }
+        [Fact]
+        public async Task CreateOutputStandard_ShouldReturnCorrectData_WhenSuccessSaved()
+        {
+            //arrange
+            var mocks = _fixture.Build<CreateOutputStandardViewModel>()
+                                .Create();
+            _unitOfWorkMock.Setup(x => x.OutputStandardRepository.AddAsync(It.IsAny<OutputStandard>()))
+                           .Returns(Task.CompletedTask);
+            _unitOfWorkMock.Setup(x => x.SaveChangeAsync()).ReturnsAsync(1);
+            //act
+            var result = await _outputStandardService.CreateOutputStandardAsync(mocks);
+            //assert
+            _unitOfWorkMock.Verify(x => x.OutputStandardRepository.AddAsync(It.IsAny<OutputStandard>()), Times.Once());
+            _unitOfWorkMock.Verify(x => x.SaveChangeAsync(), Times.Once());
+        }
+        [Fact]
+        public async Task CreateOutputStandard_ShouldReturnNull_WhenFailedSave()
+        {
+            //arrange
+            var mocks = _fixture.Build<CreateOutputStandardViewModel>()
+                                .Create();
+            _unitOfWorkMock.Setup(x => x.OutputStandardRepository.AddAsync(It.IsAny<OutputStandard>()))
+                           .Returns(Task.CompletedTask);
+            _unitOfWorkMock.Setup(x => x.SaveChangeAsync()).ReturnsAsync(0);
+            //act
+            var result = await _outputStandardService.CreateOutputStandardAsync(mocks);
+            //assert
+            _unitOfWorkMock.Verify(x => x.OutputStandardRepository.AddAsync(It.IsAny<OutputStandard>()), Times.Once());
+            _unitOfWorkMock.Verify(x => x.SaveChangeAsync(), Times.Once());
+            result.Should().BeNull();
         }
 
     }
