@@ -77,8 +77,11 @@ namespace Applications.Services
         public async Task<Response> GetUnitById(Guid UnitId)
         {
             var unit = await _unitOfWork.UnitRepository.GetByIdAsync(UnitId);
+            var result = _mapper.Map<UnitViewModel>(unit);
+            var createBy = await _unitOfWork.UserRepository.GetByIdAsync(unit.CreatedBy);
+            result.CreatedBy = createBy.Email;
             if (unit == null) return new Response(HttpStatusCode.NoContent, "Id not found");
-            else return new Response(HttpStatusCode.OK, "Search succeed", _mapper.Map<UnitViewModel>(unit));
+            else return new Response(HttpStatusCode.OK, "Search succeed", result);
         }
 
         public async Task<Response> GetAllUnits(int pageNumber = 0, int pageSize = 10)

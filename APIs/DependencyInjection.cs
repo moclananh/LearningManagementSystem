@@ -53,6 +53,7 @@ public static class DependencyInjection
         services.AddScoped<IValidator<CreateClassViewModel>, CreateClassValidation>();
         services.AddScoped<IValidator<AuditPlanViewModel>, AuditPlanValidation>();
         services.AddScoped<IValidator<UpdateAuditPlanViewModel>, UpdateAuditPlanValidation>();
+        services.AddScoped<IValidator<CreateAuditPlanViewModel>, CreateAuditPlanValidation>();
         services.AddScoped<IValidator<CreateModuleViewModel>, CreateModuleValidation>();
         services.AddScoped<IValidator<UpdateModuleViewModel>, UpdateModuleValidation>();
         services.AddScoped<IValidator<UpdateSyllabusViewModel>, UpdateSyllabusValidation>();

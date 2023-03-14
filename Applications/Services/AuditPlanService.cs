@@ -4,6 +4,8 @@ using Applications.ViewModels.AuditPlanViewModel;
 using Applications.ViewModels.Response;
 using Applications.ViewModels.UserAuditPlanViewModels;
 using AutoMapper;
+using DocumentFormat.OpenXml.Spreadsheet;
+using DocumentFormat.OpenXml.Wordprocessing;
 using Domain.Entities;
 using Domain.EntityRelationship;
 using System.Net;
@@ -20,23 +22,33 @@ namespace Applications.Services
             _mapper = mapper;
         }
 
-        public async Task<AuditPlanViewModel?> CreateAuditPlanAsync(AuditPlanViewModel AuditPlanDTO)
+        public async Task<CreateAuditPlanViewModel?> CreateAuditPlanAsync(CreateAuditPlanViewModel AuditPlanDTO)
         {
             var auditPlan = _mapper.Map<AuditPlan>(AuditPlanDTO);
             await _unitOfWork.AuditPlanRepository.AddAsync(auditPlan);
             var isSuccess = await _unitOfWork.SaveChangeAsync() > 0;
             if (isSuccess)
             {
-                return _mapper.Map<AuditPlanViewModel>(auditPlan);
+                return _mapper.Map<CreateAuditPlanViewModel>(auditPlan);
             }
             return null;
         }
 
         public async Task<Response> GetAllAuditPlanAsync(int pageIndex = 0, int pageSize = 10)
         {
-            var auditplans = await _unitOfWork.AuditPlanRepository.ToPagination(pageIndex, pageSize);
-            if (auditplans.Items.Count() < 1) return new Response(HttpStatusCode.NoContent, "No AuditPlan Found");
-            else return new Response(HttpStatusCode.OK, "Search Succeed", _mapper.Map<Pagination<AuditPlanViewModel>>(auditplans));
+            var auditPlans = await _unitOfWork.AuditPlanRepository.ToPagination(pageIndex, pageSize);
+            var result = _mapper.Map<Pagination<AuditPlanViewModel>>(auditPlans);
+            var guidList = auditPlans.Items.Select(x => x.CreatedBy).ToList();
+            foreach (var item in result.Items)
+            {
+                foreach (var user in guidList)
+                {
+                    var createBy = await _unitOfWork.UserRepository.GetByIdAsync(user);
+                    item.CreatedBy = createBy.Email;
+                }
+            }
+            if (auditPlans.Items.Count() < 1) return new Response(HttpStatusCode.NoContent, "No AuditPlan Found");
+            else return new Response(HttpStatusCode.OK, "Search Succeed", result);
         }
 
         public async Task<Response> GetAuditPlanbyClassIdAsync(Guid ClassId, int pageIndex = 0, int pageSize = 10)
@@ -48,9 +60,12 @@ namespace Applications.Services
 
         public async Task<Response> GetAuditPlanByIdAsync(Guid AuditPlanId)
         {
-            var auditplans = await _unitOfWork.AuditPlanRepository.GetByIdAsync(AuditPlanId);
-            if (auditplans == null) return new Response(HttpStatusCode.NoContent, "No AuditPlanId found");
-            else return new Response(HttpStatusCode.OK, "Search succeed", _mapper.Map<AuditPlanViewModel>(auditplans));
+            var auditPlans = await _unitOfWork.AuditPlanRepository.GetByIdAsync(AuditPlanId);
+            var result = _mapper.Map<AuditPlanViewModel>(auditPlans);
+            var createBy = await _unitOfWork.UserRepository.GetByIdAsync(auditPlans.CreatedBy);
+            result.CreatedBy = createBy.Email;
+            if (auditPlans == null) return new Response(HttpStatusCode.NoContent, "No AuditPlan Found");
+            else return new Response(HttpStatusCode.OK, "Search Succeed", result);
         }
 
         public async Task<Response> GetAuditPlanByModuleIdAsync(Guid ModuleId)

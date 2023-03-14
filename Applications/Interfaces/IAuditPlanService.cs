@@ -15,7 +15,7 @@ namespace Applications.Interfaces
         public Task<Response> GetAuditPlanByModuleIdAsync(Guid ModuleId);
         public Task<Response> GetAuditPlanbyClassIdAsync(Guid ClassId, int pageIndex = 0, int pageSize = 10);
         public Task<Response> GetAuditPlanByName(string AuditPlanName, int pageIndex = 0, int pageSize = 10);
-        public Task<AuditPlanViewModel?> CreateAuditPlanAsync(AuditPlanViewModel AuditPlanDTO);
+        public Task<CreateAuditPlanViewModel?> CreateAuditPlanAsync(CreateAuditPlanViewModel AuditPlanDTO);
         public Task<UpdateAuditPlanViewModel?> UpdateAuditPlanAsync(Guid auditPlanId, UpdateAuditPlanViewModel updateAuditPlanView);
         public Task<CreateUserAuditPlanViewModel> AddUserToAuditPlan(Guid AuditPlanId, Guid UserId);
         public Task<CreateUserAuditPlanViewModel> RemoveUserToAuditPlan(Guid AuditPlanId, Guid UserId);

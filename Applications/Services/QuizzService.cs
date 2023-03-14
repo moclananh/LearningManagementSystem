@@ -2,10 +2,10 @@
 using Applications.Commons;
 using Applications.Interfaces;
 using Applications.ViewModels.Response;
-using Applications.ViewModels.SyllabusViewModels;
 using AutoMapper;
 using Domain.Entities;
 using System.Net;
+using System.Security.AccessControl;
 
 namespace Applications.Services
 {
@@ -22,8 +22,11 @@ namespace Applications.Services
         public async Task<Response> GetQuizzByQuizzIdAsync(Guid QuizzId)
         {
             var quizz = await _unitOfWork.QuizzRepository.GetByIdAsync(QuizzId);
+            var result = _mapper.Map<QuizzViewModel>(quizz);
+            var createBy = await _unitOfWork.UserRepository.GetByIdAsync(quizz.CreatedBy);
+            result.CreatedBy = createBy.Email;
             if (quizz == null) return new Response(HttpStatusCode.NoContent, "Id not found");
-            else return new Response(HttpStatusCode.OK, "Search succeed", _mapper.Map<QuizzViewModel>(quizz));
+            else return new Response(HttpStatusCode.OK, "Search succeed", result);
         }
 
         public async Task<CreateQuizzViewModel> CreateQuizzAsync(CreateQuizzViewModel QuizzDTO)

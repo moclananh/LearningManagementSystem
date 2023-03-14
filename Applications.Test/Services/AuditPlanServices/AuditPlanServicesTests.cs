@@ -201,7 +201,7 @@ namespace Applications.Tests.Services.AuditPlanServices
         public async Task CreateAuditPlan_ShouldReturnCorrectData_WhenSuccessSaved()
         {
             //arrange
-            var auditPlanMockData = _fixture.Build<AuditPlanViewModel>().Create();
+            var auditPlanMockData = _fixture.Build<CreateAuditPlanViewModel>().Create();
             _unitOfWorkMock.Setup(x => x.AuditPlanRepository.AddAsync(It.IsAny<AuditPlan>()))
                             .Returns(Task.CompletedTask);
             _unitOfWorkMock.Setup(x => x.SaveChangeAsync()).ReturnsAsync(1);
@@ -215,7 +215,7 @@ namespace Applications.Tests.Services.AuditPlanServices
         [Fact]
         public async Task CreateAuditPlan_ShouldReturnNull_WhenFailedSave()
         {
-            var auditPlanMockData = _fixture.Build<AuditPlanViewModel>().Create();
+            var auditPlanMockData = _fixture.Build<CreateAuditPlanViewModel>().Create();
             _unitOfWorkMock.Setup(x => x.AuditPlanRepository.AddAsync(It.IsAny<AuditPlan>()))
                             .Returns(Task.CompletedTask);
             _unitOfWorkMock.Setup(x => x.SaveChangeAsync()).ReturnsAsync(0);

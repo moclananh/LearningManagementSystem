@@ -1,28 +1,32 @@
-﻿using Applications.Commons;
-using Applications.Interfaces;
+﻿using Applications.Interfaces;
 using Applications.ViewModels.AuditPlanViewModel;
 using Applications.ViewModels.Response;
 using FluentValidation;
 using FluentValidation.Results;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace APIs.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(policy: "AuthUser")]
     public class AuditPlanController : ControllerBase
     {
         private readonly IAuditPlanService _auditPlanService;
         private readonly IValidator<AuditPlanViewModel> _validator;
-        private readonly IValidator<UpdateAuditPlanViewModel> _validator1;
+        private readonly IValidator<UpdateAuditPlanViewModel> _validatorUpdate;
+        private readonly IValidator<CreateAuditPlanViewModel> _validatorCreate;
 
         public AuditPlanController(IAuditPlanService auditPlanService,
             IValidator<AuditPlanViewModel> validator,
-            IValidator<UpdateAuditPlanViewModel> validator1)
+            IValidator<UpdateAuditPlanViewModel> validatorUpdate,
+            IValidator<CreateAuditPlanViewModel> validatorCreate)
         {
             _auditPlanService = auditPlanService;
             _validator = validator;
-            _validator1 = validator1;
+            _validatorUpdate = validatorUpdate;
+            _validatorCreate = validatorCreate;
         }
 
         [HttpGet("GetAllAuditPlan")]
@@ -47,11 +51,11 @@ namespace APIs.Controllers
         public async Task<Response> GetAuditPlanByName(string AuditPlanName, int pageIndex = 0, int pageSize = 10) => await _auditPlanService.GetAuditPlanByName(AuditPlanName, pageIndex, pageSize);
 
         [HttpPost("CreateAuditPlan")]
-        public async Task<IActionResult> CreateAuditPlan(AuditPlanViewModel createAuditPlanViewModel)
+        public async Task<IActionResult> CreateAuditPlan(CreateAuditPlanViewModel createAuditPlanViewModel)
         {
             if (ModelState.IsValid)
             {
-                ValidationResult result = _validator.Validate(createAuditPlanViewModel);
+                ValidationResult result = _validatorCreate.Validate(createAuditPlanViewModel);
                 if (result.IsValid)
                 {
                     await _auditPlanService.CreateAuditPlanAsync(createAuditPlanViewModel);
@@ -69,7 +73,7 @@ namespace APIs.Controllers
         {
             if (ModelState.IsValid)
             {
-                ValidationResult result = _validator1.Validate(updateAuditPlanView);
+                ValidationResult result = _validatorUpdate.Validate(updateAuditPlanView);
                 if (result.IsValid)
                 {
                     await _auditPlanService.UpdateAuditPlanAsync(AuditPlanId, updateAuditPlanView);

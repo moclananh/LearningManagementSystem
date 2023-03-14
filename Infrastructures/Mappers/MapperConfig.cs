@@ -52,6 +52,7 @@ namespace Infrastructures.Mappers
             CreateMap<CreateClassUserViewModel, ClassUser>().ReverseMap();
             CreateMap<AuditPlanViewModel, AuditPlan>().ReverseMap();
             CreateMap<UpdateAuditPlanViewModel, AuditPlan>().ReverseMap();
+            CreateMap<CreateAuditPlanViewModel, AuditPlan>().ReverseMap();
             CreateMap<CreateLectureViewModel, Lecture>().ReverseMap();
             CreateMap<UpdateLectureViewModel, Lecture>().ReverseMap();
             CreateMap<LectureViewModel, Lecture>().ReverseMap();
