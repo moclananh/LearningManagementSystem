@@ -43,10 +43,11 @@ namespace Applications.Tests.Services.ClassServices
                                .Without(x => x.AbsentRequests)
                                .Without(x => x.ClassUsers)
                                .Without(x => x.Attendences)
-                               .Create();
+                               .CreateMany(3)
+                               .ToList();
             var expected = _mapperConfig.Map<Pagination<Class>>(classMockData);
             _unitOfWorkMock.Setup(x => x.ClassRepository.ToPagination(0, 10)).ReturnsAsync(classMockData);
-            _unitOfWorkMock.Setup(x => x.UserRepository.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(user);
+            _unitOfWorkMock.Setup(x => x.UserRepository.GetEntitiesByIdsAsync(It.IsAny<List<Guid?>>())).ReturnsAsync(user);
             //act
             var result = await _classService.GetAllClasses();
             //assert
