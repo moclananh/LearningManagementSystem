@@ -1,6 +1,4 @@
-﻿using Applications.Commons;
-using Applications.Interfaces;
-using Applications.ViewModels.AssignmentQuestionViewModels;
+﻿using Applications.Interfaces;
 using Applications.ViewModels.Response;
 using Microsoft.AspNetCore.Mvc;
 

@@ -27,6 +27,7 @@ using Applications.ViewModels.TrainingProgramModels;
 using Applications.ViewModels.QuizzQuestionViewModels;
 using Applications.ViewModels.SyllabusModuleViewModel;
 using Applications.ViewModels.ModuleUnitViewModels;
+using Applications.ViewModels.AttendanceViewModels;
 
 namespace Infrastructures.Mappers
 {
@@ -60,6 +61,7 @@ namespace Infrastructures.Mappers
             CreateMap<UnitViewModel, Unit>().ReverseMap();
             CreateMap<Unit, UnitViewModel>()
                .ForMember(dest => dest.UnitId, src => src.MapFrom(x => x.Id));
+            CreateMap<Attendance, CreateAttendanceViewModel>();
             CreateMap<ModuleViewModels, Module>().ReverseMap();
             CreateMap<CreateModuleViewModel, Module>().ReverseMap();
             CreateMap<UpdateModuleViewModel, Module>().ReverseMap();

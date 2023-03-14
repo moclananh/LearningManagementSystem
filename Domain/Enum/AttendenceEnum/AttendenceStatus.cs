@@ -2,8 +2,8 @@
 {
     public enum AttendenceStatus
     {
-        Present,
         Absent,
+        Present,
         AllowAbsent
     }
 }

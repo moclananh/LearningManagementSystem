@@ -11,6 +11,7 @@ namespace Infrastructures
         private readonly AppDBContext _appDBContext;
         private readonly IClassRepository _classRepository;
         private readonly IAssignmentRepository _assignmentRepository;
+        private readonly IAttendanceRepository _attendanceRepository;
         private readonly IQuizzRepository _quizzRepository;
         private readonly IUserRepository _userRepository;
         private readonly IClassUserRepository _classUserRepository;
@@ -56,7 +57,8 @@ namespace Infrastructures
             IModuleUnitRepository moduleUnitRepository,
             IUserAuditPlanRepository userAuditPlanRepository,
             IQuizzQuestionRepository quizzQuestionRepository,
-            ISyllabusModuleRepository syllabusModuleRepository)
+            ISyllabusModuleRepository syllabusModuleRepository,
+            IAttendanceRepository attendanceRepository)
 
         {
             _appDBContext = appDBContext;
@@ -83,11 +85,13 @@ namespace Infrastructures
             _userAuditPlanRepository = userAuditPlanRepository;
             _quizzQuestionRepository = quizzQuestionRepository;
             _syllabusModuleRepository = syllabusModuleRepository;
+            _attendanceRepository = attendanceRepository;
         }
         public IClassRepository ClassRepository => _classRepository;
         public IPracticeRepository PracticeRepository => _practiceRepository;
         public IAuditResultRepository AuditResultRepository => _auditResultRepository;
         public IAssignmentRepository AssignmentRepository => _assignmentRepository;
+        public IAttendanceRepository AttendanceRepository => _attendanceRepository;
         public IQuizzRepository QuizzRepository => _quizzRepository;
         public IUserRepository UserRepository => _userRepository;
         public IClassUserRepository ClassUserRepository => _classUserRepository;

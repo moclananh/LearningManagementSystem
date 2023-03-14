@@ -30,6 +30,8 @@ namespace Applications
         public IUserAuditPlanRepository UserAuditPlanRepository { get; }
         public IQuizzQuestionRepository QuizzQuestionRepository { get; }
         public ISyllabusModuleRepository SyllabusModuleRepository { get; }
+        public IAttendanceRepository AttendanceRepository { get; }
+
         public Task<int> SaveChangeAsync();
     }
 }
