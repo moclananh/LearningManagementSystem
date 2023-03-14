@@ -44,8 +44,18 @@ namespace Applications.Services
         public async Task<Response> GetAllPractice(int pageIndex = 0, int pageSize = 10)
         {
             var practiceOjb = await _unitOfWork.PracticeRepository.ToPagination(pageIndex, pageSize);
+            var result = _mapper.Map<Pagination<PracticeViewModel>>(practiceOjb);
+            var guidList = practiceOjb.Items.Select(x => x.CreatedBy).ToList();
+            foreach (var item in result.Items)
+            {
+                foreach (var user in guidList)
+                {
+                    var createBy = await _unitOfWork.UserRepository.GetByIdAsync(user);
+                    item.CreatedBy = createBy.Email;
+                }
+            }
             if (practiceOjb.Items.Count() < 1) return new Response(HttpStatusCode.NoContent, "No Practice Found");
-            else return new Response(HttpStatusCode.OK, "Search Succeed", _mapper.Map<Pagination<PracticeViewModel>>(practiceOjb));
+            else return new Response(HttpStatusCode.OK, "Search Succeed", result);
         }
         public async Task<Response> GetPracticeByName(string Name, int pageIndex = 0, int pageSize = 10)
         {

@@ -12,5 +12,8 @@ namespace Applications.ViewModels.PracticeViewModels
         public bool isDone { get; set; }
         public Status Status { get; set; }
         public Guid UnitId { get; set; }
+        public DateTime CreationDate { get; set; }
+        public string? CreatedBy { get; set; }
+        public bool IsDeleted { get; set; }
     }
 }

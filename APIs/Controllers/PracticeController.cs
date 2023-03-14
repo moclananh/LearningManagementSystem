@@ -4,11 +4,13 @@ using Applications.ViewModels.PracticeViewModels;
 using Applications.ViewModels.Response;
 using FluentValidation;
 using FluentValidation.Results;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 namespace APIs.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(policy: "AuthUser")]
     public class PracticeController : ControllerBase
     {
         private readonly IPracticeService _service;
