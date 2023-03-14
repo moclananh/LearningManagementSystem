@@ -55,5 +55,21 @@ namespace Applications.Tests.Services.AuditResultServices
             _unitOfWorkMock.Verify(x => x.AuditResultRepository.Update(It.IsAny<AuditResult>()), Times.Never);
             _unitOfWorkMock.Verify(x => x.SaveChangeAsync(), Times.Never);
         }
+
+        [Fact]
+        public async Task GetAuditResultByAuditPlanId_ShouldReturnCorrectData()
+        {
+            var auditPlanId = Guid.NewGuid();
+            var auditResultObj = _fixture.Build<AuditResult>()
+                                   .Without(x => x.AuditPlan)
+                                   .Create();
+            _unitOfWorkMock.Setup(x => x.AuditResultRepository.GetByAuditPlanId(auditPlanId)).ReturnsAsync(auditResultObj);
+
+            //act
+            var expected = _mapperConfig.Map<AuditResultViewModel>(auditResultObj);
+
+            var result = _auditResultServices.GetByAudiPlanId(auditPlanId);
+            result.Result.Should().BeEquivalentTo(expected);
+        }
     }
 }
