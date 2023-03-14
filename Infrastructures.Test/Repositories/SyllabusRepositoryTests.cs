@@ -295,6 +295,7 @@ namespace Infrastructures.Tests.Repositories
             result.Should().BeEquivalentTo(expected);
         }
 
+
         [Fact]
         public async Task GetSyllabusByCreationDate_ShouldReturnCorrectData()
         {
@@ -327,5 +328,6 @@ namespace Infrastructures.Tests.Repositories
 
             result.Items.Should().BeEquivalentTo(expected);
         }
+
     }
 }

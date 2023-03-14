@@ -113,32 +113,99 @@ namespace Applications.Tests.Services.PracticeServices
             _unitOfWorkMock.Verify(x => x.SaveChangeAsync(), Times.Once());
             result.Should().BeNull();
         }
-
         [Fact]
-        public async Task GetPracticeByUnitId_ShouldReturnCorrectData()
+        public async Task UpdatePractice_ShouldReturnCorrectData_WhenSuccessSaved()
         {
             //arrange
-            var id = Guid.NewGuid();
-            var practiceMock = new Pagination<Practice>()
-            {
-                Items = _fixture.Build<Practice>()
-                                .Without(x => x.Unit)
-                                .Without(x => x.PracticeQuestions)
-                                .With(x => x.UnitId, id)
-                                .CreateMany(30)
-                                .ToList(),
-                PageIndex = 0,
-                PageSize = 10,
-                TotalItemsCount = 30,
-            };
-
-            var practice = _mapperConfig.Map<Pagination<Practice>>(practiceMock);
-            _unitOfWorkMock.Setup(x => x.PracticeRepository.GetPracticeByUnitId(id, 0, 10)).ReturnsAsync(practiceMock);
-            var expected = _mapperConfig.Map<Pagination<PracticeViewModel>>(practice);
+            var PracticeObj = _fixture.Build<Practice>()
+                                   .Without(x => x.Unit)
+                                   .Without(x => x.UnitId)
+                                   .Without(x => x.Status)
+                                   .Without(x => x.PracticeQuestions)
+                                   .Create();
+            var updateDataMock = _fixture.Build<UpdatePracticeViewModel>()
+                                         .Create();
+            _unitOfWorkMock.Setup(x => x.PracticeRepository.GetByIdAsync(It.IsAny<Guid>()))
+                          .ReturnsAsync(PracticeObj);
+            _unitOfWorkMock.Setup(x => x.SaveChangeAsync()).ReturnsAsync(1);
             //act
-            var result = await _practiceService.GetPracticeByUnitId(id);
+            await _practiceService.UpdatePractice(PracticeObj.Id, updateDataMock);
+            var result = _mapperConfig.Map<UpdatePracticeViewModel>(PracticeObj);
+
             //assert
-            _unitOfWorkMock.Verify(x => x.PracticeRepository.GetPracticeByUnitId(id, 0, 10), Times.Once());
+            result.Should().NotBeNull();
+            result.Should().BeOfType<UpdatePracticeViewModel>();
+            result.PracticeName.Should().Be(updateDataMock.PracticeName);
+            // add more property ...
+            _unitOfWorkMock.Verify(x => x.PracticeRepository.Update(PracticeObj), Times.Once);
+            _unitOfWorkMock.Verify(x => x.SaveChangeAsync(), Times.Once);
+        }
+
+        [Fact]
+        public async Task UpdatePractice_ShouldReturnNull_WhenNotFoundPractice()
+        {
+            //arrange
+            var PracticeObj = _fixture.Build<Practice>()
+                                   .Without(x => x.Unit)
+                                   .Without(x => x.UnitId)
+                                   .Without(x => x.Status)
+                                   .Without(x => x.PracticeQuestions)
+                                   .Create();
+            _unitOfWorkMock.Setup(x => x.PracticeRepository.GetByIdAsync(It.IsAny<Guid>()))
+                           .ReturnsAsync(PracticeObj);
+            var updateDataMock = _fixture.Build<UpdatePracticeViewModel>()
+                                         .Create();
+            //act
+            var result = await _practiceService.UpdatePractice(PracticeObj.Id, updateDataMock);
+            //assert
+            result.Should().BeNull();
+        }
+        [Fact]
+        public async Task UpdatePractice_ShouldReturnNull_WhenFailedSaveChange()
+        {
+            //arrange
+            var PracticeObj = _fixture.Build<Practice>()
+                                   .Without(x => x.Unit)
+                                   .Without(x => x.UnitId)
+                                   .Without(x => x.Status)
+                                   .Without(x => x.PracticeQuestions)
+                                   .Create();
+            _unitOfWorkMock.Setup(x => x.PracticeRepository.GetByIdAsync(It.IsAny<Guid>()))
+                           .ReturnsAsync(PracticeObj);
+            _unitOfWorkMock.Setup(x => x.SaveChangeAsync()).ReturnsAsync(0);
+            var updateDataMock = _fixture.Build<UpdatePracticeViewModel>()
+                                         .Create();
+            //act
+            var result = await _practiceService.UpdatePractice(PracticeObj.Id, updateDataMock);
+            //assert
+            result.Should().BeNull();
+        }
+            [Fact]
+            public async Task GetPracticeByUnitId_ShouldReturnCorrectData()
+            {
+                //arrange
+                var id = Guid.NewGuid();
+                var practiceMock = new Pagination<Practice>()
+                {
+                    Items = _fixture.Build<Practice>()
+                                    .Without(x => x.Unit)
+                                    .Without(x => x.PracticeQuestions)
+                                    .With(x => x.UnitId, id)
+                                    .CreateMany(30)
+                                    .ToList(),
+                    PageIndex = 0,
+                    PageSize = 10,
+                    TotalItemsCount = 30,
+                };
+
+                var practice = _mapperConfig.Map<Pagination<Practice>>(practiceMock);
+                _unitOfWorkMock.Setup(x => x.PracticeRepository.GetPracticeByUnitId(id, 0, 10)).ReturnsAsync(practiceMock);
+                var expected = _mapperConfig.Map<Pagination<PracticeViewModel>>(practice);
+                //act
+                var result = await _practiceService.GetPracticeByUnitId(id);
+                //assert
+                _unitOfWorkMock.Verify(x => x.PracticeRepository.GetPracticeByUnitId(id, 0, 10), Times.Once());
+            }
         }
     }
-}
+
