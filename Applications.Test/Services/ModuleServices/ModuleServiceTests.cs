@@ -29,14 +29,23 @@ namespace Applications.Tests.Services.ModuleServices
                                 .Without(x => x.AuditPlan)
                                 .Without(x => x.SyllabusModules)
                                 .Without(x => x.ModuleUnits)
-                                .CreateMany(100)
+                                .CreateMany(30)
                                 .ToList(),
                 PageIndex = 0,
-                PageSize = 100,
-                TotalItemsCount = 100
+                PageSize = 10,
+                TotalItemsCount = 30
             };
-            var expectedResult = _mapperConfig.Map<Pagination<Module>>(mockData);
-
+            var expectedResult = _mapperConfig.Map<Pagination<ModuleViewModels>>(mockData);
+            var guidList = mockData.Items.Select(x => x.CreatedBy).ToList();
+            foreach (var item in expectedResult.Items)
+            {
+                foreach (var user in guidList)
+                {
+                    var createBy = new User { Email = "mock@example.com" };
+                    _unitOfWorkMock.Setup(x => x.UserRepository.GetByIdAsync(user)).ReturnsAsync(createBy);
+                    item.CreatedBy = createBy.Email;
+                }
+            }
             _unitOfWorkMock.Setup(x => x.ModuleRepository.ToPagination(0, 10)).ReturnsAsync(mockData);
             //act
             var result = await _moduleService.GetAllModules();
@@ -149,6 +158,10 @@ namespace Applications.Tests.Services.ModuleServices
                                          .Without(x => x.ModuleUnits)
                                          .Without(x => x.SyllabusModules)
                                          .Create();
+            var expected = _mapperConfig.Map<ModuleViewModels>(moduleMockData);
+            var createBy = new User { Email = "mock@example.com" };
+            _unitOfWorkMock.Setup(x => x.UserRepository.GetByIdAsync(moduleMockData.CreatedBy)).ReturnsAsync(createBy);
+            expected.CreatedBy = createBy.Email;
             _unitOfWorkMock.Setup(x => x.ModuleRepository.GetByIdAsync(moduleMockData.Id))
                            .ReturnsAsync(moduleMockData);
             //act

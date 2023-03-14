@@ -3,7 +3,6 @@ using Applications.Interfaces;
 using Applications.ViewModels.ModuleUnitViewModels;
 using Applications.ViewModels.ModuleViewModels;
 using Applications.ViewModels.Response;
-using Applications.ViewModels.UnitModuleViewModel;
 using AutoMapper;
 using Domain.Entities;
 using Domain.EntityRelationship;
@@ -35,9 +34,19 @@ namespace Applications.Services
 
         public async Task<Response> GetAllModules(int pageIndex = 0, int pageSize = 10)
         {
-            var modules = await _unitOfWork.ModuleRepository.ToPagination(pageIndex, pageSize);
-            if (modules.Items.Count < 1) return new Response(HttpStatusCode.NoContent, "Not Found");
-            else return new Response(HttpStatusCode.OK, "Search Succeed", _mapper.Map<Pagination<ModuleViewModels>>(modules));
+            var module = await _unitOfWork.ModuleRepository.ToPagination(pageIndex, pageSize);
+            var result = _mapper.Map<Pagination<ModuleViewModels>>(module);
+            var guidList = module.Items.Select(x => x.CreatedBy).ToList();
+            foreach (var item in result.Items)
+            {
+                foreach (var user in guidList)
+                {
+                    var createBy = await _unitOfWork.UserRepository.GetByIdAsync(user);
+                    item.CreatedBy = createBy.Email;
+                }
+            }
+            if (module.Items.Count() < 1) return new Response(HttpStatusCode.NoContent, "No Module Found");
+            else return new Response(HttpStatusCode.OK, "Search Succeed", result);
         }
 
         public async Task<Response> GetDisableModules(int pageIndex = 0, int pageSize = 10)
@@ -57,8 +66,11 @@ namespace Applications.Services
         public async Task<Response> GetModuleById(Guid moduleId)
         {
             var module = await _unitOfWork.ModuleRepository.GetByIdAsync(moduleId);
-            if (module == null) return new Response(HttpStatusCode.NoContent, "Id Not Found");
-            else return new Response(HttpStatusCode.OK, "Search Succeed", _mapper.Map<ModuleViewModels>(module));
+            var result = _mapper.Map<ModuleViewModels>(module);
+            var createBy = await _unitOfWork.UserRepository.GetByIdAsync(module.CreatedBy);
+            result.CreatedBy = createBy.Email;
+            if (module == null) return new Response(HttpStatusCode.NoContent, "Id not found");
+            else return new Response(HttpStatusCode.OK, "Search succeed", result);
         }
 
         public async Task<Response> GetModulesByName(string name, int pageIndex = 0, int pageSize = 10)

@@ -6,12 +6,14 @@ using Applications.ViewModels.Response;
 using Domain.Entities;
 using FluentValidation;
 using FluentValidation.Results;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace APIs.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(policy: "AuthUser")]
     public class ModuleController : ControllerBase
     {
         private readonly IModuleService _moduleServices;
