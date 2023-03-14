@@ -1,6 +1,5 @@
 ﻿using Applications.Commons;
 using Applications.ViewModels.Response;
-using Applications.ViewModels.SyllabusViewModels;
 using Applications.ViewModels.UserViewModels;
 using Domain.Enum.RoleEnum;
 using Microsoft.AspNetCore.Http;

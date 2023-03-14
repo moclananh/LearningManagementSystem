@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Net;
 
 namespace Applications.ViewModels.Response;
 
@@ -17,7 +12,7 @@ public class Response
     {
         this.Status = status.ToString();
         this.Message = message;
-        this.Result = result;
+        this.Result = result; 
     }
     public Response(HttpStatusCode status, string message)
     {

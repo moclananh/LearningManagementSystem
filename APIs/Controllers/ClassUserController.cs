@@ -26,15 +26,15 @@ namespace APIs.Controllers
         [HttpPost("UploadClassUserFile")]
         public async Task<Response> Import(IFormFile formFile) => await _classUserServices.UploadClassUserFile(formFile);
 
-        [HttpGet("{ClassCode}/export")]
-        public async Task<IActionResult> Export(string ClassCode)
+        [HttpGet("{ClassCode}/ExportClassUserByClassCode")]
+        public async Task<IActionResult> ExportClassUserByClassCode(string ClassCode)
         {
-            var clas = await _classService.GetClassByClassCode(ClassCode);
-            if (clas is null)
+            var Class = await _classService.GetClassByClassCode(ClassCode);
+            if (Class is null)
             {
                 return BadRequest("ClassCode Not Exist");
             }
-            var content = await _classUserServices.ExportClassUserByClassId(clas.Id);
+            var content = await _classUserServices.ExportClassUserByClassCode(Class);
             if (content == null)
             {
                 return NotFound("Something wrong while exporting file, please remake the export command");

@@ -12,6 +12,7 @@ using Applications.Interfaces;
 using ClosedXML.Excel;
 using Domain.Enum.RoleEnum;
 using Domain.Enum.StatusEnum;
+using Domain.Entities;
 
 namespace Application.Services
 {
@@ -81,33 +82,34 @@ namespace Application.Services
             return new Response(HttpStatusCode.OK, "OK");
         }
 
-        public async Task<byte[]> ExportClassUserByClassId(Guid ClassId)
+        public async Task<byte[]> ExportClassUserByClassCode(Class Class)
         {
-            var users = await _unitOfWork.ClassUserRepository.GetClassUserListByClassId(ClassId);
+            var users = await _unitOfWork.ClassUserRepository.GetClassUserListByClassId(Class.Id);
             if (users.Count() < 1)
             {
                 return null;
             }
-            var createClassUserViewModel = _mapper.Map<List<CreateClassUserViewModel>>(users);
+            var createClassUserViewModel = _mapper.Map<List<ClassUser>>(users);
 
             // Create a new Excel workbook and worksheet
             using var workbook = new XLWorkbook();
             var worksheet = workbook.Worksheets.Add("List Class User");
 
             // Add the headers to the worksheet
-            worksheet.Cell(1, 1).Value = "ClassId";
-            worksheet.Cell(2, 1).Value = "StudentId";
+            worksheet.Cell(1, 1).Value = "ClassCode";
+            worksheet.Cell(2, 1).Value = "UserEmail";
             worksheet.Cell(2, 2).Value = "IsDeleted";
 
-            var userss = createClassUserViewModel[0];
-            string stringValue = userss.ClassId.ToString();
+            var userSet = createClassUserViewModel[0];
+            string stringValue = Class.ClassCode.ToString();
             worksheet.Cell(1, 2).Value = stringValue;
             // Add the assignment questions to the worksheet
             for (var i = 0; i < createClassUserViewModel.Count; i++)
             {
                 var user = createClassUserViewModel[i];
-                worksheet.Cell(i + 3, 1).Value = userss.UserId.ToString();
-                worksheet.Cell(i + 3, 2).Value = userss.IsDeleted;
+                var userEmailSet = await _unitOfWork.UserRepository.GetByIdAsync(userSet.UserId);
+                worksheet.Cell(i + 3, 1).Value = userEmailSet.Email.ToString(); 
+                worksheet.Cell(i + 3, 2).Value = userSet.IsDeleted;
             }
 
             // Convert the workbook to a byte array

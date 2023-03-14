@@ -1,5 +1,4 @@
-﻿
-namespace Applications.Interfaces;
+﻿namespace Applications.Interfaces;
 
 public interface ITokenService
 {
