@@ -5,12 +5,14 @@ using Applications.ViewModels.Response;
 using Applications.ViewModels.TrainingProgramModels;
 using FluentValidation;
 using FluentValidation.Results;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace APIs.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+
     public class TrainingProgramController : ControllerBase
     {
         private readonly ITrainingProgramService _trainingProgramService;
@@ -24,7 +26,7 @@ namespace APIs.Controllers
             _validatorUpdate = validatorUpdate;
         }
 
-        [HttpPost("CreateTrainingProgram")]
+        [HttpPost("CreateTrainingProgram"), Authorize(policy: "AuthUser")]
         public async Task<IActionResult> CreateTrainingProgram(CreateTrainingProgramViewModel CreateTrainingProgram)
         {
             if (ModelState.IsValid)
@@ -43,7 +45,7 @@ namespace APIs.Controllers
             return Ok("Create new TrainningProgram Success");
         }
 
-        [HttpPut("UpdateTrainingProgram/{TrainingProgramId}")]
+        [HttpPut("UpdateTrainingProgram/{TrainingProgramId}"), Authorize(policy: "AuthUser")]
         public async Task<IActionResult> UpdateTrainingProgram(Guid TrainingProgramId, UpdateTrainingProgramViewModel UpdateTrainingProgram)
         {
             if (ModelState.IsValid)
@@ -76,7 +78,7 @@ namespace APIs.Controllers
         [HttpGet("GetTrainingProgramByClassId/{ClassId}")]
         public async Task<Response> GetTrainingProgramByClassId(Guid ClassId, int pageIndex = 0, int pageSize = 10) => await _trainingProgramService.GetTrainingProgramByClassId(ClassId, pageIndex, pageSize);
 
-        [HttpPost("AddTrainingProgramSyllabus/{SyllabusId}/{TrainingProgramId}")]
+        [HttpPost("AddTrainingProgramSyllabus/{SyllabusId}/{TrainingProgramId}"), Authorize(policy: "AuthUser")]
         public async Task<IActionResult> AddSyllabusToTrainingProgram(Guid SyllabusId, Guid TrainingProgramId)
         {
             if (ModelState.IsValid)
@@ -90,7 +92,7 @@ namespace APIs.Controllers
             return Ok("Add Syllabus to TrainingProgram Success");
         }
 
-        [HttpDelete("DeleteTrainingProgramSyllabus/{SyllabusId}/{TrainingProgramId}")]
+        [HttpDelete("DeleteTrainingProgramSyllabus/{SyllabusId}/{TrainingProgramId}"), Authorize(policy: "AuthUser")]
         public async Task<IActionResult> DeleteTrainingProgram(Guid SyllabusId, Guid TrainingProgramId)
         {
             if (ModelState.IsValid)

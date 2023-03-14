@@ -72,8 +72,11 @@ namespace Applications.Services
         public async Task<Response> GetTrainingProgramById(Guid TrainingProramId)
         {
             var TrainingPrograms = await _unitOfWork.TrainingProgramRepository.GetByIdAsync(TrainingProramId);
+            var result = _mapper.Map<TrainingProgramViewModel>(TrainingPrograms);
+            var createBy = await _unitOfWork.UserRepository.GetByIdAsync(TrainingPrograms.CreatedBy);
+            result.CreatedBy = createBy.Email;
             if (TrainingPrograms is null) return new Response(HttpStatusCode.NoContent, "Id not found");
-            else return new Response(HttpStatusCode.OK, "Search Succeed", TrainingPrograms);
+            else return new Response(HttpStatusCode.OK, "Search Succeed", result);
         }
 
         public async Task<CreateTrainingProgramSyllabi> RemoveSyllabusToTrainingProgram(Guid SyllabusId, Guid TrainingProgramId)
@@ -110,8 +113,19 @@ namespace Applications.Services
         public async Task<Response> ViewAllTrainingProgramAsync(int pageIndex = 0, int pageSize = 10)
         {
             var TrainingPrograms = await _unitOfWork.TrainingProgramRepository.ToPagination(pageIndex, pageSize);
+            var result = _mapper.Map<Pagination<TrainingProgramViewModel>>(TrainingPrograms);
+            var guidList = TrainingPrograms.Items.Select(x => x.CreatedBy).ToList();
+            foreach (var item in result.Items)
+            {
+                foreach (var user in guidList)
+                {
+                    var createBy = await _unitOfWork.UserRepository.GetByIdAsync(user);
+                    item.CreatedBy = createBy.Email; 
+                }
+            }
+
             if (TrainingPrograms.Items.Count() < 1) return new Response(HttpStatusCode.NoContent, "No TrainingProgram found");
-            else return new Response(HttpStatusCode.OK, "Search Succeed", _mapper.Map<Pagination<TrainingProgramViewModel>>(TrainingPrograms));
+            else return new Response(HttpStatusCode.OK, "Search Succeed", result);
         }
 
         public async Task<Response> ViewTrainingProgramDisableAsync(int pageIndex = 0, int pageSize = 10)

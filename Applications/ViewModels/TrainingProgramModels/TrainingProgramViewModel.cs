@@ -10,7 +10,7 @@ namespace Applications.ViewModels.TrainingProgramModels
         public double Duration { get; set; }
         public Status Status { get; set; }
         public DateTime CreationDate { get; set; }
-        public Guid? CreatedBy { get; set; }
+        public string? CreatedBy { get; set; }
         public DateTime? ModificationDate { get; set; }
         public Guid? ModificationBy { get; set; }
         public DateTime? DeletionDate { get; set; }

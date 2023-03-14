@@ -38,7 +38,7 @@ namespace Applications.Tests.Services.TrainingProgramServices
                 PageSize = 100,
                 TotalItemsCount = 100
             };
-            var expectedResult = _mapperConfig.Map<Pagination<TrainingProgram>>(mockData);
+            var expectedResult = _mapperConfig.Map<Pagination<TrainingProgramViewModel>>(mockData);
 
             _unitOfWorkMock.Setup(x => x.TrainingProgramRepository.ToPagination(0, 10)).ReturnsAsync(mockData);
 
@@ -47,6 +47,7 @@ namespace Applications.Tests.Services.TrainingProgramServices
 
             //assert
             _unitOfWorkMock.Verify(x => x.TrainingProgramRepository.ToPagination(0, 10), Times.Once());
+            result.Result.Should().Be(expectedResult);
         }
         [Fact]
         public async Task CreateTrainingProgramAsync_ShouldReturnNull_WhenFailedSave()
