@@ -3,7 +3,6 @@ using Applications.Interfaces;
 using Applications.ViewModels.ClassTrainingProgramViewModels;
 using Applications.ViewModels.ClassUserViewModels;
 using Applications.ViewModels.ClassViewModels;
-using Applications.ViewModels.UserViewModels;
 using AutoMapper;
 using Domain.Entities;
 using Domain.EntityRelationship;
@@ -86,11 +85,11 @@ namespace Applications.Services
         {
             if (startDate == null)
             {
-                startDate = DateTime.MinValue;
+                startDate = new DateTime(1999, 1, 1);
             }
             if (endDate == null)
             {
-                endDate = DateTime.MaxValue;
+                endDate = new DateTime(3999, 1, 1);
             }
 
             var classes = await _unitOfWork.ClassRepository.GetClassByFilter(locations, classTime, status, attendee, fsu, startDate, endDate, pageNumber = 0, pageSize = 10);

@@ -26,37 +26,34 @@ namespace Infrastructures.Repositories
                                                         int pageNumber = 0, int pageSize = 10)
         {
             var itemCount = await _dbContext.Classes.CountAsync();
-            var items = await _dbContext.Classes.Where(x => x.StartDate >= startDate && x.EndDate <= endDate)
-                                                .OrderByDescending(x => x.CreationDate)
-                                                .Skip(pageNumber * pageSize)
-                                                .Take(pageSize)
-                                                .AsNoTracking()
-                                                .ToListAsync();
+            var baseQuery = _dbContext.Classes.Where(x => x.StartDate >= startDate && x.EndDate <= endDate);
+
             if (locations.HasValue)
             {
-                items = await _dbContext.Classes.Where(x => x.Location == locations)
-                                                .ToListAsync();
+                baseQuery = baseQuery.Where(x => x.Location == locations);
             }
             if (classTime.HasValue)
             {
-                items = await _dbContext.Classes.Where(x => x.ClassTime == classTime)
-                                                .ToListAsync();
+                baseQuery = baseQuery.Where(x => x.ClassTime == classTime);
             }
             if (status.HasValue)
             {
-                items = await _dbContext.Classes.Where(x => x.Status == status)
-                                                .ToListAsync();
+                baseQuery = baseQuery.Where(x => x.Status == status);
             }
             if (attendee.HasValue)
             {
-                items = await _dbContext.Classes.Where(x => x.Attendee == attendee)
-                                                .ToListAsync();
+                baseQuery = baseQuery.Where(x => x.Attendee == attendee);
             }
             if (fsu.HasValue)
             {
-                items = await _dbContext.Classes.Where(x => x.FSU == fsu)
-                                                .ToListAsync();
+                baseQuery = baseQuery.Where(x => x.FSU == fsu);
             }
+
+            var items = await baseQuery.OrderByDescending(x => x.CreationDate)
+                                       .Skip(pageNumber * pageSize)
+                                       .Take(pageSize)
+                                       .AsNoTracking()
+                                       .ToListAsync();
 
             var result = new Pagination<Class>()
             {
