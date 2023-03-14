@@ -10,7 +10,6 @@ namespace APIs.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(policy: "AuthUser")]
     public class AuditPlanController : ControllerBase
     {
         private readonly IAuditPlanService _auditPlanService;

@@ -1099,6 +1099,10 @@ namespace Infrastructures.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
+                    b.Property<string>("UnitCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("UnitName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
