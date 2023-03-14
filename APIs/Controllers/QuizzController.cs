@@ -10,7 +10,6 @@ namespace APIs.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(policy: "AuthUser")]
     public class QuizzController : ControllerBase
     {
         private readonly IQuizzService _quizzServices;
@@ -28,7 +27,7 @@ namespace APIs.Controllers
         [HttpGet("GetAllQuizz")]
         public async Task<Response> GetAllQuizz(int pageIndex = 0, int pageSize = 10) => await _quizzServices.GetAllQuizzes(pageIndex, pageSize);
 
-        [HttpPost("CreateQuizz")]
+        [HttpPost("CreateQuizz"), Authorize(policy: "AuthUser")]
         public async Task<IActionResult> CreateQuizz(CreateQuizzViewModel QuizzModel)
         {
             if (ModelState.IsValid)
@@ -61,7 +60,7 @@ namespace APIs.Controllers
         [HttpGet("GetDisableQuizzes")]
         public async Task<Response> GetDisableQuizzes(int pageIndex = 0, int pageSize = 10) => await _quizzServices.GetDisableQuizzes(pageIndex, pageSize);
 
-        [HttpPut("UpdateQuizz/{QuizzId}")]
+        [HttpPut("UpdateQuizz/{QuizzId}"), Authorize(policy: "AuthUser")]
         public async Task<IActionResult> UpdateQuizz(Guid QuizzId, UpdateQuizzViewModel updateQuizzView)
         {
             if (ModelState.IsValid)

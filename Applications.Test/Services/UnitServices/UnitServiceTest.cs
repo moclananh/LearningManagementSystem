@@ -2,6 +2,7 @@
 using Applications.Commons;
 using Applications.Interfaces;
 using Applications.Services;
+using Applications.ViewModels.AuditPlanViewModel;
 using AutoFixture;
 using Domain.Entities;
 using Domain.Tests;
@@ -18,7 +19,7 @@ namespace Applications.Tests.Services.UnitServices
             _unitService = new Applications.Services.UnitServices(_unitOfWorkMock.Object, _mapperConfig);
         }
 
-       /* [Fact]
+        [Fact]
         public async Task GetAllUnits_ShouldReturnCorrectData()
         {
             //arrange
@@ -36,14 +37,46 @@ namespace Applications.Tests.Services.UnitServices
                 PageSize = 10,
                 TotalItemsCount = 30
             };
-            var expected = _mapperConfig.Map<Pagination<Unit>>(MockData);
+            var expected = _mapperConfig.Map<Pagination<UnitViewModel>>(MockData);
+            var guidList = MockData.Items.Select(x => x.CreatedBy).ToList();
+            foreach (var item in expected.Items)
+            {
+                foreach (var user in guidList)
+                {
+                    var createBy = new User { Email = "mock@example.com" };
+                    _unitOfWorkMock.Setup(x => x.UserRepository.GetByIdAsync(user)).ReturnsAsync(createBy);
+                    item.CreatedBy = createBy.Email;
+                }
+            }
             _unitOfWorkMock.Setup(x => x.UnitRepository.ToPagination(0, 10)).ReturnsAsync(MockData);
             //act
             var result = await _unitService.GetAllUnits();
             //assert
             _unitOfWorkMock.Verify(x => x.UnitRepository.ToPagination(0, 10), Times.Once());
-        }*/
+        }
 
+        [Fact]
+        public async Task GetUnitById_ShouldReturnCorrectData()
+        {
+            //arrange
+            var MockData = _fixture.Build<Unit>()
+                                       .Without(x => x.Practices)
+                                       .Without(x => x.Lectures)
+                                       .Without(x => x.Assignments)
+                                       .Without(x => x.Quizzs)
+                                       .Without(x => x.ModuleUnits)
+                                       .Create();
+            var expected = _mapperConfig.Map<UnitViewModel>(MockData);
+            var createBy = new User { Email = "mock@example.com" };
+            _unitOfWorkMock.Setup(x => x.UserRepository.GetByIdAsync(MockData.CreatedBy)).ReturnsAsync(createBy);
+            expected.CreatedBy = createBy.Email;
+            _unitOfWorkMock.Setup(x => x.UnitRepository.GetByIdAsync(MockData.Id))
+                           .ReturnsAsync(MockData);
+            //act
+            var result = await _unitService.GetUnitById(MockData.Id);
+            //assert
+            _unitOfWorkMock.Verify(x => x.UnitRepository.GetByIdAsync(MockData.Id), Times.Once());
+        }
 
         [Fact]
         public async Task CreateUnit_ShouldReturnCorrectData_WhenSuccessSaved()

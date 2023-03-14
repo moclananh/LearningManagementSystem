@@ -10,7 +10,6 @@ namespace APIs.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(policy: "AuthUser")]
     public class UnitController : ControllerBase
     {
         private readonly IUnitServices _unitServices;
@@ -25,7 +24,7 @@ namespace APIs.Controllers
         [HttpGet("GetAllUnit")]
         public async Task<Response> GetAllUnit(int pageIndex = 0, int pageSize = 10) => await _unitServices.GetAllUnits(pageIndex, pageSize);
 
-        [HttpPost("CreateUnit")]
+        [HttpPost("CreateUnit"), Authorize(policy: "AuthUser")]
         public async Task<IActionResult> CreateUnit(CreateUnitViewModel UnitModel) {
             if (ModelState.IsValid)
             {
@@ -46,7 +45,7 @@ namespace APIs.Controllers
         [HttpGet("ViewUnitById/{UnitId}")]
         public async Task<Response> GetUnitById(Guid UnitId) => await _unitServices.GetUnitById(UnitId);
 
-        [HttpPut("UpdateUnit/{UnitId}")]
+        [HttpPut("UpdateUnit/{UnitId}"), Authorize(policy: "AuthUser")]
         public async Task<IActionResult> UpdateUnit(Guid UnitId, CreateUnitViewModel UnitModel)
         {
             if (ModelState.IsValid)

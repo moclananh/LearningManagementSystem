@@ -18,11 +18,11 @@ namespace Applications.Tests.Services.QuizzServices
             _quizzService = new QuizzService(_unitOfWorkMock.Object, _mapperConfig);
         }
 
-       /* [Fact]
+        [Fact]
         public async Task GetAllQuizzes_ShouldReturnCorrectData()
         {
             //arrange
-            var MockData = new Pagination<Quizz>
+            var mockdata = new Pagination<Quizz>
             {
                 Items = _fixture.Build<Quizz>()
                                 .Without(x => x.QuizzQuestions)
@@ -33,13 +33,43 @@ namespace Applications.Tests.Services.QuizzServices
                 PageSize = 10,
                 TotalItemsCount = 30
             };
-            var expected = _mapperConfig.Map<Pagination<Quizz>>(MockData);
-            _unitOfWorkMock.Setup(x => x.QuizzRepository.ToPagination(0, 10)).ReturnsAsync(MockData);
+            var expected = _mapperConfig.Map<Pagination<QuizzViewModel>>(mockdata);
+            var guidList = mockdata.Items.Select(x => x.CreatedBy).ToList();
+            foreach (var item in expected.Items)
+            {
+                foreach (var user in guidList)
+                {
+                    var createBy = new User { Email = "mock@example.com" };
+                    _unitOfWorkMock.Setup(x => x.UserRepository.GetByIdAsync(user)).ReturnsAsync(createBy);
+                    item.CreatedBy = createBy.Email;
+                }
+            }
+            _unitOfWorkMock.Setup(x => x.QuizzRepository.ToPagination(0, 10)).ReturnsAsync(mockdata);
             //act
             var result = await _quizzService.GetAllQuizzes();
             //assert
             _unitOfWorkMock.Verify(x => x.QuizzRepository.ToPagination(0, 10), Times.Once());
-        }*/
+        }
+
+        [Fact]
+        public async Task GetQuizzById_ShouldReturnCorrectData()
+        {
+            //arrange
+            var mockdata = _fixture.Build<Quizz>()
+                                   .Without(x => x.QuizzQuestions)
+                                   .Without(x => x.Unit)
+                                   .Create();
+            var expected = _mapperConfig.Map<QuizzViewModel>(mockdata);
+            var createBy = new User { Email = "mock@example.com" };
+            _unitOfWorkMock.Setup(x => x.UserRepository.GetByIdAsync(mockdata.CreatedBy)).ReturnsAsync(createBy);
+            expected.CreatedBy = createBy.Email;
+            _unitOfWorkMock.Setup(x => x.QuizzRepository.GetByIdAsync(mockdata.Id))
+                           .ReturnsAsync(mockdata);
+            //act
+            var result = await _quizzService.GetQuizzByQuizzIdAsync(mockdata.Id);
+            //assert
+            _unitOfWorkMock.Verify(x => x.QuizzRepository.GetByIdAsync(mockdata.Id), Times.Once());
+        }
 
         [Fact]
         public async Task CreateQuizz_ShouldReturnCorrectData_WhenSuccessSaved()

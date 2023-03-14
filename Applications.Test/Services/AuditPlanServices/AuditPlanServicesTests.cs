@@ -2,12 +2,15 @@
 using Applications.Services;
 using Applications.ViewModels.AuditPlanViewModel;
 using AutoFixture;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Domain.Entities;
 using Domain.EntityRelationship;
 using Domain.Tests;
 using FluentAssertions;
+using Infrastructures;
 using Microsoft.EntityFrameworkCore;
 using Moq;
+using System.Security.AccessControl;
 
 namespace Applications.Tests.Services.AuditPlanServices
 {
@@ -38,7 +41,17 @@ namespace Applications.Tests.Services.AuditPlanServices
                 PageSize = 10,
                 TotalItemsCount = 30,
             };
-            var expected = _mapperConfig.Map<Pagination<AuditPlan>>(auditPlanMockData);
+            var expected = _mapperConfig.Map<Pagination<AuditPlanViewModel>>(auditPlanMockData);
+            var guidList = auditPlanMockData.Items.Select(x => x.CreatedBy).ToList();
+            foreach (var item in expected.Items)
+            {
+                foreach (var user in guidList)
+                {
+                    var createBy = new User { Email = "mock@example.com" };
+                    _unitOfWorkMock.Setup(x => x.UserRepository.GetByIdAsync(user)).ReturnsAsync(createBy);
+                    item.CreatedBy = createBy.Email;
+                }
+            }
             _unitOfWorkMock.Setup(x => x.AuditPlanRepository.ToPagination(0, 10)).ReturnsAsync(auditPlanMockData);
             //act
             var result = await _auditPlanService.GetAllAuditPlanAsync();
@@ -113,6 +126,10 @@ namespace Applications.Tests.Services.AuditPlanServices
                                         .Without(x => x.AuditResults)
                                         .Without(x => x.AuditQuestions)
                                         .Create();
+            var expected = _mapperConfig.Map<AuditPlanViewModel>(auditPlanObj);
+            var createBy = new User { Email = "mock@example.com" };
+            _unitOfWorkMock.Setup(x => x.UserRepository.GetByIdAsync(auditPlanObj.CreatedBy)).ReturnsAsync(createBy);
+            expected.CreatedBy = createBy.Email;
             _unitOfWorkMock.Setup(x => x.AuditPlanRepository.GetByIdAsync(auditPlanObj.Id))
                            .ReturnsAsync(auditPlanObj);
             //act

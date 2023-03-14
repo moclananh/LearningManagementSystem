@@ -10,7 +10,6 @@ namespace APIs.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(policy: "AuthUser")]
     public class AuditPlanController : ControllerBase
     {
         private readonly IAuditPlanService _auditPlanService;
@@ -49,8 +48,8 @@ namespace APIs.Controllers
 
         [HttpGet("GetAuditPlanByName/{AuditPlanName}")]
         public async Task<Response> GetAuditPlanByName(string AuditPlanName, int pageIndex = 0, int pageSize = 10) => await _auditPlanService.GetAuditPlanByName(AuditPlanName, pageIndex, pageSize);
-
-        [HttpPost("CreateAuditPlan")]
+        
+        [HttpPost("CreateAuditPlan"), Authorize(policy: "AuthUser")]
         public async Task<IActionResult> CreateAuditPlan(CreateAuditPlanViewModel createAuditPlanViewModel)
         {
             if (ModelState.IsValid)
@@ -68,7 +67,7 @@ namespace APIs.Controllers
             return Ok("Create new AuditPlan Success");
         }
 
-        [HttpPut("UpdateAuditPlan/{AuditPlanId}")]
+        [HttpPut("UpdateAuditPlan/{AuditPlanId}"), Authorize(policy: "AuthUser")]
         public async Task<IActionResult> UpdateAuditPlan(Guid AuditPlanId, UpdateAuditPlanViewModel updateAuditPlanView)
         {
             if (ModelState.IsValid)
@@ -86,7 +85,7 @@ namespace APIs.Controllers
             return Ok("Update AuditPlan Success");
         }
 
-        [HttpPost("AuditPlan/AddUser/{AuditPlanId}/{UserId}")]
+        [HttpPost("AuditPlan/AddUser/{AuditPlanId}/{UserId}"), Authorize(policy: "AuthUser")]
         public async Task<IActionResult> AddUser(Guid AuditPlanId, Guid UserId)
         {
             if (ModelState.IsValid)
@@ -97,7 +96,7 @@ namespace APIs.Controllers
             return BadRequest("Add User Fail");
         }
 
-        [HttpDelete("AuditPlan/DeleteUser/{AuditPlanId}/{UserId}")]
+        [HttpDelete("AuditPlan/DeleteUser/{AuditPlanId}/{UserId}"), Authorize(policy: "AuthUser")]
         public async Task<IActionResult> DeleteUser(Guid AuditPlanId, Guid UserId)
         {
             if (ModelState.IsValid)
