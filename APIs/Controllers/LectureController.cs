@@ -1,12 +1,8 @@
 ﻿using Applications.Interfaces;
-using Applications.Services;
 using Applications.ViewModels.LectureViewModels;
 using FluentValidation;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using FluentValidation.Results;
-using Applications.Commons;
-using System.Drawing.Printing;
 using Applications.ViewModels.Response;
 using Microsoft.AspNetCore.Authorization;
 
@@ -14,7 +10,6 @@ namespace APIs.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(policy: "AuthUser")]
     public class LectureController : ControllerBase
     {
         private readonly ILectureService _lectureServices;
@@ -29,7 +24,7 @@ namespace APIs.Controllers
             _validatorUpdate = validatorUpdate;
         }
 
-        [HttpPost("CreateLecture")]
+        [HttpPost("CreateLecture"), Authorize(policy: "AuthUser")]
         public async Task<IActionResult> CreateLecture(CreateLectureViewModel LectureModel)
         {
             if (ModelState.IsValid)
@@ -63,7 +58,7 @@ namespace APIs.Controllers
         [HttpGet("GetDisableLectures")]
         public async Task<Response> GetDisableLectures(int pageIndex = 0, int pageSize = 10) => await _lectureServices.GetDisableLectures(pageIndex, pageSize);
 
-        [HttpPut("UpdateLecture/{LectureId}")]
+        [HttpPut("UpdateLecture/{LectureId}"), Authorize(policy: "AuthUser")]
         public async Task<IActionResult> UpdateLecture(Guid LectureId, UpdateLectureViewModel Lecture)
         {
             if (ModelState.IsValid)

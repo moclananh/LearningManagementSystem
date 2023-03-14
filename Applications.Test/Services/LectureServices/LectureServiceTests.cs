@@ -29,8 +29,17 @@ namespace Applications.Tests.Services.LectureServices
                 PageSize = 100,
                 TotalItemsCount = 100
             };
-            var expectedResult = _mapperConfig.Map<Pagination<Lecture>>(mockData);
-
+            var expectedResult = _mapperConfig.Map<Pagination<LectureViewModel>>(mockData);
+            var guidList = mockData.Items.Select(x => x.CreatedBy).ToList();
+            foreach (var item in expectedResult.Items)
+            {
+                foreach (var user in guidList)
+                {
+                    var createBy = new User { Email = "mock@example.com" };
+                    _unitOfWorkMock.Setup(x => x.UserRepository.GetByIdAsync(user)).ReturnsAsync(createBy);
+                    item.CreatedBy = createBy.Email;
+                }
+            }
             _unitOfWorkMock.Setup(x => x.LectureRepository.ToPagination(0, 10)).ReturnsAsync(mockData);
 
             //act
@@ -212,6 +221,11 @@ namespace Applications.Tests.Services.LectureServices
             var lectures = _fixture.Build<Lecture>()
                                         .Without(x => x.Unit)
                                         .Create();
+            var expected = _mapperConfig.Map<LectureViewModel>(lectures);
+            var createBy = new User { Email = "mock@example.com" };
+            _unitOfWorkMock.Setup(x => x.UserRepository.GetByIdAsync(lectures.CreatedBy))
+                           .ReturnsAsync(createBy);
+            expected.CreatedBy = createBy.Email;
             _unitOfWorkMock.Setup(x => x.LectureRepository.GetByIdAsync(lectures.Id))
                            .ReturnsAsync(lectures);
             //act
