@@ -138,15 +138,28 @@ namespace Applications.Services
         public async Task<Response> GetSyllabusDetails(Guid syllabusId)
         {
             var syllabus = await _unitOfWork.SyllabusRepository.GetSyllabusDetails(syllabusId);
+            var result = _mapper.Map<SyllabusViewModel>(syllabus);
+            var createBy = await _unitOfWork.UserRepository.GetByIdAsync(syllabus.CreatedBy);
+            result.CreatedBy = createBy.Email;
             if (syllabus == null) return new Response(HttpStatusCode.NoContent, "Id not found");
-            else return new Response(HttpStatusCode.OK, "Search succeed", _mapper.Map<SyllabusViewModel>(syllabus));
+            else return new Response(HttpStatusCode.OK, "Search succeed", result);
         }
 
         public async Task<Response> GetAllSyllabusDetail(int pageNumber = 0, int pageSize = 10)
         {
             var syllabus = await _unitOfWork.SyllabusRepository.GetAllSyllabusDetail(pageNumber, pageSize);
+            var result = _mapper.Map<Pagination<SyllabusViewModel>>(syllabus);
+            var guidList = syllabus.Items.Select(s => s.CreatedBy).ToList();
+            foreach (var item in result.Items)
+            {
+                foreach (var user in guidList)
+                {
+                    var createBy = await _unitOfWork.UserRepository.GetByIdAsync(user);
+                    item.CreatedBy = createBy.Email;
+                }
+            }
             if (syllabus.Items.Count() < 1) return new Response(HttpStatusCode.NoContent, "No Syllabus Found");
-            else return new Response(HttpStatusCode.OK, "Search Succeed", _mapper.Map<Pagination<SyllabusViewModel>>(syllabus));
+            else return new Response(HttpStatusCode.OK, "Search Succeed", result);
         }
 
         public async Task<Response> GetSyllabusByCreationDate(DateTime startDate, DateTime endDate, int pageNumber = 0, int pageSize = 10)
