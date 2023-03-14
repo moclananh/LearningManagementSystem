@@ -1,8 +1,6 @@
 ﻿using Application.ViewModels.UnitViewModels;
 using Applications.Commons;
 using Applications.Interfaces;
-using Applications.Services;
-using Applications.ViewModels.AuditPlanViewModel;
 using AutoFixture;
 using Domain.Entities;
 using Domain.Tests;
@@ -238,6 +236,34 @@ namespace Applications.Tests.Services.UnitServices
             var result = await _unitService.GetUnitByModuleIdAsync(moduleId);
             //assert
             _unitOfWorkMock.Verify(x => x.UnitRepository.ViewAllUnitByModuleIdAsync(moduleId, 0, 10), Times.Once());
+        }
+
+        [Fact]
+        public async Task GetUnitByName_ShouldReturnCorrectData()
+        {
+            //arrange
+            var MockData = new Pagination<Unit>
+            {
+                Items = _fixture.Build<Unit>()
+                                .Without(x => x.Practices)
+                                .Without(x => x.Lectures)
+                                .Without(x => x.Assignments)
+                                .Without(x => x.Quizzs)
+                                .Without(x => x.ModuleUnits)
+                                .With(x => x.UnitName, "Mock")
+                                .CreateMany(30)
+                                .ToList(),
+                PageIndex = 0,
+                PageSize = 10,
+                TotalItemsCount = 30,
+            };
+            var units = _mapperConfig.Map<Pagination<Unit>>(MockData);
+            _unitOfWorkMock.Setup(x => x.UnitRepository.GetUnitByNameAsync("Mock", 0, 10)).ReturnsAsync(MockData);
+            var expected = _mapperConfig.Map<Pagination<UnitViewModel>>(units);
+            //act
+            var result = await _unitService.GetUnitByNameAsync("Mock");
+            //assert
+            _unitOfWorkMock.Verify(x => x.UnitRepository.GetUnitByNameAsync("Mock", 0, 10), Times.Once());
         }
     }
 }

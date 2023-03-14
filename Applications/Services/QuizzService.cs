@@ -5,7 +5,6 @@ using Applications.ViewModels.Response;
 using AutoMapper;
 using Domain.Entities;
 using System.Net;
-using System.Security.AccessControl;
 
 namespace Applications.Services
 {

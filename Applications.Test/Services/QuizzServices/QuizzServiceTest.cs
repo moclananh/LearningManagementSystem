@@ -2,10 +2,12 @@
 using Applications.Commons;
 using Applications.Interfaces;
 using Applications.Services;
+using Applications.ViewModels.PracticeViewModels;
 using AutoFixture;
 using Domain.Entities;
 using Domain.Tests;
 using FluentAssertions;
+using Infrastructures.Repositories;
 using Moq;
 
 namespace Applications.Tests.Services.QuizzServices
@@ -218,6 +220,32 @@ namespace Applications.Tests.Services.QuizzServices
             _unitOfWorkMock.Verify(x => x.QuizzRepository.GetDisableQuizzes(0, 10), Times.Once());
         }
 
+        [Fact]
+        public async Task GetQuizzByUnitId_ShouldReturnCorrectData()
+        {
+            //arrange
+            var id = Guid.NewGuid();
+            var Mock = new Pagination<Quizz>()
+            {
+                Items = _fixture.Build<Quizz>()
+                                .Without(x => x.Unit)
+                                .Without(x => x.QuizzQuestions)
+                                .With(x => x.UnitId, id)
+                                .CreateMany(30)
+                                .ToList(),
+                PageIndex = 0,
+                PageSize = 10,
+                TotalItemsCount = 30,
+            };
+
+            var quizz = _mapperConfig.Map<Pagination<Quizz>>(Mock);
+            _unitOfWorkMock.Setup(x => x.QuizzRepository.GetQuizzByUnitIdAsync(id, 0, 10)).ReturnsAsync(Mock);
+            var expected = _mapperConfig.Map<Pagination<QuizzViewModel>>(quizz);
+            //act
+            var result = await _quizzService.GetQuizzByUnitIdAsync(id);
+            //assert
+            _unitOfWorkMock.Verify(x => x.QuizzRepository.GetQuizzByUnitIdAsync(id, 0, 10), Times.Once());
+        }
     }
 }
 
