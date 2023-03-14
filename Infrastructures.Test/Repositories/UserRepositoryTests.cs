@@ -129,4 +129,36 @@ public class UserRepositoryTests : SetupTest
         resultPaging.PageSize.Should().Be(10);
         result.Should().BeEquivalentTo(expected, op => op.Excluding(x => x.ClassUsers));
     }
+
+    [Fact]
+    public async Task UserRepository_SearchUserByName_ShouldReturnCorrectData()
+    {
+        // arrage
+        var mockData = _fixture.Build<User>()
+            .Without(x => x.AbsentRequests)
+            .Without(x => x.Attendences)
+            .Without(x => x.ClassUsers)
+            .Without(x => x.UserAuditPlans)
+            .With(x => x.firstName,"Mock")
+            .CreateMany(30)
+            .ToList();
+        await _dbContext.Users.AddRangeAsync(mockData);
+        await _dbContext.SaveChangesAsync();
+        var expected = mockData.Where(x => x.firstName.Contains("Mock") || x.lastName.Contains("Mock"))
+            .OrderByDescending(x => x.CreationDate)
+            .Take(10)
+            .ToList();
+        //act
+        var resultPaging = await _userRepository.SearchUserByName("Mock");
+        var result = resultPaging.Items;
+        //assert
+        resultPaging.Previous.Should().BeFalse();
+        resultPaging.Next.Should().BeTrue();
+        resultPaging.Items.Count.Should().Be(10);
+        resultPaging.TotalItemsCount.Should().Be(30);
+        resultPaging.TotalPagesCount.Should().Be(3);
+        resultPaging.PageIndex.Should().Be(0);
+        resultPaging.PageSize.Should().Be(10);
+        result.Should().BeEquivalentTo(expected);
+    }
 }
