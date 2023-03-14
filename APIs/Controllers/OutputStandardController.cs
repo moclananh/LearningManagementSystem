@@ -4,11 +4,13 @@ using Microsoft.AspNetCore.Mvc;
 using FluentValidation.Results;
 using FluentValidation;
 using Applications.ViewModels.Response;
+using Microsoft.AspNetCore.Authorization;
 
 namespace APIs.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(policy: "AuthUser")]
     public class OutputStandardController : ControllerBase
     {
         private readonly IOutputStandardService _outputStandardServices;

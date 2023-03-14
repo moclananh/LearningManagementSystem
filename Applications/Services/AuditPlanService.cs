@@ -4,8 +4,6 @@ using Applications.ViewModels.AuditPlanViewModel;
 using Applications.ViewModels.Response;
 using Applications.ViewModels.UserAuditPlanViewModels;
 using AutoMapper;
-using DocumentFormat.OpenXml.Spreadsheet;
-using DocumentFormat.OpenXml.Wordprocessing;
 using Domain.Entities;
 using Domain.EntityRelationship;
 using System.Net;
@@ -148,8 +146,18 @@ namespace Applications.Services
         public async Task<Response> GetAllUserAuditPlanAsync(int pageIndex = 0, int pageSize = 10)
         {
             var auditplans = await _unitOfWork.UserAuditPlanRepository.ToPagination(pageIndex, pageSize);
+            var result = _mapper.Map<Pagination<UserAuditPlanViewModel>>(auditplans);
+            var guidList = auditplans.Items.Select(x => x.CreatedBy).ToList();
+            foreach (var item in result.Items)
+            {
+                foreach (var user in guidList)
+                {
+                    var createBy = await _unitOfWork.UserRepository.GetByIdAsync(user);
+                    item.CreatedBy = createBy.Email;
+                }
+            }
             if (auditplans.Items.Count() < 1) return new Response(HttpStatusCode.NoContent, "No User AuditPlan Found");
-            else return new Response(HttpStatusCode.OK, "Search Succeed", _mapper.Map<Pagination<AuditPlanViewModel>>(auditplans));
+            else return new Response(HttpStatusCode.OK, "Search Succeed", result);
         }
     }
 }

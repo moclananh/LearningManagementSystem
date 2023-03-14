@@ -7,6 +7,7 @@ using Domain.Entities;
 using Domain.Tests;
 using FluentAssertions;
 using Moq;
+using Org.BouncyCastle.Asn1.Pkcs;
 
 namespace Applications.Tests.Services.PracticeServices
 {
@@ -73,7 +74,17 @@ namespace Applications.Tests.Services.PracticeServices
                 PageSize = 10,
                 TotalItemsCount = 30
             };
-            var expected = _mapperConfig.Map<Pagination<Practice>>(MockData);
+            var expected = _mapperConfig.Map<Pagination<PracticeViewModel>>(MockData);
+            var guidList = MockData.Items.Select(x => x.CreatedBy).ToList();
+            foreach (var item in expected.Items)
+            {
+                foreach (var user in guidList)
+                {
+                    var createBy = new User { Email = "mock@example.com" };
+                    _unitOfWorkMock.Setup(x => x.UserRepository.GetByIdAsync(user)).ReturnsAsync(createBy);
+                    item.CreatedBy = createBy.Email;
+                }
+            }
             _unitOfWorkMock.Setup(x => x.PracticeRepository.ToPagination(0, 10)).ReturnsAsync(MockData);
             //act
             var result = await _practiceService.GetAllPractice();
