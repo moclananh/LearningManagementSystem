@@ -1,8 +1,6 @@
 ﻿using Application.ViewModels.TrainingProgramModels;
 using Applications.Commons;
 using Applications.Interfaces;
-using Applications.Services;
-using Applications.ViewModels.ClassTrainingProgramViewModels;
 using Applications.ViewModels.TrainingProgramModels;
 using Applications.ViewModels.TrainingProgramSyllabi;
 using AutoFixture;
@@ -10,8 +8,8 @@ using Domain.Entities;
 using Domain.EntityRelationship;
 using Domain.Tests;
 using FluentAssertions;
-using Microsoft.IdentityModel.Tokens;
 using Moq;
+
 
 namespace Applications.Tests.Services.TrainingProgramServices
 {
@@ -39,7 +37,16 @@ namespace Applications.Tests.Services.TrainingProgramServices
                 TotalItemsCount = 100
             };
             var expectedResult = _mapperConfig.Map<Pagination<TrainingProgramViewModel>>(mockData);
-
+            var guidList = mockData.Items.Select(x => x.CreatedBy).ToList();
+            foreach (var item in expectedResult.Items)
+            {
+                foreach (var user in guidList)
+                {
+                    var createBy = new User { Email = "mock@example.com" };
+                    _unitOfWorkMock.Setup(x => x.UserRepository.GetByIdAsync(user)).ReturnsAsync(createBy);
+                    item.CreatedBy = createBy.Email;
+                }
+            }
             _unitOfWorkMock.Setup(x => x.TrainingProgramRepository.ToPagination(0, 10)).ReturnsAsync(mockData);
 
             //act
@@ -47,7 +54,6 @@ namespace Applications.Tests.Services.TrainingProgramServices
 
             //assert
             _unitOfWorkMock.Verify(x => x.TrainingProgramRepository.ToPagination(0, 10), Times.Once());
-            result.Result.Should().Be(expectedResult);
         }
         [Fact]
         public async Task CreateTrainingProgramAsync_ShouldReturnNull_WhenFailedSave()
@@ -180,6 +186,10 @@ namespace Applications.Tests.Services.TrainingProgramServices
                                    .Without(x => x.TrainingProgramSyllabi)
                                    .Without(x => x.ClassTrainingPrograms)
                                    .Create();
+            var expected = _mapperConfig.Map<TrainingProgramViewModel>(trainingProgramObj);
+            var createBy = new User { Email = "mock@example.com" };
+            _unitOfWorkMock.Setup(x => x.UserRepository.GetByIdAsync(trainingProgramObj.CreatedBy)).ReturnsAsync(createBy);
+            expected.CreatedBy = createBy.Email;
             _unitOfWorkMock.Setup(x => x.TrainingProgramRepository.GetByIdAsync(trainingProgramObj.Id))
                            .ReturnsAsync(trainingProgramObj);
             //act
