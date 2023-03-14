@@ -20,7 +20,7 @@ namespace Applications.ViewModels.ClassViewModels
         }
         public LocationEnum Location { get; set; }
         public DateTime CreationDate { get; set; }
-        public Guid? CreatedBy { get; set; }
+        public string? CreatedBy { get; set; }
         public ClassTimeEnum ClassTime { get; set; }
         public FSUEnum FSU { get; set; }
         public AttendeeEnum Attendee { get; set; }

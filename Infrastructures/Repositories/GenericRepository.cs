@@ -118,5 +118,7 @@ namespace Infrastructures.Repositories
             entity.ApprovedBy = _claimService.GetCurrentUserId;
             _dbSet.Update(entity);
         }
+
+        public async Task<List<TEntity>> GetEntitiesByIdsAsync(List<Guid?> Ids) => await _dbSet.Where(x => Ids.Contains(x.Id)).ToListAsync();
     }
 }

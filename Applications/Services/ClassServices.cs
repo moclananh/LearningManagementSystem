@@ -78,6 +78,20 @@ namespace Applications.Services
             var classes = await _unitOfWork.ClassRepository.ToPagination(pageIndex = 0, pageSize = 10);
             var result = _mapper.Map<Pagination<ClassViewModel>>(classes);
 
+            var guidList = classes.Items.Select(x => x.CreatedBy).ToList();
+            var users = await _unitOfWork.UserRepository.GetEntitiesByIdsAsync(guidList);
+
+            foreach (var item in result.Items)
+            {
+                if (string.IsNullOrEmpty(item.CreatedBy)) continue;
+
+                var createdBy = users.FirstOrDefault(x => x.Id == Guid.Parse(item.CreatedBy));
+                if (createdBy != null)
+                {
+                    item.CreatedBy = createdBy.Email;
+                }
+            }
+
             return result;
         }
 

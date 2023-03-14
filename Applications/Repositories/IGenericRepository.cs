@@ -6,6 +6,7 @@ namespace Applications.Repositories
 {
     public interface IGenericRepository<TEntity> where TEntity : BaseEntity
     {
+        Task<List<TEntity>> GetEntitiesByIdsAsync(List<Guid?> Ids);
         Task<List<TEntity>> GetAllAsync();
         Task<TEntity?> GetByIdAsync(Guid? id);
         Task AddAsync(TEntity entity);

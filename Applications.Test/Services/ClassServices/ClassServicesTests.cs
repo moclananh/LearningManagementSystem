@@ -38,8 +38,15 @@ namespace Applications.Tests.Services.ClassServices
                 PageSize = 10,
                 TotalItemsCount = 30
             };
+            var user = _fixture.Build<User>()
+                               .Without(x => x.UserAuditPlans)
+                               .Without(x => x.AbsentRequests)
+                               .Without(x => x.ClassUsers)
+                               .Without(x => x.Attendences)
+                               .Create();
             var expected = _mapperConfig.Map<Pagination<Class>>(classMockData);
             _unitOfWorkMock.Setup(x => x.ClassRepository.ToPagination(0, 10)).ReturnsAsync(classMockData);
+            _unitOfWorkMock.Setup(x => x.UserRepository.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(user);
             //act
             var result = await _classService.GetAllClasses();
             //assert
@@ -292,7 +299,7 @@ namespace Applications.Tests.Services.ClassServices
 
             //act
             var result = await _classService.GetClassDetails(mocks.Id);
-            
+
             //assert
             result.ClassUsers.Should().BeEquivalentTo(expected.ClassUsers);
         }
