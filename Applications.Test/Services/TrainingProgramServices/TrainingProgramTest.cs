@@ -10,6 +10,7 @@ using Domain.Entities;
 using Domain.EntityRelationship;
 using Domain.Tests;
 using FluentAssertions;
+using Microsoft.IdentityModel.Tokens;
 using Moq;
 
 namespace Applications.Tests.Services.TrainingProgramServices

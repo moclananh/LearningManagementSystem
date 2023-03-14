@@ -113,5 +113,32 @@ namespace Applications.Tests.Services.PracticeServices
             _unitOfWorkMock.Verify(x => x.SaveChangeAsync(), Times.Once());
             result.Should().BeNull();
         }
+
+        [Fact]
+        public async Task GetPracticeByUnitId_ShouldReturnCorrectData()
+        {
+            //arrange
+            var id = Guid.NewGuid();
+            var practiceMock = new Pagination<Practice>()
+            {
+                Items = _fixture.Build<Practice>()
+                                .Without(x => x.Unit)
+                                .Without(x => x.PracticeQuestions)
+                                .With(x => x.UnitId, id)
+                                .CreateMany(30)
+                                .ToList(),
+                PageIndex = 0,
+                PageSize = 10,
+                TotalItemsCount = 30,
+            };
+
+            var practice = _mapperConfig.Map<Pagination<Practice>>(practiceMock);
+            _unitOfWorkMock.Setup(x => x.PracticeRepository.GetPracticeByUnitId(id, 0, 10)).ReturnsAsync(practiceMock);
+            var expected = _mapperConfig.Map<Pagination<PracticeViewModel>>(practice);
+            //act
+            var result = await _practiceService.GetPracticeByUnitId(id);
+            //assert
+            _unitOfWorkMock.Verify(x => x.PracticeRepository.GetPracticeByUnitId(id, 0, 10), Times.Once());
+        }
     }
 }
