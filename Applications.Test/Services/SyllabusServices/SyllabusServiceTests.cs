@@ -3,6 +3,7 @@ using Applications.Interfaces;
 using Applications.ViewModels.SyllabusModuleViewModel;
 using Applications.ViewModels.SyllabusViewModels;
 using AutoFixture;
+using DocumentFormat.OpenXml.Wordprocessing;
 using Domain.Entities;
 using Domain.EntityRelationship;
 using Domain.Tests;
@@ -461,6 +462,31 @@ namespace Applications.Tests.Services.SyllabusServices
             var result = await _syllabusService.GetSyllabusDetails(mocks.Id);
             //assert
             _unitOfWorkMock.Verify(x => x.SyllabusRepository.GetSyllabusDetails(mocks.Id), Times.Once());
+        }
+
+        [Fact]
+        public async Task GetSyllabusByCreationDate_ShouldReturnCorrectData()
+        {
+            var startDate = new DateTime(2022, 1, 1);
+            var endDate = new DateTime(2022, 12, 31);
+            var syllabusMockData = new Pagination<Syllabus>
+            {
+                Items = _fixture.Build<Syllabus>()
+                                .Without(s => s.SyllabusModules)
+                                .Without(s => s.SyllabusOutputStandards)
+                                .Without(s => s.TrainingProgramSyllabi)
+                                .CreateMany(30)
+                                .ToList(),
+                PageIndex = 0,
+                PageSize = 10,
+                TotalItemsCount = 30,
+            };
+            var expected = _mapperConfig.Map<Pagination<SyllabusViewModel>>(syllabusMockData);
+            _unitOfWorkMock.Setup(s => s.SyllabusRepository.GetSyllabusByCreationDate(startDate, endDate, 0, 10)).ReturnsAsync(syllabusMockData);
+            //act
+            var result = await _syllabusService.GetSyllabusByCreationDate(startDate, endDate, 0, 10);
+            //assert
+            _unitOfWorkMock.Verify(s => s.SyllabusRepository.GetSyllabusByCreationDate(startDate, endDate, 0, 10), Times.Once());
         }
     }
 }
