@@ -1,6 +1,5 @@
-﻿using Applications.Interfaces;
-using Applications.Services;
-using Applications.ViewModels.ClassViewModels;
+﻿using Applications.Commons;
+using Applications.Interfaces;
 using Applications.ViewModels.OutputStandardViewModels;
 using AutoFixture;
 using Domain.Entities;
@@ -74,6 +73,7 @@ namespace Applications.Tests.Services.OutputStandardServices
             _unitOfWorkMock.Verify(x => x.OutputStandardRepository.AddAsync(It.IsAny<OutputStandard>()), Times.Once());
             _unitOfWorkMock.Verify(x => x.SaveChangeAsync(), Times.Once());
         }
+
         [Fact]
         public async Task CreateOutputStandard_ShouldReturnNull_WhenFailedSave()
         {
@@ -89,6 +89,52 @@ namespace Applications.Tests.Services.OutputStandardServices
             _unitOfWorkMock.Verify(x => x.OutputStandardRepository.AddAsync(It.IsAny<OutputStandard>()), Times.Once());
             _unitOfWorkMock.Verify(x => x.SaveChangeAsync(), Times.Once());
             result.Should().BeNull();
+        }
+
+        [Fact]
+        public async Task GetOuputStandardById_ShouldReturnCorrectData()
+        {
+            //arrange
+            var mockdata = _fixture.Build<OutputStandard>()
+                .Without(x => x.Description)
+                .Without(x => x.SyllabusOutputStandards)
+                                   .Create();
+            var expected = _mapperConfig.Map<OutputStandardViewModel>(mockdata);
+            var createBy = new User { Email = "mock@example.com" };
+            _unitOfWorkMock.Setup(x => x.UserRepository.GetByIdAsync(mockdata.CreatedBy)).ReturnsAsync(createBy);
+            expected.CreatedBy = createBy.Email;
+            _unitOfWorkMock.Setup(x => x.OutputStandardRepository.GetByIdAsync(mockdata.Id))
+                           .ReturnsAsync(mockdata);
+            //act
+            var result = await _outputStandardService.GetOutputStandardByOutputStandardIdAsync(mockdata.Id);
+            //assert
+            _unitOfWorkMock.Verify(x => x.OutputStandardRepository.GetByIdAsync(mockdata.Id), Times.Once());
+        }
+
+        [Fact]
+        public async Task GetOutputStandardBySyllabusId_ShouldReturnCorrectData()
+        {
+            //arrange
+            var id = Guid.NewGuid();
+            var Mock = new Pagination<OutputStandard>()
+            {
+                Items = _fixture.Build<OutputStandard>()
+                                .Without(x => x.Description)
+                                .Without(x => x.SyllabusOutputStandards)
+                                .CreateMany(30)
+                                .ToList(),
+                PageIndex = 0,
+                PageSize = 10,
+                TotalItemsCount = 30,
+            };
+
+            var outputStandardObj = _mapperConfig.Map<Pagination<OutputStandardViewModel>>(Mock);
+            _unitOfWorkMock.Setup(x => x.OutputStandardRepository.GetOutputStandardBySyllabusIdAsync(id, 0, 10)).ReturnsAsync(Mock);
+            var expected = _mapperConfig.Map<Pagination<OutputStandardViewModel>>(outputStandardObj);
+            //act
+            var result = await _outputStandardService.GetOutputStandardBySyllabusIdAsync(id);
+            //assert
+            _unitOfWorkMock.Verify(x => x.OutputStandardRepository.GetOutputStandardBySyllabusIdAsync(id, 0, 10), Times.Once());
         }
 
     }
