@@ -13,7 +13,6 @@ namespace APIs.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(policy: "AuthUser")]
     public class ModuleController : ControllerBase
     {
         private readonly IModuleService _moduleServices;
@@ -28,7 +27,7 @@ namespace APIs.Controllers
             _validateUpdate = validatorUpdate;
         }
 
-        [HttpPost("CreateModule")]
+        [HttpPost("CreateModule"), Authorize(policy: "AuthUser")]
         public async Task<IActionResult> CreateModule(CreateModuleViewModel moduleModel)
         {
             if(ModelState.IsValid)
@@ -55,7 +54,7 @@ namespace APIs.Controllers
         [HttpGet("GetModulesByName/{ModuleName}")]
         public async Task<Response> GetModulesByName(string ModuleName, int pageIndex = 0, int pageSize = 10) => await _moduleServices.GetModulesByName(ModuleName, pageIndex, pageSize);
 
-        [HttpPut("UpdateModule")]
+        [HttpPut("UpdateModule"), Authorize(policy: "AuthUser")]
         public async Task<IActionResult> UpdateModule(Guid moduleId, UpdateModuleViewModel module)
         {
             if (ModelState.IsValid)
@@ -89,7 +88,7 @@ namespace APIs.Controllers
             }
             return BadRequest("Add Fail");
         }
-        [HttpDelete("DeleteUnit/{moduleId}/{unitId}")]
+        [HttpDelete("DeleteUnit/{moduleId}/{unitId}"), Authorize(policy: "AuthUser")]
         public async Task<IActionResult> DeleteUnit(Guid moduleId, Guid unitId)
         {
             if (ModelState.IsValid)

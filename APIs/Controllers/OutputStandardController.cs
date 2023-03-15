@@ -10,7 +10,6 @@ namespace APIs.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(policy: "AuthUser")]
     public class OutputStandardController : ControllerBase
     {
         private readonly IOutputStandardService _outputStandardServices;
@@ -31,7 +30,7 @@ namespace APIs.Controllers
         [HttpGet("GetOutputStandardByOutputStandardId/{OutputStandardId}")]
         public async Task<Response> GetOutputStandardByOutputStandardId(Guid OutputStandardId) => await _outputStandardServices.GetOutputStandardByOutputStandardIdAsync(OutputStandardId);
 
-        [HttpPut("UpdateOutputStandard/{OutputStandardId}")]
+        [HttpPut("UpdateOutputStandard/{OutputStandardId}"), Authorize(policy: "AuthUser")]
         public async Task<IActionResult> UpdateOutputStandard(Guid OutputStandardId, UpdateOutputStandardViewModel updateOutputStandardView)
         {
             if (ModelState.IsValid)
@@ -50,7 +49,8 @@ namespace APIs.Controllers
         }
         [HttpGet("GetOutputStandardBySyllabusId/{SyllabusId}")]
         public async Task<Response> GetOutputStandardBySyllabusId(Guid SyllabusId, int pageIndex = 0, int pageSize = 10) => await _outputStandardServices.GetOutputStandardBySyllabusIdAsync(SyllabusId, pageIndex, pageSize);
-        [HttpPost("OutputStandard/AddOutputStandard/{SyllabusId}/{OutputStandardId}")]
+        
+        [HttpPost("OutputStandard/AddOutputStandardToSyllabus/{SyllabusId}/{OutputStandardId}"), Authorize(policy: "AuthUser")]
         public async Task<IActionResult> AddOutputStandard(Guid SyllabusId, Guid OutputStandardId)
         {
             if (ModelState.IsValid)
@@ -61,7 +61,7 @@ namespace APIs.Controllers
             return BadRequest("Add OutputStandard Fail");
         }
 
-        [HttpDelete("OutputStandard/DeleteOutputStandard/{SyllabusId}/{OutputStandardId}")]
+        [HttpDelete("OutputStandard/DeleteOutputStandard/{SyllabusId}/{OutputStandardId}"), Authorize(policy: "AuthUser")]
         public async Task<IActionResult> DeleteOutputStandard(Guid SyllabusId, Guid OutputStandardId)
         {
             if (ModelState.IsValid)

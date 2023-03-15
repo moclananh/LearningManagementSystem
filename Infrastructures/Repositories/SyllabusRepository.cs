@@ -19,6 +19,7 @@ namespace Infrastructures.Repositories
         {
             var itemCount = await _dbContext.Syllabi.CountAsync();
             var items = await _dbContext.Syllabi.Where(s => s.Status == Domain.Enum.StatusEnum.Status.Disable)
+                                    .Include(x => x.SyllabusOutputStandards).ThenInclude(x => x.OutputStandard)
                                     .OrderByDescending(x => x.CreationDate)
                                     .Skip(pageNumber * pageSize)
                                     .Take(pageSize)
@@ -41,6 +42,7 @@ namespace Infrastructures.Repositories
             {
                 var itemCount = await _dbContext.Syllabi.CountAsync();
                 var items = await _dbContext.Syllabi.Where(s => s.Status == Domain.Enum.StatusEnum.Status.Enable)
+                                        .Include(x => x.SyllabusOutputStandards).ThenInclude(x => x.OutputStandard)
                                         .OrderByDescending(x => x.CreationDate)
                                         .Skip(pageNumber * pageSize)
                                         .Take(pageSize)
@@ -63,6 +65,7 @@ namespace Infrastructures.Repositories
         {
             var itemCount = await _dbContext.Syllabi.CountAsync();
             var items = await _dbContext.Syllabi.Where(s => s.SyllabusName!.Contains(SyllabusName))
+                                    .Include(x => x.SyllabusOutputStandards).ThenInclude(x => x.OutputStandard)
                                     .OrderByDescending(x => x.CreationDate)
                                     .Skip(pageNumber * pageSize)
                                     .Take(pageSize)
@@ -84,6 +87,7 @@ namespace Infrastructures.Repositories
         {
             var itemCount = await _dbContext.Syllabi.CountAsync();
             var items = await _dbContext.SyllabusOutputStandard.Where(s => s.OutputStandardId == OutputStandardId).Select(s => s.Syllabus)
+                                    .Include(x => x.SyllabusOutputStandards).ThenInclude(x => x.OutputStandard)
                                     .OrderByDescending(x => x.CreationDate)
                                     .Skip(pageNumber * pageSize)
                                     .Take(pageSize)
@@ -105,6 +109,7 @@ namespace Infrastructures.Repositories
         {
             var itemCount = await _dbContext.Syllabi.CountAsync();
             var items = await _dbContext.TrainingProgramSyllabi.Where(s => s.TrainingProgramId == TrainingProgramId).Select(s => s.Syllabus)
+                                    .Include(x => x.SyllabusOutputStandards).ThenInclude(x => x.OutputStandard)
                                     .OrderByDescending(x => x.CreationDate)
                                     .Skip(pageNumber * pageSize)
                                     .Take(pageSize)
@@ -112,7 +117,7 @@ namespace Infrastructures.Repositories
                                     .ToListAsync();
 
             var result = new Pagination<Syllabus>()
-            { 
+            {
                 PageIndex = pageNumber,
                 PageSize = pageSize,
                 TotalItemsCount = itemCount,
@@ -160,8 +165,7 @@ namespace Infrastructures.Repositories
         public async Task<Pagination<Syllabus>> GetSyllabusByCreationDate(DateTime startDate, DateTime endDate, int pageNumber = 0, int pageSize = 10)
         {
             var itemCount = await _dbContext.Syllabi.CountAsync();
-            var items = await _dbContext.Syllabi.Where(x => x.CreationDate >= startDate && x.CreationDate <= endDate).ToListAsync();
-
+            var items = await _dbContext.Syllabi.Where(x => x.CreationDate >= startDate && x.CreationDate <= endDate).Include(x => x.SyllabusOutputStandards).ThenInclude(x => x.OutputStandard).ToListAsync();
             var result = new Pagination<Syllabus>()
             {
                 PageIndex = pageNumber,
