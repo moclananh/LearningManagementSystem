@@ -94,6 +94,11 @@ namespace Infrastructures.Repositories
             }
         }
 
+        public async Task<List<Attendance>> GetListAttendances(string ClassCode, DateTime Date)
+        {
+            return await _dbContext.Attendances.Where(x => x.Date == Date && x.Class.ClassCode == ClassCode).Include(a => a.Class).Include(a => a.User).ToListAsync();
+        }
+
         public async Task<Attendance> GetSingleAttendance(Guid ClassId, Guid UserId)
         {
             var result = await _dbSet.FirstOrDefaultAsync(x => x.Date == DateTime.Today && x.ClassId == ClassId && x.UserId == UserId);

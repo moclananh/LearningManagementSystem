@@ -1,10 +1,4 @@
-﻿using Domain.Entities;
-using Domain.Enum.AttendenceEnum;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Domain.Enum.AttendenceEnum;
 
 namespace Applications.ViewModels.AttendanceViewModels
 {
@@ -15,5 +9,8 @@ namespace Applications.ViewModels.AttendanceViewModels
         public AttendenceStatus Status { get; set; }
         public Guid UserId { get; set; }
         public Guid ClassId { get; set; }
+        public string ClassCode { get; set; }
+        public string fullname { get; set; }
+
     }
 }

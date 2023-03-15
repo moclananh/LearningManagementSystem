@@ -1,7 +1,8 @@
 ﻿using Applications.Interfaces;
-using Applications.ViewModels.AssignmentViewModels;
+using Applications.ViewModels.AttendanceViewModels;
 using Applications.ViewModels.Response;
 using AutoMapper;
+using ClosedXML.Excel;
 using Domain.Entities;
 using Domain.Enum.AttendenceEnum;
 using System.Net;
@@ -85,6 +86,46 @@ namespace Applications.Services
                 }
             }
             return new Response(HttpStatusCode.BadRequest, "Create Attendance failed,check ClassId again");
+        }
+
+        public async Task<byte[]> ExportAttendanceByClassIDandDate(string ClassCode, DateTime Date)
+        {
+            var questions = await _unitOfWork.AttendanceRepository.GetListAttendances(ClassCode, Date);
+            var questionViewModels = _mapper.Map<List<CreateAttendanceViewModel>>(questions);
+
+            // Create a new Excel workbook and worksheet
+            using var workbook = new XLWorkbook();
+            var worksheet = workbook.Worksheets.Add("Attendance");
+
+            // Add the headers to the worksheet
+
+            worksheet.Cell(1, 1).Value = "ClassCode";
+            worksheet.Cell(1, 3).Value = "Date";
+            worksheet.Cell(3, 1).Value = "UserName";
+            worksheet.Cell(3, 2).Value = "Note";
+            worksheet.Cell(3, 3).Value = "Status";
+
+            var questionss = questionViewModels[0];
+            worksheet.Cell(1, 2).Value = questionss.ClassCode;
+            worksheet.Cell(1, 4).Value = questionss.Date.ToString();
+
+
+            // Add the assignment questions to the worksheet
+            for (var i = 0; i < questionViewModels.Count; i++)
+            {
+                var question = questionViewModels[i];
+
+                worksheet.Cell(i + 4, 1).Value = question.fullname;
+                worksheet.Cell(i + 4, 2).Value = question.Note;
+                worksheet.Cell(i + 4, 3).Value = question.Status.ToString();
+            }
+
+            // Convert the workbook to a byte array
+            using var stream = new MemoryStream();
+            workbook.SaveAs(stream);
+            var content = stream.ToArray();
+
+            return content;
         }
     }
 }

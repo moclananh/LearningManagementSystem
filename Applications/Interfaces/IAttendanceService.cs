@@ -8,6 +8,7 @@ namespace Applications.Interfaces
     {
         public Task<Response> CreateAttendanceAsync(Guid ClassId);
         public Task<Response?> CheckAttendance(string ClassCode, string Email);
+        Task<byte[]> ExportAttendanceByClassIDandDate(string ClassCode, DateTime Date);
         public Task<Response?> UpdateAttendance(DateTime Date, string ClassCode, string Email , AttendenceStatus Status);
     }
 }
