@@ -14,10 +14,6 @@ namespace Applications.ViewModels.ClassViewModels
         public FSUEnum FSU { get; set; }
         public AttendeeEnum Attendee { get; set; }
         public Status Status { get; set; }
-        public DateTime? ModificationDate { get; set; }
-        public Guid? ModificationBy { get; set; }
-        public DateTime? DeletionDate { get; set; }
-        public Guid? DeleteBy { get; set; }
         public bool IsDeleted { get; set; }
     }
 }
