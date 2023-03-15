@@ -64,8 +64,18 @@ namespace Applications.Services
         public async Task<Response> ViewAllAssignmentAsync(int pageIndex = 0, int pageSize = 10)
         {
             var asmObj = await _unitOfWork.AssignmentRepository.ToPagination(pageIndex, pageSize);
+            var result = _mapper.Map<Pagination<AssignmentViewModel>>(asmObj);
+            var guidList = asmObj.Items.Select(s => s.CreatedBy).ToList();
+            foreach (var item in result.Items)
+            {
+                foreach (var user in guidList)
+                {
+                    var createBy = await _unitOfWork.UserRepository.GetByIdAsync(user);
+                    item.CreatedBy = createBy.Email;
+                }
+            }
             if (asmObj.Items.Count() < 1) return new Response(HttpStatusCode.NoContent, "No Assignment Found");
-            else return new Response(HttpStatusCode.OK, "Search Succeed", _mapper.Map<Pagination<AssignmentViewModel>>(asmObj));
+            else return new Response(HttpStatusCode.OK, "Search Succeed", result);
         }
 
         public async Task<CreateAssignmentViewModel> CreateAssignmentAsync(CreateAssignmentViewModel AssignmentDTO)

@@ -1,12 +1,12 @@
 ﻿using Applications.Commons;
 using Applications.Interfaces;
-using Applications.Services;
 using Applications.ViewModels.AssignmentViewModels;
 using AutoFixture;
 using Domain.Entities;
 using Domain.Tests;
 using FluentAssertions;
 using Moq;
+using Org.BouncyCastle.Asn1.Pkcs;
 
 namespace Applications.Tests.Services.AssignmentServices
 {
@@ -33,7 +33,18 @@ namespace Applications.Tests.Services.AssignmentServices
                 PageSize = 10,
                 TotalItemsCount = 30
             };
-            var expected = _mapperConfig.Map<Pagination<Assignment>>(assignmentMockData);
+
+            var expected = _mapperConfig.Map<Pagination<AssignmentViewModel>>(assignmentMockData);
+            var guidList = assignmentMockData.Items.Select(x => x.CreatedBy).ToList();
+            foreach (var item in expected.Items)
+            {
+                foreach (var user in guidList)
+                {
+                    var createBy = new User { Email = "mock@example.com" };
+                    _unitOfWorkMock.Setup(x => x.UserRepository.GetByIdAsync(user)).ReturnsAsync(createBy);
+                    item.CreatedBy = createBy.Email;
+                }
+            }
             _unitOfWorkMock.Setup(x => x.AssignmentRepository.ToPagination(0, 10)).ReturnsAsync(assignmentMockData);
             //act
             var result = await _assignmentService.ViewAllAssignmentAsync();
