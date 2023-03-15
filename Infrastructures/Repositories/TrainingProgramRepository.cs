@@ -94,5 +94,14 @@ namespace Infrastructures.Repositories
 
             return result;
         }
+
+        public async Task<TrainingProgram> GetTrainingProgramDetails(Guid TrainingProgramId)
+        {
+
+            var result = _dbContext.TrainingPrograms.Include(x => x.TrainingProgramSyllabi).ThenInclude(x => x.Syllabus)
+                                                        
+                                                       .FirstOrDefault(x => x.Id == TrainingProgramId);
+            return result;
+        }
     }
 }

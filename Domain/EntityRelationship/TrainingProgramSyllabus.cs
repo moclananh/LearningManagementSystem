@@ -14,5 +14,6 @@ namespace Domain.EntityRelationship
         public Guid SyllabusId { get; set; }
         public TrainingProgram TrainingProgram { get; set; }
         public Syllabus Syllabus { get; set; }
+
     }
 }

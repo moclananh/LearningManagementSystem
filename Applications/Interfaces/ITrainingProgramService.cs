@@ -18,5 +18,6 @@ namespace Applications.Interfaces
         Task<CreateTrainingProgramSyllabi> AddSyllabusToTrainingProgram(Guid SyllabusId, Guid TrainingProgramId);
         Task<CreateTrainingProgramSyllabi> RemoveSyllabusToTrainingProgram(Guid SyllabusId, Guid TrainingProgramId);
         Task<Pagination<TrainingProgramViewModel>> GetByName(string name, int pageIndex = 0, int pageSize = 10);
+        Task<Response> GetTrainingProgramDetails(Guid TrainingProgramId);
     }
 }

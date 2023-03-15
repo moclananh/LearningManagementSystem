@@ -1,6 +1,7 @@
 ﻿using Application.ViewModels.TrainingProgramModels;
 using Applications.Commons;
 using Applications.Interfaces;
+using Applications.Services;
 using Applications.ViewModels.Response;
 using Applications.ViewModels.TrainingProgramModels;
 using FluentValidation;
@@ -63,6 +64,9 @@ namespace APIs.Controllers
             }
             return Ok("Update TrainingProgram Success");
         }
+
+        [HttpGet("GetTrainingProgramDetails/{TrainingProgramId}")]
+        public async Task<Response> GetSyllabusDetailById(Guid TrainingProgramId) => await _trainingProgramService.GetTrainingProgramDetails(TrainingProgramId);
 
         [HttpGet("GetAllTrainingProgram")]
         public async Task<Response> ViewAllTrainingProgram(int pageIndex = 0, int pageSize = 10) => await _trainingProgramService.ViewAllTrainingProgramAsync(pageIndex, pageSize);

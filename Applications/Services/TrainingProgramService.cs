@@ -2,6 +2,7 @@
 using Applications.Commons;
 using Applications.Interfaces;
 using Applications.ViewModels.Response;
+using Applications.ViewModels.SyllabusViewModels;
 using Applications.ViewModels.TrainingProgramModels;
 using Applications.ViewModels.TrainingProgramSyllabi;
 using AutoMapper;
@@ -142,5 +143,11 @@ namespace Applications.Services
             else return new Response(HttpStatusCode.OK, "Search Succeed", _mapper.Map<Pagination<TrainingProgramViewModel>>(TrainingPrograms));
         }
 
+        public async Task<Response> GetTrainingProgramDetails(Guid TrainingProgramId)
+        {
+            var TrainingProgram = await _unitOfWork.TrainingProgramRepository.GetTrainingProgramDetails(TrainingProgramId);
+            if (TrainingProgram == null) return new Response(HttpStatusCode.NoContent, "Id not found");
+            else return new Response(HttpStatusCode.OK, "Search succeed", _mapper.Map<TrainingProgramViewModel>(TrainingProgram));
+        }
     }
 }
