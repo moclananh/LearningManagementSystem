@@ -2,6 +2,7 @@
 using Applications.Repositories;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace Infrastructures.Repositories
 {
@@ -96,6 +97,12 @@ namespace Infrastructures.Repositories
         public async Task<Attendance> GetSingleAttendance(Guid ClassId, Guid UserId)
         {
             var result = await _dbSet.FirstOrDefaultAsync(x => x.Date == DateTime.Today && x.ClassId == ClassId && x.UserId == UserId);
+            return result;
+        }
+
+        public async Task<Attendance> GetSingleAttendanceForUpdate(DateTime Date,Guid ClassId, Guid UserId)
+        {
+            var result = await _dbSet.FirstOrDefaultAsync(x => x.Date == Date && x.ClassId == ClassId && x.UserId == UserId);
             return result;
         }
     }

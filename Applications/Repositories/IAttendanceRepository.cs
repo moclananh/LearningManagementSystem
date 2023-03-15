@@ -6,5 +6,6 @@ namespace Applications.Repositories
     {
         Task AddListAttendanceAsync(Guid ClassId, DateTime startDate, DateTime enddate);
         Task<Attendance> GetSingleAttendance(Guid ClassId, Guid UserId);
+        Task<Attendance> GetSingleAttendanceForUpdate(DateTime Date, Guid ClassId, Guid UserId);
     }
 }

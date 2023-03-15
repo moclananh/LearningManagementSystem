@@ -3,6 +3,7 @@ using Applications.ViewModels.AssignmentViewModels;
 using Applications.ViewModels.Response;
 using AutoMapper;
 using Domain.Entities;
+using Domain.Enum.AttendenceEnum;
 using System.Net;
 
 namespace Applications.Services
@@ -31,7 +32,6 @@ namespace Applications.Services
             if (AtdObj != null)
             {
                 AtdObj.Status = Domain.Enum.AttendenceEnum.AttendenceStatus.Present;
-                AtdObj.Date = DateTime.Today;
                 _unitOfWork.AttendanceRepository.Update(AtdObj);
                 var isSuccess = await _unitOfWork.SaveChangeAsync() > 0;
                 if (isSuccess)
@@ -41,6 +41,35 @@ namespace Applications.Services
             }
             return new Response(HttpStatusCode.BadRequest, "Check Attendance Failed");
         }
+
+        public async Task<Response?> UpdateAttendance(DateTime Date,string ClassCode, string Email, AttendenceStatus Status)
+        {
+            var Class = await _unitOfWork.ClassRepository.GetClassByClassCode(ClassCode);
+            var User = await _unitOfWork.UserRepository.GetUserByEmail(Email);
+            var AtdObj = await _unitOfWork.AttendanceRepository.GetSingleAttendanceForUpdate(Date, Class.Id, User.Id);
+
+            if (Class == null || User == null)
+            {
+                return new Response(HttpStatusCode.BadRequest, "Invalid ClassCode or User Email");
+            } else if (AtdObj == null)
+            {
+                return new Response(HttpStatusCode.BadRequest, "Attendance date not exist");
+            }
+
+            if (AtdObj != null)
+            {
+                AtdObj.Status = Status;
+                _unitOfWork.AttendanceRepository.Update(AtdObj);
+                var isSuccess = await _unitOfWork.SaveChangeAsync() > 0;
+                if (isSuccess)
+                {
+                    return new Response(HttpStatusCode.OK, "Update Attendance Succeed", AtdObj.Status);
+                }
+            }
+            return new Response(HttpStatusCode.BadRequest, "Update Attendance Failed");
+        }
+
+
 
         public async Task<Response> CreateAttendanceAsync(Guid ClassId)
         {
