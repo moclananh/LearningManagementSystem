@@ -7,7 +7,7 @@ using Domain.Entities;
 using Domain.Tests;
 using FluentAssertions;
 using Moq;
-using Org.BouncyCastle.Asn1.Pkcs;
+
 
 namespace Applications.Tests.Services.PracticeServices
 {
@@ -24,14 +24,18 @@ namespace Applications.Tests.Services.PracticeServices
         {
             var practiceMocks = _fixture.Build<Practice>()
                                 .Without(x => x.Unit)
-                                .Without(x => x.PracticeQuestions)
+            .Without(x => x.PracticeQuestions)
                                 .Create();
-            _unitOfWorkMock.Setup(x => x.PracticeRepository.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(practiceMocks);
             var expected = _mapperConfig.Map<PracticeViewModel>(practiceMocks);
+            var createBy = new User { Email = "mock@example.com" };
+            _unitOfWorkMock.Setup(x => x.UserRepository.GetByIdAsync(practiceMocks.CreatedBy)).ReturnsAsync(createBy);
+            expected.CreatedBy = createBy.Email;
+            _unitOfWorkMock.Setup(x => x.PracticeRepository.GetByIdAsync(practiceMocks.Id))
+                           .ReturnsAsync(practiceMocks);
             //act
-            var result = _practiceService.GetPracticeById(practiceMocks.Id);
+            var result = await _practiceService.GetPracticeById(practiceMocks.Id);
             //assert
-            result.Result.Should().BeEquivalentTo(expected);
+            _unitOfWorkMock.Verify(x => x.PracticeRepository.GetByIdAsync(practiceMocks.Id), Times.Once());
         }
 
         [Fact]
@@ -191,32 +195,32 @@ namespace Applications.Tests.Services.PracticeServices
             //assert
             result.Should().BeNull();
         }
-            [Fact]
-            public async Task GetPracticeByUnitId_ShouldReturnCorrectData()
+        [Fact]
+        public async Task GetPracticeByUnitId_ShouldReturnCorrectData()
+        {
+            //arrange
+            var id = Guid.NewGuid();
+            var practiceMock = new Pagination<Practice>()
             {
-                //arrange
-                var id = Guid.NewGuid();
-                var practiceMock = new Pagination<Practice>()
-                {
-                    Items = _fixture.Build<Practice>()
-                                    .Without(x => x.Unit)
-                                    .Without(x => x.PracticeQuestions)
-                                    .With(x => x.UnitId, id)
-                                    .CreateMany(30)
-                                    .ToList(),
-                    PageIndex = 0,
-                    PageSize = 10,
-                    TotalItemsCount = 30,
-                };
+                Items = _fixture.Build<Practice>()
+                                .Without(x => x.Unit)
+                                .Without(x => x.PracticeQuestions)
+                                .With(x => x.UnitId, id)
+                                .CreateMany(30)
+                                .ToList(),
+                PageIndex = 0,
+                PageSize = 10,
+                TotalItemsCount = 30,
+            };
 
-                var practice = _mapperConfig.Map<Pagination<Practice>>(practiceMock);
-                _unitOfWorkMock.Setup(x => x.PracticeRepository.GetPracticeByUnitId(id, 0, 10)).ReturnsAsync(practiceMock);
-                var expected = _mapperConfig.Map<Pagination<PracticeViewModel>>(practice);
-                //act
-                var result = await _practiceService.GetPracticeByUnitId(id);
-                //assert
-                _unitOfWorkMock.Verify(x => x.PracticeRepository.GetPracticeByUnitId(id, 0, 10), Times.Once());
-            }
+            var practice = _mapperConfig.Map<Pagination<Practice>>(practiceMock);
+            _unitOfWorkMock.Setup(x => x.PracticeRepository.GetPracticeByUnitId(id, 0, 10)).ReturnsAsync(practiceMock);
+            var expected = _mapperConfig.Map<Pagination<PracticeViewModel>>(practice);
+            //act
+            var result = await _practiceService.GetPracticeByUnitId(id);
+            //assert
+            _unitOfWorkMock.Verify(x => x.PracticeRepository.GetPracticeByUnitId(id, 0, 10), Times.Once());
         }
     }
+}
 

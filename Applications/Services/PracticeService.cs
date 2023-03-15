@@ -22,6 +22,8 @@ namespace Applications.Services
         {
             var praObj = await _unitOfWork.PracticeRepository.GetByIdAsync(Id);
             var result = _mapper.Map<PracticeViewModel>(praObj);
+            var createBy = await _unitOfWork.UserRepository.GetByIdAsync(praObj.CreatedBy);
+            result.CreatedBy = createBy.Email;
             return result;
         }
         public async Task<Pagination<PracticeViewModel>> GetPracticeByUnitId(Guid UnitId, int pageIndex = 0, int pageSize = 10)
