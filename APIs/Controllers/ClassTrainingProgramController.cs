@@ -1,6 +1,7 @@
 ﻿using Applications.Commons;
 using Applications.Interfaces;
 using Applications.ViewModels.ClassTrainingProgramViewModels;
+using Applications.ViewModels.Response;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,7 +19,7 @@ namespace APIs.Controllers
         }
 
         [HttpGet("GetAllClassTrainingProgram")]
-        public async Task<Pagination<ClassTrainingProgramViewModel>> GetAllClassTrainingProgram(int pageIndex = 0, int pageSize = 10)
+        public async Task<Response> GetAllClassTrainingProgram(int pageIndex = 0, int pageSize = 10)
         {
             return await _classTrainingProgramService.GetAllClassTrainingProgram(pageIndex, pageSize);
         }

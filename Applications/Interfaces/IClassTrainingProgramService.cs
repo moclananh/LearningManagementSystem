@@ -1,10 +1,9 @@
-﻿using Applications.Commons;
-using Applications.ViewModels.ClassTrainingProgramViewModels;
+﻿using Applications.ViewModels.Response;
 
 namespace Applications.Interfaces
 {
     public interface IClassTrainingProgramService
     {
-        Task<Pagination<ClassTrainingProgramViewModel>> GetAllClassTrainingProgram(int pageIndex = 0, int pageSize = 10);
+        Task<Response> GetAllClassTrainingProgram(int pageIndex = 0, int pageSize = 10);
     }
 }
