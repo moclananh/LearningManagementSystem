@@ -35,22 +35,20 @@ namespace Applications.Tests.Services.ModuleServices
                 PageSize = 10,
                 TotalItemsCount = 30
             };
-            var expectedResult = _mapperConfig.Map<Pagination<ModuleViewModels>>(mockData);
-            var guidList = mockData.Items.Select(x => x.CreatedBy).ToList();
-            foreach (var item in expectedResult.Items)
-            {
-                foreach (var user in guidList)
-                {
-                    var createBy = new User { Email = "mock@example.com" };
-                    _unitOfWorkMock.Setup(x => x.UserRepository.GetByIdAsync(user)).ReturnsAsync(createBy);
-                    item.CreatedBy = createBy.Email;
-                }
-            }
+            var user = _fixture.Build<User>()
+                               .Without(x => x.UserAuditPlans)
+                               .Without(x => x.AbsentRequests)
+                               .Without(x => x.ClassUsers)
+                               .Without(x => x.Attendences)
+                               .CreateMany(3)
+                               .ToList();
+            var expected = _mapperConfig.Map<Pagination<ModuleViewModels>>(mockData);
             _unitOfWorkMock.Setup(x => x.ModuleRepository.ToPagination(0, 10)).ReturnsAsync(mockData);
+            _unitOfWorkMock.Setup(x => x.UserRepository.GetEntitiesByIdsAsync(It.IsAny<List<Guid?>>())).ReturnsAsync(user);
             //act
             var result = await _moduleService.GetAllModules();
             //assert
-            _unitOfWorkMock.Verify(x => x.ModuleRepository.ToPagination(0, 10), Times.Once());
+            _unitOfWorkMock.Verify(x => x.ModuleRepository.ToPagination(0, 10), Times.Once()); 
         }
 
         [Fact]

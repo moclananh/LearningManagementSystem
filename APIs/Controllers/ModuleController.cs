@@ -60,16 +60,16 @@ namespace APIs.Controllers
             if (ModelState.IsValid)
             {
                 ValidationResult result = _validateUpdate.Validate(module);
-                if(result.IsValid)
+                if (result.IsValid)
                 {
-                    await _moduleServices.UpdateModule(moduleId, module);
-                }
-                else
-                {
-                    return BadRequest("Fail to update !");
+                    if (await _moduleServices.UpdateModule(moduleId, module) != null)
+                    {
+                        return Ok("Update Succeed");
+                    }
+                    return BadRequest("Not Found");
                 }
             }
-            return Ok("Update Module successfully");
+            return BadRequest("Updated Failed, Invalid Information");
         }
 
         [HttpGet("GetEnableModules")]

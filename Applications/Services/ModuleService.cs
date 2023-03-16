@@ -4,6 +4,7 @@ using Applications.ViewModels.ModuleUnitViewModels;
 using Applications.ViewModels.ModuleViewModels;
 using Applications.ViewModels.Response;
 using AutoMapper;
+using DocumentFormat.OpenXml.Drawing.Charts;
 using Domain.Entities;
 using Domain.EntityRelationship;
 using System.Net;
@@ -36,16 +37,20 @@ namespace Applications.Services
         {
             var module = await _unitOfWork.ModuleRepository.ToPagination(pageIndex, pageSize);
             var result = _mapper.Map<Pagination<ModuleViewModels>>(module);
+
             var guidList = module.Items.Select(x => x.CreatedBy).ToList();
+            var users = await _unitOfWork.UserRepository.GetEntitiesByIdsAsync(guidList);
             foreach (var item in result.Items)
             {
-                foreach (var user in guidList)
+                if (string.IsNullOrEmpty(item.CreatedBy)) continue;
+
+                var createdBy = users.FirstOrDefault(x => x.Id == Guid.Parse(item.CreatedBy));
+                if (createdBy != null)
                 {
-                    var createBy = await _unitOfWork.UserRepository.GetByIdAsync(user);
-                    item.CreatedBy = createBy.Email;
+                    item.CreatedBy = createdBy.Email;
                 }
             }
-            if (module.Items.Count() < 1) return new Response(HttpStatusCode.NoContent, "No Module Found");
+            if (module.Items.Count() < 1) return new Response(HttpStatusCode.NoContent, "Not Found");
             else return new Response(HttpStatusCode.OK, "Search Succeed", result);
         }
 
