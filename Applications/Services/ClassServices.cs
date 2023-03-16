@@ -77,7 +77,7 @@ namespace Applications.Services
 
         public async Task<Pagination<ClassViewModel>> GetAllClasses(int pageIndex = 0, int pageSize = 10)
         {
-            var classes = await _unitOfWork.ClassRepository.ToPagination(pageIndex = 0, pageSize = 10);
+            var classes = await _unitOfWork.ClassRepository.ToPagination(pageIndex, pageSize);
             var result = _mapper.Map<Pagination<ClassViewModel>>(classes);
 
             var guidList = classes.Items.Select(x => x.CreatedBy).ToList();
