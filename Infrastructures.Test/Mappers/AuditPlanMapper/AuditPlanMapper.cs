@@ -39,7 +39,7 @@ namespace Infrastructures.Tests.Mappers.AuditPlanMapper
             //act
             var result = _mapperConfig.Map<UpdateAuditPlanViewModel>(auditplanMock);
             //assert
-            result.Id.Should().Be(auditplanMock.Id.ToString());
+            result.AuditPlanName.Should().Be(auditplanMock.AuditPlanName.ToString());
         }
     }
 }

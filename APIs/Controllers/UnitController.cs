@@ -5,6 +5,8 @@ using FluentValidation;
 using Applications.Interfaces;
 using Applications.ViewModels.Response;
 using Microsoft.AspNetCore.Authorization;
+using Applications.Services;
+using Domain.Entities;
 
 namespace APIs.Controllers
 {
@@ -53,15 +55,14 @@ namespace APIs.Controllers
                 ValidationResult result = _unitValidation.Validate(UnitModel);
                 if (result.IsValid)
                 {
-                    await _unitServices.UpdateUnitAsync(UnitId, UnitModel);
-                }
-                else
-                {
-                    var error = result.Errors.Select(x => x.ErrorMessage).ToList();
-                    return BadRequest(error);
+                    if (await _unitServices.UpdateUnitAsync(UnitId, UnitModel) != null)
+                    {
+                        return Ok("Update Assignment Success");
+                    }
+                    return BadRequest("Invalid AuditPlan Id");
                 }
             }
-            return Ok("Update Quizz Success");
+            return BadRequest("Update Failed,Invalid Input Information");
         }
 
         [HttpGet("GetEnableUnits")]

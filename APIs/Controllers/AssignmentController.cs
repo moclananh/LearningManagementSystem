@@ -1,9 +1,6 @@
-﻿using Applications.Commons;
-using Applications.Interfaces;
-using Applications.Services;
+﻿using Applications.Interfaces;
 using Applications.ViewModels.AssignmentViewModels;
 using Applications.ViewModels.Response;
-using Domain.Entities;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
@@ -15,16 +12,16 @@ namespace APIs.Controllers
     public class AssignmentController : ControllerBase
     {
         private readonly IAssignmentService _assignmentService;
-        private readonly IValidator<CreateAssignmentViewModel> _validator;
-        private readonly IValidator<UpdateAssignmentViewModel> _validator1;
+        private readonly IValidator<CreateAssignmentViewModel> _validatorCreate;
+        private readonly IValidator<UpdateAssignmentViewModel> _validatorUpdate;
 
         public AssignmentController(IAssignmentService assignmentServices,
-             IValidator<CreateAssignmentViewModel> validator,
-             IValidator<UpdateAssignmentViewModel> validator1)
+             IValidator<CreateAssignmentViewModel> validatorCreate,
+             IValidator<UpdateAssignmentViewModel> validatorUpdate)
         {
             _assignmentService = assignmentServices;
-            _validator = validator;
-            _validator1 = validator1;
+            _validatorCreate = validatorCreate;
+            _validatorUpdate = validatorUpdate;
         }
         [HttpGet("GetAllAssignment")]
         public async Task<Response> ViewAllAssignmentAsync(int pageIndex = 0, int pageSize = 10) => await _assignmentService.ViewAllAssignmentAsync(pageIndex, pageSize);
@@ -34,7 +31,7 @@ namespace APIs.Controllers
         {
             if (ModelState.IsValid)
             {
-                ValidationResult result = _validator.Validate(AssignmentModel);
+                ValidationResult result = _validatorCreate.Validate(AssignmentModel);
                 if (result.IsValid)
                 {
                     await _assignmentService.CreateAssignmentAsync(AssignmentModel);
@@ -65,7 +62,7 @@ namespace APIs.Controllers
         {
             if (ModelState.IsValid)
             {
-                ValidationResult result = _validator1.Validate(assignmentDTO);
+                ValidationResult result = _validatorUpdate.Validate(assignmentDTO);
                 if (result.IsValid)
                 {
                     if (await _assignmentService.UpdateAssignment(AssignmentId, assignmentDTO) != null)

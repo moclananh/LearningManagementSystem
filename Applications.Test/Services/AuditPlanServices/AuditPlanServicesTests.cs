@@ -2,15 +2,12 @@
 using Applications.Services;
 using Applications.ViewModels.AuditPlanViewModel;
 using AutoFixture;
-using DocumentFormat.OpenXml.Spreadsheet;
 using Domain.Entities;
 using Domain.EntityRelationship;
 using Domain.Tests;
 using FluentAssertions;
-using Infrastructures;
 using Microsoft.EntityFrameworkCore;
 using Moq;
-using System.Security.AccessControl;
 
 namespace Applications.Tests.Services.AuditPlanServices
 {
@@ -26,8 +23,7 @@ namespace Applications.Tests.Services.AuditPlanServices
         [Fact]
         public async Task GetAllAuditPlans_ShouldReturnCorrectData()
         {
-            //arrange
-            var auditPlanMockData = new Pagination<AuditPlan>
+            var auditplanMockData = new Pagination<AuditPlan>
             {
                 Items = _fixture.Build<AuditPlan>()
                                 .Without(x => x.Module)
@@ -41,18 +37,16 @@ namespace Applications.Tests.Services.AuditPlanServices
                 PageSize = 10,
                 TotalItemsCount = 30,
             };
-            var expected = _mapperConfig.Map<Pagination<AuditPlanViewModel>>(auditPlanMockData);
-            var guidList = auditPlanMockData.Items.Select(x => x.CreatedBy).ToList();
-            foreach (var item in expected.Items)
-            {
-                foreach (var user in guidList)
-                {
-                    var createBy = new User { Email = "mock@example.com" };
-                    _unitOfWorkMock.Setup(x => x.UserRepository.GetByIdAsync(user)).ReturnsAsync(createBy);
-                    item.CreatedBy = createBy.Email;
-                }
-            }
-            _unitOfWorkMock.Setup(x => x.AuditPlanRepository.ToPagination(0, 10)).ReturnsAsync(auditPlanMockData);
+            var user = _fixture.Build<User>()
+                               .Without(x => x.UserAuditPlans)
+                               .Without(x => x.AbsentRequests)
+                               .Without(x => x.ClassUsers)
+                               .Without(x => x.Attendences)
+                               .CreateMany(3)
+                               .ToList();
+            var expected = _mapperConfig.Map<Pagination<AuditPlan>>(auditplanMockData);
+            _unitOfWorkMock.Setup(x => x.AuditPlanRepository.ToPagination(0, 10)).ReturnsAsync(auditplanMockData);
+            _unitOfWorkMock.Setup(x => x.UserRepository.GetEntitiesByIdsAsync(It.IsAny<List<Guid?>>())).ReturnsAsync(user);
             //act
             var result = await _auditPlanService.GetAllAuditPlanAsync();
             //assert

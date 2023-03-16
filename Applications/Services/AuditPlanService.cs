@@ -37,11 +37,13 @@ namespace Applications.Services
             var auditPlans = await _unitOfWork.AuditPlanRepository.ToPagination(pageIndex, pageSize);
             var result = _mapper.Map<Pagination<AuditPlanViewModel>>(auditPlans);
             var guidList = auditPlans.Items.Select(x => x.CreatedBy).ToList();
+            var users = await _unitOfWork.UserRepository.GetEntitiesByIdsAsync(guidList);
             foreach (var item in result.Items)
             {
-                foreach (var user in guidList)
+                if (string.IsNullOrEmpty(item.CreatedBy)) continue;
+                var createBy = users.FirstOrDefault(x => x.Id == Guid.Parse(item.CreatedBy));
+                if (createBy != null)
                 {
-                    var createBy = await _unitOfWork.UserRepository.GetByIdAsync(user);
                     item.CreatedBy = createBy.Email;
                 }
             }

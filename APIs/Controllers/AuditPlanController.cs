@@ -77,14 +77,14 @@ namespace APIs.Controllers
                 ValidationResult result = _validatorUpdate.Validate(updateAuditPlanView);
                 if (result.IsValid)
                 {
-                    await _auditPlanService.UpdateAuditPlanAsync(AuditPlanId, updateAuditPlanView);
-                }
-                else
-                {
-                    return BadRequest("Update AuditPlan Fail");
+                    if (await _auditPlanService.UpdateAuditPlanAsync(AuditPlanId, updateAuditPlanView) != null)
+                    {
+                        return Ok("Update Assignment Success");
+                    }
+                    return BadRequest("Invalid AuditPlan Id");
                 }
             }
-            return Ok("Update AuditPlan Success");
+            return BadRequest("Update Failed,Invalid Input Information");
         }
 
         [HttpPost("AuditPlan/AddUser/{AuditPlanId}/{UserId}"), Authorize(policy: "AuthUser")]

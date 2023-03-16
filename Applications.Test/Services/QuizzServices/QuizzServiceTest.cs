@@ -35,18 +35,16 @@ namespace Applications.Tests.Services.QuizzServices
                 PageSize = 10,
                 TotalItemsCount = 30
             };
+            var user = _fixture.Build<User>()
+                               .Without(x => x.UserAuditPlans)
+                               .Without(x => x.AbsentRequests)
+                               .Without(x => x.ClassUsers)
+                               .Without(x => x.Attendences)
+                               .CreateMany(3)
+                               .ToList();
             var expected = _mapperConfig.Map<Pagination<QuizzViewModel>>(mockdata);
-            var guidList = mockdata.Items.Select(x => x.CreatedBy).ToList();
-            foreach (var item in expected.Items)
-            {
-                foreach (var user in guidList)
-                {
-                    var createBy = new User { Email = "mock@example.com" };
-                    _unitOfWorkMock.Setup(x => x.UserRepository.GetByIdAsync(user)).ReturnsAsync(createBy);
-                    item.CreatedBy = createBy.Email;
-                }
-            }
             _unitOfWorkMock.Setup(x => x.QuizzRepository.ToPagination(0, 10)).ReturnsAsync(mockdata);
+            _unitOfWorkMock.Setup(x => x.UserRepository.GetEntitiesByIdsAsync(It.IsAny<List<Guid?>>())).ReturnsAsync(user);
             //act
             var result = await _quizzService.GetAllQuizzes();
             //assert

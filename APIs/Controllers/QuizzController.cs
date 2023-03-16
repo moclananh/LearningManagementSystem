@@ -1,6 +1,8 @@
 ﻿using Application.ViewModels.QuizzViewModels;
 using Applications.Interfaces;
+using Applications.Services;
 using Applications.ViewModels.Response;
+using Domain.Entities;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Authorization;
@@ -68,14 +70,14 @@ namespace APIs.Controllers
                 ValidationResult result = _updateQuizzValidator.Validate(updateQuizzView);
                 if (result.IsValid)
                 {
-                    await _quizzServices.UpdatQuizzAsync(QuizzId, updateQuizzView);
-                }
-                else
-                {
-                    return BadRequest("Update Quizz Fail");
+                    if (await _quizzServices.UpdatQuizzAsync(QuizzId, updateQuizzView) != null)
+                    {
+                        return Ok("Update Assignment Success");
+                    }
+                    return BadRequest("Invalid Quizz Id");
                 }
             }
-            return Ok("Update Quizz Success");
+            return BadRequest("Update Failed,Invalid Input Information");
         }
     }
 }
