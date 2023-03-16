@@ -1,9 +1,11 @@
-﻿using Applications.Commons;
+﻿using Application.ViewModels.UnitViewModels;
+using Applications.Commons;
 using Applications.Interfaces;
 using Applications.ViewModels.OutputStandardViewModels;
 using Applications.ViewModels.Response;
 using Applications.ViewModels.SyllabusOutputStandardViewModels;
 using AutoMapper;
+using DocumentFormat.OpenXml.Wordprocessing;
 using Domain.Entities;
 using Domain.EntityRelationship;
 using System.Net;
@@ -104,8 +106,22 @@ namespace Applications.Services
         public async Task<Response> GetAllOutputStandardAsync(int pageIndex = 0, int pageSize = 10)
         {
             var outputStandard = await _unitOfWork.OutputStandardRepository.ToPagination(pageIndex, pageSize);
+            var result = _mapper.Map<Pagination<OutputStandardViewModel>>(outputStandard);
+            var guidList = outputStandard.Items.Select(x => x.CreatedBy).ToList();
+            var users = await _unitOfWork.UserRepository.GetEntitiesByIdsAsync(guidList);
+
+            foreach (var item in result.Items)
+            {
+                if (string.IsNullOrEmpty(item.CreatedBy)) continue;
+
+                var createdBy = users.FirstOrDefault(x => x.Id == Guid.Parse(item.CreatedBy));
+                if (createdBy != null)
+                {
+                    item.CreatedBy = createdBy.Email;
+                }
+            }
             if (outputStandard.Items.Count() < 1) return new Response(HttpStatusCode.NoContent, "Not Found");
-            else return new Response(HttpStatusCode.OK, "Search Succeed", _mapper.Map<Pagination<OutputStandardViewModel>>(outputStandard));
+            else return new Response(HttpStatusCode.OK, "Search Succeed", result);
         }
     }
 }

@@ -32,6 +32,7 @@ using APIs.Validations.OutputStandardValidations;
 using Applications.ViewModels.AuditResultViewModels;
 using APIs.Validations.AuditResultValidations;
 using System.Text.Json.Serialization;
+using Domain.Entities;
 
 namespace APIs;
 
@@ -71,6 +72,7 @@ public static class DependencyInjection
         services.AddScoped<IValidator<UpdateOutputStandardViewModel>, UpdateOutputStandardValidation>();
         services.AddScoped<IValidator<UpdateAuditResultViewModel>, UpdateAuditResultValidation>();
         services.AddScoped<IValidator<CreatePracticeViewModel>, CreatePracticeValidation>();
+        services.AddScoped<IValidator<CreateOutputStandardViewModel>, CreateOutputStandardValidation>();
         //---------------------------------------------------------------------------------------
         services.AddAuthentication(option =>
         {

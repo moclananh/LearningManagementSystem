@@ -1,4 +1,5 @@
 ﻿using Applications.Commons;
+using Applications.ViewModels.Response;
 using Domain.Entities;
 
 namespace Applications.Repositories
