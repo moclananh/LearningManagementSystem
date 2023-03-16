@@ -1,6 +1,7 @@
 ﻿using Applications.Commons;
 using Applications.Interfaces;
 using Applications.ViewModels.ClassTrainingProgramViewModels;
+using Applications.ViewModels.ClassUserViewModels;
 using Applications.ViewModels.ClassViewModels;
 using AutoFixture;
 using Domain.Entities;
@@ -544,6 +545,138 @@ namespace Applications.Tests.Services.ClassServices
             var result = await _classService.GetClassByName("Net", 0, 10);
             //assert
             result.Should().BeEquivalentTo(expected);
+        }
+        [Fact]
+        public async Task RemoveUserToClass_ShouldReturnCorrectData()
+        {
+            //arrange
+            var classMocks = _fixture.Build<Class>()
+                                .Without(x => x.AbsentRequests)
+                                .Without(x => x.Attendences)
+                                .Without(x => x.AuditPlans)
+                                .Without(x => x.ClassUsers)
+                                .Without(x => x.ClassTrainingPrograms)
+                                .Create();
+            var userMockData = _fixture.Build<User>()
+                                        .Without(x => x.AbsentRequests)
+                                        .Without(x => x.Attendences)
+                                        .Without(x => x.UserAuditPlans)
+                                        .Without(x => x.ClassUsers)
+                                        .Create();
+            var classUser = new ClassUser()
+            {
+                ClassId = classMocks.Id,
+                UserId = userMockData.Id,
+                Class = classMocks,
+                User = userMockData
+            };
+            _unitOfWorkMock.Setup(x => x.ClassUserRepository.GetClassUser(classMocks.Id, userMockData.Id)).ReturnsAsync(classUser);
+            _unitOfWorkMock.Setup(x => x.ClassUserRepository.SoftRemove(It.IsAny<ClassUser>()));
+            _unitOfWorkMock.Setup(x => x.SaveChangeAsync()).ReturnsAsync(1);
+            var expected = _mapperConfig.Map<CreateClassUserViewModel>(classUser);
+            //act
+            var result = await _classService.RemoveUserFromClass(classMocks.Id, userMockData.Id);
+            //assert
+            result.Should().BeEquivalentTo(expected);
+        }
+        [Fact]
+        public async Task RemoveUserToClass_ShouldReturnNull_WhenNotFoundClass()
+        {
+            //arrange
+            var classMocks = _fixture.Build<Class>()
+                                .Without(x => x.AbsentRequests)
+                                .Without(x => x.Attendences)
+                                .Without(x => x.AuditPlans)
+                                .Without(x => x.ClassUsers)
+                                .Without(x => x.ClassTrainingPrograms)
+                                .Create();
+            var userMockData = _fixture.Build<User>()
+                                        .Without(x => x.AbsentRequests)
+                                        .Without(x => x.Attendences)
+                                        .Without(x => x.UserAuditPlans)
+                                        .Without(x => x.ClassUsers)
+                                        .Create();
+            var classUser = new ClassUser()
+            {
+                ClassId = classMocks.Id,
+                UserId = userMockData.Id,
+                Class = classMocks,
+                User = userMockData
+            };
+            _unitOfWorkMock.Setup(x => x.ClassUserRepository.GetClassUser(It.IsAny<Guid>(), It.IsAny<Guid>())).ReturnsAsync(() => null);
+            _unitOfWorkMock.Setup(x => x.ClassUserRepository.SoftRemove(It.IsAny<ClassUser>()));
+            _unitOfWorkMock.Setup(x => x.SaveChangeAsync()).ReturnsAsync(1);
+            var expected = _mapperConfig.Map<CreateClassUserViewModel>(classUser);
+            //act
+            var result = await _classService.RemoveUserFromClass(classMocks.Id, userMockData.Id);
+            //assert
+            result.Should().BeNull();
+        }
+        [Fact]
+        public async Task RemoveUserToClass_ShouldReturnNull_WhenSavedFail()
+        {
+            //arrange
+            var classMocks = _fixture.Build<Class>()
+                                .Without(x => x.AbsentRequests)
+                                .Without(x => x.Attendences)
+                                .Without(x => x.AuditPlans)
+                                .Without(x => x.ClassUsers)
+                                .Without(x => x.ClassTrainingPrograms)
+                                .Create();
+            var userMockData = _fixture.Build<User>()
+                                        .Without(x => x.AbsentRequests)
+                                        .Without(x => x.Attendences)
+                                        .Without(x => x.UserAuditPlans)
+                                        .Without(x => x.ClassUsers)
+                                        .Create();
+            var classUser = new ClassUser()
+            {
+                ClassId = classMocks.Id,
+                UserId = userMockData.Id,
+                Class = classMocks,
+                User = userMockData
+            };
+            _unitOfWorkMock.Setup(x => x.ClassUserRepository.GetClassUser(It.IsAny<Guid>(), It.IsAny<Guid>())).ReturnsAsync(classUser);
+            _unitOfWorkMock.Setup(x => x.ClassUserRepository.SoftRemove(It.IsAny<ClassUser>()));
+            _unitOfWorkMock.Setup(x => x.SaveChangeAsync()).ReturnsAsync(0);
+            var expected = _mapperConfig.Map<CreateClassUserViewModel>(classUser);
+            //act
+            var result = await _classService.RemoveUserFromClass(classMocks.Id, userMockData.Id);
+            //assert
+            result.Should().BeNull();
+        }
+        [Fact]
+        public async Task RemoveUserToClass_ShouldReturnNull_WhenSaveChangedFailed()
+        {
+            //arrange
+            var classMocks = _fixture.Build<Class>()
+                                .Without(x => x.AbsentRequests)
+                                .Without(x => x.Attendences)
+                                .Without(x => x.AuditPlans)
+                                .Without(x => x.ClassUsers)
+                                .Without(x => x.ClassTrainingPrograms)
+                                .Create();
+            var userMockData = _fixture.Build<User>()
+                                        .Without(x => x.AbsentRequests)
+                                        .Without(x => x.Attendences)
+                                        .Without(x => x.UserAuditPlans)
+                                        .Without(x => x.ClassUsers)
+                                        .Create();
+            var classUser = new ClassUser()
+            {
+                ClassId = classMocks.Id,
+                UserId = userMockData.Id,
+                Class = classMocks,
+                User = userMockData
+            };
+            _unitOfWorkMock.Setup(x => x.ClassUserRepository.GetClassUser(It.IsAny<Guid>(), It.IsAny<Guid>())).ReturnsAsync(() => null);
+            _unitOfWorkMock.Setup(x => x.ClassUserRepository.SoftRemove(It.IsAny<ClassUser>()));
+            _unitOfWorkMock.Setup(x => x.SaveChangeAsync()).ReturnsAsync(0);
+            var expected = _mapperConfig.Map<CreateClassUserViewModel>(classUser);
+            //act
+            var result = await _classService.RemoveUserFromClass(classMocks.Id, userMockData.Id);
+            //assert
+            result.Should().BeNull();
         }
     }
 }

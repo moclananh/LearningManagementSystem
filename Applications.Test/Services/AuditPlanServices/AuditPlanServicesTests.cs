@@ -2,6 +2,7 @@
 using Applications.Services;
 using Applications.ViewModels.AuditPlanViewModel;
 using AutoFixture;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Domain.Entities;
 using Domain.EntityRelationship;
 using Domain.Tests;
@@ -477,6 +478,13 @@ namespace Applications.Tests.Services.AuditPlanServices
                                         .Without(x => x.AuditResults)
                                         .Without(x => x.AuditQuestions)
                                         .Create();
+            var user = _fixture.Build<User>()
+                               .Without(x => x.UserAuditPlans)
+                               .Without(x => x.AbsentRequests)
+                               .Without(x => x.ClassUsers)
+                               .Without(x => x.Attendences)
+                               .CreateMany(3)
+                               .ToList();
             await _dbContext.Users.AddRangeAsync(userMockData);
             await _dbContext.AuditPlans.AddAsync(auditPlanMockData);
             await _dbContext.SaveChangesAsync();
@@ -504,6 +512,7 @@ namespace Applications.Tests.Services.AuditPlanServices
             };
             var expected = _mapperConfig.Map<Pagination<UserAuditPlan>>(userAuditPlans);
             _unitOfWorkMock.Setup(x => x.UserAuditPlanRepository.ToPagination(0, 10)).ReturnsAsync(userAuditPlans);
+            _unitOfWorkMock.Setup(x => x.UserRepository.GetEntitiesByIdsAsync(It.IsAny<List<Guid?>>())).ReturnsAsync(user);
             //act
             var result = await _auditPlanService.GetAllUserAuditPlanAsync();
             //assert
