@@ -7,8 +7,10 @@ using Applications.Repositories;
 using Applications.Services;
 using AutoFixture;
 using AutoMapper;
+using Domain.Entities;
 using Infrastructures;
 using Infrastructures.Mappers;
+using Infrastructures.Mappers.UserMapperResovlers;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 
@@ -63,6 +65,7 @@ namespace Domain.Tests
             var mappingConfig = new MapperConfiguration(mc =>
             {
                 mc.AddProfile(new MapperConfig());
+                mc.ConstructServicesUsing(s => new CreateByResolver(_unitOfWorkMock.Object));
             });
             _mapperConfig = mappingConfig.CreateMapper();
             _fixture = new Fixture();

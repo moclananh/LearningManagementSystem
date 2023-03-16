@@ -11,6 +11,7 @@ using Application.Repositories;
 using Infrastructure.Repositories;
 using Application.Interfaces;
 using Application.Services;
+using Infrastructures.Mappers.UserMapperResovlers;
 
 namespace Infrastructures
 {
