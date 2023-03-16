@@ -1,6 +1,8 @@
 ﻿using Applications.Interfaces;
+using Applications.Services;
 using Applications.ViewModels.AuditPlanViewModel;
 using Applications.ViewModels.Response;
+using Domain.Entities;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Authorization;
@@ -57,14 +59,14 @@ namespace APIs.Controllers
                 ValidationResult result = _validatorCreate.Validate(createAuditPlanViewModel);
                 if (result.IsValid)
                 {
-                    await _auditPlanService.CreateAuditPlanAsync(createAuditPlanViewModel);
-                }
-                else
-                {
-                    return BadRequest("Fail to create new AuditPlan");
+                    if(await _auditPlanService.CreateAuditPlanAsync(createAuditPlanViewModel) != null)
+                    {
+                        return Ok("Update AuditPlan Success");
+                    }
+                    return BadRequest("Invalid Id");
                 }
             }
-            return Ok("Create new AuditPlan Success");
+            return BadRequest("Update Failed,Invalid Input Information");
         }
 
         [HttpPut("UpdateAuditPlan/{AuditPlanId}"), Authorize(policy: "AuthUser")]

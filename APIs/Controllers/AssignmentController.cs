@@ -68,15 +68,14 @@ namespace APIs.Controllers
                 ValidationResult result = _validator1.Validate(assignmentDTO);
                 if (result.IsValid)
                 {
-                    await _assignmentService.UpdateAssignment(AssignmentId, assignmentDTO);
-                }
-                else
-                {
-                    var error = result.Errors.Select(x => x.ErrorMessage).ToList();
-                    return BadRequest(error);
+                    if (await _assignmentService.UpdateAssignment(AssignmentId, assignmentDTO) != null)
+                    {
+                        return Ok("Update Assignment Success");
+                    }   
+                    return BadRequest("Invalid Id");
                 }
             }
-            return Ok("Update Assignment Success");
+            return BadRequest("Update Failed,Invalid Input Information");
         }
 
         [HttpGet("GetAssignmentByName/{AssignmentName}")]
