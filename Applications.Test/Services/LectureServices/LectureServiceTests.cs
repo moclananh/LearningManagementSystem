@@ -29,19 +29,16 @@ namespace Applications.Tests.Services.LectureServices
                 PageSize = 100,
                 TotalItemsCount = 100
             };
-            var expectedResult = _mapperConfig.Map<Pagination<LectureViewModel>>(mockData);
-            var guidList = mockData.Items.Select(x => x.CreatedBy).ToList();
-            foreach (var item in expectedResult.Items)
-            {
-                foreach (var user in guidList)
-                {
-                    var createBy = new User { Email = "mock@example.com" };
-                    _unitOfWorkMock.Setup(x => x.UserRepository.GetByIdAsync(user)).ReturnsAsync(createBy);
-                    item.CreatedBy = createBy.Email;
-                }
-            }
+            var user = _fixture.Build<User>()
+                               .Without(x => x.UserAuditPlans)
+                               .Without(x => x.AbsentRequests)
+                               .Without(x => x.ClassUsers)
+                               .Without(x => x.Attendences)
+                               .CreateMany(3)
+                               .ToList();
+            var expected = _mapperConfig.Map<Pagination<LectureViewModel>>(mockData);
             _unitOfWorkMock.Setup(x => x.LectureRepository.ToPagination(0, 10)).ReturnsAsync(mockData);
-
+            _unitOfWorkMock.Setup(x => x.UserRepository.GetEntitiesByIdsAsync(It.IsAny<List<Guid?>>())).ReturnsAsync(user);
             //act
             var result = await _lectureService.GetAllLectures();
 
