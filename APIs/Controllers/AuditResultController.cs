@@ -1,5 +1,6 @@
 ﻿using Application.Interfaces;
 using Applications.ViewModels.AuditResultViewModels;
+using Domain.Entities;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
@@ -33,10 +34,11 @@ namespace API.Controllers
                 ValidationResult result = _updateValidator.Validate(assignmentDTO);
                 if (result.IsValid)
                 {
-                    await _service.UpdateAuditResult(AuditResultId, assignmentDTO);
-                } else
-                {
-                    return BadRequest("Update AuditResult Fail");
+                    if (await _service.UpdateAuditResult(AuditResultId, assignmentDTO) != null)
+                    {
+                        return Ok("Update AuditResult Success");
+                    }
+                    return BadRequest("Invalid AuditResult Id");
                 }
             }
             return Ok("Update AuditResult Success");
