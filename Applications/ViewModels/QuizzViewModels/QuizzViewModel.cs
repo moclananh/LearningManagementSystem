@@ -13,7 +13,7 @@ namespace Application.ViewModels.QuizzViewModels
     {
         public Guid QuizzId { get; set; }
         public Guid UnitId { get; set; }
-        public string QuizzName { get; set; }
+        public string QuizzName { get; set; } 
         public string Description { get; set; }
         public string Note { get; set; }
         public string Deadline { get; set; }

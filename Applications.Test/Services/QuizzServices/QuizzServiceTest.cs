@@ -2,7 +2,6 @@
 using Applications.Commons;
 using Applications.Interfaces;
 using Applications.Services;
-using Applications.ViewModels.PracticeViewModels;
 using AutoFixture;
 using Domain.Entities;
 using Domain.Tests;
