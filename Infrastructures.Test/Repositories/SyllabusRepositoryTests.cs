@@ -37,10 +37,11 @@ namespace Infrastructures.Tests.Repositories
                            .ToList();
             await _dbContext.Syllabi.AddRangeAsync(mockData);
             await _dbContext.SaveChangesAsync();
-            var expected = mockData.Where(s => s.Status == Domain.Enum.StatusEnum.Status.Enable)
-                                   .OrderByDescending(s => s.CreationDate)
-                                   .Take(10)
-                                   .ToList();
+            var expected = _dbContext.Syllabi.Where(s => s.Status == Domain.Enum.StatusEnum.Status.Enable)
+                                             .Include(s => s.SyllabusOutputStandards).ThenInclude(s => s.OutputStandard)
+                                             .OrderByDescending(s => s.CreationDate)
+                                             .Take(10)
+                                             .ToList();
 
             //act
             var resultPaging = await _syllabusRepository.GetEnableSyllabus();
@@ -70,10 +71,11 @@ namespace Infrastructures.Tests.Repositories
                            .ToList();
             await _dbContext.Syllabi.AddRangeAsync(mockData);
             await _dbContext.SaveChangesAsync();
-            var expected = mockData.Where(s => s.Status == Domain.Enum.StatusEnum.Status.Disable)
-                                   .OrderByDescending(s => s.CreationDate)
-                                   .Take(10)
-                                   .ToList();
+            var expected = _dbContext.Syllabi.Where(s => s.Status == Domain.Enum.StatusEnum.Status.Disable)
+                                             .Include(s => s.SyllabusOutputStandards).ThenInclude(s => s.OutputStandard)
+                                             .OrderByDescending(s => s.CreationDate)
+                                             .Take(10)
+                                             .ToList();
 
             //act
             var resultPaging = await _syllabusRepository.GetDisableSyllabus();
@@ -103,10 +105,11 @@ namespace Infrastructures.Tests.Repositories
                            .ToList();
             await _dbContext.Syllabi.AddRangeAsync(mockData);
             await _dbContext.SaveChangesAsync();
-            var expected = mockData.Where(s => s.SyllabusName!.Contains("Mock"))
-                                   .OrderByDescending(s => s.CreationDate)
-                                   .Take(10)
-                                   .ToList();
+            var expected = _dbContext.Syllabi.Where(s => s.SyllabusName!.Contains("Mock"))
+                                             .Include(s => s.SyllabusOutputStandards).ThenInclude(s => s.OutputStandard)
+                                             .OrderByDescending(s => s.CreationDate)
+                                             .Take(10)
+                                             .ToList();
 
             //act
             var resultPaging = await _syllabusRepository.GetSyllabusByName("Mock");
@@ -228,7 +231,7 @@ namespace Infrastructures.Tests.Repositories
             _dbContext.Syllabi.Add(mockData);
             await _dbContext.SaveChangesAsync();
             //act
-            var result = await _syllabusRepository.GetSyllabusDetails(mockData.Id);
+            var result = await _syllabusRepository.GetSyllabusDetail(mockData.Id);
             //assert
             result.Should().NotBeNull();
             result.Id.Should().Be(mockData.Id);

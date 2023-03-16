@@ -16,6 +16,8 @@ namespace Applications.ViewModels.SyllabusViewModels
         public Status Status { get; set; }
         public DateTime CreationDate { get; set; }
         public string? CreatedBy { get; set; }
+        public DateTime? ModificationDate { get; set; }
+        public string? ModificationBy { get; set; }
         public bool IsDeleted { get; set; }
         public ICollection<TrainingProgramSyllabus> TrainingProgramSyllabi { get; set; }
         public ICollection<SyllabusOutputStandard> SyllabusOutputStandards { get; set; }

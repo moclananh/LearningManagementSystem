@@ -54,15 +54,14 @@ namespace APIs.Controllers
                 ValidationResult syllabus = _validatorUpdate.Validate(SyllabusModel);
                 if (syllabus.IsValid)
                 {
-                    await _syllabusServices.UpdateSyllabus(SyllabusId, SyllabusModel);
-                }
-                else
-                {
-                    var error = syllabus.Errors.Select(x => x.ErrorMessage).ToList();
-                    return BadRequest(error);
+                    if (await _syllabusServices.UpdateSyllabus(SyllabusId, SyllabusModel) != null)
+                    {
+                        return Ok("Update Syllabus Success");
+                    }
+                    return BadRequest("Invalid Syllabus Id");
                 }
             }
-            return Ok("Update Syllabus Success");
+            return Ok("Update Fail, Invalid Input Information");
         }
 
        /* [HttpGet("GetAllSyllabus")]

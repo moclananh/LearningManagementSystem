@@ -127,7 +127,7 @@ namespace Infrastructures.Repositories
             return result;
         }
 
-        public async Task<Syllabus> GetSyllabusDetails(Guid syllabusId)
+        public async Task<Syllabus> GetSyllabusDetail(Guid SyllabusId)
         {
 
             var result = _dbContext.Syllabi.Include(x => x.SyllabusOutputStandards).ThenInclude(x => x.OutputStandard)
@@ -135,7 +135,7 @@ namespace Infrastructures.Repositories
                                                     .Include(x => x.SyllabusModules).ThenInclude(x => x.Module).ThenInclude(x => x.ModuleUnits).ThenInclude(x => x.Unit).ThenInclude(x => x.Assignments)
                                                     .Include(x => x.SyllabusModules).ThenInclude(x => x.Module).ThenInclude(x => x.ModuleUnits).ThenInclude(x => x.Unit).ThenInclude(x => x.Practices)
                                                     .Include(x => x.TrainingProgramSyllabi)
-                                           .FirstOrDefault(x => x.Id == syllabusId);
+                                           .FirstOrDefault(x => x.Id == SyllabusId);
             return result;
         }
 

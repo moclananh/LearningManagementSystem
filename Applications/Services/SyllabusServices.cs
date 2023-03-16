@@ -57,9 +57,20 @@ namespace Applications.Services
         public async Task<Response> GetAllSyllabus(int pageNumber = 0, int pageSize = 10)
         {
             var syllabus = await _unitOfWork.SyllabusRepository.ToPagination(pageNumber, pageSize);
+            var result = _mapper.Map<Pagination<SyllabusViewModel>>(syllabus);
+            var guidList = syllabus.Items.Select(s => s.CreatedBy).ToList();
+            var user = await _unitOfWork.UserRepository.GetEntitiesByIdsAsync(guidList);
+            foreach (var item in result.Items)
+            {
+                if (string.IsNullOrEmpty(item.CreatedBy)) { continue; }
+                var createBy = user.FirstOrDefault(s => s.Id == Guid.Parse(item.CreatedBy));
+                if (createBy != null)
+                {
+                    item.CreatedBy = createBy.Email;
+                }
+            }
             if (syllabus.Items.Count() < 1) return new Response(HttpStatusCode.NoContent, "No Syllabus Found");
-            else return new Response(HttpStatusCode.OK, "Search Succeed", _mapper.Map<Pagination<SyllabusViewModel>>(syllabus));
-
+            else return new Response(HttpStatusCode.OK, "Search Succeed", result);
         }
 
         public async Task<Response> GetDisableSyllabus(int pageNumber = 0, int pageSize = 10)
@@ -137,7 +148,7 @@ namespace Applications.Services
 
         public async Task<Response> GetSyllabusDetails(Guid syllabusId)
         {
-            var syllabus = await _unitOfWork.SyllabusRepository.GetSyllabusDetails(syllabusId);
+            var syllabus = await _unitOfWork.SyllabusRepository.GetSyllabusDetail(syllabusId);
             var result = _mapper.Map<SyllabusViewModel>(syllabus);
             var createBy = await _unitOfWork.UserRepository.GetByIdAsync(syllabus.CreatedBy);
             result.CreatedBy = createBy.Email;
@@ -150,11 +161,13 @@ namespace Applications.Services
             var syllabus = await _unitOfWork.SyllabusRepository.GetAllSyllabusDetail(pageNumber, pageSize);
             var result = _mapper.Map<Pagination<SyllabusViewModel>>(syllabus);
             var guidList = syllabus.Items.Select(s => s.CreatedBy).ToList();
+            var user = await _unitOfWork.UserRepository.GetEntitiesByIdsAsync(guidList);
             foreach (var item in result.Items)
             {
-                foreach (var user in guidList)
+                if (string.IsNullOrEmpty(item.CreatedBy)) { continue; }
+                var createBy = user.FirstOrDefault(s => s.Id == Guid.Parse(item.CreatedBy));
+                if (createBy != null)
                 {
-                    var createBy = await _unitOfWork.UserRepository.GetByIdAsync(user);
                     item.CreatedBy = createBy.Email;
                 }
             }

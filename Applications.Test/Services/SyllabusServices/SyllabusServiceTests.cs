@@ -466,7 +466,7 @@ namespace Applications.Tests.Services.SyllabusServices
                                  .Without(s => s.TrainingProgramSyllabi)
                                 .Create();
 
-            _unitOfWorkMock.Setup(x => x.SyllabusRepository.GetSyllabusDetails(It.IsAny<Guid>())).ReturnsAsync(mocks);
+            _unitOfWorkMock.Setup(x => x.SyllabusRepository.GetSyllabusDetail(It.IsAny<Guid>())).ReturnsAsync(mocks);
             var expected = _mapperConfig.Map<SyllabusViewModel>(mocks);
             var createBy = new User { Email = "mock@example.com" };
             _unitOfWorkMock.Setup(x => x.UserRepository.GetByIdAsync(mocks.CreatedBy)).ReturnsAsync(createBy);
@@ -474,7 +474,7 @@ namespace Applications.Tests.Services.SyllabusServices
             //act
             var result = await _syllabusService.GetSyllabusDetails(mocks.Id);
             //assert
-            _unitOfWorkMock.Verify(x => x.SyllabusRepository.GetSyllabusDetails(mocks.Id), Times.Once());
+            _unitOfWorkMock.Verify(x => x.SyllabusRepository.GetSyllabusDetail(mocks.Id), Times.Once());
         }
 
         [Fact]
