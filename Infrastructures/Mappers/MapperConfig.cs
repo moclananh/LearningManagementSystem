@@ -28,6 +28,7 @@ using Applications.ViewModels.QuizzQuestionViewModels;
 using Applications.ViewModels.SyllabusModuleViewModel;
 using Applications.ViewModels.ModuleUnitViewModels;
 using Applications.ViewModels.AttendanceViewModels;
+using Infrastructures.Mappers.UserMapperResovlers;
 
 namespace Infrastructures.Mappers
 {
@@ -48,7 +49,8 @@ namespace Infrastructures.Mappers
                .ForMember(dest => dest.QuizzId, src => src.MapFrom(x => x.Id));
             CreateMap<UserViewModel, User>();
             CreateMap<User, UserViewModel>()
-                .ForMember(dest => dest.Gender, src => src.MapFrom(s => s.Gender == true ? "Male":"Female"));
+                .ForMember(dest => dest.Gender, src => src.MapFrom(s => s.Gender == true ? "Male":"Female"))
+                .ForMember(dest => dest.createByEmail, src => src.MapFrom<CreateByResolver>());
             CreateMap<UpdateUserViewModel, User>().ReverseMap();
             CreateMap<CreateClassUserViewModel, ClassUser>().ReverseMap();
             CreateMap<AuditPlanViewModel, AuditPlan>().ReverseMap();

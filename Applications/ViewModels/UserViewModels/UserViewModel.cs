@@ -22,7 +22,6 @@ public class UserViewModel
     public string Level { get; set; }
     public string Status { get; set; }
     public string? OverallStatus { get; set; }
-    public Guid? CreateBy { get; set; }
+    public Guid? CreatedBy { get; set; }
     public string? createByEmail { get; set; }
-
 }

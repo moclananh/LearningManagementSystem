@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Domain.Enum.LevelEnum;
 
 namespace Applications.ViewModels.UserViewModels;
 
@@ -19,5 +20,5 @@ public class UpdateUserViewModel
     public Role Role { get; set; }
 
     public string Image { get; set; }
-    public string Level { get; set; }
+    public Level Level { get; set; }
 }
