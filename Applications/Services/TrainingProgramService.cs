@@ -45,14 +45,14 @@ namespace Applications.Services
             return null;
         }
 
-        public async Task<CreateTrainingProgramViewModel?> CreateTrainingProgramAsync(CreateTrainingProgramViewModel TrainingProgramDTO)
+        public async Task<TrainingProgramViewModel?> CreateTrainingProgramAsync(CreateTrainingProgramViewModel TrainingProgramDTO)
         {
             var TrainingProgramObj = _mapper.Map<TrainingProgram>(TrainingProgramDTO);
             await _unitOfWork.TrainingProgramRepository.AddAsync(TrainingProgramObj);
             var isSuccess = await _unitOfWork.SaveChangeAsync() > 0;
             if (isSuccess)
             {
-                return _mapper.Map<CreateTrainingProgramViewModel>(TrainingProgramObj);
+                return _mapper.Map<TrainingProgramViewModel>(TrainingProgramObj);
             }
             return null;
         }

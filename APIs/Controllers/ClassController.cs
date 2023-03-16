@@ -1,11 +1,13 @@
 ﻿using Applications.Commons;
 using Applications.Interfaces;
 using Applications.ViewModels.ClassViewModels;
+using Applications.ViewModels.Response;
 using Domain.Enum.ClassEnum;
 using Domain.Enum.StatusEnum;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace APIs.Controllers
 {
@@ -26,22 +28,22 @@ namespace APIs.Controllers
         }
 
         [HttpPost("CreateClass")]
-        public async Task<IActionResult> CreateClass(CreateClassViewModel ClassModel)
+        public async Task<Response> CreateClass(CreateClassViewModel ClassModel)
         {
             if (ModelState.IsValid)
             {
                 ValidationResult result = _validatorCreate.Validate(ClassModel);
                 if (result.IsValid)
                 {
-                    await _classServices.CreateClass(ClassModel);
-                }
-                else
-                {
-                    return BadRequest("Fail to create new Class");
+                    var Class = await _classServices.CreateClass(ClassModel);
+                    return new Response(HttpStatusCode.OK, "Create Class Succeed", Class);
                 }
             }
-
-            return Ok("Create new Class Success");
+            else
+            {
+                return new Response(HttpStatusCode.BadRequest, "Create Failed, Invalid input");
+            }
+            return new Response(HttpStatusCode.BadRequest, "Invalid Input");
         }
 
         [HttpGet("GetAllClasses")]

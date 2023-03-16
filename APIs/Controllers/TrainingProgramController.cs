@@ -8,13 +8,13 @@ using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace APIs.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-
     public class TrainingProgramController : ControllerBase
     {
         private readonly ITrainingProgramService _trainingProgramService;
@@ -29,22 +29,22 @@ namespace APIs.Controllers
         }
 
         [HttpPost("CreateTrainingProgram"), Authorize(policy: "AuthUser")]
-        public async Task<IActionResult> CreateTrainingProgram(CreateTrainingProgramViewModel CreateTrainingProgram)
+        public async Task<Response> CreateTrainingProgram(CreateTrainingProgramViewModel CreateTrainingProgram)
         {
             if (ModelState.IsValid)
             {
                 ValidationResult trainingprogram = _validatorCreate.Validate(CreateTrainingProgram);
                 if (trainingprogram.IsValid)
                 {
-                    await _trainingProgramService.CreateTrainingProgramAsync(CreateTrainingProgram);
+                    var result = await _trainingProgramService.CreateTrainingProgramAsync(CreateTrainingProgram);
+                    return new Response(HttpStatusCode.OK, "Create TrainingProgram Succeed", result);
                 }
                 else
                 {
-                    var error = trainingprogram.Errors.Select(x => x.ErrorMessage).ToList();
-                    return BadRequest(error);
+                    return new Response(HttpStatusCode.BadRequest, "Create Failed, Invalid input");
                 }
             }
-            return Ok("Create new TrainningProgram Success");
+            return new Response(HttpStatusCode.BadRequest, "Invalid Input");
         }
 
         [HttpPut("UpdateTrainingProgram/{TrainingProgramId}"), Authorize(policy: "AuthUser")]

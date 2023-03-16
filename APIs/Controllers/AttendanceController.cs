@@ -35,7 +35,6 @@ namespace APIs.Controllers
             }
             catch (Exception ex)
             {
-                // Log the exception or return an error response
                 return BadRequest($"An error occurred while exporting attendance: Plaese check Classcode and Date");
             }
         }

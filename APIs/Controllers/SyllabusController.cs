@@ -6,14 +6,13 @@ using FluentValidation.Results;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Globalization;
+using System.Net;
 using System.Web;
 
 namespace APIs.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize(policy: "AuthUser")]
-
     public class SyllabusController : ControllerBase
     {
         private readonly ISyllabusServices _syllabusServices;
@@ -28,22 +27,22 @@ namespace APIs.Controllers
         }
 
         [HttpPost("CreateSyllabus"), Authorize(policy: "AuthUser")]
-        public async Task<IActionResult> CreateSyllabus(CreateSyllabusViewModel SyllabusModel)
+        public async Task<Response> CreateSyllabus(CreateSyllabusViewModel SyllabusModel)
         {
             if (ModelState.IsValid)
             {
                 ValidationResult syllabus = _validatorCreate.Validate(SyllabusModel);
                 if (syllabus.IsValid)
                 {
-                    await _syllabusServices.CreateSyllabus(SyllabusModel);
+                   var result =  await _syllabusServices.CreateSyllabus(SyllabusModel);
+                    return new Response(HttpStatusCode.OK, "Create Succeed", result);
                 }
                 else
                 {
-                    var error = syllabus.Errors.Select(x => x.ErrorMessage).ToList();
-                    return BadRequest(error);
+                    return new Response(HttpStatusCode.BadRequest, "Create Failed, Invalid input");
                 }
             }
-            return Ok("Create new Syllabus Success");
+            return new Response(HttpStatusCode.BadRequest, "Invalid Input");
         }
 
         [HttpPut("UpdateSyllabus/{SyllabusId}"), Authorize(policy: "AuthUser")]

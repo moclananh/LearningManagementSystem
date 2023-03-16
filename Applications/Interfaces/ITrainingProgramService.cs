@@ -13,7 +13,7 @@ namespace Applications.Interfaces
         Task<Response> GetTrainingProgramById(Guid TrainingProramId);
         Task<Response> ViewTrainingProgramEnableAsync(int pageIndex = 0, int pageSize = 10);
         Task<Response> ViewTrainingProgramDisableAsync(int pageIndex = 0, int pageSize = 10);
-        Task<CreateTrainingProgramViewModel?> CreateTrainingProgramAsync(CreateTrainingProgramViewModel TrainingProgramDTO);
+        Task<TrainingProgramViewModel?> CreateTrainingProgramAsync(CreateTrainingProgramViewModel TrainingProgramDTO);
         Task<UpdateTrainingProgramViewModel?> UpdateTrainingProgramAsync(Guid TrainingProgramId, UpdateTrainingProgramViewModel TrainingProgramDTO);
         Task<CreateTrainingProgramSyllabi> AddSyllabusToTrainingProgram(Guid SyllabusId, Guid TrainingProgramId);
         Task<CreateTrainingProgramSyllabi> RemoveSyllabusToTrainingProgram(Guid SyllabusId, Guid TrainingProgramId);

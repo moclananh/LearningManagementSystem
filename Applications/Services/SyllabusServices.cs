@@ -42,14 +42,14 @@ namespace Applications.Services
             return null;
         }
 
-        public async Task<CreateSyllabusViewModel?> CreateSyllabus(CreateSyllabusViewModel SyllabusDTO)
+        public async Task<SyllabusViewModel?> CreateSyllabus(CreateSyllabusViewModel SyllabusDTO)
         {
             var syllabus = _mapper.Map<Syllabus>(SyllabusDTO);
             await _unitOfWork.SyllabusRepository.AddAsync(syllabus);
             var isSucces = await _unitOfWork.SaveChangeAsync() > 0;
             if (isSucces)
             {
-                return _mapper.Map<CreateSyllabusViewModel>(syllabus);
+                return _mapper.Map<SyllabusViewModel>(syllabus);
             }
             return null;
         }

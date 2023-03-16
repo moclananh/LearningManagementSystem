@@ -54,7 +54,7 @@ namespace Applications.Services
             }
         }
 
-        public async Task<CreateClassViewModel?> CreateClass(CreateClassViewModel classDTO)
+        public async Task<ClassViewModel?> CreateClass(CreateClassViewModel classDTO)
         {
             try
             {
@@ -64,7 +64,7 @@ namespace Applications.Services
 
                 if (isSuccess)
                 {
-                    return _mapper.Map<CreateClassViewModel>(classOjb);
+                    return _mapper.Map<ClassViewModel>(classOjb);
                 }
 
                 return null;
