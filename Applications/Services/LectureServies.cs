@@ -36,13 +36,17 @@ namespace Applications.Services
         {
             var lectures = await _unitOfWork.LectureRepository.ToPagination(pageIndex, pageSize);
             var result = _mapper.Map<Pagination<LectureViewModel>>(lectures);
+
             var guidList = lectures.Items.Select(x => x.CreatedBy).ToList();
+            var users = await _unitOfWork.UserRepository.GetEntitiesByIdsAsync(guidList);
             foreach (var item in result.Items)
             {
-                foreach (var user in guidList)
+                if (string.IsNullOrEmpty(item.CreatedBy)) continue;
+
+                var createdBy = users.FirstOrDefault(x => x.Id == Guid.Parse(item.CreatedBy));
+                if (createdBy != null)
                 {
-                    var createBy = await _unitOfWork.UserRepository.GetByIdAsync(user);
-                    item.CreatedBy = createBy.Email;
+                    item.CreatedBy = createdBy.Email;
                 }
             }
             if (lectures.Items.Count() < 1) return new Response(HttpStatusCode.NoContent, "No Lecture Found");
