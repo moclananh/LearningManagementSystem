@@ -89,12 +89,16 @@ namespace Applications.Services
             var unit = await _unitOfWork.UnitRepository.ToPagination(pageNumber, pageSize);
             var result = _mapper.Map<Pagination<UnitViewModel>>(unit);
             var guidList = unit.Items.Select(x => x.CreatedBy).ToList();
+            var users = await _unitOfWork.UserRepository.GetEntitiesByIdsAsync(guidList);
+
             foreach (var item in result.Items)
             {
-                foreach (var user in guidList)
+                if (string.IsNullOrEmpty(item.CreatedBy)) continue;
+
+                var createdBy = users.FirstOrDefault(x => x.Id == Guid.Parse(item.CreatedBy));
+                if (createdBy != null)
                 {
-                    var createBy = await _unitOfWork.UserRepository.GetByIdAsync(user);
-                    item.CreatedBy = createBy.Email;
+                    item.CreatedBy = createdBy.Email;
                 }
             }
             if (unit.Items.Count() < 1) return new Response(HttpStatusCode.NoContent, "Not Found");
