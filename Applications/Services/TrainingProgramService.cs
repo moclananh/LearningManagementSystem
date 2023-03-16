@@ -6,6 +6,7 @@ using Applications.ViewModels.SyllabusViewModels;
 using Applications.ViewModels.TrainingProgramModels;
 using Applications.ViewModels.TrainingProgramSyllabi;
 using AutoMapper;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Domain.Entities;
 using Domain.EntityRelationship;
 using System.Net;
@@ -116,15 +117,18 @@ namespace Applications.Services
             var TrainingPrograms = await _unitOfWork.TrainingProgramRepository.ToPagination(pageIndex, pageSize);
             var result = _mapper.Map<Pagination<TrainingProgramViewModel>>(TrainingPrograms);
             var guidList = TrainingPrograms.Items.Select(x => x.CreatedBy).ToList();
+            var users = await _unitOfWork.UserRepository.GetEntitiesByIdsAsync(guidList);
+
             foreach (var item in result.Items)
             {
-                foreach (var user in guidList)
+                if (string.IsNullOrEmpty(item.CreatedBy)) continue;
+
+                var createdBy = users.FirstOrDefault(x => x.Id == Guid.Parse(item.CreatedBy));
+                if (createdBy is not null)
                 {
-                    var createBy = await _unitOfWork.UserRepository.GetByIdAsync(user);
-                    item.CreatedBy = createBy.Email; 
+                    item.CreatedBy = createdBy.Email;
                 }
             }
-
             if (TrainingPrograms.Items.Count() < 1) return new Response(HttpStatusCode.NoContent, "No TrainingProgram found");
             else return new Response(HttpStatusCode.OK, "Search Succeed", result);
         }

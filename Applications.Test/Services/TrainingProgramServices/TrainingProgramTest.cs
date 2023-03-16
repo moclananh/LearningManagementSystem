@@ -1,6 +1,8 @@
 ﻿using Application.ViewModels.TrainingProgramModels;
 using Applications.Commons;
 using Applications.Interfaces;
+using Applications.Services;
+using Applications.ViewModels.AssignmentViewModels;
 using Applications.ViewModels.TrainingProgramModels;
 using Applications.ViewModels.TrainingProgramSyllabi;
 using AutoFixture;
@@ -28,17 +30,18 @@ namespace Applications.Tests.Services.TrainingProgramServices
             var mockData = new Pagination<TrainingProgram>
             {
                 Items = _fixture.Build<TrainingProgram>()
-                .Without(x => x.ClassTrainingPrograms)
-                .Without(x => x.TrainingProgramSyllabi)
-                .CreateMany(100)
-                .ToList(),
+                                .Without(x => x.ClassTrainingPrograms)
+                                .Without(x => x.TrainingProgramSyllabi)
+                                .CreateMany(30)
+                                .ToList(),
                 PageIndex = 0,
-                PageSize = 100,
-                TotalItemsCount = 100
+                PageSize = 10,
+                TotalItemsCount = 30
             };
-            var expectedResult = _mapperConfig.Map<Pagination<TrainingProgramViewModel>>(mockData);
+
+            var expected = _mapperConfig.Map<Pagination<TrainingProgramViewModel>>(mockData);
             var guidList = mockData.Items.Select(x => x.CreatedBy).ToList();
-            foreach (var item in expectedResult.Items)
+            foreach (var item in expected.Items)
             {
                 foreach (var user in guidList)
                 {
@@ -48,13 +51,13 @@ namespace Applications.Tests.Services.TrainingProgramServices
                 }
             }
             _unitOfWorkMock.Setup(x => x.TrainingProgramRepository.ToPagination(0, 10)).ReturnsAsync(mockData);
-
             //act
             var result = await _trainingProgramService.ViewAllTrainingProgramAsync();
-
             //assert
+            result.Should().NotBeNull();
             _unitOfWorkMock.Verify(x => x.TrainingProgramRepository.ToPagination(0, 10), Times.Once());
         }
+
         [Fact]
         public async Task CreateTrainingProgramAsync_ShouldReturnNull_WhenFailedSave()
         {

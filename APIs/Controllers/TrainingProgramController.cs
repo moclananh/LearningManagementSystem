@@ -8,6 +8,7 @@ using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace APIs.Controllers
 {
@@ -54,12 +55,11 @@ namespace APIs.Controllers
                 ValidationResult trainingprogram = _validatorUpdate.Validate(UpdateTrainingProgram);
                 if (trainingprogram.IsValid)
                 {
-                    await _trainingProgramService.UpdateTrainingProgramAsync(TrainingProgramId, UpdateTrainingProgram);
-                }
-                else
-                {
-                    var error = trainingprogram.Errors.Select(x => x.ErrorMessage).ToList();
-                    return BadRequest(error);
+                    var result = await _trainingProgramService.UpdateTrainingProgramAsync(TrainingProgramId, UpdateTrainingProgram);
+                    if (result is null)
+                    {
+                        return BadRequest("Update TrainingProgram Fail");
+                    }
                 }
             }
             return Ok("Update TrainingProgram Success");
