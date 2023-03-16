@@ -68,7 +68,7 @@ namespace APIs.Controllers
                 if (result.IsValid)
                 {
                     await _classServices.UpdateClass(ClassId, Class);
-
+                    return Ok("Update Class Success");
                 }
             }
             return BadRequest("Update Class Fail");
