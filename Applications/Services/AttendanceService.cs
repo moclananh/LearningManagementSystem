@@ -90,7 +90,12 @@ namespace Applications.Services
 
         public async Task<byte[]> ExportAttendanceByClassIDandDate(string ClassCode, DateTime Date)
         {
+            // Check if the ClassCode and Date are valid
+
             var questions = await _unitOfWork.AttendanceRepository.GetListAttendances(ClassCode, Date);
+
+            // Validate if the questions list is not null or empty
+
             var questionViewModels = _mapper.Map<List<CreateAttendanceViewModel>>(questions);
 
             // Create a new Excel workbook and worksheet
@@ -98,7 +103,6 @@ namespace Applications.Services
             var worksheet = workbook.Worksheets.Add("Attendance");
 
             // Add the headers to the worksheet
-
             worksheet.Cell(1, 1).Value = "ClassCode";
             worksheet.Cell(1, 3).Value = "Date";
             worksheet.Cell(3, 1).Value = "UserName";
@@ -108,7 +112,6 @@ namespace Applications.Services
             var questionss = questionViewModels[0];
             worksheet.Cell(1, 2).Value = questionss.ClassCode;
             worksheet.Cell(1, 4).Value = questionss.Date.ToString();
-
 
             // Add the assignment questions to the worksheet
             for (var i = 0; i < questionViewModels.Count; i++)

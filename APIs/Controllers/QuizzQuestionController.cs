@@ -22,10 +22,23 @@ namespace APIs.Controllers
         [HttpGet("ExportQuizzQuestion/{QuizzId}")]
         public async Task<IActionResult> ExportQuizzQuestion(Guid QuizzId)
         {
-            var content = await _quizzQuestionService.ExportQuizzQuestionByQuizzId(QuizzId);
+            try
+            {
+                var content = await _quizzQuestionService.ExportQuizzQuestionByQuizzId(QuizzId);
 
-            var fileName = $"QuizzQuestions_{QuizzId}.xlsx";
-            return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+                if (content == null || content.Length == 0)
+                {
+                    return NotFound();
+                }
+
+                var fileName = $"QuizzQuestions_{QuizzId}.xlsx";
+                return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception or return an error message to the client
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
         }
     }
 }

@@ -20,5 +20,7 @@ namespace Applications.ViewModels.AssignmentViewModels
         public string? CreatedBy { get; set; }
         public DateTime CreationDate { get; set; }
         public bool IsDeleted { get; set; }
+        public DateTime? ModificationDate { get; set; }
+        public string? ModificationBy { get; set; }
     }
 }

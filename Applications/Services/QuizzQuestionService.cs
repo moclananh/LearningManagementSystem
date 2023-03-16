@@ -89,9 +89,16 @@ namespace Applications.Services
             return new Response(HttpStatusCode.OK, "OK");
         }
 
+
         public async Task<byte[]> ExportQuizzQuestionByQuizzId(Guid quizzId)
         {
             var questions = await _unitOfWork.QuizzQuestionRepository.GetQuizzQuestionListByQuizzId(quizzId);
+
+            if (questions == null || questions.Count == 0)
+            {
+                return null;
+            }
+
             var questionViewModels = _mapper.Map<List<QuizzQuestionViewModel>>(questions);
 
             // Create a new Excel workbook and worksheet
@@ -99,7 +106,6 @@ namespace Applications.Services
             var worksheet = workbook.Worksheets.Add("Quizz Questions");
 
             // Add the headers to the worksheet
-
             worksheet.Cell(1, 1).Value = "QuizzID";
             worksheet.Cell(2, 1).Value = "Question";
             worksheet.Cell(2, 2).Value = "Answer";
@@ -108,6 +114,7 @@ namespace Applications.Services
             var questionss = questionViewModels[0];
             string stringValue = questionss.QuizzId.ToString();
             worksheet.Cell(1, 2).Value = stringValue;
+
             // Add the assignment questions to the worksheet
             for (var i = 0; i < questionViewModels.Count; i++)
             {
