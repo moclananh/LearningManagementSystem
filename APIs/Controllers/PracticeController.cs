@@ -1,7 +1,9 @@
 ﻿using Applications.Commons;
 using Applications.Interfaces;
+using Applications.Services;
 using Applications.ViewModels.PracticeViewModels;
 using Applications.ViewModels.Response;
+using Domain.Entities;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Authorization;
@@ -63,12 +65,13 @@ namespace APIs.Controllers
                 ValidationResult result = _updatePracticeValidator.Validate(practiceDTO);
                 if (result.IsValid)
                 {
-                    await _service.UpdatePractice(PracticeId, practiceDTO);
+                    if (await _service.UpdatePractice(PracticeId, practiceDTO) != null)
+                    {
+                        return Ok("Update Practice Success");
+                    }
+                    return BadRequest("Invalid Practice Id");
                 }
-                else
-                {
-                    return BadRequest("Update Practice Fail");
-                }
+               
             }
             return Ok("Update Practice Success");
         }
