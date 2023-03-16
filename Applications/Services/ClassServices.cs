@@ -9,6 +9,8 @@ using Domain.EntityRelationship;
 using Domain.Enum.ClassEnum;
 using Domain.Enum.RoleEnum;
 using Domain.Enum.StatusEnum;
+using System.ComponentModel;
+using System.Reflection;
 
 namespace Applications.Services
 {
@@ -167,6 +169,12 @@ namespace Applications.Services
 
             var DeletedBy = await _unitOfWork.UserRepository.GetByIdAsync(classObj.DeleteBy);
             if (DeletedBy != null) { classView.DeleteBy = DeletedBy.Email; }
+
+            classView.ClassTime = classObj.ClassTime
+                .GetType()
+                .GetMember(classObj.ClassTime.ToString())[0]
+                .GetCustomAttribute<DescriptionAttribute>()
+                .Description;
 
             return classView;
         }

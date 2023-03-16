@@ -68,13 +68,10 @@ namespace APIs.Controllers
                 if (result.IsValid)
                 {
                     await _classServices.UpdateClass(ClassId, Class);
-                }
-                else
-                {
-                    return BadRequest("Update Class Fail");
+
                 }
             }
-            return Ok("Update Class Success");
+            return BadRequest("Update Class Fail");
         }
 
         [HttpPost("Class/AddTrainingProgram/{ClassId}/{TrainingProgramId}")]
