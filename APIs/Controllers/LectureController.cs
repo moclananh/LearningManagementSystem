@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 using FluentValidation.Results;
 using Applications.ViewModels.Response;
 using Microsoft.AspNetCore.Authorization;
+using Applications.Services;
+using Domain.Entities;
 
 namespace APIs.Controllers
 {
@@ -66,14 +68,14 @@ namespace APIs.Controllers
                 ValidationResult result = _validatorUpdate.Validate(Lecture);
                 if (result.IsValid)
                 {
-                    await _lectureServices.UpdateLecture(LectureId, Lecture);
-                }
-                else
-                {
-                    return BadRequest("Update Lecture Fail");
+                    if (await _lectureServices.UpdateLecture(LectureId, Lecture) != null)
+                    {
+                        return Ok("Update Lecture Success");
+                    }
+                    return BadRequest("Invalid Id");
                 }
             }
-            return Ok("Update Lecture Success");
+            return BadRequest("Update Failed,Invalid Input Information");
         }
     }
 }
