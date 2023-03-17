@@ -111,7 +111,6 @@ namespace APIs.Controllers
         }
 
         [HttpGet("GetTrainingProgramByName/{trainingProgramName}")]
-        public async Task<Pagination<TrainingProgramViewModel>> GetTrainingProgramByName(string trainingProgramName, int pageIndex = 0, int pageSize = 10) => await _trainingProgramService.GetByName(trainingProgramName, pageIndex, pageSize);
-
+        public async Task<Response> GetTrainingProgramByName(string trainingProgramName, int pageIndex = 0, int pageSize = 10) => await _trainingProgramService.GetByName(trainingProgramName, pageIndex, pageSize);
     }
 }

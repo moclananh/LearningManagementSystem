@@ -57,11 +57,11 @@ namespace Applications.Services
             return null;
         }
 
-        public async Task<Pagination<TrainingProgramViewModel>> GetByName(string name, int pageIndex = 0, int pageSize = 10)
+        public async Task<Response> GetByName(string name, int pageIndex = 0, int pageSize = 10)
         {
             var trainingPrograms = await _unitOfWork.TrainingProgramRepository.GetTrainingProgramByName(name, pageIndex, pageSize);
-            var result = _mapper.Map<Pagination<TrainingProgramViewModel>>(trainingPrograms);
-            return result;
+            if (trainingPrograms.Items.Count() < 1) return new Response(HttpStatusCode.NoContent, "No Training Program found");
+            else return new Response(HttpStatusCode.OK, "Search Succeed", _mapper.Map<Pagination<TrainingProgramViewModel>>(trainingPrograms));
         }
 
         public async Task<Response> GetTrainingProgramByClassId(Guid ClassId, int pageIndex = 0, int pageSize = 10)
