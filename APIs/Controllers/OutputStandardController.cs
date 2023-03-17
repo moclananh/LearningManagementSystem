@@ -7,7 +7,8 @@ using Applications.ViewModels.Response;
 using Microsoft.AspNetCore.Authorization;
 using Applications.Services;
 using Domain.Entities;
-
+using System.Net;
+using Domain.EntityRelationship;
 
 namespace APIs.Controllers
 {
@@ -30,22 +31,22 @@ namespace APIs.Controllers
         public async Task<Response> GetAllOutputStandard(int pageIndex = 0, int pageSize = 10) => await _outputStandardServices.GetAllOutputStandardAsync(pageIndex, pageSize);
 
         [HttpPost("CreateOutputStandard"), Authorize(policy: "AuthUser")]
-        public async Task<IActionResult> CreateOutputStandard(CreateOutputStandardViewModel OutputstandardModule)
+        public async Task<Response> CreateOutputStandard(CreateOutputStandardViewModel OutputstandardModule)
         {
             if (ModelState.IsValid)
             {
-                ValidationResult result = _createOutputStandardValidator.Validate(OutputstandardModule);
-                if (result.IsValid)
+                ValidationResult output = _createOutputStandardValidator.Validate(OutputstandardModule);
+                if (output.IsValid)
                 {
-                    await _outputStandardServices.CreateOutputStandardAsync(OutputstandardModule);
+                    var result = await _outputStandardServices.CreateOutputStandardAsync(OutputstandardModule);
+                    return new Response(HttpStatusCode.OK, "Create Succeed", result);
                 }
                 else
                 {
-                    var error = result.Errors.Select(x => x.ErrorMessage).ToList();
-                    return BadRequest(error);
+                    return new Response(HttpStatusCode.BadRequest, "Create Failed, Invalid input");
                 }
             }
-            return Ok("Create new OutputStandard Success");
+            return new Response(HttpStatusCode.BadRequest, "Invalid Input");
         }
         [HttpGet("GetOutputStandardByOutputStandardId/{OutputStandardId}")]
         public async Task<Response> GetOutputStandardByOutputStandardId(Guid OutputStandardId) => await _outputStandardServices.GetOutputStandardByOutputStandardIdAsync(OutputStandardId);
