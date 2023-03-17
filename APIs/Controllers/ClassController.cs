@@ -53,7 +53,15 @@ namespace APIs.Controllers
         public async Task<ClassViewModel> GetClassById(Guid ClassId) => await _classServices.GetClassById(ClassId);
 
         [HttpGet("GetClassByName/{ClassName}")]
-        public async Task<Pagination<ClassViewModel>> GetClassesByName(string ClassName, int pageIndex = 0, int pageSize = 10) => await _classServices.GetClassByName(ClassName, pageIndex, pageSize);
+        public async Task<IActionResult> GetClassesByName(string ClassName, int pageIndex = 0, int pageSize = 10)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _classServices.GetClassByName(ClassName, pageIndex, pageSize);
+                return Ok(result);
+            }
+            return BadRequest($"Not found Class contain name: {ClassName}");
+        }
 
         [HttpGet("GetEnableClasses")]
         public async Task<Pagination<ClassViewModel>> GetEnableClasses(int pageIndex = 0, int pageSize = 10) => await _classServices.GetEnableClasses(pageIndex, pageSize);
