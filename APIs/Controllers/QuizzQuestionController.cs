@@ -1,4 +1,5 @@
-﻿using Applications.Commons;
+﻿using Applications;
+using Applications.Commons;
 using Applications.Interfaces;
 using Applications.ViewModels.QuizzQuestionViewModels;
 using Applications.ViewModels.Response;
@@ -11,9 +12,11 @@ namespace APIs.Controllers
     public class QuizzQuestionController : ControllerBase
     {
         private readonly IQuizzQuestionService _quizzQuestionService;
-        public QuizzQuestionController(IQuizzQuestionService quizzQuestionService)
+        private readonly IUnitOfWork _unitOfWork;
+        public QuizzQuestionController(IQuizzQuestionService quizzQuestionService, IUnitOfWork unitOfWork)
         {
             _quizzQuestionService = quizzQuestionService;
+            _unitOfWork = unitOfWork;
         }
         [HttpGet("GetQuestionByQuizzId/{QuizzId}")]
         public async Task<Pagination<QuizzQuestionViewModel>> GetQuestionByQuizzId(Guid QuizzId, int pageIndex = 0, int pageSize = 10) => await _quizzQuestionService.GetQuizzQuestionByQuizzId(QuizzId, pageIndex, pageSize);
@@ -34,11 +37,17 @@ namespace APIs.Controllers
                 var fileName = $"QuizzQuestions_{QuizzId}.xlsx";
                 return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
             }
+            catch (ArgumentException ex)
+            {
+                // Return a bad request error
+                return BadRequest(ex.Message);
+            }
             catch (Exception ex)
             {
                 // Log the exception or return an error message to the client
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+
     }
 }

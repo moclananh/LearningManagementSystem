@@ -88,13 +88,21 @@ namespace Applications.Services
             return new Response(HttpStatusCode.BadRequest, "Create Attendance failed,check ClassId again");
         }
 
-        public async Task<byte[]> ExportAttendanceByClassIDandDate(string ClassCode, DateTime Date)
+        public async Task<byte[]> ExportAttendanceByClassCodeandDate(string ClassCode, DateTime Date)
         {
             // Check if the ClassCode and Date are valid
+            if (string.IsNullOrEmpty(ClassCode) || Date == default)
+            {
+                throw new ArgumentException("Please provide a valid ClassCode and Date.");
+            }
 
             var questions = await _unitOfWork.AttendanceRepository.GetListAttendances(ClassCode, Date);
 
             // Validate if the questions list is not null or empty
+            if (questions == null || !questions.Any())
+            {
+                throw new Exception("No attendance records found for the given ClassCode and Date.");
+            }
 
             var questionViewModels = _mapper.Map<List<CreateAttendanceViewModel>>(questions);
 
@@ -130,5 +138,6 @@ namespace Applications.Services
 
             return content;
         }
+
     }
 }

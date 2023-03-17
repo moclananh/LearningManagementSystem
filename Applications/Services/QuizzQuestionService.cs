@@ -88,15 +88,13 @@ namespace Applications.Services
             await _unitOfWork.SaveChangeAsync();
             return new Response(HttpStatusCode.OK, "OK");
         }
-
-
         public async Task<byte[]> ExportQuizzQuestionByQuizzId(Guid quizzId)
         {
             var questions = await _unitOfWork.QuizzQuestionRepository.GetQuizzQuestionListByQuizzId(quizzId);
 
             if (questions == null || questions.Count == 0)
             {
-                return null;
+                throw new ArgumentException("Invalid QuizzId.");
             }
 
             var questionViewModels = _mapper.Map<List<QuizzQuestionViewModel>>(questions);

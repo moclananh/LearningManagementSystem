@@ -24,20 +24,26 @@ namespace APIs.Controllers
         public async Task<Response> CheckAttendance(string ClassCode, string Email) => await _attendanceService.CheckAttendance(ClassCode, Email) ;
 
         [HttpGet("ExportAttendance/{ClassCode}/{Date}")]
-        public async Task<IActionResult> ExportAttendanceByClassIdandDate(string ClassCode, DateTime Date)
+        public async Task<IActionResult> ExportAttendanceByClassCodeandDate(string ClassCode, DateTime Date)
         {
+            if (string.IsNullOrEmpty(ClassCode) || Date == default)
+            {
+                return BadRequest("Please provide a valid ClassCode and Date.");
+            }
             try
             {
-                var content = await _attendanceService.ExportAttendanceByClassIDandDate(ClassCode, Date);
+                var content = await _attendanceService.ExportAttendanceByClassCodeandDate(ClassCode, Date);
 
-                var fileName = $"Attendance_{ClassCode}_{Date}.xlsx";
+                var fileName = $"Attendance_ClassCode{ClassCode}_{Date}.xlsx";
                 return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
             }
             catch (Exception ex)
             {
-                return BadRequest($"An error occurred while exporting attendance: Plaese check Classcode and Date");
+                // Log the exception or return an error response
+                return BadRequest($"An error occurred while exporting attendance: {ex.Message}");
             }
         }
+
         [HttpPut("UpdateAttendance/{ClassCode}/{Email}/{Status}")]
         public async Task<Response> UpdateAttendance(DateTime Date, string ClassCode, string Email,AttendenceStatus Status) => await _attendanceService.UpdateAttendance(Date, ClassCode, Email, Status);
     }
