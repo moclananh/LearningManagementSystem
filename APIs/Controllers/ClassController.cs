@@ -58,7 +58,10 @@ namespace APIs.Controllers
             if (ModelState.IsValid)
             {
                 var result = await _classServices.GetClassByName(ClassName, pageIndex, pageSize);
-                return Ok(result);
+                if(result.Items.Count != 0)
+                {
+                    return Ok(result);
+                }
             }
             return BadRequest($"Not found Class contain name: {ClassName}");
         }
