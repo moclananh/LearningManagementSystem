@@ -10,6 +10,7 @@ using Domain.Enum.StatusEnum;
 using Domain.Enum.RoleEnum;
 using Applications.Commons;
 using Applications.Utils;
+using Domain.Enum.LevelEnum;
 
 
 namespace Applications.Services;
@@ -182,7 +183,7 @@ public class UserService : IUserService
                         user.Role = (Role)Enum.Parse(typeof(Role), worksheet.Cells[row, 6].Value.ToString());
                         user.OverallStatus = user.Role == Role.SuperAdmin ? OverallStatus.Active : OverallStatus.OffClass;
                         user.Image = string.Empty;
-                        user.Level = null;
+                        user.Level = (Level)Enum.Parse(typeof(Level),worksheet.Cells[row, 7].Value.ToString()) ;
                         user.Password = StringUtils.Hash("12345");
                         user.Status = Status.Enable;
                         list.Add(user);
