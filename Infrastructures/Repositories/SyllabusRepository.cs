@@ -87,7 +87,6 @@ namespace Infrastructures.Repositories
         {
             var itemCount = await _dbContext.Syllabi.CountAsync();
             var items = await _dbContext.SyllabusOutputStandard.Where(s => s.OutputStandardId == OutputStandardId).Select(s => s.Syllabus)
-                                    .Include(x => x.SyllabusOutputStandards).ThenInclude(x => x.OutputStandard)
                                     .OrderByDescending(x => x.CreationDate)
                                     .Skip(pageNumber * pageSize)
                                     .Take(pageSize)
@@ -109,7 +108,6 @@ namespace Infrastructures.Repositories
         {
             var itemCount = await _dbContext.Syllabi.CountAsync();
             var items = await _dbContext.TrainingProgramSyllabi.Where(s => s.TrainingProgramId == TrainingProgramId).Select(s => s.Syllabus)
-                                    .Include(x => x.SyllabusOutputStandards).ThenInclude(x => x.OutputStandard)
                                     .OrderByDescending(x => x.CreationDate)
                                     .Skip(pageNumber * pageSize)
                                     .Take(pageSize)

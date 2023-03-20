@@ -9,12 +9,10 @@ namespace APIs.Validations.SyllabusValidations
         {
             RuleFor(x => x.SyllabusName)
                 .NotEmpty()
-                .WithMessage("The 'SyllabusName' should not empty")
-                .Length(10, 150);
+                .WithMessage("The 'SyllabusName' should not empty");
             RuleFor(x => x.SyllabusCode)
                 .NotEmpty()
-                .WithMessage("The 'SyllabusCode' should not empty")
-                .Length(3, 4);
+                .WithMessage("The 'SyllabusCode' should not empty");
             RuleFor(x => x.Duration)
                 .NotEmpty()
                 .WithMessage("The 'Duration' should not empty");
