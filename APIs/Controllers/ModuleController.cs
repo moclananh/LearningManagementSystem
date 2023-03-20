@@ -39,6 +39,7 @@ namespace APIs.Controllers
                 }
                 else
                 {
+                    var error = result.Errors.Select(x => x.ErrorMessage).ToList();
                     return BadRequest("Fail to create new Module!");
                 }
             }
@@ -64,12 +65,12 @@ namespace APIs.Controllers
                 {
                     if (await _moduleServices.UpdateModule(moduleId, module) != null)
                     {
-                        return Ok("Update Succeed");
+                        return Ok("Update Module Succeed");
                     }
-                    return BadRequest("Not Found");
+                    return BadRequest("Invalid Module Id");
                 }
             }
-            return BadRequest("Updated Failed, Invalid Information");
+            return BadRequest("Updated Failed, Invalid Input Information");
         }
 
         [HttpGet("GetEnableModules")]
