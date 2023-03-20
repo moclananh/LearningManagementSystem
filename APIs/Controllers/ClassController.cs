@@ -39,10 +39,7 @@ namespace APIs.Controllers
                     return new Response(HttpStatusCode.OK, "Create Class Succeed", Class);
                 }
             }
-            else
-            {
-                return new Response(HttpStatusCode.BadRequest, "Create Failed, Invalid input");
-            }
+
             return new Response(HttpStatusCode.BadRequest, "Invalid Input");
         }
 
@@ -58,12 +55,13 @@ namespace APIs.Controllers
             if (ModelState.IsValid)
             {
                 var result = await _classServices.GetClassByName(ClassName, pageIndex, pageSize);
-                if(result.Items.Count != 0)
+                if (result.Items.Count != 0)
                 {
                     return Ok(result);
                 }
             }
-            return BadRequest($"Not found Class contain name: {ClassName}");
+
+            return NotFound("Not found Class");
         }
 
         [HttpGet("GetEnableClasses")]
@@ -84,6 +82,7 @@ namespace APIs.Controllers
                     return Ok("Update Class Success");
                 }
             }
+
             return BadRequest("Update Class Fail");
         }
 
@@ -93,12 +92,14 @@ namespace APIs.Controllers
             if (ModelState.IsValid)
             {
                 var result = await _classServices.AddTrainingProgramToClass(ClassId, TrainingProgramId);
-                if (result == null)
+                if (result != null)
                 {
-                    return BadRequest("Add TrainingProgram Fail");
+                    return Ok("Add Success");
+
                 }
             }
-            return Ok("Add Success");
+
+            return BadRequest("Add TrainingProgram Fail");
         }
 
         [HttpDelete("Class/DeleteTrainingProgram/{ClassId}/{TrainingProgramId}")]
@@ -109,21 +110,23 @@ namespace APIs.Controllers
                 var result = await _classServices.RemoveTrainingProgramFromClass(ClassId, TrainingProgramId);
                 if (result == null)
                 {
-                    return BadRequest("Remove TrainingProgram Fail");
+                    return Ok("Remove Success");
                 }
             }
-            return Ok("Remove Success");
+
+            return BadRequest("Remove TrainingProgram Fail");
         }
 
         [HttpDelete("Class/DeleteUser/{ClassId}/{UserId}")]
         public async Task<IActionResult> DeleteClassUser(Guid ClassId, Guid UserId)
         {
             var result = await _classServices.RemoveUserFromClass(ClassId, UserId);
-            if (result == null)
+            if (result != null)
             {
-                return BadRequest("Remove UserFromClass Fail");
+                return Ok("Remove Success");
             }
-            return Ok("Remove Success");
+
+            return BadRequest("Remove UserFromClass Fail");
         }
 
         [HttpGet("GetClassByFilter")]
@@ -137,6 +140,7 @@ namespace APIs.Controllers
                     return Ok(classes);
                 }
             }
+
             return BadRequest("GetClassByFilter Fail");
         }
 
@@ -163,6 +167,7 @@ namespace APIs.Controllers
                 var classObj = await _classServices.AddUserToClass(ClassId, UserId);
                 return Ok(classObj);
             }
+
             return BadRequest("Add Fail");
         }
 
@@ -174,6 +179,7 @@ namespace APIs.Controllers
                 var classObj = await _classServices.ApprovedClass(ClassId);
                 return Ok(classObj);
             }
+
             return BadRequest("Approved Fail");
         }
     }
