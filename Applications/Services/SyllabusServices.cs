@@ -178,6 +178,18 @@ namespace Applications.Services
         public async Task<Response> GetSyllabusByCreationDate(DateTime startDate, DateTime endDate, int pageNumber = 0, int pageSize = 10)
         {
             var syllabus = await _unitOfWork.SyllabusRepository.GetSyllabusByCreationDate(startDate, endDate, pageNumber, pageSize);
+            var result = _mapper.Map<Pagination<SyllabusViewModel>>(syllabus);
+            var guidList = syllabus.Items.Select(x => x.CreatedBy).ToList();
+            var user = await _unitOfWork.UserRepository.GetEntitiesByIdsAsync(guidList);
+            foreach (var item in result.Items)
+            {
+                if (string.IsNullOrEmpty(item.CreatedBy)) continue;
+                var createBy = user.FirstOrDefault(x => x.Id == Guid.Parse(item.CreatedBy));
+                if (createBy != null)
+                {
+                    item.CreatedBy = createBy.Email;
+                }
+            }
             if (syllabus.Items.Count() < 1)
                 return new Response(HttpStatusCode.NoContent, "No Syllabus Found");
             else
