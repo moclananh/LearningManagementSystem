@@ -55,6 +55,8 @@ namespace Infrastructures.Repositories
 
             return result;
         }
+
+
         public async Task<Pagination<Module>> GetModuleByName(string name, int pageNumber = 0, int pageSize = 10)
         {
             var itemCount = await _dbContext.Modules.CountAsync();
@@ -92,5 +94,7 @@ namespace Infrastructures.Repositories
             };
             return result;
         }
+
+        
     }
 }

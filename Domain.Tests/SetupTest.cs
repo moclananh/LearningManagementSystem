@@ -41,6 +41,7 @@ namespace Domain.Tests
         protected readonly Mock<IAuditResultServices> _auditResultServicesMock;
         protected readonly Mock<IPracticeService> _practiceServiceMock;
         protected readonly Mock<IClassTrainingProgramService> _classTrainingProgramServiceMock;
+        protected readonly Mock<ISyllabusModuleService> _syllabusModuleServiceMock;
         //
         protected readonly Mock<IAssignmentQuestionRepository> _assignmentQuestionRepositoryMock;
         protected readonly Mock<IAssignmentRepository> _assignmentRepositoryMock;
@@ -91,6 +92,7 @@ namespace Domain.Tests
             _userServiceMock = new Mock<IUserService>();
             _practiceServiceMock = new Mock<IPracticeService>();
             _classTrainingProgramServiceMock = new Mock<IClassTrainingProgramService>();
+            _syllabusModuleServiceMock = new Mock<ISyllabusModuleService>();
             //
             _auditResultRepositoryMock = new Mock<IAuditResultRepository>();
             _assignmentQuestionRepositoryMock = new Mock<IAssignmentQuestionRepository>();
