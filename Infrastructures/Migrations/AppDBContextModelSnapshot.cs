@@ -469,7 +469,7 @@ namespace Infrastructures.Migrations
 
                     b.Property<string>("ClassCode")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ClassName")
                         .IsRequired()
@@ -518,6 +518,9 @@ namespace Infrastructures.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ClassCode")
+                        .IsUnique();
 
                     b.ToTable("Classes");
                 });

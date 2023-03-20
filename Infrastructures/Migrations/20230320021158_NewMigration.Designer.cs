@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructures.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20230314090231_update_UnitCode")]
-    partial class update_UnitCode
+    [Migration("20230320021158_NewMigration")]
+    partial class NewMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -472,7 +472,7 @@ namespace Infrastructures.Migrations
 
                     b.Property<string>("ClassCode")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ClassName")
                         .IsRequired()
@@ -521,6 +521,9 @@ namespace Infrastructures.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ClassCode")
+                        .IsUnique();
 
                     b.ToTable("Classes");
                 });

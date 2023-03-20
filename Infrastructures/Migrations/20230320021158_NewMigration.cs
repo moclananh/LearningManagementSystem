@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Infrastructures.Migrations
 {
     /// <inheritdoc />
-    public partial class update_UnitCode : Migration
+    public partial class NewMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -17,7 +17,7 @@ namespace Infrastructures.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ClassName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ClassCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ClassCode = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Location = table.Column<int>(type: "int", nullable: false),
@@ -890,6 +890,12 @@ namespace Infrastructures.Migrations
                 name: "IX_AuditResults_AuditPlanId",
                 table: "AuditResults",
                 column: "AuditPlanId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Classes_ClassCode",
+                table: "Classes",
+                column: "ClassCode",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_ClassTrainingProgram_TrainingProgramId",
