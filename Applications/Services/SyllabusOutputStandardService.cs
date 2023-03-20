@@ -3,6 +3,7 @@ using Applications.Interfaces;
 using Applications.ViewModels.Response;
 using Applications.ViewModels.SyllabusOutputStandardViewModels;
 using AutoMapper;
+using Domain.EntityRelationship;
 using System.Net;
 
 namespace Applications.Services
@@ -39,5 +40,29 @@ namespace Applications.Services
             }
             return null;
         }
+
+        public async Task<Response> AddMultipleOutputStandardsToSyllabus(Guid syllabusId, List<Guid> outputStandardIds)
+        {
+            var syllabusObj = await _unitOfWork.SyllabusRepository.GetByIdAsync(syllabusId);
+            if (syllabusObj != null)
+            {
+                foreach (var outputStandardId in outputStandardIds)
+                {
+                    var syllabusOutputStandardObj = new SyllabusOutputStandard
+                    {
+                        SyllabusId = syllabusId,
+                        OutputStandardId = outputStandardId
+                    };
+                    await _unitOfWork.SyllabusOutputStandardRepository.AddAsync(syllabusOutputStandardObj);
+                }
+                var isSuccess = await _unitOfWork.SaveChangeAsync() > 0;
+                if (isSuccess)
+                {
+                    return new Response(HttpStatusCode.OK, "Output Standards Added Successfully");
+                }
+            }
+            return new Response(HttpStatusCode.NotFound, "Syllabus Not Found");
+        }
+
     }
 }

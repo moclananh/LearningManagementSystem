@@ -14,5 +14,6 @@ namespace Infrastructures.Repositories
         }
 
         public async Task<SyllabusOutputStandard> GetSyllabusOutputStandard(Guid SyllabusId, Guid OutputStandardId) => await _dbContext.SyllabusOutputStandard.FirstOrDefaultAsync(x => x.SyllabusId == SyllabusId && x.OutputStandardId == OutputStandardId);
+
     }
 }

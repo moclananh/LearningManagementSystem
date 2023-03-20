@@ -6,3 +6,4 @@ namespace Applications.Repositories
         Task<SyllabusOutputStandard> GetSyllabusOutputStandard(Guid SyllabusId, Guid OutputStandardId);
     }
 }
+
