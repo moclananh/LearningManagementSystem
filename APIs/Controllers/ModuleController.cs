@@ -1,9 +1,6 @@
-﻿using Applications.Commons;
-using Applications.Interfaces;
-using Applications.Services;
+﻿using Applications.Interfaces;
 using Applications.ViewModels.ModuleViewModels;
 using Applications.ViewModels.Response;
-using Domain.Entities;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Authorization;
@@ -88,6 +85,11 @@ namespace APIs.Controllers
                 return Ok("Add Success");
             }
             return BadRequest("Add Fail");
+        }
+        [HttpPost("AddMultipleUnitToModule/{moduleId}"), Authorize(policy: "AuthUser")]
+        public async Task<Response> AddMultipleUnittoModule(Guid moduleId, List<Guid> unitId)
+        {
+            return await _moduleServices.AddMultipleUnitToModule(moduleId, unitId);
         }
         [HttpDelete("DeleteUnit/{moduleId}/{unitId}"), Authorize(policy: "AuthUser")]
         public async Task<IActionResult> DeleteUnit(Guid moduleId, Guid unitId)

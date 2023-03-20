@@ -66,7 +66,7 @@ namespace APIs.Controllers
                     return BadRequest("Invalid Id");
                 }
             }
-            return BadRequest("Update Failed,Invalid Input Information");
+            return BadRequest("Create Failed,Invalid Input Information");
         }
 
         [HttpPut("UpdateAuditPlan/{AuditPlanId}"), Authorize(policy: "AuthUser")]

@@ -17,6 +17,7 @@ namespace Applications.Interfaces
         public Task<CreateModuleViewModel?> CreateModule(CreateModuleViewModel moduleDTO);
         public Task<UpdateModuleViewModel> UpdateModule(Guid moduleId, UpdateModuleViewModel moduleDTO);
         public Task<CreateModuleUnitViewModel> AddUnitToModule(Guid ModuleId, Guid UnitId);
+        public Task<Response> AddMultipleUnitToModule(Guid ModuleId, List<Guid> UnitId);
         public Task<CreateModuleUnitViewModel> RemoveUnitToModule(Guid ModuleId, Guid UnitId);
     }
 }

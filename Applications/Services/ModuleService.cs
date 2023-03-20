@@ -109,6 +109,32 @@ namespace Applications.Services
             return null;
         }
 
+        public async Task<Response> AddMultipleUnitToModule(Guid ModuleId, List<Guid> UnitId)
+        {
+            var moduleOjb = await _unitOfWork.ModuleRepository.GetByIdAsync(ModuleId);
+            var moduleUnits = new List<ModuleUnit>();
+            foreach (var item in UnitId)
+            {
+                var unitObj = await _unitOfWork.UnitRepository.GetByIdAsync(item);
+                if (moduleOjb != null && unitObj != null)
+                {
+                    var moduleUnit = new ModuleUnit()
+                    {
+                        ModuleId = ModuleId,
+                        UnitId = item
+                    };
+                    moduleUnits.Add(moduleUnit);
+                }
+            }
+            await _unitOfWork.ModuleUnitRepository.AddRangeAsync(moduleUnits);
+            var isSuccess = await _unitOfWork.SaveChangeAsync() > 0;
+            if (isSuccess)
+            {
+                return new Response(HttpStatusCode.OK, "Output Standards Added Successfully", _mapper.Map<List<CreateModuleUnitViewModel>>(moduleUnits));
+            }
+            return new Response(HttpStatusCode.NotFound, "Module Not Found");
+        }
+
         public async Task<CreateModuleUnitViewModel> AddUnitToModule(Guid ModuleId, Guid UnitId)
         {
             var moduleOjb = await _unitOfWork.ModuleRepository.GetByIdAsync(ModuleId);
@@ -120,7 +146,7 @@ namespace Applications.Services
                     Module = moduleOjb,
                     Unit = unitObj
                 };
-                await _unitOfWork.ModuleUnitRepository.AddAsync(moduleUnit );
+                await _unitOfWork.ModuleUnitRepository.AddAsync(moduleUnit);
                 var isSuccess = await _unitOfWork.SaveChangeAsync() > 0;
                 if (isSuccess)
                 {
@@ -129,6 +155,7 @@ namespace Applications.Services
             }
             return null;
         }
+
         public async Task<CreateModuleUnitViewModel> RemoveUnitToModule(Guid ModuleId, Guid UnitId)
         {
             var moduleOjb = await _unitOfWork.ModuleUnitRepository.GetModuleUnit(ModuleId, UnitId);

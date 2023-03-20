@@ -32,7 +32,6 @@ using APIs.Validations.OutputStandardValidations;
 using Applications.ViewModels.AuditResultViewModels;
 using APIs.Validations.AuditResultValidations;
 using System.Text.Json.Serialization;
-using Domain.Entities;
 
 namespace APIs;
 

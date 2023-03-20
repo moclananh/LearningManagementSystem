@@ -3,18 +3,21 @@ using Applications.Interfaces;
 using Applications.Services;
 using Applications.ViewModels.ModuleUnitViewModels;
 using Applications.ViewModels.ModuleViewModels;
+using Applications.ViewModels.Response;
 using AutoFixture;
 using Domain.Entities;
 using Domain.EntityRelationship;
 using Domain.Tests;
 using FluentAssertions;
 using Moq;
+using System.Net;
 
 namespace Applications.Tests.Services.ModuleServices
 {
     public class ModuleServiceTests : SetupTest
     {
         private readonly IModuleService _moduleService;
+
         public ModuleServiceTests()
         {
             _moduleService = new ModuleService(_unitOfWorkMock.Object, _mapperConfig);
@@ -48,7 +51,7 @@ namespace Applications.Tests.Services.ModuleServices
             //act
             var result = await _moduleService.GetAllModules();
             //assert
-            _unitOfWorkMock.Verify(x => x.ModuleRepository.ToPagination(0, 10), Times.Once()); 
+            _unitOfWorkMock.Verify(x => x.ModuleRepository.ToPagination(0, 10), Times.Once());
         }
 
         [Fact]
@@ -337,6 +340,105 @@ namespace Applications.Tests.Services.ModuleServices
         }
 
         [Fact]
+        public async Task AddMultipleUnitToModule_ShouldReturnCorrectData()
+        {
+            //arrange
+            var unitMockData = _fixture.Build<Unit>()
+                                       .Without(x => x.Practices)
+                                       .Without(x => x.Lectures)
+                                       .Without(x => x.Assignments)
+                                       .Without(x => x.Quizzs)
+                                       .Without(x => x.ModuleUnits)
+                                       .CreateMany(30)
+                                       .ToList();
+            var moduleMockData = _fixture.Build<Module>()
+                                         .Without(x => x.AuditPlan)
+                                         .Without(x => x.ModuleUnits)
+                                         .Without(x => x.SyllabusModules)
+                                         .Create();
+            await _dbContext.AddRangeAsync(unitMockData);
+            await _dbContext.AddAsync(moduleMockData);
+            await _dbContext.SaveChangesAsync();
+            var moduleUnitMockData = new List<ModuleUnit>();
+            List<Guid> UnitListId = new List<Guid>();
+            foreach (var item in unitMockData)
+            {
+                var mockData = new ModuleUnit()
+                {
+                    Unit = item,
+                    Module = moduleMockData
+                };
+                moduleUnitMockData.Add(mockData);
+                UnitListId.Add(item.Id);
+            }
+
+            await _dbContext.AddRangeAsync(moduleUnitMockData);
+            await _dbContext.SaveChangesAsync();
+            _unitOfWorkMock.Setup(x => x.ModuleRepository.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(moduleMockData);
+            foreach (var item in unitMockData)
+            {
+                _unitOfWorkMock.Setup(x => x.UnitRepository.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(item);
+            }
+            _unitOfWorkMock.Setup(x => x.ModuleUnitRepository.AddRangeAsync(It.IsAny<List<ModuleUnit>>())).Returns(Task.CompletedTask);
+            _unitOfWorkMock.Setup(x => x.SaveChangeAsync()).ReturnsAsync(1);
+            var expectedlist = _mapperConfig.Map<List<CreateModuleUnitViewModel>>(moduleUnitMockData);
+            var expected = new Response(HttpStatusCode.OK, "Output Standards Added Successfully", expectedlist);
+            //act
+            var result = await _moduleService.AddMultipleUnitToModule(moduleMockData.Id, UnitListId);
+            //assert
+            result.Should().BeEquivalentTo(expected);
+        }
+
+        [Fact]
+        public async Task AddMultipleUnitToModule_ShouldReturnNull_WhenNotFoundModule()
+        {
+            //arrange
+            var unitMockData = _fixture.Build<Unit>()
+                                       .Without(x => x.Practices)
+                                       .Without(x => x.Lectures)
+                                       .Without(x => x.Assignments)
+                                       .Without(x => x.Quizzs)
+                                       .Without(x => x.ModuleUnits)
+                                       .CreateMany(30)
+                                       .ToList();
+            var moduleMockData = _fixture.Build<Module>()
+                                         .Without(x => x.AuditPlan)
+                                         .Without(x => x.ModuleUnits)
+                                         .Without(x => x.SyllabusModules)
+                                         .Create();
+            await _dbContext.AddRangeAsync(unitMockData);
+            await _dbContext.AddAsync(moduleMockData);
+            await _dbContext.SaveChangesAsync();
+            var moduleUnitMockData = new List<ModuleUnit>();
+            List<Guid> UnitListId = new List<Guid>();
+            foreach (var item in unitMockData)
+            {
+                var mockData = new ModuleUnit()
+                {
+                    Unit = item,
+                    Module = moduleMockData
+                };
+                moduleUnitMockData.Add(mockData);
+                UnitListId.Add(item.Id);
+            }
+
+            await _dbContext.AddRangeAsync(moduleUnitMockData);
+            await _dbContext.SaveChangesAsync();
+            _unitOfWorkMock.Setup(x => x.ModuleRepository.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(moduleMockData);
+            foreach (var item in unitMockData)
+            {
+                _unitOfWorkMock.Setup(x => x.UnitRepository.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(item);
+            }
+            _unitOfWorkMock.Setup(x => x.ModuleUnitRepository.AddRangeAsync(It.IsAny<List<ModuleUnit>>())).Returns(Task.CompletedTask);
+            _unitOfWorkMock.Setup(x => x.SaveChangeAsync()).ReturnsAsync(0);
+            var expected = new Response(HttpStatusCode.NotFound, "Module Not Found");
+            //act
+            var result = await _moduleService.AddMultipleUnitToModule(moduleMockData.Id, UnitListId);
+            //assert
+            result.Should().BeEquivalentTo(expected);
+        }
+
+        [Fact]
         public async Task RemoveUnitToModule_ShouldReturnCorrectData()
         {
             //arrange 
@@ -466,6 +568,5 @@ namespace Applications.Tests.Services.ModuleServices
             //assert
             result.Should().BeNull();
         }
-
     }
 }

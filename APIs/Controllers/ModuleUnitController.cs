@@ -1,5 +1,6 @@
 ﻿using Applications.Commons;
 using Applications.Interfaces;
+using Applications.ViewModels.Response;
 using Applications.ViewModels.SyllabusOutputStandardViewModels;
 using Applications.ViewModels.UnitModuleViewModel;
 using Microsoft.AspNetCore.Http;
@@ -18,7 +19,7 @@ namespace APIs.Controllers
         }
 
         [HttpGet("GetAllModuleUnits")]
-        public async Task<Pagination<ModuleUnitViewModel>> GetAllModuleUnits(int pageIndex = 0, int pageSize = 10)
+        public async Task<Response> GetAllModuleUnits(int pageIndex = 0, int pageSize = 10)
         {
             return await _moduleUnitService.GetAllModuleUnitsAsync(pageIndex, pageSize);
         }
