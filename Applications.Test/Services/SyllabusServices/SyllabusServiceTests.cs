@@ -36,9 +36,16 @@ namespace Applications.Tests.Services.SyllabusServices
                 PageSize = 10,
                 TotalItemsCount = 30,
             };
-            //var syllabus = _mapperConfig.Map<Pagination<Syllabus>>(syllabusMockData);
-            _unitOfWorkMock.Setup(s => s.SyllabusRepository.ToPagination(0, 10)).ReturnsAsync(syllabusMockData);
+            var user = _fixture.Build<User>()
+                               .Without(s => s.UserAuditPlans)
+                               .Without(s => s.AbsentRequests)
+                               .Without(s => s.ClassUsers)
+                               .Without(s => s.Attendences)
+                               .CreateMany(3)
+                               .ToList();
             var expected = _mapperConfig.Map<Pagination<SyllabusViewModel>>(syllabusMockData);
+            _unitOfWorkMock.Setup(s => s.SyllabusRepository.ToPagination(0, 10)).ReturnsAsync(syllabusMockData);
+            _unitOfWorkMock.Setup(s => s.UserRepository.GetEntitiesByIdsAsync(It.IsAny<List<Guid?>>())).ReturnsAsync(user);
 
             //act
             var result = await _syllabusService.GetAllSyllabus(0, 10);
@@ -438,18 +445,16 @@ namespace Applications.Tests.Services.SyllabusServices
                 PageSize = 10,
                 TotalItemsCount = 30,
             };
+            var user = _fixture.Build<User>()
+                               .Without(s => s.UserAuditPlans)
+                               .Without(s => s.AbsentRequests)
+                               .Without(s => s.ClassUsers)
+                               .Without(s => s.Attendences)
+                               .CreateMany(3)
+                               .ToList();
             var expected = _mapperConfig.Map<Pagination<SyllabusViewModel>>(syllabusMockData);
-            var guidList = syllabusMockData.Items.Select(x => x.CreatedBy).ToList();
-            foreach (var item in expected.Items)
-            {
-                foreach (var user in guidList)
-                {
-                    var createBy = new User { Email = "mock@example.com" };
-                    _unitOfWorkMock.Setup(x => x.UserRepository.GetByIdAsync(user)).ReturnsAsync(createBy);
-                    item.CreatedBy = createBy.Email;
-                }
-            }
             _unitOfWorkMock.Setup(s => s.SyllabusRepository.GetAllSyllabusDetail(0, 10)).ReturnsAsync(syllabusMockData);
+            _unitOfWorkMock.Setup(s => s.UserRepository.GetEntitiesByIdsAsync(It.IsAny<List<Guid?>>())).ReturnsAsync(user);
             //act
             var result = await _syllabusService.GetAllSyllabusDetail(0, 10);
             //assert
@@ -464,7 +469,7 @@ namespace Applications.Tests.Services.SyllabusServices
                                  .Without(s => s.SyllabusModules)
                                  .Without(S => S.SyllabusOutputStandards)
                                  .Without(s => s.TrainingProgramSyllabi)
-                                .Create();
+                                 .Create();
 
             _unitOfWorkMock.Setup(x => x.SyllabusRepository.GetSyllabusDetail(It.IsAny<Guid>())).ReturnsAsync(mocks);
             var expected = _mapperConfig.Map<SyllabusViewModel>(mocks);
