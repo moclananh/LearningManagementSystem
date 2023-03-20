@@ -51,8 +51,11 @@ namespace APIs.Controllers
         [HttpGet("GetDisableAssignments")]
         public async Task<Response> GetDiableAssignments(int pageIndex = 0, int pageSize = 10) => await _assignmentService.GetDisableAssignments(pageIndex, pageSize);
 
-        [HttpGet("ViewAssignmentById/{AssignmentId}")]
-        public async Task<Response> GetAssignmentById(Guid AssignmentId) => await _assignmentService.GetAssignmentById(AssignmentId);
+        [HttpGet("GetAssignmentDetail/{AssignmentId}")]
+        public async Task<Response> GetAssignmentDetail(Guid AssignmentId) => await _assignmentService.GetAssignmentDetail(AssignmentId);
+
+        /*[HttpGet("ViewAssignmentById/{AssignmentId}")]
+        public async Task<Response> GetAssignmentById(Guid AssignmentId) => await _assignmentService.GetAssignmentById(AssignmentId);*/
 
         [HttpGet("ViewAssignmentsByUnitId/{UnitId}")]
         public async Task<Response> GetAssignmentsByUnitId(Guid UnitId, int pageIndex = 0, int pageSize = 10) => await _assignmentService.GetAssignmentByUnitId(UnitId, pageIndex, pageSize);

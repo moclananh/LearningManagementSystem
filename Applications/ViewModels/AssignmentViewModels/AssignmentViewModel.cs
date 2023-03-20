@@ -1,4 +1,5 @@
-﻿using Domain.Enum.StatusEnum;
+﻿using Domain.Entities;
+using Domain.Enum.StatusEnum;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,10 +18,12 @@ namespace Applications.ViewModels.AssignmentViewModels
         public bool isDone { get; set; }
         public Status Status { get; set; }
         public Guid UnitId { get; set; }
+        public bool IsDeleted { get; set; }
         public string? CreatedBy { get; set; }
         public DateTime CreationDate { get; set; }
-        public bool IsDeleted { get; set; }
         public DateTime? ModificationDate { get; set; }
         public string? ModificationBy { get; set; }
+        public Unit Unit { get; set; }
+
     }
 }

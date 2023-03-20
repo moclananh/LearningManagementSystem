@@ -27,7 +27,7 @@ namespace Infrastructures.Tests.Repositories
             var mockData = _fixture.Build<Assignment>()
                 .Without(x => x.AssignmentQuestions)
                 .Without(x => x.Unit)
-                .With(x => x.AssignmentName,"Mock")
+                .With(x => x.AssignmentName, "Mock")
                 .CreateMany(30)
                 .ToList();
             await _dbContext.Assignments.AddRangeAsync(mockData);
@@ -120,7 +120,7 @@ namespace Infrastructures.Tests.Repositories
                                 .CreateMany(30)
                                 .ToList();
             await _dbContext.AddRangeAsync(assignmentMock);
-            await _dbContext.SaveChangesAsync();        
+            await _dbContext.SaveChangesAsync();
             var expected = assignmentMock.Where(x => x.UnitId.Equals(i))
                                         .OrderByDescending(x => x.CreationDate)
                                         .Take(10)
@@ -138,5 +138,22 @@ namespace Infrastructures.Tests.Repositories
             resultPaging.PageSize.Should().Be(10);
             result.Should().BeEquivalentTo(expected);
         }
+
+        /*[Fact]
+        public async Task GetAssignmentDetail_ShouldReturnCorrectData()
+        {
+            //arrange
+            var mockData = _fixture.Build<Assignment>()
+                                   .Without(s => s.AssignmentQuestions)
+                                   .Without(s => s.Unit)
+                                   .Create();
+            _dbContext.Assignments.Add(mockData);
+            await _dbContext.SaveChangesAsync();
+            //act
+            var result = await _assignmentRepository.GetAssignmentDetail(mockData.Id);
+            //assert
+            result.Should().NotBeNull();
+            result.Should().Be(mockData.Id);
+        }*/
     }
 }

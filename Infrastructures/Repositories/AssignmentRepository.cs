@@ -55,6 +55,17 @@ namespace Infrastructures.Repositories
             return result;
         }
 
+        public async Task<Assignment> GetAssignmentDetail(Guid AssignmentId)
+        {
+            var result = _dbContext.Assignments.Include(s => s.Unit)
+                                               .Include(s => s.Unit).ThenInclude(s => s.Lectures)
+                                               .Include(s => s.Unit).ThenInclude(s => s.Practices)
+                                               .Include(s => s.Unit).ThenInclude(s => s.Quizzs)
+                                               .Include(s => s.Unit).ThenInclude(s => s.ModuleUnits)
+                                           .FirstOrDefault(x => x.Id == AssignmentId);
+            return result;
+        }
+
         public async Task<Pagination<Assignment>> GetDisableAssignmentAsync(int pageNumber = 0, int pageSize = 10)
         {
             var itemCount = await _dbContext.Assignments.CountAsync();

@@ -1,6 +1,8 @@
 ﻿using Applications.Commons;
 using Applications.Interfaces;
+using Applications.Services;
 using Applications.ViewModels.AssignmentViewModels;
+using Applications.ViewModels.SyllabusViewModels;
 using AutoFixture;
 using Domain.Entities;
 using Domain.Tests;
@@ -240,6 +242,27 @@ namespace Applications.Tests.Services.AssignmentServices
             //assert
             _unitOfWorkMock.Verify(x => x.AssignmentRepository.GetAssignmentByName("Mock", 0, 10), Times.Once());
         }
+
+        /*[Fact]
+        public async Task GetAssignmentDetails_ShouldReturnCorrectData()
+        {
+            //arrange
+            var mocks = _fixture.Build<Assignment>()
+                                 .Without(s => s.AssignmentQuestions)
+                                 .Without(S => S.Unit)
+                                 .Create();
+
+            _unitOfWorkMock.Setup(x => x.AssignmentRepository.GetAssignmentDetail(It.IsAny<Guid>())).ReturnsAsync(mocks);
+            var expected = _mapperConfig.Map<AssignmentViewModel>(mocks);
+            var createBy = new User { Email = "mock@example.com" };
+            _unitOfWorkMock.Setup(x => x.UserRepository.GetByIdAsync(mocks.CreatedBy)).ReturnsAsync(createBy);
+            expected.CreatedBy = createBy.Email;
+            //act
+            var result = await _assignmentService.GetAssignmentDetail(mocks.Id);
+            //assert
+            _unitOfWorkMock.Verify(x => x.AssignmentRepository.GetAssignmentDetail(mocks.Id), Times.Once());
+        }*/
+
     }
 }
 

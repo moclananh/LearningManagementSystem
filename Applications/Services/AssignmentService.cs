@@ -2,6 +2,7 @@
 using Applications.Interfaces;
 using Applications.ViewModels.AssignmentViewModels;
 using Applications.ViewModels.Response;
+using Applications.ViewModels.SyllabusViewModels;
 using AutoMapper;
 using Domain.Entities;
 using System.Net;
@@ -99,6 +100,16 @@ namespace Applications.Services
             var asmObj = await _unitOfWork.AssignmentRepository.GetAssignmentByName(Name, pageIndex, pageSize);
             if (asmObj.Items.Count() < 1) return new Response(HttpStatusCode.NoContent, "No Assignment Found");
             else return new Response(HttpStatusCode.OK, "Search Succeed", _mapper.Map<Pagination<UpdateAssignmentViewModel>>(asmObj));
+        }
+
+        public async Task<Response> GetAssignmentDetail(Guid AssignmentId)
+        {
+            var assignment = await _unitOfWork.AssignmentRepository.GetAssignmentDetail(AssignmentId);
+            var result = _mapper.Map<AssignmentViewModel>(assignment);
+            var createBy = await _unitOfWork.UserRepository.GetByIdAsync(assignment.CreatedBy);
+            result.CreatedBy = createBy.Email;
+            if (assignment == null) return new Response(HttpStatusCode.NoContent, "Id not found");
+            else return new Response(HttpStatusCode.OK, "Search succeed", result);
         }
     }
 }
