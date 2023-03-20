@@ -15,7 +15,7 @@ public class UserServiceTest : SetupTest
 
     public UserServiceTest()
     {
-        _userService = new UserService(_unitOfWorkMock.Object, _mapperConfig, _tokenServiceMock.Object);
+        _userService = new UserService(_unitOfWorkMock.Object, _mapperConfig, _tokenServiceMock.Object,_claimServiceMock.Object);
     }
     
     [Fact]

@@ -20,24 +20,29 @@ public class UserService : IUserService
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
     private readonly ITokenService _tokenService;
-    public UserService(IUnitOfWork unitOfWork, IMapper mapper, ITokenService tokenService)
+    private readonly IClaimService _claimService;
+    public UserService(IUnitOfWork unitOfWork, IMapper mapper, ITokenService tokenService,IClaimService claimService)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
         _tokenService = tokenService;
+        _claimService = claimService;
     }
 
     // Change Password
     public async Task<Response> ChangePassword(Guid id,ChangePasswordViewModel changePassword)
     {
+        if (!_claimService.GetCurrentUserId.Equals(id))
+            return new Response(HttpStatusCode.Forbidden, $"you are not login with this account, please login first !!!");
         var user = (await _unitOfWork.UserRepository.Find(x => x.Id == id)).FirstOrDefault();
         if (user == null) return new Response(HttpStatusCode.BadRequest, "forbidden exception!");
-        if (user.Password != changePassword.OldPassword) return new Response(HttpStatusCode.BadRequest, "Wrong password");
+        if (!StringUtils.Verify(changePassword.OldPassword,user.Password)) return new Response(HttpStatusCode.BadRequest, "Wrong password");
         if (string.Compare(changePassword.NewPassword, changePassword.ConfirmPassword) != 0)
         {
             return new Response(HttpStatusCode.BadRequest, "the new password and confirm password does not match!");
         }
-        user.Password = changePassword.NewPassword;
+
+        user.Password = StringUtils.Hash(changePassword.NewPassword);
         _unitOfWork.UserRepository.Update(user);
         bool isSuccess = await _unitOfWork.SaveChangeAsync() > 0;
         if (isSuccess) return new Response(HttpStatusCode.OK, "Change Success!");
