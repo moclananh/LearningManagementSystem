@@ -51,7 +51,8 @@ namespace Infrastructures.Mappers
             CreateMap<User, UserViewModel>()
                 .ForMember(dest => dest.Gender, src => src.MapFrom(s => s.Gender == true ? "Male":"Female"))
                 .ForMember(dest => dest.createByEmail, src => src.MapFrom<CreateByResolver>());
-            CreateMap<UpdateUserViewModel, User>().ReverseMap();
+            CreateMap<UpdateUserViewModel, User>()
+                .ForMember(dest => dest.Image, src => src.MapFrom(x => x.Image == null ? string.Empty : x.Image));
             CreateMap<CreateClassUserViewModel, ClassUser>().ReverseMap();
             CreateMap<AuditPlanViewModel, AuditPlan>().ReverseMap();
             CreateMap<UpdateAuditPlanViewModel, AuditPlan>().ReverseMap();

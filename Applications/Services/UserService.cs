@@ -140,6 +140,8 @@ public class UserService : IUserService
     // Update
     public async Task<Response> UpdateUser(Guid id, UpdateUserViewModel updateUserViewModel)
     {
+        if (!_claimService.GetCurrentUserId.Equals(id))
+            return new Response(HttpStatusCode.Forbidden, $"you are not login with this account, please login first !!!");
         var user = await _unitOfWork.UserRepository.GetByIdAsync(id);
         if (user is null) return new Response(HttpStatusCode.NotFound, "Not Found this user");
 

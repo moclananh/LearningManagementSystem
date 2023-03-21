@@ -13,6 +13,6 @@ public class UpdateUserViewModel
     public bool Gender { get; set; }
     public Role Role { get; set; }
     public OverallStatus OverallStatus { get; set; }
-    public string Image { get; set; }
+    public string? Image { get; set; }
     public Level Level { get; set; }
 }
