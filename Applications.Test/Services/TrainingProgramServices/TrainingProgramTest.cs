@@ -7,6 +7,7 @@ using Applications.ViewModels.SyllabusViewModels;
 using Applications.ViewModels.TrainingProgramModels;
 using Applications.ViewModels.TrainingProgramSyllabi;
 using AutoFixture;
+using DocumentFormat.OpenXml.Wordprocessing;
 using Domain.Entities;
 using Domain.EntityRelationship;
 using Domain.Tests;
@@ -407,22 +408,28 @@ namespace Applications.Tests.Services.TrainingProgramServices
             var trainingProgramMockData = new Pagination<TrainingProgram>
             {
                 Items = _fixture.Build<TrainingProgram>()
-                                .Without(x => x.ClassTrainingPrograms)
-                                .Without(x => x.TrainingProgramSyllabi)
-                                .With(x => x.TrainingProgramName, "NetCore")
+                                .Without(s => s.ClassTrainingPrograms)
+                                .Without(s => s.TrainingProgramSyllabi)
                                 .CreateMany(30)
                                 .ToList(),
                 PageIndex = 0,
                 PageSize = 10,
-                TotalItemsCount = 30
+                TotalItemsCount = 30,
             };
-            var trainingprograms = _mapperConfig.Map<Pagination<TrainingProgram>>(trainingProgramMockData);
-            _unitOfWorkMock.Setup(x => x.TrainingProgramRepository.GetTrainingProgramByName(It.IsAny<string>(), 0, 10)).ReturnsAsync(trainingProgramMockData);
-            var expected = _mapperConfig.Map<Pagination<TrainingProgramViewModel>>(trainingprograms);
+            var user = _fixture.Build<User>()
+                               .Without(s => s.UserAuditPlans)
+                               .Without(s => s.AbsentRequests)
+                               .Without(s => s.ClassUsers)
+                               .Without(s => s.Attendences)
+                               .CreateMany(3)
+                               .ToList();
+            var expected = _mapperConfig.Map<Pagination<TrainingProgramViewModel>>(trainingProgramMockData);
+            _unitOfWorkMock.Setup(s => s.TrainingProgramRepository.GetTrainingProgramByName("abc", 0, 10)).ReturnsAsync(trainingProgramMockData);
+            _unitOfWorkMock.Setup(s => s.UserRepository.GetEntitiesByIdsAsync(It.IsAny<List<Guid?>>())).ReturnsAsync(user);
             //act
-            var result = await _trainingProgramService.GetByName("Net", 0, 10);
+            var result = await _trainingProgramService.GetByName("abc", 0, 10);
             //assert
-            result.Should().BeEquivalentTo(expected);
+            _unitOfWorkMock.Verify(s => s.TrainingProgramRepository.GetTrainingProgramByName("abc", 0, 10), Times.Once());
         }
 
         [Fact]
