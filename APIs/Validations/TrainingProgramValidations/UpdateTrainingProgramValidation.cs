@@ -1,5 +1,4 @@
-﻿using Application.ViewModels.TrainingProgramModels;
-using Applications.ViewModels.TrainingProgramModels;
+﻿using Applications.ViewModels.TrainingProgramModels;
 using FluentValidation;
 
 namespace APIs.Validations.TrainingProgramValidations

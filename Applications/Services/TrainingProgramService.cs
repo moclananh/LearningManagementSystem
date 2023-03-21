@@ -44,7 +44,7 @@ namespace Applications.Services
             }
             return null;
         }
-
+        
         public async Task<TrainingProgramViewModel?> CreateTrainingProgramAsync(CreateTrainingProgramViewModel TrainingProgramDTO)
         {
             var TrainingProgramObj = _mapper.Map<TrainingProgram>(TrainingProgramDTO);

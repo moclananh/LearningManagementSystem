@@ -1,7 +1,5 @@
 ﻿using Application.ViewModels.TrainingProgramModels;
-using Applications.Commons;
 using Applications.Interfaces;
-using Applications.Services;
 using Applications.ViewModels.Response;
 using Applications.ViewModels.TrainingProgramModels;
 using FluentValidation;
@@ -9,7 +7,6 @@ using FluentValidation.Results;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace APIs.Controllers
 {
@@ -38,10 +35,6 @@ namespace APIs.Controllers
                 {
                     var result = await _trainingProgramService.CreateTrainingProgramAsync(CreateTrainingProgram);
                     return new Response(HttpStatusCode.OK, "Create TrainingProgram Succeed", result);
-                }
-                else
-                {
-                    return new Response(HttpStatusCode.BadRequest, "Create Failed, Invalid input");
                 }
             }
             return new Response(HttpStatusCode.BadRequest, "Invalid Input");

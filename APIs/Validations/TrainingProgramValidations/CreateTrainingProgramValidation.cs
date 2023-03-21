@@ -9,7 +9,7 @@ namespace APIs.Validations.TrainingProgramValidations
         {
             RuleFor(x => x.TrainingProgramName)
                 .NotEmpty()
-                .WithMessage("The 'TrainngProgramName' should not be empty")
+                .WithMessage("The 'TrainingProgramName' should not be empty")
                 .Length(10, 150);
             RuleFor(x => x.Status).NotNull().Must(x => x == Domain.Enum.StatusEnum.Status.Enable || x == Domain.Enum.StatusEnum.Status.Disable)
                               .WithMessage("Status must be either Enable or Disable");
