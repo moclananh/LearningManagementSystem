@@ -62,8 +62,11 @@ namespace Applications.Services
         {
             var auditPlans = await _unitOfWork.AuditPlanRepository.GetByIdAsync(AuditPlanId);
             var result = _mapper.Map<AuditPlanViewModel>(auditPlans);
-            var createBy = await _unitOfWork.UserRepository.GetByIdAsync(auditPlans.CreatedBy);
-            result.CreatedBy = createBy.Email;
+            var createBy = await _unitOfWork.UserRepository.GetByIdAsync(auditPlans?.CreatedBy);
+            if (createBy != null)
+            {
+                result.CreatedBy = createBy.Email;
+            }
             if (auditPlans == null) return new Response(HttpStatusCode.NoContent, "No AuditPlan Found");
             else return new Response(HttpStatusCode.OK, "Search Succeed", result);
         }
