@@ -5,8 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 using FluentValidation.Results;
 using Applications.ViewModels.Response;
 using Microsoft.AspNetCore.Authorization;
-using Applications.Services;
-using Domain.Entities;
+using System.Net;
+
 
 namespace APIs.Controllers
 {
@@ -27,21 +27,22 @@ namespace APIs.Controllers
         }
 
         [HttpPost("CreateLecture"), Authorize(policy: "AuthUser")]
-        public async Task<IActionResult> CreateLecture(CreateLectureViewModel LectureModel)
+        public async Task<Response> CreateLecture(CreateLectureViewModel LectureModel)
         {
             if (ModelState.IsValid)
             {
                 ValidationResult result = _validatorCreate.Validate(LectureModel);
                 if (result.IsValid)
                 {
-                    await _lectureServices.CreateLecture(LectureModel);
-                }
-                else
-                {
-                    return BadRequest("Fail to create new Lecture");
+                    var Lecture = await _lectureServices.CreateLecture(LectureModel);
+                    return new Response(HttpStatusCode.OK, "Create Lecture Succeed", Lecture);
                 }
             }
-            return Ok("Create new Lecture Success");
+            else
+            {
+                return new Response(HttpStatusCode.BadRequest, "Create Failed, Invalid input");
+            }
+            return new Response(HttpStatusCode.BadRequest, "Invalid Input");
         }
         [HttpGet("GetAllLectures")]
         public async Task<Response> GetAllLectures(int pageIndex = 0, int pageSize = 10) => await _lectureServices.GetAllLectures(pageIndex, pageSize);
@@ -51,6 +52,7 @@ namespace APIs.Controllers
 
         [HttpGet("GetLectureByUnitId/{UnitId}")]
         public async Task<Response> GetLectureByUnitId(Guid UnitId, int pageIndex = 0, int pageSize = 10) => await _lectureServices.GetLectureByUnitId(UnitId, pageIndex, pageSize);
+
         [HttpGet("GetLectureByName/{LectureName}")]
         public async Task<Response> GetLectureByName(string LectureName, int pageIndex = 0, int pageSize = 10) => await _lectureServices.GetLectureByName(LectureName, pageIndex, pageSize);
 

@@ -29,6 +29,7 @@ using Applications.ViewModels.SyllabusModuleViewModel;
 using Applications.ViewModels.ModuleUnitViewModels;
 using Applications.ViewModels.AttendanceViewModels;
 using Infrastructures.Mappers.UserMapperResovlers;
+using Applications.ViewModels.AbsentRequest;
 
 namespace Infrastructures.Mappers
 {
@@ -102,6 +103,8 @@ namespace Infrastructures.Mappers
             CreateMap<ClassDetailsViewModel, Class>().ReverseMap();
             /* pagination */
             CreateMap(typeof(Pagination<>), typeof(Pagination<>));
+            CreateMap<AbsentRequestViewModel, AbsentRequest>().ReverseMap();
+            CreateMap<CreateAbsentRequestViewModel, AbsentRequest>().ReverseMap();
         }
     }
 }

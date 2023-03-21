@@ -1,0 +1,28 @@
+﻿using Applications.Commons;
+using Applications.Interfaces;
+using Applications.ViewModels.AbsentRequest;
+using Applications.ViewModels.Response;
+using AutoMapper;
+using System.Net;
+
+namespace Applications.Services
+{
+    public class AbsentRequestService : IAbsentRequestServices
+    {
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
+        public AbsentRequestService(IUnitOfWork unitOfWork, IMapper mapper)
+        {
+            _unitOfWork = unitOfWork;
+            _mapper = mapper;
+        }
+       
+        public async Task<Response> GetAllAbsentRequestByEmail(string Email, int pageIndex = 0, int pageSize = 10)
+        {
+            var AbsentRequestObj = await _unitOfWork.AbsentRequestRepository.GetAllAbsentRequestByEmail(Email, pageIndex, pageSize);
+            if (AbsentRequestObj.Items.Count() < 1) return new Response(HttpStatusCode.NoContent, "Id not found");
+            else return new Response(HttpStatusCode.OK, "Search Succeed", _mapper.Map<Pagination<AbsentRequestViewModel>>(AbsentRequestObj));
+        }
+
+    }
+}

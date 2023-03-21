@@ -31,6 +31,7 @@ namespace Applications
         public IQuizzQuestionRepository QuizzQuestionRepository { get; }
         public ISyllabusModuleRepository SyllabusModuleRepository { get; }
         public IAttendanceRepository AttendanceRepository { get; }
+        public IAbsentRequestRepository AbsentRequestRepository { get; }
 
         public Task<int> SaveChangeAsync();
     }

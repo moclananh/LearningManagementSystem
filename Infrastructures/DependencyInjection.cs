@@ -73,6 +73,8 @@ namespace Infrastructures
             services.AddScoped<ISyllabusModuleService, SyllabusModuleService>();
             services.AddScoped<IAttendanceRepository, AttendanceRepository>();
             services.AddScoped<IAttendanceService, AttendanceService>();
+            services.AddScoped<IAbsentRequestServices, AbsentRequestService>();
+            services.AddScoped<IAbsentRequestRepository, AbsentRequestRepository>();
             return services;
         }
     }
