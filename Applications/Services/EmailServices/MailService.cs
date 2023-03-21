@@ -23,7 +23,7 @@ public class MailService : IMailService
         _tokenService = tokenService;
     }
 
-    public async Task<string> GetEmailTemplate(string nameTemplate, string email)
+    public async Task<string> GetEmailTemplateForgotPassword(string nameTemplate, string email)
     {
         string mailTemplate = LoadTemplate(nameTemplate);
         var user = await _unitOfWork.UserRepository.GetUserByEmail(email);
@@ -31,12 +31,15 @@ public class MailService : IMailService
         
         // check 
         string code = await _tokenService.GetToken(user.Email);
+        user.PasswordResetToken = code;
+        user.ResetTokenExpires = DateTime.Now.AddMinutes(15);
+        await _unitOfWork.SaveChangeAsync();
         EmailTemplateModel emailTemplateModel = new EmailTemplateModel
         {
             FirstName = user.firstName,
             LastName = user.lastName,
             Email = user.Email,
-            URL = $"http://localhost:8080/api/code={code}"
+            URL = $"http://localhost:4200/authentication/change-password?token={code}"
         };
 
         IRazorEngine razorEngine = new RazorEngine();

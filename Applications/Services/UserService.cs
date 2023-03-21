@@ -11,6 +11,7 @@ using Domain.Enum.RoleEnum;
 using Applications.Commons;
 using Applications.Utils;
 using Domain.Enum.LevelEnum;
+using Task = DocumentFormat.OpenXml.Office2021.DocumentTasks.Task;
 
 
 namespace Applications.Services;
@@ -43,6 +44,24 @@ public class UserService : IUserService
         }
 
         user.Password = StringUtils.Hash(changePassword.NewPassword);
+        _unitOfWork.UserRepository.Update(user);
+        bool isSuccess = await _unitOfWork.SaveChangeAsync() > 0;
+        if (isSuccess) return new Response(HttpStatusCode.OK, "Change Success!");
+        return new Response(HttpStatusCode.BadRequest, "Not Success");
+    }
+
+    // Reset-Password
+    public async Task<Response> ResetPassword(ResetPasswordRequest request)
+    {
+        var user = await _unitOfWork.UserRepository.GetUserByPasswordResetToken(request.Token);
+        if (user == null || user.ResetTokenExpires < DateTime.Now) return new Response(HttpStatusCode.BadRequest, "Invalid Token");
+        if (string.Compare(request.Password, request.ConfirmPassword) != 0)
+        {
+            return new Response(HttpStatusCode.BadRequest, "the password and confirm password does not match!");
+        }
+        user.Password = StringUtils.Hash(request.Password);
+        user.PasswordResetToken = null;
+        user.ResetTokenExpires = null;
         _unitOfWork.UserRepository.Update(user);
         bool isSuccess = await _unitOfWork.SaveChangeAsync() > 0;
         if (isSuccess) return new Response(HttpStatusCode.OK, "Change Success!");

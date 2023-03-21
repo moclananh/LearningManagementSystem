@@ -117,5 +117,14 @@ public class UserController : Controller
     [AllowAnonymous]
     public async Task<Response> Register([FromBody]CreateUserViewModel createUserViewModel)=> await _userService.AddUser(createUserViewModel);
     
+    /// <summary>
+    /// Reset-Password
+    /// </summary>
+    /// <param name="request"></param>
+    /// <returns></returns>
+    [HttpPost("Reset-password")]
+    [AllowAnonymous]
+    public async Task<Response> ResetPassword(ResetPasswordRequest request) =>  await _userService.ResetPassword(request);
+    
 }
 

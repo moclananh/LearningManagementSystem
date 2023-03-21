@@ -19,6 +19,7 @@ public class UserRepository : GenericRepository<User>, IUserRepository
 
 	public async Task<User?> GetUserByEmail(string email) => _dbContext.Users.FirstOrDefault(x => x.Email == email);
 
+    public async Task<User?> GetUserByPasswordResetToken(string token) => _dbContext.Users.FirstOrDefault(u => u.PasswordResetToken == token);
     public async Task<Pagination<User?>> GetUsersByRole(Role role, int pageNumber = 0, int pageSize = 10)
     {
         var itemCount = await _dbContext.Users.CountAsync();

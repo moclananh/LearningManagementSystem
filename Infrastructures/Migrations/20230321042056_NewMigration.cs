@@ -181,6 +181,8 @@ namespace Infrastructures.Migrations
                     Role = table.Column<int>(type: "int", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
                     OverallStatus = table.Column<int>(type: "int", nullable: false),
+                    PasswordResetToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ResetTokenExpires = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     ApprovedDate = table.Column<DateTime>(type: "datetime2", nullable: true),

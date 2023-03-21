@@ -20,6 +20,8 @@ namespace Domain.Entities
         public Role Role { get; set; }
         public Status Status { get; set; }
         public OverallStatus OverallStatus { get; set; }
+        public string? PasswordResetToken { get; set; }
+        public DateTime? ResetTokenExpires { get; set; }
         public ICollection<UserAuditPlan?> UserAuditPlans { get; set; }
         public ICollection<AbsentRequest?> AbsentRequests { get; set; }
         public ICollection<ClassUser?> ClassUsers { get; set; }

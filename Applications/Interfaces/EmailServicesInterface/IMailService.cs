@@ -7,5 +7,5 @@ public interface IMailService
     Task<bool> SendAsync(MailDataViewModel mailData, CancellationToken ct);
     //Task SendEmailAsync(MailRequest mailData);
     
-    Task<string> GetEmailTemplate(string nameTemplate,string email);
+    Task<string> GetEmailTemplateForgotPassword(string nameTemplate,string email);
 }

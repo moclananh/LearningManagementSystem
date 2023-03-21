@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructures.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20230320021158_NewMigration")]
+    [Migration("20230321042056_NewMigration")]
     partial class NewMigration
     {
         /// <inheritdoc />
@@ -1174,6 +1174,12 @@ namespace Infrastructures.Migrations
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PasswordResetToken")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ResetTokenExpires")
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid?>("ReviewBy")
                         .HasColumnType("uniqueidentifier");
