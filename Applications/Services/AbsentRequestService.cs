@@ -20,8 +20,21 @@ namespace Applications.Services
         public async Task<Response> GetAllAbsentRequestByEmail(string Email, int pageIndex = 0, int pageSize = 10)
         {
             var AbsentRequestObj = await _unitOfWork.AbsentRequestRepository.GetAllAbsentRequestByEmail(Email, pageIndex, pageSize);
-            if (AbsentRequestObj.Items.Count() < 1) return new Response(HttpStatusCode.NoContent, "Id not found");
+            if (AbsentRequestObj.Items.Count() < 1) return new Response(HttpStatusCode.BadRequest, "Id not found");
             else return new Response(HttpStatusCode.OK, "Search Succeed", _mapper.Map<Pagination<AbsentRequestViewModel>>(AbsentRequestObj));
+        }
+
+        public async Task<Response> GetAbsentById(Guid AbsentId)
+        {
+            var absObj = await _unitOfWork.AbsentRequestRepository.GetByIdAsync(AbsentId);
+            var result = _mapper.Map<AbsentRequestViewModel>(absObj);
+            var createBy = await _unitOfWork.UserRepository.GetByIdAsync(absObj?.CreatedBy);
+            if (createBy != null)
+            {
+                result.CreatedBy = createBy.Email;
+            }
+            if (absObj == null) return new Response(HttpStatusCode.BadRequest, "Id not found");
+            else return new Response(HttpStatusCode.OK, "Search succeed", result);
         }
 
     }

@@ -18,5 +18,8 @@ namespace APIs.Controllers
         }
         //[HttpGet("GetAllAbsentRequestByEmail/{Email}")]
         //public async Task<Response> GetAllAbsentRequestByEmail(string Email, int pageIndex = 0, int pageSize = 10) => await _absentrequestService.GetAllAbsentRequestByEmail(Email, pageIndex, pageSize);
+        
+        [HttpGet("GetAbsentById/{AbsentId}")]
+        public async Task<Response> GetAbsentById(Guid AbsentId) => await _absentrequestService.GetAbsentById(AbsentId);
     }
 }

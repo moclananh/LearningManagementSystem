@@ -10,7 +10,7 @@ namespace Applications.ViewModels.AbsentRequest
         public Guid UserId { get; set; }
         public Guid ClassId { get; set; }
         public DateTime CreationDate { get; set; }
-        public Guid? CreatedBy { get; set; }
+        public string? CreatedBy { get; set; }
         public DateTime? ApprovedDate { get; set; }
         public Guid? ReviewBy { get; set; }
         public Guid? ApprovedBy { get; set; }
