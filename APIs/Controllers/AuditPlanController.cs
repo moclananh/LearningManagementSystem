@@ -2,6 +2,7 @@
 using Applications.Services;
 using Applications.ViewModels.AuditPlanViewModel;
 using Applications.ViewModels.Response;
+using DocumentFormat.OpenXml.VariantTypes;
 using Domain.Entities;
 using FluentValidation;
 using FluentValidation.Results;
@@ -90,23 +91,25 @@ namespace APIs.Controllers
         [HttpPost("AuditPlan/AddUser/{AuditPlanId}/{UserId}"), Authorize(policy: "AuthUser")]
         public async Task<IActionResult> AddUser(Guid AuditPlanId, Guid UserId)
         {
-            if (ModelState.IsValid)
+            var result = await _auditPlanService.AddUserToAuditPlan(AuditPlanId, UserId);
+            if (result != null)
             {
-                await _auditPlanService.AddUserToAuditPlan(AuditPlanId, UserId);
                 return Ok("Add Success");
             }
-            return BadRequest("Add User Fail");
+
+            return BadRequest("Add UserToAuditPlan Fail");
         }
 
         [HttpDelete("AuditPlan/DeleteUser/{AuditPlanId}/{UserId}"), Authorize(policy: "AuthUser")]
         public async Task<IActionResult> DeleteUser(Guid AuditPlanId, Guid UserId)
         {
-            if (ModelState.IsValid)
+            var result = await _auditPlanService.RemoveUserFromAuditPlan(AuditPlanId, UserId);
+            if (result != null)
             {
-                await _auditPlanService.RemoveUserToAuditPlan(AuditPlanId, UserId);
                 return Ok("Remove Success");
             }
-            return BadRequest("Remove User Fail");
+
+            return BadRequest("Remove UserFromAuditPlan Fail");
         }
         [HttpGet("GetAllUserAuditPlan")]
         public async Task<Response> GetAllUserAuditPlan(int pageIndex = 0, int pageSize = 10)

@@ -134,7 +134,7 @@ namespace Applications.Services
             }
             return null;
         }
-        public async Task<CreateUserAuditPlanViewModel> RemoveUserToAuditPlan(Guid AuditPlanId, Guid UserId)
+        public async Task<CreateUserAuditPlanViewModel> RemoveUserFromAuditPlan(Guid AuditPlanId, Guid UserId)
         {
             var user = await _unitOfWork.UserAuditPlanRepository.GetUserAuditPlan(AuditPlanId, UserId);
             if (user != null)

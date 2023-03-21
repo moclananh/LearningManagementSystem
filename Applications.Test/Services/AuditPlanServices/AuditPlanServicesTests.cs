@@ -387,7 +387,7 @@ namespace Applications.Tests.Services.AuditPlanServices
             _unitOfWorkMock.Setup(x => x.UserAuditPlanRepository.SoftRemove(It.IsAny<UserAuditPlan>()));
             _unitOfWorkMock.Setup(x => x.SaveChangeAsync()).ReturnsAsync(1);
             //act
-            var result = await _auditPlanService.RemoveUserToAuditPlan(auditPLanMockData.Id, userMockData.Id);
+            var result = await _auditPlanService.RemoveUserFromAuditPlan(auditPLanMockData.Id, userMockData.Id);
             //assert
             _unitOfWorkMock.Verify(x => x.UserAuditPlanRepository.SoftRemove(It.IsAny<UserAuditPlan>()), Times.Once());
             _unitOfWorkMock.Verify(x => x.SaveChangeAsync(), Times.Once());
@@ -421,7 +421,7 @@ namespace Applications.Tests.Services.AuditPlanServices
             _unitOfWorkMock.Setup(x => x.UserAuditPlanRepository.SoftRemove(It.IsAny<UserAuditPlan>()));
             _unitOfWorkMock.Setup(x => x.SaveChangeAsync()).ReturnsAsync(1);
             //act
-            var result = await _auditPlanService.RemoveUserToAuditPlan(auditPLanMockData.Id, userMockData.Id);
+            var result = await _auditPlanService.RemoveUserFromAuditPlan(auditPLanMockData.Id, userMockData.Id);
             //assert
             result.Should().BeNull();
         }
@@ -455,7 +455,7 @@ namespace Applications.Tests.Services.AuditPlanServices
             _unitOfWorkMock.Setup(x => x.UserAuditPlanRepository.SoftRemove(It.IsAny<UserAuditPlan>()));
             _unitOfWorkMock.Setup(x => x.SaveChangeAsync()).ReturnsAsync(0);
             //act
-            var result = await _auditPlanService.RemoveUserToAuditPlan(auditPLanMockData.Id, userMockData.Id);
+            var result = await _auditPlanService.RemoveUserFromAuditPlan(auditPLanMockData.Id, userMockData.Id);
             //assert
             result.Should().BeNull();
         }
