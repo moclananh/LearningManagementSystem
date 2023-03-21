@@ -485,6 +485,7 @@ namespace Applications.Tests.Services.SyllabusServices
         [Fact]
         public async Task GetSyllabusByCreationDate_ShouldReturnCorrectData()
         {
+            //arrange
             var startDate = new DateTime(2022, 1, 1);
             var endDate = new DateTime(2022, 12, 31);
             var syllabusMockData = new Pagination<Syllabus>
@@ -499,8 +500,16 @@ namespace Applications.Tests.Services.SyllabusServices
                 PageSize = 10,
                 TotalItemsCount = 30,
             };
+            var user = _fixture.Build<User>()
+                               .Without(s => s.UserAuditPlans)
+                               .Without(s => s.AbsentRequests)
+                               .Without(s => s.ClassUsers)
+                               .Without(s => s.Attendences)
+                               .CreateMany(3)
+                               .ToList();
             var expected = _mapperConfig.Map<Pagination<SyllabusViewModel>>(syllabusMockData);
             _unitOfWorkMock.Setup(s => s.SyllabusRepository.GetSyllabusByCreationDate(startDate, endDate, 0, 10)).ReturnsAsync(syllabusMockData);
+            _unitOfWorkMock.Setup(s => s.UserRepository.GetEntitiesByIdsAsync(It.IsAny<List<Guid?>>())).ReturnsAsync(user);
             //act
             var result = await _syllabusService.GetSyllabusByCreationDate(startDate, endDate, 0, 10);
             //assert

@@ -3,8 +3,10 @@ using Applications.Interfaces;
 using Applications.Services;
 using Applications.ViewModels.PracticeQuestionViewModels;
 using AutoFixture;
+using ClosedXML.Excel;
 using Domain.Entities;
 using Domain.Tests;
+using FluentAssertions;
 using Moq;
 
 namespace Applications.Tests.Services.PracticeQuestionServices
@@ -40,6 +42,61 @@ namespace Applications.Tests.Services.PracticeQuestionServices
             var result = await _practiceQuestionService.GetPracticeQuestionByPracticeId(id);
             //assert
             _unitOfWorkMock.Verify(x => x.PracticeQuestionRepository.GetAllPracticeQuestionById(id, 0, 10), Times.Once());
+        }
+
+        [Fact]
+        public async Task ExportPracticeQuestionByPracticeId_ShouldReturnCorrectData()
+        {
+            // Arrange
+            var practiceId = Guid.NewGuid();
+            var expected = GetExpectedResult();
+
+            var mockService = new Mock<IPracticeQuestionService>();
+            mockService.Setup(x => x.ExportPracticeQuestionByPracticeId(practiceId)).ReturnsAsync(expected);
+
+            var service = mockService.Object;
+
+            // Act
+            var result = await service.ExportPracticeQuestionByPracticeId(practiceId);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Should().BeEquivalentTo(expected, options => options
+                .WithStrictOrdering());
+        }
+
+        private byte[] GetExpectedResult()
+        {
+            var praId = Guid.NewGuid();
+            var questions = new List<PracticeQuestion>
+            {
+                new PracticeQuestion { Id = Guid.NewGuid(), PracticeId = praId, Question = "Question 1", Answer = "Answer 1", Note = "Note 1" },
+                new PracticeQuestion { Id = Guid.NewGuid(), PracticeId = praId, Question = "Question 2", Answer = "Answer 2", Note = "Note 2" },
+                new PracticeQuestion { Id = Guid.NewGuid(), PracticeId = praId, Question = "Question 3", Answer = "Answer 3", Note = "Note 3" }
+            };
+
+            using var expectedWorkbook = new XLWorkbook();
+            var expectedWorksheet = expectedWorkbook.Worksheets.Add("Practice Questions");
+            expectedWorksheet.Cell(1, 1).Value = "PracticeID";
+            expectedWorksheet.Cell(2, 1).Value = "Question";
+            expectedWorksheet.Cell(2, 2).Value = "Answer";
+            expectedWorksheet.Cell(2, 3).Value = "Note";
+            expectedWorksheet.Cell(1, 2).Value = praId.ToString();
+            expectedWorksheet.Cell(3, 1).Value = "Question 1";
+            expectedWorksheet.Cell(3, 2).Value = "Answer 1";
+            expectedWorksheet.Cell(3, 3).Value = "Note 1";
+            expectedWorksheet.Cell(4, 1).Value = "Question 2";
+            expectedWorksheet.Cell(4, 2).Value = "Answer 2";
+            expectedWorksheet.Cell(4, 3).Value = "Note 2";
+            expectedWorksheet.Cell(5, 1).Value = "Question 3";
+            expectedWorksheet.Cell(5, 2).Value = "Answer 3";
+            expectedWorksheet.Cell(5, 3).Value = "Note 3";
+
+            using var expectedStream = new MemoryStream();
+            expectedWorkbook.SaveAs(expectedStream);
+            var expectedContent = expectedStream.ToArray();
+
+            return expectedContent;
         }
     }
 }
