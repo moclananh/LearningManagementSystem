@@ -24,7 +24,7 @@ namespace APIs.Controllers
             return await _syllabusModuleService.GetAllSyllabusModuleAsync(pageIndex, pageSize);
         }
 
-        [HttpPost("{syllabusId}/AddMultiModulesToSyllabus")]
+        [HttpPost("AddMultiModulesToSyllabus/{syllabusId}")]
         public async Task<Response> AddMultiModulesToSyllabus(Guid syllabusId, [FromBody] List<Guid> moduleIds)
         {
             return await _syllabusModuleService.AddMultiModulesToSyllabus(syllabusId, moduleIds);
