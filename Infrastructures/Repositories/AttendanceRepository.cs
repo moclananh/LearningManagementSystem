@@ -77,8 +77,9 @@ namespace Infrastructures.Repositories
                     }
                     else
                     {
+                        DateATD = startDate.AddDays(j);
                         j = j + 1;
-                        DateATD = startDate.AddDays(j - 1);
+                       
                     }
                     var Atd = new Attendance();
                     Atd.CreationDate = DateTime.UtcNow;

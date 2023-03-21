@@ -23,8 +23,11 @@ namespace Applications.Services
         {
             var quizz = await _unitOfWork.QuizzRepository.GetByIdAsync(QuizzId);
             var result = _mapper.Map<QuizzViewModel>(quizz);
-            var createBy = await _unitOfWork.UserRepository.GetByIdAsync(quizz.CreatedBy);
-            result.CreatedBy = createBy.Email;
+            var createBy = await _unitOfWork.UserRepository.GetByIdAsync(quizz?.CreatedBy);
+            if (createBy != null)
+            {
+                result.CreatedBy = createBy.Email;
+            }
             if (quizz == null) return new Response(HttpStatusCode.NoContent, "Id not found");
             else return new Response(HttpStatusCode.OK, "Search succeed", result);
         }

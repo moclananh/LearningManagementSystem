@@ -149,7 +149,7 @@ namespace Applications.Services
         public async Task<Response> GetSyllabusDetails(Guid syllabusId)
         {
             var syllabus = await _unitOfWork.SyllabusRepository.GetSyllabusDetail(syllabusId);
-            var result = _mapper.Map<SyllabusViewModel>(syllabus);
+            var result = _mapper.Map<SyllabusViewModel>(syllabus);      
             var createBy = await _unitOfWork.UserRepository.GetByIdAsync(syllabus.CreatedBy);
             result.CreatedBy = createBy.Email;
             if (syllabus == null) return new Response(HttpStatusCode.NoContent, "Id not found");

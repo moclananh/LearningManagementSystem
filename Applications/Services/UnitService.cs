@@ -78,8 +78,11 @@ namespace Applications.Services
         {
             var unit = await _unitOfWork.UnitRepository.GetByIdAsync(UnitId);
             var result = _mapper.Map<UnitViewModel>(unit);
-            var createBy = await _unitOfWork.UserRepository.GetByIdAsync(unit.CreatedBy);
-            result.CreatedBy = createBy.Email;
+            var createBy = await _unitOfWork.UserRepository.GetByIdAsync(unit?.CreatedBy);
+            if (createBy != null)
+            {
+                result.CreatedBy = createBy.Email;
+            }
             if (unit == null) return new Response(HttpStatusCode.NoContent, "Id not found");
             else return new Response(HttpStatusCode.OK, "Search succeed", result);
         }
