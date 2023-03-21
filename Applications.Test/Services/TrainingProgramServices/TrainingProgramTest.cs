@@ -3,6 +3,7 @@ using Applications.Commons;
 using Applications.Interfaces;
 using Applications.Services;
 using Applications.ViewModels.AssignmentViewModels;
+using Applications.ViewModels.SyllabusViewModels;
 using Applications.ViewModels.TrainingProgramModels;
 using Applications.ViewModels.TrainingProgramSyllabi;
 using AutoFixture;
@@ -422,6 +423,26 @@ namespace Applications.Tests.Services.TrainingProgramServices
             var result = await _trainingProgramService.GetByName("Net", 0, 10);
             //assert
             result.Should().BeEquivalentTo(expected);
+        }
+
+        [Fact]
+        public async Task GetTrainingProgramDetails_ShouldReturnCorrectData()
+        {
+            //arrange
+            var mocks = _fixture.Build<TrainingProgram>()
+                                 .Without(s => s.ClassTrainingPrograms)
+                                 .Without(s => s.TrainingProgramSyllabi)
+                                 .Create();
+
+            _unitOfWorkMock.Setup(x => x.TrainingProgramRepository.GetTrainingProgramDetails(It.IsAny<Guid>())).ReturnsAsync(mocks);
+            var expected = _mapperConfig.Map<TrainingProgramViewModel>(mocks);
+            var createBy = new User { Email = "mock@example.com" };
+            _unitOfWorkMock.Setup(x => x.UserRepository.GetByIdAsync(mocks.CreatedBy)).ReturnsAsync(createBy);
+            expected.CreatedBy = createBy.Email;
+            //act
+            var result = await _trainingProgramService.GetTrainingProgramDetails(mocks.Id);
+            //assert
+            _unitOfWorkMock.Verify(x => x.TrainingProgramRepository.GetTrainingProgramDetails(mocks.Id), Times.Once());
         }
     }
 }

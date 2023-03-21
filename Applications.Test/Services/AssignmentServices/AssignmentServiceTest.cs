@@ -1,4 +1,5 @@
-﻿using Applications.Commons;
+﻿using Application.ViewModels.QuizzViewModels;
+using Applications.Commons;
 using Applications.Interfaces;
 using Applications.Services;
 using Applications.ViewModels.AssignmentViewModels;
@@ -23,8 +24,7 @@ namespace Applications.Tests.Services.AssignmentServices
         [Fact]
         public async Task GetAllAssignments_ShouldReturnCorrectData()
         {
-            //arrange
-            var assignmentMockData = new Pagination<Assignment>
+            var mockdata = new Pagination<Assignment>
             {
                 Items = _fixture.Build<Assignment>()
                                 .Without(x => x.AssignmentQuestions)
@@ -35,19 +35,16 @@ namespace Applications.Tests.Services.AssignmentServices
                 PageSize = 10,
                 TotalItemsCount = 30
             };
-
-            var expected = _mapperConfig.Map<Pagination<AssignmentViewModel>>(assignmentMockData);
-            var guidList = assignmentMockData.Items.Select(x => x.CreatedBy).ToList();
-            foreach (var item in expected.Items)
-            {
-                foreach (var user in guidList)
-                {
-                    var createBy = new User { Email = "mock@example.com" };
-                    _unitOfWorkMock.Setup(x => x.UserRepository.GetByIdAsync(user)).ReturnsAsync(createBy);
-                    item.CreatedBy = createBy.Email;
-                }
-            }
-            _unitOfWorkMock.Setup(x => x.AssignmentRepository.ToPagination(0, 10)).ReturnsAsync(assignmentMockData);
+            var user = _fixture.Build<User>()
+                               .Without(x => x.UserAuditPlans)
+                               .Without(x => x.AbsentRequests)
+                               .Without(x => x.ClassUsers)
+                               .Without(x => x.Attendences)
+                               .CreateMany(3)
+                               .ToList();
+            var expected = _mapperConfig.Map<Pagination<AssignmentViewModel>>(mockdata);
+            _unitOfWorkMock.Setup(x => x.AssignmentRepository.ToPagination(0, 10)).ReturnsAsync(mockdata);
+            _unitOfWorkMock.Setup(x => x.UserRepository.GetEntitiesByIdsAsync(It.IsAny<List<Guid?>>())).ReturnsAsync(user);
             //act
             var result = await _assignmentService.ViewAllAssignmentAsync();
             //assert

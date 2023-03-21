@@ -44,25 +44,36 @@ namespace Applications.Services
         public async Task<Response> AddMultipleOutputStandardsToSyllabus(Guid syllabusId, List<Guid> outputStandardIds)
         {
             var syllabusObj = await _unitOfWork.SyllabusRepository.GetByIdAsync(syllabusId);
-            if (syllabusObj != null)
+            if (syllabusObj == null)
             {
-                foreach (var outputStandardId in outputStandardIds)
-                {
-                    var syllabusOutputStandardObj = new SyllabusOutputStandard
-                    {
-                        SyllabusId = syllabusId,
-                        OutputStandardId = outputStandardId
-                    };
-                    await _unitOfWork.SyllabusOutputStandardRepository.AddAsync(syllabusOutputStandardObj);
-                }
-                var isSuccess = await _unitOfWork.SaveChangeAsync() > 0;
-                if (isSuccess)
-                {
-                    return new Response(HttpStatusCode.OK, "Output Standards Added Successfully");
-                }
+                return new Response(HttpStatusCode.NotFound, "Syllabus Not Found");
             }
-            return new Response(HttpStatusCode.NotFound, "Syllabus Not Found");
-        }
 
+            foreach (var outputStandardId in outputStandardIds)
+            {
+                var outputStandardObj = await _unitOfWork.OutputStandardRepository.GetByIdAsync(outputStandardId);
+                if (outputStandardObj == null)
+                {
+                    return new Response(HttpStatusCode.NotFound, "Output Standard Not Found");
+                }
+
+                var syllabusOutputStandardObj = new SyllabusOutputStandard
+                {
+                    SyllabusId = syllabusId,
+                    OutputStandardId = outputStandardId
+                };
+                await _unitOfWork.SyllabusOutputStandardRepository.AddAsync(syllabusOutputStandardObj);
+            }
+
+            var isSuccess = await _unitOfWork.SaveChangeAsync() > 0;
+            if (isSuccess)
+            {
+                return new Response(HttpStatusCode.OK, "Output Standards Added Successfully");
+            }
+            else
+            {
+                return new Response(HttpStatusCode.InternalServerError, "Failed to save changes to the database");
+            }
+        }
     }
 }

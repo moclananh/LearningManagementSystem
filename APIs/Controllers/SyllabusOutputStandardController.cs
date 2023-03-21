@@ -23,7 +23,7 @@ namespace APIs.Controllers
             return await _syllabusOutputStandardService.GetAllSyllabusOutputStandards(pageIndex, pageSize);
         }
 
-        [HttpPost("AddMultipleOutputStandardsToSyllabus"), Authorize(policy: "AuthUser")]
+        [HttpPost("AddMultipleOutputStandardsToSyllabus/{syllabusId}"), Authorize(policy: "AuthUser")]
         public async Task<Response> AddMultipleOutputStandardsToSyllabus(Guid syllabusId, List<Guid> outputStandardIds)
         {
             return await _syllabusOutputStandardService.AddMultipleOutputStandardsToSyllabus(syllabusId, outputStandardIds);
