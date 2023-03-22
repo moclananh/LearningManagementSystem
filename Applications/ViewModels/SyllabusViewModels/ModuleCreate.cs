@@ -2,7 +2,7 @@
 {
     public class ModuleCreate
     {
-        public string Name { get; set; }    
+        public string ModuleName { get; set; }
         public List<UnitCreate>? Unit { get; set; }
     }
 }

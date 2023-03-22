@@ -7,6 +7,7 @@ using AutoMapper;
 using DocumentFormat.OpenXml.Spreadsheet;
 using Domain.Entities;
 using Domain.EntityRelationship;
+using MimeKit.Cryptography;
 using System.Net;
 
 namespace Applications.Services
@@ -150,7 +151,7 @@ namespace Applications.Services
         public async Task<Response> GetSyllabusDetails(Guid syllabusId)
         {
             var syllabus = await _unitOfWork.SyllabusRepository.GetSyllabusDetail(syllabusId);
-            var result = _mapper.Map<SyllabusViewModel>(syllabus);      
+            var result = _mapper.Map<SyllabusViewModel>(syllabus);
             var createBy = await _unitOfWork.UserRepository.GetByIdAsync(syllabus.CreatedBy);
             result.CreatedBy = createBy.Email;
             if (syllabus == null) return new Response(HttpStatusCode.NoContent, "Id not found");
@@ -198,9 +199,71 @@ namespace Applications.Services
                 return new Response(HttpStatusCode.OK, "Search Succeed", result);
         }
 
-        public Task<SyllabusViewModel?> CreateSyllabusDetail(CreateSyllabusDetailModel SyllabusDTO)
+        public async Task<CreateSyllabusDetailModel> CreateSyllabusDetail(CreateSyllabusDetailModel SyllabusDTO)
         {
-            throw new NotImplementedException();
+            var syllabus = _mapper.Map<Syllabus>(SyllabusDTO);
+
+            var listModule = new List<Module>();
+            var listModuleSylla = new List<SyllabusModule>();
+
+            var listUnit = new List<Unit>();
+            var listModuleUnit = new List<ModuleUnit>();
+
+            var listQuizz = new List<Quizz>();
+
+            foreach (var item in SyllabusDTO.Module)
+            {
+                var moduleMap = _mapper.Map<Module>(item);
+                listModule.Add(moduleMap);
+
+
+                foreach (var units in SyllabusDTO.Module.Select(x => x.Unit))
+                {
+                    var listUnitMapper = _mapper.Map<List<Unit>>(units);
+                    foreach (var unit in listUnitMapper)
+                    {
+                        foreach (var quizzes in units.Select(x => x.Quizz))
+                        {
+                            var listQuizzMapper = _mapper.Map<List<Quizz>>(quizzes);
+                            foreach (var quizz in listQuizzMapper)
+                            {
+                                quizz.Unit = unit;
+                            }
+                            listQuizz.AddRange(listQuizzMapper);
+                        }
+                    }
+                    listUnit.AddRange(listUnitMapper);
+                }
+
+                foreach (var unit in listUnit)
+                {
+                    var a = new ModuleUnit()
+                    {
+                        Module = moduleMap,
+                        Unit = unit
+                    };
+                    listModuleUnit.Add(a);
+                }
+            }
+
+            foreach (var item in listModule)
+            {
+                var a = new SyllabusModule()
+                {
+                    Syllabus = syllabus,
+                    Module = item,
+                };
+                listModuleSylla.Add(a);
+            }
+
+            await _unitOfWork.QuizzRepository.AddRangeAsync(listQuizz);
+            await _unitOfWork.UnitRepository.AddRangeAsync(listUnit);
+            await _unitOfWork.ModuleUnitRepository.AddRangeAsync(listModuleUnit);
+            await _unitOfWork.SyllabusRepository.AddAsync(syllabus);
+            await _unitOfWork.ModuleRepository.AddRangeAsync(listModule);
+            await _unitOfWork.SyllabusModuleRepository.AddRangeAsync(listModuleSylla);
+            await _unitOfWork.SaveChangeAsync();
+            return _mapper.Map<CreateSyllabusDetailModel>(syllabus);
         }
     }
 }
