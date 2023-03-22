@@ -9,7 +9,6 @@ namespace APIs.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-[Authorize(policy: "AuthUser")]
 public class MailController : Controller
 {
     private readonly IMailService _mailService;
