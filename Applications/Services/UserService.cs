@@ -22,7 +22,8 @@ public class UserService : IUserService
     private readonly IMapper _mapper;
     private readonly ITokenService _tokenService;
     private readonly IClaimService _claimService;
-    public UserService(IUnitOfWork unitOfWork, IMapper mapper, ITokenService tokenService,IClaimService claimService)
+
+    public UserService(IUnitOfWork unitOfWork, IMapper mapper, ITokenService tokenService, IClaimService claimService)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
@@ -31,13 +32,15 @@ public class UserService : IUserService
     }
 
     // Change Password
-    public async Task<Response> ChangePassword(Guid id,ChangePasswordViewModel changePassword)
+    public async Task<Response> ChangePassword(Guid id, ChangePasswordViewModel changePassword)
     {
         if (!_claimService.GetCurrentUserId.Equals(id))
-            return new Response(HttpStatusCode.Forbidden, $"you are not login with this account, please login first !!!");
+            return new Response(HttpStatusCode.Forbidden,
+                $"you are not login with this account, please login first !!!");
         var user = (await _unitOfWork.UserRepository.Find(x => x.Id == id)).FirstOrDefault();
         if (user == null) return new Response(HttpStatusCode.BadRequest, "forbidden exception!");
-        if (!StringUtils.Verify(changePassword.OldPassword,user.Password)) return new Response(HttpStatusCode.BadRequest, "Wrong password");
+        if (!StringUtils.Verify(changePassword.OldPassword, user.Password))
+            return new Response(HttpStatusCode.BadRequest, "Wrong password");
         if (string.Compare(changePassword.NewPassword, changePassword.ConfirmPassword) != 0)
         {
             return new Response(HttpStatusCode.BadRequest, "the new password and confirm password does not match!");
@@ -54,11 +57,13 @@ public class UserService : IUserService
     public async Task<Response> ResetPassword(ResetPasswordRequest request)
     {
         var user = await _unitOfWork.UserRepository.GetUserByPasswordResetToken(request.Token);
-        if (user == null || user.ResetTokenExpires < DateTime.Now) return new Response(HttpStatusCode.BadRequest, "Invalid Token");
+        if (user == null || user.ResetTokenExpires < DateTime.Now)
+            return new Response(HttpStatusCode.BadRequest, "Invalid Token");
         if (string.Compare(request.Password, request.ConfirmPassword) != 0)
         {
             return new Response(HttpStatusCode.BadRequest, "the password and confirm password does not match!");
         }
+
         user.Password = StringUtils.Hash(request.Password);
         user.PasswordResetToken = null;
         user.ResetTokenExpires = null;
@@ -67,26 +72,45 @@ public class UserService : IUserService
         if (isSuccess) return new Response(HttpStatusCode.OK, "Change Success!");
         return new Response(HttpStatusCode.BadRequest, "Not Success");
     }
-    
+
+    // Update Image User
+    public async Task<Response> UpdateImage(Guid id, string image)
+    {
+        if (!_claimService.GetCurrentUserId.Equals(id))
+            return new Response(HttpStatusCode.Forbidden,
+                $"you are not login with this account, please login first !!!");
+        var user = await _unitOfWork.UserRepository.GetByIdAsync(id);
+        if (user is null) return new Response(HttpStatusCode.BadRequest, "notfound this user");
+        user.Image = image;
+        _unitOfWork.UserRepository.Update(user);
+        bool isSuccess = await _unitOfWork.SaveChangeAsync() > 0;
+        if (isSuccess)
+            return new Response(HttpStatusCode.OK, "update success", new { user.Id, user.Email, user.Image });
+        return new Response(HttpStatusCode.BadRequest, "not success");
+    }
+
     // Search Users by Name
     public async Task<Pagination<UserViewModel>> SearchUserByName(string name, int pageIndex = 0, int pageSize = 10)
     {
         var users = await _unitOfWork.UserRepository.SearchUserByName(name, pageIndex, pageSize);
-        return _mapper.Map<Pagination<UserViewModel>>(users) ;
+        return _mapper.Map<Pagination<UserViewModel>>(users);
     }
-    
+
     // Filter User
-    public async Task<Pagination<UserViewModel>> FilterUser(FilterUserRequest filterUserRequest,int pageNumber = 0, int pageSize = 10)
+    public async Task<Pagination<UserViewModel>> FilterUser(FilterUserRequest filterUserRequest, int pageNumber = 0,
+        int pageSize = 10)
     {
-        var user = await _unitOfWork.UserRepository.FilterUser(filterUserRequest,pageNumber,pageSize);
+        var user = await _unitOfWork.UserRepository.FilterUser(filterUserRequest, pageNumber, pageSize);
         return _mapper.Map<Pagination<UserViewModel>>(user);
     }
 
     // add user
     public async Task<Response> AddUser(CreateUserViewModel createUserViewModel)
     {
-        var entity  = await _unitOfWork.UserRepository.GetUserByEmail(createUserViewModel.Email);
-        if (entity is not null) return new Response(HttpStatusCode.BadRequest, $"The account with email {createUserViewModel.Email} already exists in the system");
+        var entity = await _unitOfWork.UserRepository.GetUserByEmail(createUserViewModel.Email);
+        if (entity is not null)
+            return new Response(HttpStatusCode.BadRequest,
+                $"The account with email {createUserViewModel.Email} already exists in the system");
         User user = new User()
         {
             firstName = createUserViewModel.firstName,
@@ -99,11 +123,13 @@ public class UserService : IUserService
             OverallStatus = createUserViewModel.OverallStatus,
             Password = StringUtils.Hash("12345"),
             Status = Status.Enable,
-            Image = string.Empty,
+            Image = "https://i.pinimg.com/originals/0d/43/d7/0d43d7f06ecf44b7259548edb5f35da6.png",
         };
         await _unitOfWork.UserRepository.AddAsync(user);
         var isSuccess = await _unitOfWork.SaveChangeAsync() > 0;
-        return !isSuccess ? new Response(HttpStatusCode.Conflict, "Create user failed!!") : new Response(HttpStatusCode.OK, "ok");
+        return !isSuccess
+            ? new Response(HttpStatusCode.Conflict, "Create user failed!!")
+            : new Response(HttpStatusCode.OK, "ok");
     }
 
 
@@ -124,12 +150,13 @@ public class UserService : IUserService
 
 
     //Get User By ID
-    public async Task<UserViewModel> GetUserById(Guid id) => _mapper.Map<UserViewModel>(await _unitOfWork.UserRepository.GetByIdAsync(id));
+    public async Task<UserViewModel> GetUserById(Guid id) =>
+        _mapper.Map<UserViewModel>(await _unitOfWork.UserRepository.GetByIdAsync(id));
 
     // Get User By role
-    public async Task<Pagination<UserViewModel>> GetUsersByRole(Role role, int pageIndex = 0, int pageSize = 10) 
+    public async Task<Pagination<UserViewModel>> GetUsersByRole(Role role, int pageIndex = 0, int pageSize = 10)
     {
-        var users = await _unitOfWork.UserRepository.GetUsersByRole(role,pageIndex,pageSize);
+        var users = await _unitOfWork.UserRepository.GetUsersByRole(role, pageIndex, pageSize);
         return _mapper.Map<Pagination<UserViewModel>>(users);
     }
 
@@ -139,16 +166,18 @@ public class UserService : IUserService
         var user = await _unitOfWork.UserRepository.GetUserByEmail(userLoginViewModel.Email);
 
         if (user == null) return new Response(HttpStatusCode.BadRequest, "Invalid Email");
-        if (!StringUtils.Verify(userLoginViewModel.Password,user.Password)) return new Response(HttpStatusCode.BadRequest, "Invalid Password");
+        if (!StringUtils.Verify(userLoginViewModel.Password, user.Password))
+            return new Response(HttpStatusCode.BadRequest, "Invalid Password");
         var token = await _tokenService.GetToken(user.Email);
-        if (string.IsNullOrEmpty(token)) return new Response(HttpStatusCode.Unauthorized, "Invalid password or username");
+        if (string.IsNullOrEmpty(token))
+            return new Response(HttpStatusCode.Unauthorized, "Invalid password or username");
 
         LoginResult loginResult = new LoginResult
         {
             Email = user.Email,
             Password = user.Password,
             DOB = user.DOB,
-            Gender = user.Gender == true ? "male":"female",
+            Gender = user.Gender == true ? "male" : "female",
             Role = user.Role.ToString(),
             Status = user.Status.ToString(),
             Token = token
@@ -160,7 +189,8 @@ public class UserService : IUserService
     public async Task<Response> UpdateUser(Guid id, UpdateUserViewModel updateUserViewModel)
     {
         if (!_claimService.GetCurrentUserId.Equals(id))
-            return new Response(HttpStatusCode.Forbidden, $"you are not login with this account, please login first !!!");
+            return new Response(HttpStatusCode.Forbidden,
+                $"you are not login with this account, please login first !!!");
         var user = await _unitOfWork.UserRepository.GetByIdAsync(id);
         if (user is null) return new Response(HttpStatusCode.NotFound, "Not Found this user");
 
@@ -177,7 +207,8 @@ public class UserService : IUserService
     {
         if (formFile == null || formFile.Length <= 0) return new Response(HttpStatusCode.Conflict, "formfile is empty");
 
-        if (!Path.GetExtension(formFile.FileName).Equals(".xlsx", StringComparison.OrdinalIgnoreCase)) return new Response(HttpStatusCode.Conflict, "Not Support file extension");
+        if (!Path.GetExtension(formFile.FileName).Equals(".xlsx", StringComparison.OrdinalIgnoreCase))
+            return new Response(HttpStatusCode.Conflict, "Not Support file extension");
 
         var list = new List<User>();
 
@@ -193,37 +224,46 @@ public class UserService : IUserService
                 {
                     for (int row = 2; row <= rowCount; row++)
                     {
-                        if (worksheet.Cells[row,1].Value is null)
+                        if (worksheet.Cells[row, 1].Value is null)
                         {
                             break;
                         }
-                        var emailEntity = await _unitOfWork.UserRepository.GetUserByEmail(worksheet.Cells[row, 3].Value.ToString().Trim());
-                        if (emailEntity != null) return new Response(HttpStatusCode.BadRequest, "Email repeat with accounts in the system");
+
+                        var emailEntity =
+                            await _unitOfWork.UserRepository.GetUserByEmail(worksheet.Cells[row, 3].Value.ToString()
+                                .Trim());
+                        if (emailEntity != null)
+                            return new Response(HttpStatusCode.BadRequest, "Email repeat with accounts in the system");
 
                         User user = new User();
                         user.firstName = worksheet.Cells[row, 1].Value.ToString().Trim();
                         user.lastName = worksheet.Cells[row, 2].Value.ToString().Trim();
                         user.Email = worksheet.Cells[row, 3].Value.ToString().Trim();
                         user.DOB = DateTime.Parse(worksheet.Cells[row, 4].Value.ToString());
-                        user.Gender =  worksheet.Cells[row, 5].Value.ToString().Trim().ToLower().Contains("Female".ToLower()) ? false : true;
+                        user.Gender =
+                            worksheet.Cells[row, 5].Value.ToString().Trim().ToLower().Contains("Female".ToLower())
+                                ? false
+                                : true;
                         user.Role = (Role)Enum.Parse(typeof(Role), worksheet.Cells[row, 6].Value.ToString());
-                        user.OverallStatus = user.Role == Role.SuperAdmin ? OverallStatus.Active : OverallStatus.OffClass;
-                        user.Image = string.Empty;
-                        user.Level = (Level)Enum.Parse(typeof(Level),worksheet.Cells[row, 7].Value.ToString()) ;
+                        user.OverallStatus =
+                            user.Role == Role.SuperAdmin ? OverallStatus.Active : OverallStatus.OffClass;
+                        user.Image = "https://i.pinimg.com/originals/0d/43/d7/0d43d7f06ecf44b7259548edb5f35da6.png";
+                        user.Level = (Level)Enum.Parse(typeof(Level), worksheet.Cells[row, 7].Value.ToString());
                         user.Password = StringUtils.Hash("12345");
                         user.Status = Status.Enable;
                         list.Add(user);
                     }
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
-                    return new Response(HttpStatusCode.BadRequest, "data may be empty row. please check again your excel file!!!");
+                    return new Response(HttpStatusCode.BadRequest,
+                        "data may be empty row. please check again your excel file!!!");
                 }
             }
         }
+
         await _unitOfWork.UserRepository.AddRangeAsync(list);
         await _unitOfWork.SaveChangeAsync();
         return new Response(HttpStatusCode.OK, "ok");
-
     }
 }

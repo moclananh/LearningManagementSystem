@@ -20,4 +20,5 @@ public interface IUserService
     Task<Pagination<UserViewModel>> FilterUser(FilterUserRequest filterUserRequest,int pageNumber = 0, int pageSize = 10);
     Task<Response> AddUser(CreateUserViewModel createUserViewModel);
     Task<Response> ResetPassword(ResetPasswordRequest request);
+    Task<Response> UpdateImage(Guid id, string image);
 }

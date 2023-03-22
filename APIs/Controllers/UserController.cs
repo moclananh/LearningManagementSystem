@@ -125,6 +125,15 @@ public class UserController : Controller
     [HttpPost("Reset-password")]
     [AllowAnonymous]
     public async Task<Response> ResetPassword(ResetPasswordRequest request) =>  await _userService.ResetPassword(request);
-    
+
+    /// <summary>
+    /// Update Image User
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="image"></param>
+    /// <returns></returns>
+    [HttpPut("Update-Image")]
+    public async Task<Response> UpdateImage(Guid id, string image) => await _userService.UpdateImage(id, image);
+
 }
 
