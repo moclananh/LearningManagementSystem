@@ -20,7 +20,7 @@ namespace APIs.Controllers
         {
             return await _syllabusTrainingProgramService.GetAllSyllabusTrainingPrograms(pageIndex, pageSize);
         }
-        [HttpPost("AddMultipleSyllabusesToTrainingProgram/{trainingProgramId}" ),Authorize(policy: "AuthUser")]
+        [HttpPost("AddMultipleSyllabusesToTrainingProgram/{trainingProgramId}" ), Authorize(policy: "AuthUser")]
         public async Task<Response> AddMultipleSyllabusesToTrainingProgram(Guid trainingProgramId, List<Guid> syllabusesId)
         {
             return await _syllabusTrainingProgramService.AddMultipleSyllabusesToTrainingProgram(trainingProgramId, syllabusesId);

@@ -49,13 +49,14 @@ namespace APIs.Controllers
                 if (trainingprogram.IsValid)
                 {
                     var result = await _trainingProgramService.UpdateTrainingProgramAsync(TrainingProgramId, UpdateTrainingProgram);
-                    if (result is null)
+                    return result switch
                     {
-                        return BadRequest("Update TrainingProgram Fail");
-                    }
+                        not null => Ok("Update TrainingProgram Success"),
+                        _ => BadRequest("Update TrainingProgram Fail")
+                    };
                 }
             }
-            return Ok("Update TrainingProgram Success");
+            return BadRequest("Update TrainingProgram Fail");
         }
 
         [HttpGet("GetTrainingProgramDetails/{TrainingProgramId}")]

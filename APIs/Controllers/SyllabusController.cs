@@ -32,7 +32,7 @@ namespace APIs.Controllers
                 ValidationResult syllabus = _validatorCreate.Validate(SyllabusModel);
                 if (syllabus.IsValid)
                 {
-                   var result =  await _syllabusServices.CreateSyllabus(SyllabusModel);
+                    var result = await _syllabusServices.CreateSyllabus(SyllabusModel);
                     return new Response(HttpStatusCode.OK, "Create Succeed", result);
                 }
                 else
@@ -61,8 +61,8 @@ namespace APIs.Controllers
             return Ok("Update Fail, Invalid Input Information");
         }
 
-       /* [HttpGet("GetAllSyllabus")]
-        public async Task<Response> GetAllSyllabus(int pageNumber = 0, int pageSize = 10) => await _syllabusServices.GetAllSyllabus(pageNumber, pageSize);*/
+        /* [HttpGet("GetAllSyllabus")]
+         public async Task<Response> GetAllSyllabus(int pageNumber = 0, int pageSize = 10) => await _syllabusServices.GetAllSyllabus(pageNumber, pageSize);*/
 
 
         [HttpGet("GetAllSyllabusDetail")]

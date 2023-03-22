@@ -27,21 +27,23 @@ namespace Applications.Services
         }
         public async Task<Response> AddMultipleSyllabusesToTrainingProgram(Guid trainingProgramId, List<Guid> SyllabusIds)
         {
-            var trainingPrograms = await _unitOfWork.TrainingProgramRepository.GetByIdAsync(trainingProgramId);
+            var trainingProgramObj = await _unitOfWork.TrainingProgramRepository.GetByIdAsync(trainingProgramId);
             var trainingProgramSyllabus = new List<TrainingProgramSyllabus>();
-            foreach (var item in SyllabusIds)
+            foreach (var syllabusId in SyllabusIds)
             {
-                var syllabuses = await _unitOfWork.SyllabusRepository.GetByIdAsync(item);
-                if (syllabuses != null && trainingPrograms != null)
+                var syllabuses = await _unitOfWork.SyllabusRepository.GetByIdAsync(syllabusId);
+                if (syllabuses is not null && trainingProgramObj is not null)
                 {
                     var trainingProgramSyllabuses = new TrainingProgramSyllabus()
                     {
                         TrainingProgramId = trainingProgramId,
-                        SyllabusId = item
+                        SyllabusId = syllabusId
                     };
                     trainingProgramSyllabus.Add(trainingProgramSyllabuses);
+                    trainingProgramObj.Duration += syllabuses.Duration;
                 }
                 await _unitOfWork.TrainingProgramSyllabiRepository.AddRangeAsync(trainingProgramSyllabus);
+                _unitOfWork.TrainingProgramRepository.Update(trainingProgramObj);
             }
             var isSuccess = await _unitOfWork.SaveChangeAsync() > 0;
             if (isSuccess)
