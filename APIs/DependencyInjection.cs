@@ -32,6 +32,8 @@ using APIs.Validations.OutputStandardValidations;
 using Applications.ViewModels.AuditResultViewModels;
 using APIs.Validations.AuditResultValidations;
 using System.Text.Json.Serialization;
+using Quartz;
+using Application.Cronjob;
 
 namespace APIs;
 
@@ -92,6 +94,19 @@ public static class DependencyInjection
                     ValidateAudience = false
                 };
             });
+        services.AddScoped<MailService>();
+        services.AddTransient<SendAttendanceMailJob>();
+        services.AddQuartz(q =>
+        {
+            q.UseMicrosoftDependencyInjectionJobFactory();
+            q.ScheduleJob<SendAttendanceMailJob>(job => job
+                .WithIdentity("AttendanceMailJob")
+                .WithDescription("Sends attendance report emails at 11:30 am every day.")
+                .WithSchedule(CronScheduleBuilder.DailyAtHourAndMinute(11, 30))
+            );
+        });
+
+        services.AddQuartzHostedService(options => options.WaitForJobsToComplete = true);
         services.AddAuthorization(opt =>
         {
             // set Policy

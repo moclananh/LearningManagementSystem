@@ -111,5 +111,10 @@ namespace Infrastructures.Repositories
             var result = await _dbSet.FirstOrDefaultAsync(x => x.Date == Date && x.ClassId == ClassId && x.UserId == UserId);
             return result;
         }
+        public async Task<List<Attendance>> GetAbsentId()
+        {
+            return await _dbContext.Attendances.Where(x => x.Date == DateTime.Today && x.Status == Domain.Enum.AttendenceEnum.AttendenceStatus.Absent).ToListAsync();
+        }
+
     }
 }

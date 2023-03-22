@@ -8,6 +8,7 @@ using MailKit.Net.Smtp;
 using System.Text;
 using RazorEngineCore;
 using Applications.Interfaces;
+using Domain.Entities;
 
 namespace Applications.Services.EmailServices;
 
@@ -16,7 +17,7 @@ public class MailService : IMailService
     private readonly MailSetting _setting;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ITokenService _tokenService;
-    public MailService(IOptions<MailSetting> mailSetting,IUnitOfWork unitOfWork,ITokenService tokenService)
+    public MailService(IOptions<MailSetting> mailSetting, IUnitOfWork unitOfWork, ITokenService tokenService)
     {
         _setting = mailSetting.Value;
         _unitOfWork = unitOfWork;
@@ -28,7 +29,7 @@ public class MailService : IMailService
         string mailTemplate = LoadTemplate(nameTemplate);
         var user = await _unitOfWork.UserRepository.GetUserByEmail(email);
         if (user == null) return null;
-        
+
         // check 
         string code = await _tokenService.GetToken(user.Email);
         user.PasswordResetToken = code;
@@ -44,14 +45,89 @@ public class MailService : IMailService
 
         IRazorEngine razorEngine = new RazorEngine();
         IRazorEngineCompiledTemplate modifiledMailTemplate = razorEngine.Compile(mailTemplate);
-        return  modifiledMailTemplate.Run(emailTemplateModel);
+        return modifiledMailTemplate.Run(emailTemplateModel);
     }
-    
+
+    public async Task GetEmailAbsent(User user,Class Class)
+    {
+        string mailTemplate = LoadTemplate("Cronjob");
+        // check 
+        EmailTemplateModel emailTemplateModel = new EmailTemplateModel
+        {
+            FirstName = user.firstName,
+            LastName = user.lastName,
+            Email = user.Email,
+            Date = DateTime.Today.ToString(),
+            ClassCode = Class.ClassCode
+        };
+        IRazorEngine razorEngine = new RazorEngine();
+        IRazorEngineCompiledTemplate modifiledMailTemplate = razorEngine.Compile(mailTemplate);
+        MailDataViewModel mailData = new MailDataViewModel(
+            new List<string> { user.Email },
+            "WELCOME TO LMS FAKE",
+            modifiledMailTemplate.Run(emailTemplateModel)
+            );
+            bool sendResult = await SendAsync(mailData, new CancellationToken());
+    }
+
+    //public async Task<bool> GetEmailAbsentTest(User user, Class Class)
+    //{
+    //    string mailTemplate = LoadTemplate("Cronjob");
+    //    // check 
+    //    EmailTemplateModel emailTemplateModel = new EmailTemplateModel
+    //    {
+    //        FirstName = user.firstName,
+    //        LastName = user.lastName,
+    //        Email = user.Email,
+    //        Date = DateTime.Today.ToString(),
+    //        ClassCode = Class.ClassCode
+    //    };
+    //    IRazorEngine razorEngine = new RazorEngine();
+    //    IRazorEngineCompiledTemplate modifiledMailTemplate = razorEngine.Compile(mailTemplate);
+    //    MailDataViewModel mailData = new MailDataViewModel(
+    //        new List<string> { user.Email },
+    //        "WELCOME TO LMS FAKE",
+    //        modifiledMailTemplate.Run(emailTemplateModel)
+    //        );
+    //    bool sendResult = await SendAsync(mailData, new CancellationToken());
+    //    return sendResult;
+    //}
+    public async Task SendAbsentEmail()
+    {
+        List<Attendance> ListAbsent = await _unitOfWork.AttendanceRepository.GetAbsentId();
+        foreach (var item in ListAbsent)
+        {
+            var User = await _unitOfWork.UserRepository.GetByIdAsync(item.UserId);
+            var Class = await _unitOfWork.ClassRepository.GetByIdAsync(item.ClassId);
+            await GetEmailAbsent(User, Class);
+        }
+    }
+
+    //public async Task<Response> SendAbsentEmailTest()
+    //{
+    //    List<Attendance> ListAbsent = await _unitOfWork.AttendanceRepository.GetAbsentId();
+    //    bool test = false;
+    //    foreach (var item in ListAbsent)
+    //    {
+    //        var User = await _unitOfWork.UserRepository.GetByIdAsync(item.UserId);
+    //        var Class = await _unitOfWork.ClassRepository.GetByIdAsync(item.ClassId);
+    //        var a = await GetEmailAbsentTest(User, Class);
+    //        if (a)
+    //        {
+    //            test = true;
+    //        }
+    //    }
+    //    if (test)
+    //    {
+    //        return new Response(HttpStatusCode.OK, "Success");
+    //    }
+    //    return new Response(HttpStatusCode.BadRequest, "Failed");
+    //}
 
     private string LoadTemplate(string nameTemplate)
     {
         string templatePath = Path.Combine(Directory.GetCurrentDirectory(), "Resources", "Templates", $"{nameTemplate}.cshtml");
-        using FileStream fileStream = new FileStream(templatePath,FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+        using FileStream fileStream = new FileStream(templatePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
         using StreamReader sr = new StreamReader(fileStream, Encoding.Default);
 
         string mailTemplate = sr.ReadToEnd();
@@ -70,7 +146,7 @@ public class MailService : IMailService
             mail.Sender = MailboxAddress.Parse(_setting.From);
 
             //Receiver
-            foreach(string mailAddress in mailData.To)
+            foreach (string mailAddress in mailData.To)
             {
                 mail.To.Add(MailboxAddress.Parse(mailAddress));
             }
@@ -83,52 +159,54 @@ public class MailService : IMailService
 
             //Send Email
             using var smtp = new SmtpClient();
-            if(_setting.UseSSL)  await smtp.ConnectAsync(_setting.Host, _setting.Port,SecureSocketOptions.SslOnConnect,ct);
-            if (_setting.UseStartTls) await smtp.ConnectAsync(_setting.Host, _setting.Port, SecureSocketOptions.StartTls,ct);
+            if (_setting.UseSSL) await smtp.ConnectAsync(_setting.Host, _setting.Port, SecureSocketOptions.SslOnConnect, ct);
+            if (_setting.UseStartTls) await smtp.ConnectAsync(_setting.Host, _setting.Port, SecureSocketOptions.StartTls, ct);
 
-            await smtp.AuthenticateAsync(_setting.UserName, _setting.Password,ct);
-            await smtp.SendAsync(mail,ct);
+            await smtp.AuthenticateAsync(_setting.UserName, _setting.Password, ct);
+            await smtp.SendAsync(mail, ct);
             await smtp.DisconnectAsync(true, ct);
 
             return true;
 
-        }catch(Exception ex)
+        }
+        catch (Exception ex)
         {
             return false;
         }
     }
+
     /*
-    public async Task SendEmailAsync(MailRequest mailData)
-    {
-        var email = new MimeMessage();
-        email.Sender = MailboxAddress.Parse(_setting.From);
-        email.To.Add(MailboxAddress.Parse(mailData.ToEmail));
-        email.Subject = mailData.Subject;
-        var builder = new BodyBuilder();
-        if(mailData.Attachments != null)
-        {
-            byte[] fileBytes;
-            foreach(var file in mailData.Attachments)
-            {
-                if(file.Length > 0)
-                {
-                    using(var ms = new MemoryStream())
-                    {
-                        file.CopyTo(ms);
-                        fileBytes = ms.ToArray();
-                    }
-                    builder.Attachments.Add(file.FileName, fileBytes, ContentType.Parse(file.ContentType));
-                }
-            }
-        }
-        builder.HtmlBody = mailData.Body;
-        email.Body = builder.ToMessageBody();
-        using var smtp = new SmtpClient();
-        smtp.Connect(_setting.Host, _setting.Port,SecureSocketOptions.StartTls);
-        smtp.Authenticate(_setting.UserName, _setting.Password);
-        await smtp.SendAsync(email);
-        smtp.Disconnect(true);
-    }
-    */
-    
+public async Task SendEmailAsync(MailRequest mailData)
+{
+   var email = new MimeMessage();
+   email.Sender = MailboxAddress.Parse(_setting.From);
+   email.To.Add(MailboxAddress.Parse(mailData.ToEmail));
+   email.Subject = mailData.Subject;
+   var builder = new BodyBuilder();
+   if(mailData.Attachments != null)
+   {
+       byte[] fileBytes;
+       foreach(var file in mailData.Attachments)
+       {
+           if(file.Length > 0)
+           {
+               using(var ms = new MemoryStream())
+               {
+                   file.CopyTo(ms);
+                   fileBytes = ms.ToArray();
+               }
+               builder.Attachments.Add(file.FileName, fileBytes, ContentType.Parse(file.ContentType));
+           }
+       }
+   }
+   builder.HtmlBody = mailData.Body;
+   email.Body = builder.ToMessageBody();
+   using var smtp = new SmtpClient();
+   smtp.Connect(_setting.Host, _setting.Port,SecureSocketOptions.StartTls);
+   smtp.Authenticate(_setting.UserName, _setting.Password);
+   await smtp.SendAsync(email);
+   smtp.Disconnect(true);
+}
+*/
+
 }

@@ -1,5 +1,7 @@
 ﻿using Applications.Interfaces.EmailServicesInterface;
 using Applications.ViewModels.MailDataViewModels;
+using Applications.ViewModels.Response;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace APIs.Controllers;
@@ -7,7 +9,7 @@ namespace APIs.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-//[Authorize()]
+[Authorize(policy: "AuthUser")]
 public class MailController : Controller
 {
     private readonly IMailService _mailService;
@@ -33,6 +35,9 @@ public class MailController : Controller
             return StatusCode(StatusCodes.Status200OK, " success!");
         return StatusCode(StatusCodes.Status500InternalServerError, "An error occured. The Mail could not be sent.");
     }
+
+ //   [HttpGet("DemoCronjobFunctionUsingAPI")]
+	//public async Task<Response> Test() => await _mailService.SendAbsentEmailTest();
 
     /*
 	[HttpPost("SendEmail")]
