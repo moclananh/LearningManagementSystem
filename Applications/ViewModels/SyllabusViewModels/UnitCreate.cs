@@ -1,17 +1,13 @@
-﻿using Domain.Enum.StatusEnum;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace Applications.ViewModels.SyllabusViewModels
 {
     public class UnitCreate
     {
         public string UnitName { get; set; }
-        public LectureCreate Lecture { get; set; }
-        public AssignmentCreate Assignment { get; set; }
-        public QuizzCreate Quzizz { get; set; }
+        public string UnitCode { get; set; }
+        public List<LectureCreate>? Lecture { get; set; }
+        public List<AssignmentCreate>? Assignment { get; set; }
+        public List<QuizzCreate>? Quizz { get; set; }
+        public List<PracticeCreate>? Practice { get; set; }
     }
 }

@@ -197,5 +197,10 @@ namespace Applications.Services
             else
                 return new Response(HttpStatusCode.OK, "Search Succeed", result);
         }
+
+        public Task<SyllabusViewModel?> CreateSyllabusDetail(CreateSyllabusDetailModel SyllabusDTO)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

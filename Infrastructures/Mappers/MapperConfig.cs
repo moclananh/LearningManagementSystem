@@ -46,8 +46,7 @@ namespace Infrastructures.Mappers
             CreateMap<CreateQuizzViewModel, Quizz>().ReverseMap();
             CreateMap<QuizzViewModel, Quizz>().ReverseMap();
             CreateMap<UpdateQuizzViewModel, Quizz>().ReverseMap();
-            CreateMap<Quizz, QuizzViewModel>()
-               .ForMember(dest => dest.QuizzId, src => src.MapFrom(x => x.Id));
+            CreateMap<Quizz, QuizzViewModel>();
             CreateMap<UserViewModel, User>();
             CreateMap<User, UserViewModel>()
                 .ForMember(dest => dest.Gender, src => src.MapFrom(s => s.Gender == true ? "Male":"Female"))
@@ -101,6 +100,13 @@ namespace Infrastructures.Mappers
             CreateMap<SyllabusOutputStandardViewModel, SyllabusOutputStandard>().ReverseMap();
             CreateMap<SyllabusModuleViewModel, SyllabusModule>().ReverseMap();
             CreateMap<ClassDetailsViewModel, Class>().ReverseMap();
+            CreateMap<AssignmentCreate, Assignment>().ReverseMap();
+            CreateMap<QuizzCreate, Quizz>().ReverseMap();
+            CreateMap<LectureCreate, Lecture>().ReverseMap();
+            CreateMap<PracticeCreate, Practice>().ReverseMap();
+            CreateMap<UnitCreate, Unit>().ReverseMap();
+            CreateMap<ModuleCreate, Module>().ReverseMap();
+            CreateMap<CreateSyllabusDetailModel, Syllabus>().ReverseMap();
             /* pagination */
             CreateMap(typeof(Pagination<>), typeof(Pagination<>));
             CreateMap<AbsentRequestViewModel, AbsentRequest>().ReverseMap();

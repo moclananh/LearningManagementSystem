@@ -43,6 +43,25 @@ namespace APIs.Controllers
             return new Response(HttpStatusCode.BadRequest, "Invalid Input");
         }
 
+        /*[HttpPost("CreateSyllabusDetail")*//*, Authorize(policy: "AuthUser")*//*]
+        public async Task<Response> CreateSyllabusDetail(CreateSyllabusViewModel SyllabusModel)
+        {
+            if (ModelState.IsValid)
+            {
+                ValidationResult syllabus = _validatorCreate.Validate(SyllabusModel);
+                if (syllabus.IsValid)
+                {
+                    var result = await _syllabusServices.CreateSyllabus(SyllabusModel);
+                    return new Response(HttpStatusCode.OK, "Create Succeed", result);
+                }
+                else
+                {
+                    return new Response(HttpStatusCode.BadRequest, "Create Failed, Invalid input");
+                }
+            }
+            return new Response(HttpStatusCode.BadRequest, "Invalid Input");
+        }*/
+
         [HttpPut("UpdateSyllabus/{SyllabusId}"), Authorize(policy: "AuthUser")]
         public async Task<IActionResult> UpdateSyllabus(Guid SyllabusId, UpdateSyllabusViewModel SyllabusModel)
         {

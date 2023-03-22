@@ -20,7 +20,7 @@ namespace Infrastructures.Tests.Mappers.QuizzMapper
             var result = _mapperConfig.Map<QuizzViewModel>(quizzMock);
 
             //assert
-            result.QuizzId.Should().Be(quizzMock.Id.ToString());
+            result.Id.Should().Be(quizzMock.Id.ToString());
         }
         [Fact]
         public void TestCreateQuizzViewModel()

@@ -1,13 +1,12 @@
 ﻿using Domain.Enum.StatusEnum;
 
-namespace Application.ViewModels.QuizzViewModels
+namespace Applications.ViewModels.SyllabusViewModels
 {
-    public class CreateQuizzViewModel
+    public class PracticeCreate
     {
-        public string QuizzName { get; set; }
+        public string PracticeName { get; set; }
         public string Description { get; set; }
         public double Duration { get; set; }
         public Status Status { get; set; }
-        public Guid UnitId { get; set; }
     }
 }

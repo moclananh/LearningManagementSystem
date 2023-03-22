@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructures.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20230322065511_NewMigration")]
+    [Migration("20230322095832_NewMigration")]
     partial class NewMigration
     {
         /// <inheritdoc />
@@ -108,10 +108,6 @@ namespace Infrastructures.Migrations
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Deadline")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<Guid?>("DeleteBy")
                         .HasColumnType("uniqueidentifier");
 
@@ -122,6 +118,9 @@ namespace Infrastructures.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<double>("Duration")
+                        .HasColumnType("float");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -131,10 +130,6 @@ namespace Infrastructures.Migrations
                     b.Property<DateTime?>("ModificationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Note")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<Guid?>("ReviewBy")
                         .HasColumnType("uniqueidentifier");
 
@@ -143,9 +138,6 @@ namespace Infrastructures.Migrations
 
                     b.Property<Guid>("UnitId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("isDone")
-                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 
@@ -580,10 +572,6 @@ namespace Infrastructures.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<Guid>("UnitId")
                         .HasColumnType("uniqueidentifier");
 
@@ -709,10 +697,6 @@ namespace Infrastructures.Migrations
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Deadline")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<Guid?>("DeleteBy")
                         .HasColumnType("uniqueidentifier");
 
@@ -723,6 +707,9 @@ namespace Infrastructures.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<double>("Duration")
+                        .HasColumnType("float");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -731,10 +718,6 @@ namespace Infrastructures.Migrations
 
                     b.Property<DateTime?>("ModificationDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("Note")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PracticeName")
                         .IsRequired()
@@ -748,9 +731,6 @@ namespace Infrastructures.Migrations
 
                     b.Property<Guid>("UnitId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("isDone")
-                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 
@@ -835,10 +815,6 @@ namespace Infrastructures.Migrations
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Deadline")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<Guid?>("DeleteBy")
                         .HasColumnType("uniqueidentifier");
 
@@ -849,6 +825,9 @@ namespace Infrastructures.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<double>("Duration")
+                        .HasColumnType("float");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -857,10 +836,6 @@ namespace Infrastructures.Migrations
 
                     b.Property<DateTime?>("ModificationDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("Note")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("QuizzName")
                         .IsRequired()
@@ -874,9 +849,6 @@ namespace Infrastructures.Migrations
 
                     b.Property<Guid>("UnitId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("isDone")
-                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 

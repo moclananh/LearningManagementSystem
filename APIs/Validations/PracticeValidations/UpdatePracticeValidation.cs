@@ -10,8 +10,6 @@ namespace APIs.Validations.PracticeValidations
         {
             RuleFor(x => x.PracticeName).NotNull().NotEmpty().MaximumLength(100);
             RuleFor(x => x.Description).NotNull().NotEmpty().MaximumLength(100);
-            RuleFor(x => x.Note).NotNull().NotEmpty().MaximumLength(100);
-            RuleFor(x => x.Deadline).NotNull().NotEmpty().MaximumLength(100);
             RuleFor(x => x.Status).NotNull();
         }
     }

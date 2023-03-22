@@ -2,7 +2,7 @@
 
 namespace Applications.ViewModels.SyllabusViewModels
 {
-    public class CreateSyllabusViewModel
+    public class CreateSyllabusDetailModel
     {
         public string SyllabusName { get; set; }
         public string SyllabusCode { get; set; }
@@ -18,5 +18,6 @@ namespace Applications.ViewModels.SyllabusViewModels
         public double? finalTheoryCriteria { get; set; }
         public double? finalPracticalCriteria { get; set; }
         public double? passingGPA { get; set; }
+        public List<ModuleCreate>? Module { get; set; }
     }
 }
