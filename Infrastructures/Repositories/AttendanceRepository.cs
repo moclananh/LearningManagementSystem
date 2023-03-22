@@ -21,7 +21,7 @@ namespace Infrastructures.Repositories
             DateTime stDay = Convert.ToDateTime(startDate);
             DateTime edDay = Convert.ToDateTime(enddate);
             TimeSpan Time = edDay - stDay;
-            int TotalDays = Time.Days ;
+            int TotalDays = Time.Days;
             int j = 0;
             DateTime DateATD;
             for (int i = 0; i < 6; i++)
@@ -30,7 +30,7 @@ namespace Infrastructures.Repositories
                 {
                     break;
                 }
-             
+
                 foreach (var item in _dbContext.ClassUser.Where(x => x.ClassId == ClassId))
                 {
                     if (i == 5)
@@ -79,7 +79,7 @@ namespace Infrastructures.Repositories
                     {
                         DateATD = startDate.AddDays(j);
                         j = j + 1;
-                       
+
                     }
                     var Atd = new Attendance();
                     Atd.CreationDate = DateTime.UtcNow;
@@ -102,11 +102,11 @@ namespace Infrastructures.Repositories
 
         public async Task<Attendance> GetSingleAttendance(Guid ClassId, Guid UserId)
         {
-            var result = await _dbSet.FirstOrDefaultAsync(x => x.Date == DateTime.Today && x.ClassId == ClassId && x.UserId == UserId);
+            var result = await _dbSet.FirstOrDefaultAsync(x => x.Date.Date == DateTime.Today.Date && x.ClassId == ClassId && x.UserId == UserId);
             return result;
         }
 
-        public async Task<Attendance> GetSingleAttendanceForUpdate(DateTime Date,Guid ClassId, Guid UserId)
+        public async Task<Attendance> GetSingleAttendanceForUpdate(DateTime Date, Guid ClassId, Guid UserId)
         {
             var result = await _dbSet.FirstOrDefaultAsync(x => x.Date == Date && x.ClassId == ClassId && x.UserId == UserId);
             return result;

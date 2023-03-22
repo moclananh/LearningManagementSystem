@@ -16,15 +16,16 @@ namespace Infrastructures.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ClassName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ClassCode = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Location = table.Column<int>(type: "int", nullable: false),
-                    ClassTime = table.Column<int>(type: "int", nullable: false),
-                    FSU = table.Column<int>(type: "int", nullable: false),
-                    Attendee = table.Column<int>(type: "int", nullable: false),
-                    Status = table.Column<int>(type: "int", nullable: false),
+                    ClassName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ClassCode = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Location = table.Column<int>(type: "int", nullable: true),
+                    startTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    endTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    FSU = table.Column<int>(type: "int", nullable: true),
+                    Attendee = table.Column<int>(type: "int", nullable: true),
+                    Status = table.Column<int>(type: "int", nullable: true),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     ApprovedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -903,7 +904,8 @@ namespace Infrastructures.Migrations
                 name: "IX_Classes_ClassCode",
                 table: "Classes",
                 column: "ClassCode",
-                unique: true);
+                unique: true,
+                filter: "[ClassCode] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ClassTrainingProgram_TrainingProgramId",

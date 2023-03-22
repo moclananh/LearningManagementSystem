@@ -43,7 +43,7 @@ namespace Applications.Services
             return new Response(HttpStatusCode.BadRequest, "Check Attendance Failed");
         }
 
-        public async Task<Response?> UpdateAttendance(DateTime Date,string ClassCode, string Email, AttendenceStatus Status)
+        public async Task<Response?> UpdateAttendance(DateTime Date, string ClassCode, string Email, AttendenceStatus Status)
         {
             var Class = await _unitOfWork.ClassRepository.GetClassByClassCode(ClassCode);
             var User = await _unitOfWork.UserRepository.GetUserByEmail(Email);
@@ -52,7 +52,8 @@ namespace Applications.Services
             if (Class == null || User == null)
             {
                 return new Response(HttpStatusCode.BadRequest, "Invalid ClassCode or User Email");
-            } else if (AtdObj == null)
+            }
+            else if (AtdObj == null)
             {
                 return new Response(HttpStatusCode.BadRequest, "Attendance date not exist");
             }
@@ -74,11 +75,11 @@ namespace Applications.Services
 
         public async Task<Response> CreateAttendanceAsync(Guid ClassId)
         {
-            var Class = new Class();
-            Class = await _unitOfWork.ClassRepository.GetByIdAsync(ClassId);
-            if (Class != null)
+
+            var classObj = await _unitOfWork.ClassRepository.GetByIdAsync(ClassId);
+            if (classObj != null)
             {
-                await _unitOfWork.AttendanceRepository.AddListAttendanceAsync(ClassId, Class.StartDate, Class.EndDate);
+                await _unitOfWork.AttendanceRepository.AddListAttendanceAsync(ClassId, (DateTime)classObj.StartDate, (DateTime)classObj.EndDate);
                 var isSuccess = await _unitOfWork.SaveChangeAsync() > 0;
                 if (isSuccess)
                 {

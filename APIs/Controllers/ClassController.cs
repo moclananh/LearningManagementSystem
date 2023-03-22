@@ -2,8 +2,6 @@
 using Applications.Interfaces;
 using Applications.ViewModels.ClassViewModels;
 using Applications.ViewModels.Response;
-using Domain.Enum.ClassEnum;
-using Domain.Enum.StatusEnum;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
@@ -129,12 +127,12 @@ namespace APIs.Controllers
             return BadRequest("Remove UserFromClass Fail");
         }
 
-        [HttpGet("GetClassByFilter")]
-        public async Task<IActionResult> GetClassByFilter(LocationEnum? locations, ClassTimeEnum? classTime, Status? status, AttendeeEnum? attendee, FSUEnum? fsu, DateTime? startDate, DateTime? endDate, int pageNumber = 0, int pageSize = 10)
+        [HttpPost("GetClassByFilter")]
+        public async Task<IActionResult> GetClassByFilter(ClassFiltersViewModel filters, int pageNumber = 0, int pageSize = 10)
         {
             if (ModelState.IsValid)
             {
-                var classes = await _classServices.GetClassByFilter(locations, classTime, status, attendee, fsu, startDate, endDate, pageNumber = 0, pageSize = 10);
+                var classes = await _classServices.GetClassByFilter(filters, pageNumber = 0, pageSize = 10);
                 if (classes != null)
                 {
                     return Ok(classes);

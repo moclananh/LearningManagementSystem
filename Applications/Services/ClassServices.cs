@@ -6,11 +6,8 @@ using Applications.ViewModels.ClassViewModels;
 using AutoMapper;
 using Domain.Entities;
 using Domain.EntityRelationship;
-using Domain.Enum.ClassEnum;
 using Domain.Enum.RoleEnum;
 using Domain.Enum.StatusEnum;
-using System.ComponentModel;
-using System.Reflection;
 
 namespace Applications.Services
 {
@@ -59,7 +56,20 @@ namespace Applications.Services
             try
             {
                 var classOjb = _mapper.Map<Class>(classDTO);
+                var trainingProgram = await _unitOfWork.TrainingProgramRepository.GetEntitiesByIdsAsync(classDTO.TraingProgramId);
+                var listClassTrainingProgram = new List<ClassTrainingProgram>();
+
+                foreach (var item in trainingProgram)
+                {
+                    var classTrainingProgram = new ClassTrainingProgram()
+                    {
+                        Class = classOjb,
+                        TrainingProgram = item
+                    };
+                    listClassTrainingProgram.Add(classTrainingProgram);
+                }
                 await _unitOfWork.ClassRepository.AddAsync(classOjb);
+                await _unitOfWork.ClassTrainingProgramRepository.AddRangeAsync(listClassTrainingProgram);
                 var isSuccess = await _unitOfWork.SaveChangeAsync() > 0;
 
                 if (isSuccess)
@@ -97,19 +107,60 @@ namespace Applications.Services
             return result;
         }
 
-        public async Task<Pagination<ClassViewModel>> GetClassByFilter(LocationEnum? locations, ClassTimeEnum? classTime, Status? status, AttendeeEnum? attendee, FSUEnum? fsu, DateTime? startDate, DateTime? endDate, int pageNumber = 0, int pageSize = 10)
+        public async Task<Pagination<ClassViewModel>> GetClassByFilter(ClassFiltersViewModel filters, int pageNumber = 0, int pageSize = 10)
         {
-            if (startDate == null)
+            if (filters.StartDate is null)
             {
-                startDate = new DateTime(1999, 1, 1);
+                filters.StartDate = new DateTime(1999, 1, 1);
             }
-            if (endDate == null)
+            if (filters.EndDate is null)
             {
-                endDate = new DateTime(3999, 1, 1);
+                filters.EndDate = new DateTime(3999, 1, 1);
             }
 
-            var classes = await _unitOfWork.ClassRepository.GetClassByFilter(locations, classTime, status, attendee, fsu, startDate, endDate, pageNumber = 0, pageSize = 10);
-            var result = _mapper.Map<Pagination<ClassViewModel>>(classes);
+            var classes = await _unitOfWork.ClassRepository.GetAllAsync();
+            var itemCount = classes.Count();
+            var baseQuery = classes.Where(x => x.StartDate >= filters.StartDate && x.EndDate <= filters.EndDate);
+
+            if (filters.Location.HasValue)
+            {
+                baseQuery = baseQuery.Where(x => x.Location == filters.Location);
+            }
+            if (filters.startTime.HasValue)
+            {
+                baseQuery = baseQuery.Where(x => x.startTime == filters.startTime);
+            }
+            if (filters.endTime.HasValue)
+            {
+                baseQuery = baseQuery.Where(x => x.endTime == filters.endTime);
+            }
+            if (filters.FSU.HasValue)
+            {
+                baseQuery = baseQuery.Where(x => x.FSU == filters.FSU);
+            }
+            if (filters.Attendee.HasValue)
+            {
+                baseQuery = baseQuery.Where(x => x.Attendee == filters.Attendee);
+            }
+            if (filters.Status.HasValue)
+            {
+                baseQuery = baseQuery.Where(x => x.Status == filters.Status);
+            }
+
+            var items = baseQuery.OrderByDescending(x => x.CreationDate)
+                                 .Skip(pageNumber * pageSize)
+                                 .Take(pageSize)
+                                 .ToList();
+
+            var mapping = new Pagination<Class>()
+            {
+                PageIndex = pageNumber,
+                PageSize = pageSize,
+                TotalItemsCount = itemCount,
+                Items = items,
+            };
+
+            var result = _mapper.Map<Pagination<ClassViewModel>>(mapping);
 
             return result;
         }
@@ -170,12 +221,6 @@ namespace Applications.Services
             var DeletedBy = await _unitOfWork.UserRepository.GetByIdAsync(classObj.DeleteBy);
             if (DeletedBy != null) { classView.DeleteBy = DeletedBy.Email; }
 
-            classView.ClassTime = classObj.ClassTime
-                .GetType()
-                .GetMember(classObj.ClassTime.ToString())[0]
-                .GetCustomAttribute<DescriptionAttribute>()
-                .Description;
-
             return classView;
         }
 
@@ -197,7 +242,7 @@ namespace Applications.Services
             return result;
         }
 
-        public async Task<CreateClassTrainingProgramViewModel> RemoveTrainingProgramFromClass(Guid ClassId, Guid TrainingProgramId)
+        public async Task<CreateClassTrainingProgramViewModel?> RemoveTrainingProgramFromClass(Guid ClassId, Guid TrainingProgramId)
         {
             try
             {
@@ -280,7 +325,7 @@ namespace Applications.Services
                 {
                     _unitOfWork.ClassRepository.Approve(classObj);
                     classObj.Status = Status.Enable;
-                    _unitOfWork.SaveChangeAsync();
+                    await _unitOfWork.SaveChangeAsync();
                     return _mapper.Map<ClassViewModel>(classObj);
                 }
 

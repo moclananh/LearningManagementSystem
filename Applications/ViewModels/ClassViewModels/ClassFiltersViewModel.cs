@@ -5,12 +5,13 @@ namespace Applications.ViewModels.ClassViewModels
 {
     public class ClassFiltersViewModel
     {
-        LocationEnum? locations { get; set; }
-        ClassTimeEnum? classTime { get; set; }
-        Status? status { get; set; }
-        AttendeeEnum? attendee { get; set; }
-        FSUEnum? fsu { get; set; }
-        DateTime? startDate { get; set; }
-        DateTime? endDate { get; set; }
+        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
+        public LocationEnum? Location { get; set; }
+        public DateTime? startTime { get; set; }
+        public DateTime? endTime { get; set; }
+        public FSUEnum? FSU { get; set; }
+        public AttendeeEnum? Attendee { get; set; }
+        public Status? Status { get; set; }
     }
 }

@@ -2,7 +2,6 @@
 using Applications.Interfaces;
 using Applications.Repositories;
 using Domain.Entities;
-using Domain.Enum.ClassEnum;
 using Domain.Enum.StatusEnum;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,56 +13,6 @@ namespace Infrastructures.Repositories
         public ClassRepository(AppDBContext dbContext, ICurrentTime currentTime, IClaimService claimService) : base(dbContext, currentTime, claimService)
         {
             _dbContext = dbContext;
-        }
-
-        public async Task<Pagination<Class>> GetClassByFilter(LocationEnum? locations,
-                                                        ClassTimeEnum? classTime,
-                                                        Status? status,
-                                                        AttendeeEnum? attendee,
-                                                        FSUEnum? fsu,
-                                                        DateTime? startDate,
-                                                        DateTime? endDate,
-                                                        int pageNumber = 0, int pageSize = 10)
-        {
-            var itemCount = await _dbContext.Classes.CountAsync();
-            var baseQuery = _dbContext.Classes.Where(x => x.StartDate >= startDate && x.EndDate <= endDate);
-
-            if (locations.HasValue)
-            {
-                baseQuery = baseQuery.Where(x => x.Location == locations);
-            }
-            if (classTime.HasValue)
-            {
-                baseQuery = baseQuery.Where(x => x.ClassTime == classTime);
-            }
-            if (status.HasValue)
-            {
-                baseQuery = baseQuery.Where(x => x.Status == status);
-            }
-            if (attendee.HasValue)
-            {
-                baseQuery = baseQuery.Where(x => x.Attendee == attendee);
-            }
-            if (fsu.HasValue)
-            {
-                baseQuery = baseQuery.Where(x => x.FSU == fsu);
-            }
-
-            var items = await baseQuery.OrderByDescending(x => x.CreationDate)
-                                       .Skip(pageNumber * pageSize)
-                                       .Take(pageSize)
-                                       .AsNoTracking()
-                                       .ToListAsync();
-
-            var result = new Pagination<Class>()
-            {
-                PageIndex = pageNumber,
-                PageSize = pageSize,
-                TotalItemsCount = itemCount,
-                Items = items,
-            };
-
-            return result;
         }
 
         public async Task<Pagination<Class>> GetClassByName(string Name, int pageNumber = 0, int pageSize = 10)
@@ -89,10 +38,10 @@ namespace Infrastructures.Repositories
 
         public async Task<Class> GetClassDetails(Guid ClassId)
         {
-            var result = _dbContext.Classes.Include(x => x.ClassUsers)
-                                           .Include(x => x.ClassTrainingPrograms)
+            var result = await _dbContext.Classes.Include(x => x.ClassUsers).ThenInclude(x => x.User)
+                                           .Include(x => x.ClassTrainingPrograms).ThenInclude(x => x.TrainingProgram)
                                            .Include(x => x.AuditPlans)
-                                           .FirstOrDefault(x => x.Id == ClassId);
+                                           .FirstOrDefaultAsync(x => x.Id == ClassId);
             return result;
         }
 

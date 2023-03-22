@@ -20,7 +20,7 @@ namespace Applications.Interfaces
         public Task<CreateClassTrainingProgramViewModel> AddTrainingProgramToClass(Guid ClassId, Guid TrainingProgramId);
         public Task<CreateClassTrainingProgramViewModel> RemoveTrainingProgramFromClass(Guid ClassId, Guid TrainingProgramId);
         public Task<CreateClassUserViewModel> RemoveUserFromClass(Guid ClassId, Guid UserId);
-        public Task<Pagination<ClassViewModel>> GetClassByFilter(LocationEnum? locations, ClassTimeEnum? classTime, Status? status, AttendeeEnum? attendee, FSUEnum? fsu, DateTime? startDate, DateTime? endDate, int pageNumber = 0, int pageSize = 10);
+        public Task<Pagination<ClassViewModel>> GetClassByFilter(ClassFiltersViewModel filters, int pageNumber = 0, int pageSize = 10);
         public Task<ClassDetailsViewModel> GetClassDetails(Guid ClassId);
         public Task<Class?> GetClassByClassCode(string classCode);
         public Task<ClassViewModel> ApprovedClass(Guid ClassId);

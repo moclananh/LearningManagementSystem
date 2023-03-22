@@ -25,7 +25,7 @@ namespace APIs.Controllers
             _validatorUpdate = validatorUpdate;
         }
 
-        [HttpPost("CreateTrainingProgram"), Authorize(policy: "AuthUser")]
+        [HttpPost("CreateTrainingProgram"), /*Authorize(policy: "AuthUser")*/]
         public async Task<Response> CreateTrainingProgram(CreateTrainingProgramViewModel CreateTrainingProgram)
         {
             if (ModelState.IsValid)
