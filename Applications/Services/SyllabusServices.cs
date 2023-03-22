@@ -4,6 +4,7 @@ using Applications.ViewModels.Response;
 using Applications.ViewModels.SyllabusModuleViewModel;
 using Applications.ViewModels.SyllabusViewModels;
 using AutoMapper;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Domain.Entities;
 using Domain.EntityRelationship;
 using System.Net;
@@ -180,20 +181,21 @@ namespace Applications.Services
             var syllabus = await _unitOfWork.SyllabusRepository.GetSyllabusByCreationDate(startDate, endDate, pageNumber, pageSize);
             var result = _mapper.Map<Pagination<SyllabusViewModel>>(syllabus);
             var guidList = syllabus.Items.Select(x => x.CreatedBy).ToList();
-            var user = await _unitOfWork.UserRepository.GetEntitiesByIdsAsync(guidList);
+            var users = await _unitOfWork.UserRepository.GetEntitiesByIdsAsync(guidList);
             foreach (var item in result.Items)
             {
                 if (string.IsNullOrEmpty(item.CreatedBy)) continue;
-                var createBy = user.FirstOrDefault(x => x.Id == Guid.Parse(item.CreatedBy));
-                if (createBy != null)
+
+                var createdBy = users.FirstOrDefault(x => x.Id == Guid.Parse(item.CreatedBy));
+                if (createdBy != null)
                 {
-                    item.CreatedBy = createBy.Email;
+                    item.CreatedBy = createdBy.Email;
                 }
             }
             if (syllabus.Items.Count() < 1)
                 return new Response(HttpStatusCode.NoContent, "No Syllabus Found");
             else
-                return new Response(HttpStatusCode.OK, "Search Succeed", _mapper.Map<Pagination<SyllabusViewModel>>(syllabus));
+                return new Response(HttpStatusCode.OK, "Search Succeed", result);
         }
     }
 }

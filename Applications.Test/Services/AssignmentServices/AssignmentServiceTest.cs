@@ -1,15 +1,12 @@
-﻿using Application.ViewModels.QuizzViewModels;
+﻿
 using Applications.Commons;
 using Applications.Interfaces;
-using Applications.Services;
 using Applications.ViewModels.AssignmentViewModels;
-using Applications.ViewModels.SyllabusViewModels;
 using AutoFixture;
 using Domain.Entities;
 using Domain.Tests;
 using FluentAssertions;
 using Moq;
-using Org.BouncyCastle.Asn1.Pkcs;
 
 namespace Applications.Tests.Services.AssignmentServices
 {
