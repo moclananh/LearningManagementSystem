@@ -1,4 +1,5 @@
-﻿
+﻿using Applications.ViewModels.ModuleViewModels;
+using Domain.Entities;
 using Domain.Enum.StatusEnum;
 
 namespace Applications.ViewModels.SyllabusViewModels
@@ -10,8 +11,15 @@ namespace Applications.ViewModels.SyllabusViewModels
         public double Duration { get; set; }
         public string Level { get; set; }
         public string CourseObjective { get; set; }
-        public string techicalrequirement { get; set; }
         public string Version { get; set; }
+        public string techicalrequirement { get; set; }
         public Status Status { get; set; }
+        public string? trainingDeliveryPrinciple { get; set; }
+        public double? quizCriteria { get; set; }
+        public double? assignmentCriteria { get; set; }
+        public double? finalTheoryCriteria { get; set; }
+        public double? finalPracticalCriteria { get; set; }
+        public double? passingGPA { get; set; }
+        public ModuleCreate Module { get; set; }
     }
 }
