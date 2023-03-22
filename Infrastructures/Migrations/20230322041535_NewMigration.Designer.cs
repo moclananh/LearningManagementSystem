@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructures.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20230321042056_NewMigration")]
+    [Migration("20230322041535_NewMigration")]
     partial class NewMigration
     {
         /// <inheritdoc />
@@ -1003,8 +1003,26 @@ namespace Infrastructures.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<double?>("assignmentCriteria")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("finalPracticalCriteria")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("finalTheoryCriteria")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("passingGPA")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("quizCriteria")
+                        .HasColumnType("float");
+
                     b.Property<string>("techicalrequirement")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("trainingDeliveryPrinciple")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
