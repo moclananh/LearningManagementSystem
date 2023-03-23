@@ -70,7 +70,7 @@ namespace APIs.Controllers
                 ValidationResult result = _updateQuizzValidator.Validate(updateQuizzView);
                 if (result.IsValid)
                 {
-                    if (await _quizzServices.UpdatQuizzAsync(QuizzId, updateQuizzView) != null)
+                    if (await _quizzServices.UpdateQuizzAsync(QuizzId, updateQuizzView) != null)
                     {
                         return Ok("Update Assignment Success");
                     }

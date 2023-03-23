@@ -44,7 +44,7 @@ namespace Applications.Services
             return null;
         }
 
-        public async Task<UpdateQuizzViewModel> UpdatQuizzAsync(Guid QuizzId, UpdateQuizzViewModel QuizzDTO)
+        public async Task<UpdateQuizzViewModel> UpdateQuizzAsync(Guid QuizzId, UpdateQuizzViewModel QuizzDTO)
         {
             var quizzObj = await _unitOfWork.QuizzRepository.GetByIdAsync(QuizzId);
             if (quizzObj != null)

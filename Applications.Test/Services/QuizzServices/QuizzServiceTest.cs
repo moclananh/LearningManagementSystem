@@ -116,7 +116,7 @@ namespace Applications.Tests.Services.QuizzServices
             var updateQuizzDataMock = _fixture.Build<UpdateQuizzViewModel>()
                                          .Create();
             //act
-            await _quizzService.UpdatQuizzAsync(quizzObj.Id, updateQuizzDataMock);
+            await _quizzService.UpdateQuizzAsync(quizzObj.Id, updateQuizzDataMock);
             var result = _mapperConfig.Map<UpdateQuizzViewModel>(quizzObj);
             //assert
             result.Should().NotBeNull();
@@ -137,7 +137,7 @@ namespace Applications.Tests.Services.QuizzServices
             var updateQuizzDataMock = _fixture.Build<UpdateQuizzViewModel>()
                                                     .Create();
             //act
-            var result = await _quizzService.UpdatQuizzAsync(quizzId, updateQuizzDataMock);
+            var result = await _quizzService.UpdateQuizzAsync(quizzId, updateQuizzDataMock);
             //assert
             result.Should().BeNull();
             _unitOfWorkMock.Verify(x => x.QuizzRepository.Update(It.IsAny<Quizz>()), Times.Never);
