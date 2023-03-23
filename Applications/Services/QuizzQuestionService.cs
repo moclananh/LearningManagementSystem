@@ -130,5 +130,17 @@ namespace Applications.Services
             return content;
         }
 
+        public async Task<Response> DeleteQuizzQuestionByCreationDate(DateTime startDate, DateTime endDate, Guid QuizzId)
+        {
+            var quizz = await _unitOfWork.QuizzQuestionRepository.GetQuizzQuestionListByCreationDate(startDate, endDate, QuizzId);
+            if (quizz.Count() < 1)
+                return new Response(HttpStatusCode.NoContent, "Not Found");
+            else
+            {
+                _unitOfWork.QuizzQuestionRepository.SoftRemoveRange(quizz);
+                _unitOfWork.SaveChangeAsync();
+                return new Response(HttpStatusCode.OK, "Delete Succeed");
+            }
+        }
     }
 }

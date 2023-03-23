@@ -12,5 +12,6 @@ namespace Applications.Interfaces
         public Task<QuizzQuestionViewModel> AddQuestion(QuizzQuestionViewModel question);
         public Task<QuizzQuestionViewModel> UpdateQuestion(Guid QuizzQuestionId, QuizzQuestionViewModel question);
         public Task<Response> UploadQuizzQuestion(IFormFile formFile);
+        public Task<Response> DeleteQuizzQuestionByCreationDate(DateTime startDate, DateTime endDate, Guid QuizzId);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Applications;
 using Applications.Commons;
 using Applications.Interfaces;
+using Applications.Services;
 using Applications.ViewModels.QuizzQuestionViewModels;
 using Applications.ViewModels.Response;
 using Microsoft.AspNetCore.Mvc;
@@ -48,6 +49,10 @@ namespace APIs.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
-
+        [HttpDelete("DeleteQuizzQuestion/{startDate}/{endDate}/{QuizzId}")]
+        public async Task<Response> DeleteQuizzQuestionByCreationDate(DateTime startDate, DateTime endDate, Guid QuizzId)
+        {
+            return await _quizzQuestionService.DeleteQuizzQuestionByCreationDate(startDate, endDate, QuizzId);
+        }
     }
 }

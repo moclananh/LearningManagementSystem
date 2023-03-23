@@ -35,6 +35,15 @@ namespace Infrastructures.Repositories
 
             return result;
         }
+
+        public async Task<List<QuizzQuestion>> GetQuizzQuestionListByCreationDate(DateTime startDate, DateTime endDate, Guid QuizzId)
+        {
+            var itemCount = await _dbContext.QuizzQuestions.CountAsync();
+            var items = await _dbContext.QuizzQuestions.Where(x => x.QuizzId == QuizzId && (x.CreationDate >= startDate && x.CreationDate <= endDate)).ToListAsync();
+            var result = new List<QuizzQuestion>(items);
+            return result;
+        }
+
         public async Task<List<QuizzQuestion>> GetQuizzQuestionListByQuizzId(Guid QuizzId)
         {
             return await _dbContext.QuizzQuestions.Where(x => x.QuizzId == QuizzId).ToListAsync();
