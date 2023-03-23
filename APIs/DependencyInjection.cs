@@ -74,6 +74,7 @@ public static class DependencyInjection
         services.AddScoped<IValidator<UpdateAuditResultViewModel>, UpdateAuditResultValidation>();
         services.AddScoped<IValidator<CreatePracticeViewModel>, CreatePracticeValidation>();
         services.AddScoped<IValidator<CreateOutputStandardViewModel>, CreateOutputStandardValidation>();
+        services.AddScoped<IValidator<ClassFiltersViewModel>, ClassFilterValidation>();
         //---------------------------------------------------------------------------------------
         services.AddAuthentication(option =>
         {
