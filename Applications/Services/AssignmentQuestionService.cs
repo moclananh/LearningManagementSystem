@@ -45,7 +45,7 @@ namespace Applications.Services
                     ExcelWorksheet worksheet = package.Workbook.Worksheets[0];
                     var rowCount = worksheet.Dimension.Rows;
                     var AssienmentID = Guid.Parse(worksheet.Cells[1, 2].Value.ToString());
-                    for(int row = 4; row <= rowCount; row++)
+                    for (int row = 4; row <= rowCount; row++)
                     {
                         assignmentList.Add(new AssignmentQuestion
                         {
@@ -53,7 +53,7 @@ namespace Applications.Services
                             Answer = worksheet.Cells[row, 2].Value.ToString().Trim(),
                             Note = worksheet.Cells[row, 3].Value.ToString().Trim(),
                             AssignmentId = AssienmentID,
-                            
+
                         });
                     }
                 }
@@ -101,14 +101,13 @@ namespace Applications.Services
         public async Task<Response> DeleteAssignmentQuestionByCreationDate(DateTime startDate, DateTime endDate, Guid AssignmenId)
         {
             var assignment = await _unitOfWork.AssignmentQuestionRepository.GetAssignmentQuestionListByCreationDate(startDate, endDate, AssignmenId);
-            if (assignment == null)
-                return new Response(HttpStatusCode.NoContent, "No AssignmentQuestion Found");
-            else
+            if (assignment.Count() < 1)
             {
-                _unitOfWork.AssignmentQuestionRepository.SoftRemoveRange(assignment);
-                _unitOfWork.SaveChangeAsync();
-                return new Response(HttpStatusCode.OK, "Delete Succeed");
-            }       
+                return new Response(HttpStatusCode.NoContent, "No Practice Question Found");
+            }
+            _unitOfWork.AssignmentQuestionRepository.SoftRemoveRange(assignment);
+            _unitOfWork.SaveChangeAsync();
+            return new Response(HttpStatusCode.OK, "Delete Succeed");
         }
     }
 }

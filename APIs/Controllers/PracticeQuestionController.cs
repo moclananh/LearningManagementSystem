@@ -1,8 +1,8 @@
 ﻿using Applications.Commons;
 using Applications.Interfaces;
-using Applications.ViewModels.PracticeQuestionViewModels;
 using Applications.ViewModels.Response;
 using ClosedXML.Excel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace APIs.Controllers
@@ -29,6 +29,12 @@ namespace APIs.Controllers
             var content = await _practicequestionService.ExportPracticeQuestionByPracticeId(practiceId);
             var fileName = $"PracticesQuestions_{practiceId}.xlsx";
             return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+        }
+
+        [HttpDelete("DeletePracticeQuestion/{startDate}/{endDate}/{PracticeId}"), Authorize(policy: "AuthUser")]
+        public async Task<Response> DeletePracticeQuestionByCreationDate(DateTime startDate, DateTime endDate, Guid PracticeId)
+        {
+            return await _practicequestionService.DeletePracticeQuestionByCreationDate(startDate, endDate, PracticeId);
         }
     }
 }

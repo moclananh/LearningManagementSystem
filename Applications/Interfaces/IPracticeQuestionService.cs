@@ -11,5 +11,6 @@ namespace Applications.Interfaces
         Task<Response> UploadPracticeQuestions(IFormFile formFile);
         Task<List<PracticeQuestionViewModel>> PracticeQuestionByPracticeId(Guid practiceId);
         Task<byte[]> ExportPracticeQuestionByPracticeId(Guid practiceId);
+        public Task<Response> DeletePracticeQuestionByCreationDate(DateTime startDate, DateTime endDate, Guid PracticeId);
     }
 }

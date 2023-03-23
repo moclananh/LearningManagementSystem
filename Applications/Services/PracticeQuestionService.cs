@@ -23,7 +23,7 @@ namespace Applications.Services
 
         public async Task<Response> GetPracticeQuestionByPracticeId(Guid PracticeId, int pageIndex = 0, int pageSize = 10)
         {
-            var practiceObj = await _unitOfWork.PracticeQuestionRepository.GetAllPracticeQuestionById(PracticeId, pageIndex, pageSize);        
+            var practiceObj = await _unitOfWork.PracticeQuestionRepository.GetAllPracticeQuestionById(PracticeId, pageIndex, pageSize);
             if (practiceObj.Items.Count() < 1) return new Response(HttpStatusCode.NoContent, "Id not found");
             else return new Response(HttpStatusCode.OK, "Search Succeed", _mapper.Map<Pagination<PracticeQuestionViewModel>>(practiceObj));
         }
@@ -45,7 +45,7 @@ namespace Applications.Services
                     ExcelWorksheet worksheet = package.Workbook.Worksheets[0];
                     var rowCount = worksheet.Dimension.Rows;
                     var PracticeID = Guid.Parse(worksheet.Cells[1, 2].Value.ToString());
-/*                  var isDelete = bool.Parse(worksheet.Cells[2, 2].Value.ToString());*/
+                    /*                  var isDelete = bool.Parse(worksheet.Cells[2, 2].Value.ToString());*/
                     for (int row = 4; row <= rowCount; row++)
                     {
                         practiceList.Add(new PracticeQuestion
@@ -105,5 +105,18 @@ namespace Applications.Services
 
             return content;
         }
+
+        public async Task<Response> DeletePracticeQuestionByCreationDate(DateTime startDate, DateTime endDate, Guid PracticeId)
+        {
+            var practice = await _unitOfWork.PracticeQuestionRepository.GetPracticeQuestionListByCreationDate(startDate, endDate, PracticeId);
+            if (practice.Count() < 1)
+            {
+                return new Response(HttpStatusCode.NoContent, "No Practice Question Found");
+            }
+            _unitOfWork.PracticeQuestionRepository.SoftRemoveRange(practice);
+            _unitOfWork.SaveChangeAsync();
+            return new Response(HttpStatusCode.OK, "Delete Succeed");
+        }
     }
 }
+

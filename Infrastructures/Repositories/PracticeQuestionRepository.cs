@@ -46,5 +46,13 @@ namespace Infrastructures.Repositories
         {
             return await _dbContext.PracticesQuestions.Where(x => x.PracticeId == PracticeId).ToListAsync();
         }
+
+        public async Task<List<PracticeQuestion>> GetPracticeQuestionListByCreationDate(DateTime startDate, DateTime endDate, Guid PracticeId)
+        {
+            var itemCount = await _dbContext.PracticesQuestions.CountAsync();
+            var items = await _dbContext.PracticesQuestions.Where(x => x.PracticeId == PracticeId && (x.CreationDate >= startDate && x.CreationDate <= endDate)).ToListAsync();
+            var result = new List<PracticeQuestion>(items);
+            return result;
+        }
     }
 }

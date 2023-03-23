@@ -11,6 +11,6 @@ namespace Applications.Interfaces
         public Task<Response> GetAssignmentQuestionByAssignmentId(Guid AssignmentId, int pageIndex = 0, int pageSize = 10);
         Task<Response> UploadAssignmentQuestions(IFormFile formFile);        
         Task<byte[]> ExportAssignmentQuestionByAssignmentId(Guid assignmentId);
-        public Task<Response> DeleteAssignmentQuestionByCreationDate(DateTime startDate, DateTime endDate, Guid AssignmentQuestionId);
+        public Task<Response> DeleteAssignmentQuestionByCreationDate(DateTime startDate, DateTime endDate, Guid AssignmnentId);
     }
 }

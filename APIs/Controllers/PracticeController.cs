@@ -1,9 +1,7 @@
 ﻿using Applications.Commons;
 using Applications.Interfaces;
-using Applications.Services;
 using Applications.ViewModels.PracticeViewModels;
 using Applications.ViewModels.Response;
-using Domain.Entities;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Authorization;
@@ -12,7 +10,6 @@ namespace APIs.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(policy: "AuthUser")]
     public class PracticeController : ControllerBase
     {
         private readonly IPracticeService _service;
@@ -33,7 +30,7 @@ namespace APIs.Controllers
         [HttpGet("GetAllPractice")]
         public async Task<Response> GetAllPractice(int pageIndex = 0, int pageSize = 10) => await _service.GetAllPractice(pageIndex, pageSize);
 
-        [HttpPost("CreatePractice")]
+        [HttpPost("CreatePractice"), Authorize(policy: "AuthUser")]
         public async Task<IActionResult> CreatePractice(CreatePracticeViewModel PracticeModel)
         {
             if (ModelState.IsValid)
@@ -57,7 +54,7 @@ namespace APIs.Controllers
         public async Task<Pagination<PracticeViewModel>> GetEnablePractices(int pageIndex = 0, int pageSize = 10) => await _service.GetEnablePractice(pageIndex, pageSize);
         [HttpGet("GetDisablePractice")]
         public async Task<Pagination<PracticeViewModel>> GetDisablePractice(int pageIndex = 0, int pageSize = 10) => await _service.GetDisablePractice(pageIndex, pageSize);
-        [HttpPut("UpdatePractice/{PracticeId}")]
+        [HttpPut("UpdatePractice/{PracticeId}"), Authorize(policy: "AuthUser")]
         public async Task<IActionResult> UpdatePractice(Guid PracticeId, UpdatePracticeViewModel practiceDTO)
         {
             if (ModelState.IsValid)

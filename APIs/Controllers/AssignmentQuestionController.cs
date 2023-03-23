@@ -1,5 +1,6 @@
 ﻿using Applications.Interfaces;
 using Applications.ViewModels.Response;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace APIs.Controllers
@@ -29,7 +30,7 @@ namespace APIs.Controllers
             return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
         }
 
-        [HttpDelete("DeleteAssignmentQuestion/{startDate}/{endDate}/{AssignmentId}")]
+        [HttpDelete("DeleteAssignmentQuestion/{startDate}/{endDate}/{AssignmentId}"), Authorize(policy: "AuthUser")]
         public async Task<Response> DeleteAssignmentQuestionByCreationDate(DateTime startDate, DateTime endDate, Guid AssignmentId)
         {
             return await _assignmentquestionService.DeleteAssignmentQuestionByCreationDate(startDate, endDate, AssignmentId);
