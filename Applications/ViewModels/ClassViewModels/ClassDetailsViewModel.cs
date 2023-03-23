@@ -16,8 +16,8 @@ namespace Applications.ViewModels.ClassViewModels
         public LocationEnum Location { get; set; }
         public DateTime CreationDate { get; set; }
         public string? CreatedBy { get; set; }
-        public DateTime startTime { get; set; }
-        public DateTime endTime { get; set; }
+        public DateTime StartTime { get; set; }
+        public DateTime EndTime { get; set; }
         public FSUEnum FSU { get; set; }
         public AttendeeEnum Attendee { get; set; }
         public Status Status { get; set; }
@@ -30,8 +30,8 @@ namespace Applications.ViewModels.ClassViewModels
         public ICollection<User>? SuperAdmin { get; set; }
         public ICollection<User>? Student { get; set; }
         public ICollection<User>? ClassAdmin { get; set; }
-        public ICollection<ClassTrainingProgram> ClassTrainingPrograms { get; set; }
-        public ICollection<AuditPlan> AuditPlans { get; set; }
-        public ICollection<ClassUser> ClassUsers { get; set; }
+        public ICollection<ClassTrainingProgram>? ClassTrainingPrograms { get; set; }
+        public ICollection<AuditPlan>? AuditPlans { get; set; }
+        public ICollection<ClassUser>? ClassUsers { get; set; }
     }
 }

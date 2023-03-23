@@ -11,10 +11,10 @@ namespace Applications.ViewModels.ClassViewModels
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public LocationEnum Location { get; set; }
-        public DateTime startTime { get; set; }
-        public DateTime endTime { get; set; }
+        public DateTime StartTime { get; set; }
+        public DateTime EndTime { get; set; }
         public FSUEnum FSU { get; set; }
         public AttendeeEnum Attendee { get; set; }
-        public List<Guid?> TraingProgramId { get; set; }
+        public Guid? TraingProgramId { get; set; }
     }
 }

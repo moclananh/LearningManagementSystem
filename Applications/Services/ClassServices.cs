@@ -56,20 +56,20 @@ namespace Applications.Services
             try
             {
                 var classOjb = _mapper.Map<Class>(classDTO);
-                var trainingProgram = await _unitOfWork.TrainingProgramRepository.GetEntitiesByIdsAsync(classDTO.TraingProgramId);
-                var listClassTrainingProgram = new List<ClassTrainingProgram>();
 
-                foreach (var item in trainingProgram)
+                if (classDTO.TraingProgramId != null)
                 {
+                    var trainingProgram = await _unitOfWork.TrainingProgramRepository.GetByIdAsync(classDTO.TraingProgramId);
                     var classTrainingProgram = new ClassTrainingProgram()
                     {
                         Class = classOjb,
-                        TrainingProgram = item
+                        TrainingProgram = trainingProgram
                     };
-                    listClassTrainingProgram.Add(classTrainingProgram);
+
+                    await _unitOfWork.ClassTrainingProgramRepository.AddAsync(classTrainingProgram);
                 }
+
                 await _unitOfWork.ClassRepository.AddAsync(classOjb);
-                await _unitOfWork.ClassTrainingProgramRepository.AddRangeAsync(listClassTrainingProgram);
                 var isSuccess = await _unitOfWork.SaveChangeAsync() > 0;
 
                 if (isSuccess)
@@ -125,14 +125,6 @@ namespace Applications.Services
             if (filters.Location.HasValue)
             {
                 baseQuery = baseQuery.Where(x => x.Location == filters.Location);
-            }
-            if (filters.startTime.HasValue)
-            {
-                baseQuery = baseQuery.Where(x => x.startTime == filters.startTime);
-            }
-            if (filters.endTime.HasValue)
-            {
-                baseQuery = baseQuery.Where(x => x.endTime == filters.endTime);
             }
             if (filters.FSU.HasValue)
             {

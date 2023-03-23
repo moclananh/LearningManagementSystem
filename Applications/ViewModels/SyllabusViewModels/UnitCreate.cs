@@ -5,9 +5,9 @@ namespace Applications.ViewModels.SyllabusViewModels
     {
         public string UnitName { get; set; }
         public string UnitCode { get; set; }
-        public List<LectureCreate>? Lecture { get; set; }
-        public List<AssignmentCreate>? Assignment { get; set; }
-        public List<QuizzCreate>? Quizz { get; set; }
-        public List<PracticeCreate>? Practice { get; set; }
+        public List<LectureCreate>? Lectures { get; set; }
+        public List<AssignmentCreate>? Assignments { get; set; }
+        public List<QuizzCreate>? Quizzes { get; set; }
+        public List<PracticeCreate>? Practices { get; set; }
     }
 }

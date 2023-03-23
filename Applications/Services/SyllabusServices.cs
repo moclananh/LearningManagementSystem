@@ -201,67 +201,122 @@ namespace Applications.Services
 
         public async Task<CreateSyllabusDetailModel> CreateSyllabusDetail(CreateSyllabusDetailModel SyllabusDTO)
         {
+            // create mapping for Syllabus
             var syllabus = _mapper.Map<Syllabus>(SyllabusDTO);
 
+            // add List Module and it Realationship
             var listModule = new List<Module>();
             var listModuleSylla = new List<SyllabusModule>();
 
+            // add List Unit and it Realationship
             var listUnit = new List<Unit>();
             var listModuleUnit = new List<ModuleUnit>();
 
+            // add List Quizz, Assignment, Lecture, Practice
             var listQuizz = new List<Quizz>();
+            var listAssignment = new List<Assignment>();
+            var listLecture = new List<Lecture>();
+            var listPractice = new List<Practice>();
 
-            foreach (var item in SyllabusDTO.Module)
+            // loop for mapping and add entity
+            foreach (var item in SyllabusDTO.Modules)
             {
+                // map Module
                 var moduleMap = _mapper.Map<Module>(item);
                 listModule.Add(moduleMap);
 
-
-                foreach (var units in SyllabusDTO.Module.Select(x => x.Unit))
+                // map Unit
+                foreach (var units in SyllabusDTO.Modules.Select(x => x.Units))
                 {
                     var listUnitMapper = _mapper.Map<List<Unit>>(units);
                     foreach (var unit in listUnitMapper)
                     {
-                        foreach (var quizzes in units.Select(x => x.Quizz))
+                        // map Quizz
+                        foreach (var quizzes in units.Select(x => x.Quizzes))
                         {
                             var listQuizzMapper = _mapper.Map<List<Quizz>>(quizzes);
                             foreach (var quizz in listQuizzMapper)
                             {
                                 quizz.Unit = unit;
                             }
+                            // add to list
                             listQuizz.AddRange(listQuizzMapper);
                         }
+
+                        // map Assignment
+                        foreach (var assignments in units.Select(x => x.Assignments))
+                        {
+                            var listAssignmentMapper = _mapper.Map<List<Assignment>>(assignments);
+                            foreach (var assignment in listAssignmentMapper)
+                            {
+                                assignment.Unit = unit;
+                            }
+                            // add to list
+                            listAssignment.AddRange(listAssignmentMapper);
+                        }
+
+                        // map Lecture
+                        foreach (var lectures in units.Select(x => x.Lectures))
+                        {
+                            var listLectureMapper = _mapper.Map<List<Lecture>>(lectures);
+                            foreach (var lecture in listLectureMapper)
+                            {
+                                lecture.Unit = unit;
+                            }
+                            // add to list
+                            listLecture.AddRange(listLectureMapper);
+                        }
+
+                        // map Practice
+                        foreach (var practices in units.Select(x => x.Practices))
+                        {
+                            var listPracticeMapper = _mapper.Map<List<Practice>>(practices);
+                            foreach (var practice in listPracticeMapper)
+                            {
+                                practice.Unit = unit;
+                            }
+                            // add to list
+                            listPractice.AddRange(listPracticeMapper);
+                        }
+
                     }
+                    // add to list
                     listUnit.AddRange(listUnitMapper);
                 }
 
+                // add realtionship for ModuleUnit
                 foreach (var unit in listUnit)
                 {
-                    var a = new ModuleUnit()
+                    var moduleUnit = new ModuleUnit()
                     {
                         Module = moduleMap,
                         Unit = unit
                     };
-                    listModuleUnit.Add(a);
+                    // add to list
+                    listModuleUnit.Add(moduleUnit);
                 }
             }
-
+            // add realtionship for SyllabusModule
             foreach (var item in listModule)
             {
-                var a = new SyllabusModule()
+                var syllabusModule = new SyllabusModule()
                 {
                     Syllabus = syllabus,
                     Module = item,
                 };
-                listModuleSylla.Add(a);
+                listModuleSylla.Add(syllabusModule);
             }
 
+            await _unitOfWork.LectureRepository.AddRangeAsync(listLecture);
+            await _unitOfWork.AssignmentRepository.AddRangeAsync(listAssignment);
+            await _unitOfWork.PracticeRepository.AddRangeAsync(listPractice);
             await _unitOfWork.QuizzRepository.AddRangeAsync(listQuizz);
             await _unitOfWork.UnitRepository.AddRangeAsync(listUnit);
             await _unitOfWork.ModuleUnitRepository.AddRangeAsync(listModuleUnit);
             await _unitOfWork.SyllabusRepository.AddAsync(syllabus);
             await _unitOfWork.ModuleRepository.AddRangeAsync(listModule);
             await _unitOfWork.SyllabusModuleRepository.AddRangeAsync(listModuleSylla);
+
             await _unitOfWork.SaveChangeAsync();
             return _mapper.Map<CreateSyllabusDetailModel>(syllabus);
         }

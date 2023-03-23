@@ -18,6 +18,6 @@ namespace Applications.ViewModels.SyllabusViewModels
         public double? finalTheoryCriteria { get; set; }
         public double? finalPracticalCriteria { get; set; }
         public double? passingGPA { get; set; }
-        public List<ModuleCreate>? Module { get; set; }
+        public List<ModuleCreate>? Modules { get; set; }
     }
 }

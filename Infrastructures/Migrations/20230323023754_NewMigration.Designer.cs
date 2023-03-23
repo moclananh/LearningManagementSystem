@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructures.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20230322095832_NewMigration")]
+    [Migration("20230323023754_NewMigration")]
     partial class NewMigration
     {
         /// <inheritdoc />
@@ -459,13 +459,15 @@ namespace Infrastructures.Migrations
                     b.Property<DateTime?>("ApprovedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("Attendee")
+                    b.Property<int>("Attendee")
                         .HasColumnType("int");
 
                     b.Property<string>("ClassCode")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ClassName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid?>("CreatedBy")
@@ -480,16 +482,19 @@ namespace Infrastructures.Migrations
                     b.Property<DateTime?>("DeletionDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("EndDate")
+                    b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("FSU")
+                    b.Property<DateTime>("EndTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("FSU")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("Location")
+                    b.Property<int>("Location")
                         .HasColumnType("int");
 
                     b.Property<Guid?>("ModificationBy")
@@ -501,23 +506,19 @@ namespace Infrastructures.Migrations
                     b.Property<Guid?>("ReviewBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("StartDate")
+                    b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("Status")
+                    b.Property<DateTime>("StartTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Status")
                         .HasColumnType("int");
-
-                    b.Property<DateTime?>("endTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("startTime")
-                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ClassCode")
-                        .IsUnique()
-                        .HasFilter("[ClassCode] IS NOT NULL");
+                        .IsUnique();
 
                     b.ToTable("Classes");
                 });
