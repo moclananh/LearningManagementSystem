@@ -192,7 +192,7 @@ public class UserService : IUserService
             return new Response(HttpStatusCode.Forbidden,
                 $"you are not login with this account, please login first !!!");
         var user = await _unitOfWork.UserRepository.GetByIdAsync(id);
-        if (user is null) return new Response(HttpStatusCode.NotFound, "Not Found this user");
+        if (user is null) return new Response(HttpStatusCode.NoContent, "Not Found this user");
 
         _mapper.Map(updateUserViewModel, user);
         _unitOfWork.UserRepository.Update(user);
