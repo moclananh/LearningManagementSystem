@@ -16,12 +16,6 @@ namespace Applications.ViewModels.TrainingProgramModels
         public DateTime? DeletionDate { get; set; }
         public Guid? DeleteBy { get; set; }
         public bool IsDeleted { get; set; }
-        public string? trainingDeliveryPrinciple { get; set; }
-        public double? quizCriteria { get; set; }
-        public double? assignmentCriteria { get; set; }
-        public double? finalTheoryCriteria { get; set; }
-        public double? finalPracticalCriteria { get; set; }
-        public double? passingGPA { get; set; }
         public ICollection<ClassTrainingProgram?> ClassTrainingPrograms { get; set; }
         public ICollection<TrainingProgramSyllabus?> TrainingProgramSyllabi { get; set; }
     }

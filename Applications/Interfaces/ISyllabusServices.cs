@@ -7,7 +7,7 @@ namespace Applications.Interfaces
     public interface ISyllabusServices
     {
         public Task<SyllabusViewModel?> CreateSyllabus(CreateSyllabusViewModel SyllabusDTO);
-        public Task<CreateSyllabusDetailModel> CreateSyllabusDetail(CreateSyllabusDetailModel SyllabusDTO);
+        public Task<Response> CreateSyllabusDetail(CreateSyllabusDetailModel SyllabusDTO);
         public Task<UpdateSyllabusViewModel?> UpdateSyllabus(Guid SyllabusId, UpdateSyllabusViewModel SyllabusDTO);
         public Task<Response> GetAllSyllabus(int pageNumber = 0, int pageSize = 10);
         public Task<Response> GetEnableSyllabus(int pageNumber = 0, int pageSize = 10);

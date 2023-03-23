@@ -1,10 +1,10 @@
 ﻿using Applications.Commons;
 using Applications.Interfaces;
+using Applications.ViewModels.AssignmentViewModels;
 using Applications.ViewModels.Response;
 using Applications.ViewModels.SyllabusModuleViewModel;
 using Applications.ViewModels.SyllabusViewModels;
 using AutoMapper;
-using DocumentFormat.OpenXml.Spreadsheet;
 using Domain.Entities;
 using Domain.EntityRelationship;
 using MimeKit.Cryptography;
@@ -199,7 +199,7 @@ namespace Applications.Services
                 return new Response(HttpStatusCode.OK, "Search Succeed", result);
         }
 
-        public async Task<CreateSyllabusDetailModel> CreateSyllabusDetail(CreateSyllabusDetailModel SyllabusDTO)
+        public async Task<Response> CreateSyllabusDetail(CreateSyllabusDetailModel SyllabusDTO)
         {
             // create mapping for Syllabus
             var syllabus = _mapper.Map<Syllabus>(SyllabusDTO);
@@ -317,8 +317,12 @@ namespace Applications.Services
             await _unitOfWork.ModuleRepository.AddRangeAsync(listModule);
             await _unitOfWork.SyllabusModuleRepository.AddRangeAsync(listModuleSylla);
 
-            await _unitOfWork.SaveChangeAsync();
-            return _mapper.Map<CreateSyllabusDetailModel>(syllabus);
+            var Succeed = await _unitOfWork.SaveChangeAsync() > 0;
+            if (Succeed)
+            {
+                new Response(HttpStatusCode.OK, "Create succeed", _mapper.Map<CreateSyllabusDetailModel>(syllabus));
+            }
+            return new Response(HttpStatusCode.BadRequest, "Create Failed");
         }
     }
 }
