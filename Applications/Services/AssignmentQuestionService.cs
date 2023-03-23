@@ -45,7 +45,6 @@ namespace Applications.Services
                     ExcelWorksheet worksheet = package.Workbook.Worksheets[0];
                     var rowCount = worksheet.Dimension.Rows;
                     var AssienmentID = Guid.Parse(worksheet.Cells[1, 2].Value.ToString());
-                    var isDelete = bool.Parse(worksheet.Cells[2, 2].Value.ToString());
                     for(int row = 4; row <= rowCount; row++)
                     {
                         assignmentList.Add(new AssignmentQuestion
