@@ -46,5 +46,13 @@ namespace Infrastructures.Repositories
         {
             await _dbContext.AddRangeAsync(assignmentQuestionList);
         }
+
+        public async Task<List<AssignmentQuestion>> GetAssignmentQuestionListByCreationDate(DateTime startDate, DateTime endDate, Guid AssignmentId)
+        {
+            var itemCount = await _dbContext.AssignmentQuestions.CountAsync();
+            var items = await _dbContext.AssignmentQuestions.Where(x => x.AssignmentId == AssignmentId && (x.CreationDate >= startDate && x.CreationDate <= endDate)).ToListAsync();
+            var result = new List<AssignmentQuestion>(items);
+            return result;
+        }
     }
 }

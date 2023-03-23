@@ -28,5 +28,11 @@ namespace APIs.Controllers
             var fileName = $"AssignmentQuestions_{assignmentId}.xlsx";
             return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
         }
+
+        [HttpDelete("DeleteAssignmentQuestion/{startDate}/{endDate}/{AssignmentId}")]
+        public async Task<Response> DeleteAssignmentQuestionByCreationDate(DateTime startDate, DateTime endDate, Guid AssignmentId)
+        {
+            return await _assignmentquestionService.DeleteAssignmentQuestionByCreationDate(startDate, endDate, AssignmentId);
+        }
     }
 }

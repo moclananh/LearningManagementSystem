@@ -97,5 +97,18 @@ namespace Applications.Services
 
             return content;
         }
+
+        public async Task<Response> DeleteAssignmentQuestionByCreationDate(DateTime startDate, DateTime endDate, Guid AssignmenId)
+        {
+            var assignment = await _unitOfWork.AssignmentQuestionRepository.GetAssignmentQuestionListByCreationDate(startDate, endDate, AssignmenId);
+            if (assignment == null)
+                return new Response(HttpStatusCode.NoContent, "No AssignmentQuestion Found");
+            else
+            {
+                _unitOfWork.AssignmentQuestionRepository.SoftRemoveRange(assignment);
+                _unitOfWork.SaveChangeAsync();
+                return new Response(HttpStatusCode.OK, "Delete Succeed");
+            }       
+        }
     }
 }
