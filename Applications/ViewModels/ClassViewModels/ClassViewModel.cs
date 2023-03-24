@@ -34,5 +34,6 @@ namespace Applications.ViewModels.ClassViewModels
         public DateTime? DeletionDate { get; set; }
         public Guid? DeleteBy { get; set; }
         public bool IsDeleted { get; set; }
+        public double? TotalDuration { get; set; }
     }
 }

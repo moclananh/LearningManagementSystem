@@ -17,6 +17,7 @@ namespace Domain.Entities
         public FSUEnum FSU { get; set; }
         public AttendeeEnum Attendee { get; set; }
         public Status Status { get; set; }
+        public double? TotalDuration { get; set; }
         public ICollection<ClassTrainingProgram>? ClassTrainingPrograms { get; set; }
         public ICollection<AuditPlan>? AuditPlans { get; set; }
         public ICollection<ClassUser>? ClassUsers { get; set; }

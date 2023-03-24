@@ -15,6 +15,7 @@ namespace Applications.ViewModels.ClassViewModels
         public FSUEnum FSU { get; set; }
         public AttendeeEnum Attendee { get; set; }
         public Status Status { get; set; }
+        public double? TotalDuration { get; set; }
         public bool IsDeleted { get; set; }
     }
 }

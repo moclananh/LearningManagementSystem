@@ -26,6 +26,7 @@ namespace Applications.ViewModels.ClassViewModels
         public DateTime? DeletionDate { get; set; }
         public string? DeleteBy { get; set; }
         public bool IsDeleted { get; set; }
+        public double? TotalDuration { get; set; }
         public ICollection<User>? Trainner { get; set; }
         public ICollection<User>? SuperAdmin { get; set; }
         public ICollection<User>? Student { get; set; }

@@ -15,6 +15,7 @@ namespace Applications.ViewModels.ClassViewModels
         public DateTime EndTime { get; set; }
         public FSUEnum FSU { get; set; }
         public AttendeeEnum Attendee { get; set; }
+        public double? TotalDuration { get; set; }
         public Guid? TraingProgramId { get; set; }
         public List<Guid?>? TrainerId { get; set; }
         public List<Guid?>? AdminId { get; set; }

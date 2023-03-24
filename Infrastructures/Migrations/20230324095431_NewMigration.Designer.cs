@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructures.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20230324092449_NewMigration")]
+    [Migration("20230324095431_NewMigration")]
     partial class NewMigration
     {
         /// <inheritdoc />
@@ -516,6 +516,9 @@ namespace Infrastructures.Migrations
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
+
+                    b.Property<double?>("TotalDuration")
+                        .HasColumnType("float");
 
                     b.HasKey("Id");
 

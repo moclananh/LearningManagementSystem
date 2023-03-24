@@ -514,6 +514,9 @@ namespace Infrastructures.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
+                    b.Property<double?>("TotalDuration")
+                        .HasColumnType("float");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ClassCode")

@@ -26,6 +26,7 @@ namespace Infrastructures.Migrations
                     FSU = table.Column<int>(type: "int", nullable: false),
                     Attendee = table.Column<int>(type: "int", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
+                    TotalDuration = table.Column<double>(type: "float", nullable: true),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     ApprovedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
