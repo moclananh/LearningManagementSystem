@@ -69,6 +69,38 @@ namespace Applications.Services
                     await _unitOfWork.ClassTrainingProgramRepository.AddAsync(classTrainingProgram);
                 }
 
+                var classUser = new List<ClassUser>();
+                if (classDTO.AdminId != null)
+                {
+                    var adminList = await _unitOfWork.UserRepository.GetEntitiesByIdsAsync(classDTO.AdminId);
+
+                    foreach (var item in adminList)
+                    {
+                        var adminClass = new ClassUser()
+                        {
+                            User = item,
+                            Class = classOjb
+                        };
+                        classUser.Add(adminClass);
+                    }
+                }
+
+                if (classDTO.TrainerId != null)
+                {
+                    var trainerList = await _unitOfWork.UserRepository.GetEntitiesByIdsAsync(classDTO.TrainerId);
+
+                    foreach (var item in trainerList)
+                    {
+                        var trainerClass = new ClassUser()
+                        {
+                            User = item,
+                            Class = classOjb
+                        };
+                        classUser.Add(trainerClass);
+                    }
+                }
+
+                await _unitOfWork.ClassUserRepository.AddRangeAsync(classUser);
                 await _unitOfWork.ClassRepository.AddAsync(classOjb);
                 var isSuccess = await _unitOfWork.SaveChangeAsync() > 0;
 

@@ -16,5 +16,7 @@ namespace Applications.ViewModels.ClassViewModels
         public FSUEnum FSU { get; set; }
         public AttendeeEnum Attendee { get; set; }
         public Guid? TraingProgramId { get; set; }
+        public List<Guid?>? TrainerId { get; set; }
+        public List<Guid?>? AdminId { get; set; }
     }
 }
