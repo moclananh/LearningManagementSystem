@@ -111,6 +111,7 @@ namespace Infrastructures.Mappers
             CreateMap(typeof(Pagination<>), typeof(Pagination<>));
             CreateMap<AbsentRequestViewModel, AbsentRequest>().ReverseMap();
             CreateMap<CreateAbsentRequestViewModel, AbsentRequest>().ReverseMap();
+            CreateMap<Attendance, AttendanceViewModel>().ReverseMap();
         }
     }
 }

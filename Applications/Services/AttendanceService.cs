@@ -1,4 +1,5 @@
-﻿using Applications.Interfaces;
+﻿using Applications.Commons;
+using Applications.Interfaces;
 using Applications.ViewModels.AttendanceViewModels;
 using Applications.ViewModels.Response;
 using AutoMapper;
@@ -140,5 +141,52 @@ namespace Applications.Services
             return content;
         }
 
+        public async Task<Response> GetAttendanceByFilter(AttendanceFilterViewModel filters, int pageNumber = 0, int pageSize = 10)
+        {
+            if (filters.StartDate == null)
+            {
+                filters.StartDate = new DateTime(1999, 1, 1);
+            }
+            if (filters.EndDate == null)
+            {
+                filters.EndDate = new DateTime(3999, 1, 1);
+            }
+
+            var attendance = await _unitOfWork.AttendanceRepository.GetAllAsync();
+            var itemCount = attendance.Count();
+            var baseQuery = attendance.Where(s => s.Date >= filters.StartDate && s.Date <= filters.EndDate);
+            var user = await _unitOfWork.UserRepository.GetAllAsync();
+            var users = user.Where(x => x.Email == filters.Email);
+
+            if (filters.Status.HasValue)
+            {
+                baseQuery = baseQuery.Where(s => s.Status == filters.Status);
+            }
+            if (filters.IsDeleted.HasValue)
+            {
+                baseQuery = baseQuery.Where(s => s.IsDeleted == filters.IsDeleted);
+            }
+            if (filters.Email != null)
+            {
+                baseQuery = baseQuery.Where(x => x.User.Email == filters.Email);
+            }
+
+            var items = baseQuery.OrderByDescending(s => s.CreationDate)
+                                 .Skip(pageNumber * pageSize)
+                                 .Take(pageSize)
+                                 .ToList();
+            var mapping = new Pagination<Attendance>()
+            {
+                PageIndex = pageNumber,
+                PageSize = pageSize,
+                TotalItemsCount = itemCount,
+                Items = items,
+            };
+
+            var result = _mapper.Map<Pagination<AttendanceViewModel>>(mapping);
+
+            if (mapping.Items.Count() < 1) return new Response(HttpStatusCode.NoContent, "No Attendance found");
+            return new Response(HttpStatusCode.OK, "Search Succeed", result);
+        }
     }
 }

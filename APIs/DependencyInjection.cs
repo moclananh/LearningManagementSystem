@@ -34,6 +34,8 @@ using APIs.Validations.AuditResultValidations;
 using System.Text.Json.Serialization;
 using Quartz;
 using Application.Cronjob;
+using APIs.Validations.AttendanceValidations;
+using Applications.ViewModels.AttendanceViewModels;
 
 namespace APIs;
 
@@ -75,6 +77,7 @@ public static class DependencyInjection
         services.AddScoped<IValidator<CreatePracticeViewModel>, CreatePracticeValidation>();
         services.AddScoped<IValidator<CreateOutputStandardViewModel>, CreateOutputStandardValidation>();
         services.AddScoped<IValidator<ClassFiltersViewModel>, ClassFilterValidation>();
+        services.AddScoped<IValidator<AttendanceFilterViewModel>, AttendanceFilterValidation>();
         //---------------------------------------------------------------------------------------
         services.AddAuthentication(option =>
         {

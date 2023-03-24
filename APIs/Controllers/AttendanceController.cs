@@ -1,6 +1,8 @@
 ﻿using Applications.Interfaces;
+using Applications.ViewModels.AttendanceViewModels;
 using Applications.ViewModels.Response;
 using Domain.Enum.AttendenceEnum;
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 
 namespace APIs.Controllers
@@ -11,10 +13,32 @@ namespace APIs.Controllers
     {
 
         private readonly IAttendanceService _attendanceService;
+        private readonly IValidator<AttendanceFilterViewModel> _validatorFilter;
 
-        public AttendanceController(IAttendanceService attendanceService)
+        public AttendanceController(IAttendanceService attendanceService,
+            IValidator<AttendanceFilterViewModel> validatorFilter)
         {
             _attendanceService = attendanceService;
+            _validatorFilter = validatorFilter;
+        }
+
+        [HttpPost("GetAttendanceByFilter")]
+        public async Task<IActionResult> GetAttendanceByFilter(AttendanceFilterViewModel filter, int pageNumber = 0, int pageSize = 10)
+        {
+            if (ModelState.IsValid)
+            {
+                var validation = _validatorFilter.Validate(filter);
+                if (validation.IsValid)
+                {
+                    var attendance = await _attendanceService.GetAttendanceByFilter(filter, pageNumber = 0, pageSize = 10);
+                    if (attendance != null)
+                    {
+                        return Ok(attendance);
+                    }
+                    return BadRequest("Not found");
+                }
+            }
+            return BadRequest("GetAttendanceByFilter Fail");
         }
 
         [HttpPost("CreateAttendanceByClassId/{ClassId}")]
