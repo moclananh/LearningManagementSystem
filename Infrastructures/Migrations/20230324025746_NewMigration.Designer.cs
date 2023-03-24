@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructures.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20230323023754_NewMigration")]
+    [Migration("20230324025746_NewMigration")]
     partial class NewMigration
     {
         /// <inheritdoc />
@@ -1182,6 +1182,9 @@ namespace Infrastructures.Migrations
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
+
+                    b.Property<string>("Token")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("firstName")
                         .IsRequired()

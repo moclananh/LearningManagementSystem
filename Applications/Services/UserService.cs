@@ -11,7 +11,6 @@ using Domain.Enum.RoleEnum;
 using Applications.Commons;
 using Applications.Utils;
 using Domain.Enum.LevelEnum;
-using Task = DocumentFormat.OpenXml.Office2021.DocumentTasks.Task;
 
 
 namespace Applications.Services;
@@ -41,16 +40,17 @@ public class UserService : IUserService
         if (user == null) return new Response(HttpStatusCode.BadRequest, "forbidden exception!");
         if (!StringUtils.Verify(changePassword.OldPassword, user.Password))
             return new Response(HttpStatusCode.BadRequest, "Wrong password");
-        if (string.Compare(changePassword.NewPassword, changePassword.ConfirmPassword) != 0)
+        if (string.CompareOrdinal(changePassword.NewPassword, changePassword.ConfirmPassword) != 0)
         {
             return new Response(HttpStatusCode.BadRequest, "the new password and confirm password does not match!");
         }
 
         user.Password = StringUtils.Hash(changePassword.NewPassword);
         _unitOfWork.UserRepository.Update(user);
-        bool isSuccess = await _unitOfWork.SaveChangeAsync() > 0;
-        if (isSuccess) return new Response(HttpStatusCode.OK, "Change Success!");
-        return new Response(HttpStatusCode.BadRequest, "Not Success");
+        var isSuccess = await _unitOfWork.SaveChangeAsync() > 0;
+        return isSuccess
+            ? new Response(HttpStatusCode.OK, "Change Success!")
+            : new Response(HttpStatusCode.BadRequest, "Not Success");
     }
 
     // Reset-Password
@@ -59,7 +59,7 @@ public class UserService : IUserService
         var user = await _unitOfWork.UserRepository.GetUserByPasswordResetToken(request.Token);
         if (user == null || user.ResetTokenExpires < DateTime.Now)
             return new Response(HttpStatusCode.BadRequest, "Invalid Token");
-        if (string.Compare(request.Password, request.ConfirmPassword) != 0)
+        if (string.CompareOrdinal(request.Password, request.ConfirmPassword) != 0)
         {
             return new Response(HttpStatusCode.BadRequest, "the password and confirm password does not match!");
         }
@@ -68,9 +68,10 @@ public class UserService : IUserService
         user.PasswordResetToken = null;
         user.ResetTokenExpires = null;
         _unitOfWork.UserRepository.Update(user);
-        bool isSuccess = await _unitOfWork.SaveChangeAsync() > 0;
-        if (isSuccess) return new Response(HttpStatusCode.OK, "Change Success!");
-        return new Response(HttpStatusCode.BadRequest, "Not Success");
+        var isSuccess = await _unitOfWork.SaveChangeAsync() > 0;
+        return isSuccess
+            ? new Response(HttpStatusCode.OK, "Change Success!")
+            : new Response(HttpStatusCode.BadRequest, "Not Success");
     }
 
     // Update Image User
@@ -83,10 +84,21 @@ public class UserService : IUserService
         if (user is null) return new Response(HttpStatusCode.BadRequest, "notfound this user");
         user.Image = image;
         _unitOfWork.UserRepository.Update(user);
-        bool isSuccess = await _unitOfWork.SaveChangeAsync() > 0;
-        if (isSuccess)
-            return new Response(HttpStatusCode.OK, "update success", new { user.Id, user.Email, user.Image });
-        return new Response(HttpStatusCode.BadRequest, "not success");
+        var isSuccess = await _unitOfWork.SaveChangeAsync() > 0;
+        return isSuccess
+            ? new Response(HttpStatusCode.OK, "update success", new { user.Id, user.Email, user.Image })
+            : new Response(HttpStatusCode.BadRequest, "not success");
+    }
+    
+    // Verify token login 
+    public async Task<Response> VerifyToken(TokenRequest token)
+    {
+        var user = _unitOfWork.UserRepository.query().FirstOrDefault(u => u.Token == token.Token);
+        if (user == null) return new Response(HttpStatusCode.PaymentRequired, "Invalid Token");
+        user.Token = null;
+        _unitOfWork.UserRepository.Update(user);
+        await _unitOfWork.SaveChangeAsync();
+        return new Response(HttpStatusCode.OK, "success!!");
     }
 
     // Search Users by Name
@@ -111,7 +123,7 @@ public class UserService : IUserService
         if (entity is not null)
             return new Response(HttpStatusCode.BadRequest,
                 $"The account with email {createUserViewModel.Email} already exists in the system");
-        User user = new User()
+        var user = new User()
         {
             firstName = createUserViewModel.firstName,
             lastName = createUserViewModel.lastName,
@@ -141,11 +153,12 @@ public class UserService : IUserService
     }
 
     //get user by classid
-    public async Task<Response> GetUserByClassId(Guid ClassId, int pageIndex = 0, int pageSize = 10)
+    public async Task<Response> GetUserByClassId(Guid classId, int pageIndex = 0, int pageSize = 10)
     {
-        var Users = await _unitOfWork.UserRepository.GetUserByClassId(ClassId, pageIndex, pageSize);
-        if (Users.Items.Count() < 1) return new Response(HttpStatusCode.NoContent, "not found");
-        return new Response(HttpStatusCode.OK, "ok", _mapper.Map<Pagination<UserViewModel>>(Users));
+        var users = await _unitOfWork.UserRepository.GetUserByClassId(classId, pageIndex, pageSize);
+        return !users.Items.Any()
+            ? new Response(HttpStatusCode.NoContent, "not found")
+            : new Response(HttpStatusCode.OK, "ok", _mapper.Map<Pagination<UserViewModel>>(users));
     }
 
 
@@ -171,13 +184,19 @@ public class UserService : IUserService
         var token = await _tokenService.GetToken(user.Email);
         if (string.IsNullOrEmpty(token))
             return new Response(HttpStatusCode.Unauthorized, "Invalid password or username");
+        user.Token = token;
+        _unitOfWork.UserRepository.Update(user);
+        await _unitOfWork.SaveChangeAsync();
 
-        LoginResult loginResult = new LoginResult
+        var loginResult = new LoginResult
         {
+            ID = user.Id,
+            firstName = user.firstName,
+            lastName = user.lastName,
             Email = user.Email,
             Password = user.Password,
             DOB = user.DOB,
-            Gender = user.Gender == true ? "male" : "female",
+            Gender = user.Gender ? "male" : "female",
             Role = user.Role.ToString(),
             Status = user.Status.ToString(),
             Token = token
@@ -197,9 +216,10 @@ public class UserService : IUserService
         _mapper.Map(updateUserViewModel, user);
         _unitOfWork.UserRepository.Update(user);
 
-        bool isSuccess = await _unitOfWork.SaveChangeAsync() > 0;
-        if (isSuccess) return new Response(HttpStatusCode.OK, "Update Success!", _mapper.Map<UserViewModel>(user));
-        return new Response(HttpStatusCode.BadRequest, "Not Success");
+        var isSuccess = await _unitOfWork.SaveChangeAsync() > 0;
+        return isSuccess
+            ? new Response(HttpStatusCode.OK, "Update Success!", _mapper.Map<UserViewModel>(user))
+            : new Response(HttpStatusCode.BadRequest, "Not Success");
     }
 
     // UploadFile users

@@ -13,5 +13,5 @@ public interface IUserRepository : IGenericRepository<User>
     Task<Pagination<User>> GetUsersByRole(Role role, int pageNumber = 0, int pageSize = 10);
     Task<Pagination<User>> SearchUserByName(string name, int pageNumber = 0, int pageSize = 10);
     Task<Pagination<User>> FilterUser(FilterUserRequest filterUserRequest,int pageNumber = 0, int pageSize = 10);
-    Task<User> GetUserByPasswordResetToken(string token);
+    Task<User?> GetUserByPasswordResetToken(string token);
 }

@@ -23,5 +23,10 @@ public class AuthenticationController : Controller
         if(!ModelState.IsValid) return new Response(HttpStatusCode.BadRequest,"worng format");
         return await _userService.Login(userLogin);
     }
-
+    
+    [HttpPost]
+    public async Task<Response> Verify(TokenRequest token)
+    {
+        return await _userService.VerifyToken(token);
+    }
 }

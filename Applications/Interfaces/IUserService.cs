@@ -21,4 +21,5 @@ public interface IUserService
     Task<Response> AddUser(CreateUserViewModel createUserViewModel);
     Task<Response> ResetPassword(ResetPasswordRequest request);
     Task<Response> UpdateImage(Guid id, string image);
+    Task<Response> VerifyToken(TokenRequest token);
 }
