@@ -6,7 +6,6 @@ namespace Applications.ViewModels.SyllabusViewModels
     {
         public string SyllabusName { get; set; }
         public string SyllabusCode { get; set; }
-        public double Duration { get; set; }
         public string Level { get; set; }
         public string CourseObjective { get; set; }
         public string Version { get; set; }
