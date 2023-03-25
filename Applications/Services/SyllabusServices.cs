@@ -134,6 +134,23 @@ namespace Applications.Services
             }
             return null;
         }
+
+        public async Task<Response> UpdateStatusOnlyOfSyllabus(Guid SyllabusId, UpdateStatusOnlyOfSyllabus SyllabusDTO)
+        {
+            var syllabus = await _unitOfWork.SyllabusRepository.GetByIdAsync(SyllabusId);
+            if(syllabus != null)
+            {
+                _mapper.Map(SyllabusDTO, syllabus);
+                _unitOfWork.SyllabusRepository.Update(syllabus);
+                var isSuccess = await _unitOfWork.SaveChangeAsync() > 0;
+                if(isSuccess)
+                {
+                    return new Response(HttpStatusCode.OK, "update success");
+                }   
+            }
+            return new Response(HttpStatusCode.BadRequest, "Update failed");
+        }
+
         public async Task<SyllabusModuleViewModel> RemoveSyllabusModule(Guid SyllabusId, Guid ModuleId)
         {
             var moduleOjb = await _unitOfWork.SyllabusModuleRepository.GetSyllabusModule(SyllabusId, ModuleId);

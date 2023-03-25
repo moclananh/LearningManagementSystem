@@ -107,6 +107,7 @@ namespace Infrastructures.Mappers
             CreateMap<UnitCreate, Unit>().ReverseMap();
             CreateMap<ModuleCreate, Module>().ReverseMap();
             CreateMap<CreateSyllabusDetailModel, Syllabus>().ReverseMap();
+            CreateMap<UpdateStatusOnlyOfSyllabus, Syllabus>().ReverseMap();
             /* pagination */
             CreateMap(typeof(Pagination<>), typeof(Pagination<>));
             CreateMap<AbsentRequestViewModel, AbsentRequest>().ReverseMap();

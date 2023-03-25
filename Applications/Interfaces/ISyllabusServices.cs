@@ -21,5 +21,6 @@ namespace Applications.Interfaces
         public Task<Response> GetSyllabusDetails(Guid syllabusId);
         public Task<Response> GetAllSyllabusDetail(int pageNumber = 0, int pageSize = 10);
         public Task<Response> GetSyllabusByCreationDate(DateTime startDate, DateTime endDate, int pageNumber = 0, int pageSize = 10);
+        public Task<Response> UpdateStatusOnlyOfSyllabus(Guid SyllabusId, UpdateStatusOnlyOfSyllabus SyllabusDTO);
     }
 }

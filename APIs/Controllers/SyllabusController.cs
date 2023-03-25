@@ -64,6 +64,9 @@ namespace APIs.Controllers
             return Ok("Update Fail, Invalid Input Information");
         }
 
+        [HttpPatch("UpdateStatusOnlyOfSyllabus/{SyllabusId}"), Authorize(policy: "AuthUser")]
+        public async Task<Response> UpdateStatusOnlyOfSyllabus(Guid SyllabusId, UpdateStatusOnlyOfSyllabus SyllabusModel) => await _syllabusServices.UpdateStatusOnlyOfSyllabus(SyllabusId, SyllabusModel);
+
         /* [HttpGet("GetAllSyllabus")]
          public async Task<Response> GetAllSyllabus(int pageNumber = 0, int pageSize = 10) => await _syllabusServices.GetAllSyllabus(pageNumber, pageSize);*/
 
