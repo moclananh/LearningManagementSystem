@@ -988,6 +988,9 @@ namespace Infrastructures.Migrations
                     b.Property<double?>("assignmentCriteria")
                         .HasColumnType("float");
 
+                    b.Property<double?>("finalCriteria")
+                        .HasColumnType("float");
+
                     b.Property<double?>("finalPracticalCriteria")
                         .HasColumnType("float");
 

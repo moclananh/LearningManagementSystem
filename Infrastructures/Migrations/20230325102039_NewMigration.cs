@@ -105,6 +105,7 @@ namespace Infrastructures.Migrations
                     trainingDeliveryPrinciple = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     quizCriteria = table.Column<double>(type: "float", nullable: true),
                     assignmentCriteria = table.Column<double>(type: "float", nullable: true),
+                    finalCriteria = table.Column<double>(type: "float", nullable: true),
                     finalTheoryCriteria = table.Column<double>(type: "float", nullable: true),
                     finalPracticalCriteria = table.Column<double>(type: "float", nullable: true),
                     passingGPA = table.Column<double>(type: "float", nullable: true),

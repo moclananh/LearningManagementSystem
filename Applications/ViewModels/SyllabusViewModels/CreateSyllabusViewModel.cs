@@ -14,6 +14,7 @@ namespace Applications.ViewModels.SyllabusViewModels
         public string? trainingDeliveryPrinciple { get; set; }
         public double? quizCriteria { get; set; }
         public double? assignmentCriteria { get; set; }
+        public double? finalCriteria { get; set; }
         public double? finalTheoryCriteria { get; set; }
         public double? finalPracticalCriteria { get; set; }
         public double? passingGPA { get; set; }

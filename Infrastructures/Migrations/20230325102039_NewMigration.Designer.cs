@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructures.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20230325092038_NewMigration")]
+    [Migration("20230325102039_NewMigration")]
     partial class NewMigration
     {
         /// <inheritdoc />
@@ -989,6 +989,9 @@ namespace Infrastructures.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<double?>("assignmentCriteria")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("finalCriteria")
                         .HasColumnType("float");
 
                     b.Property<double?>("finalPracticalCriteria")
