@@ -5,7 +5,7 @@ namespace Applications.ViewModels.ModuleViewModels
     public class ModuleViewModels
     {
         public Guid Id { get; set; }
-        public string ModuleName { get; set; }
+        public string? ModuleName { get; set; }
         public Status Status { get; set; }
         public DateTime CreationDate { get; set; }
         public string? CreatedBy { get; set; }

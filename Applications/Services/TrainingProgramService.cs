@@ -125,6 +125,21 @@ namespace Applications.Services
             return null;
         }
 
+        public async Task<Response> UpdateStatusOnlyOfTrainingPrpgram(Guid TrainningProgramId, UpdateStatusOnlyOfTrainingProgram trainingProgramDTO)
+        {
+            var trainingProgram = await _unitOfWork.TrainingProgramRepository.GetByIdAsync(TrainningProgramId);
+            if (trainingProgram != null)
+            {
+                _mapper.Map(trainingProgramDTO, trainingProgram);
+                _unitOfWork.TrainingProgramRepository.Update(trainingProgram);
+                var isSuccess = await _unitOfWork.SaveChangeAsync() > 0;
+                if (isSuccess)
+                {
+                    return new Response(HttpStatusCode.OK, "update success");
+                }
+            }
+            return new Response(HttpStatusCode.BadRequest, "Update failed");
+        }
         public async Task<Response> ViewAllTrainingProgramAsync(int pageIndex = 0, int pageSize = 10)
         {
             var TrainingPrograms = await _unitOfWork.TrainingProgramRepository.ToPagination(pageIndex, pageSize);

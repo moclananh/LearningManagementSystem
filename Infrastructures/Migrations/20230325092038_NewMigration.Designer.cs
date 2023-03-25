@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructures.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20230324095431_NewMigration")]
+    [Migration("20230325092038_NewMigration")]
     partial class NewMigration
     {
         /// <inheritdoc />
@@ -624,7 +624,6 @@ namespace Infrastructures.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("ModuleName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid?>("ReviewBy")

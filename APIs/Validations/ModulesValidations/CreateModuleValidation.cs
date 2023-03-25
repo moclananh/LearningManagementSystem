@@ -7,7 +7,6 @@ namespace APIs.Validations.ModulesValidations
     {
         public CreateModuleValidation()
         {
-            RuleFor(x => x.ModuleName).NotEmpty().MaximumLength(100);
         }
     }
 }

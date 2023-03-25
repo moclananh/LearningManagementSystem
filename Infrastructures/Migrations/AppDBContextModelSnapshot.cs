@@ -621,7 +621,6 @@ namespace Infrastructures.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("ModuleName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid?>("ReviewBy")

@@ -25,7 +25,7 @@ namespace APIs.Controllers
             _validatorUpdate = validatorUpdate;
         }
 
-        [HttpPost("CreateTrainingProgram"), /*Authorize(policy: "AuthUser")*/]
+        [HttpPost("CreateTrainingProgram"), Authorize(policy: "AuthUser")]
         public async Task<Response> CreateTrainingProgram(CreateTrainingProgramViewModel CreateTrainingProgram)
         {
             if (ModelState.IsValid)
@@ -58,6 +58,9 @@ namespace APIs.Controllers
             }
             return BadRequest("Update TrainingProgram Fail");
         }
+
+        [HttpPatch("UpdateStatusOnlyOfTraininigProgram/{TrainingProgramId}"), Authorize(policy: "AuthUser")]
+        public async Task<Response> UpdateStatusOnlyOfTraininigProgram(Guid TrainingProgramId, UpdateStatusOnlyOfTrainingProgram trainingProgramModel) => await _trainingProgramService.UpdateStatusOnlyOfTrainingPrpgram(TrainingProgramId, trainingProgramModel);
 
         [HttpGet("GetTrainingProgramDetails/{TrainingProgramId}")]
         public async Task<Response> GetSyllabusDetailById(Guid TrainingProgramId) => await _trainingProgramService.GetTrainingProgramDetails(TrainingProgramId);
