@@ -4,6 +4,7 @@ using Applications.ViewModels.ClassViewModels;
 using Applications.ViewModels.Response;
 using FluentValidation;
 using FluentValidation.Results;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -86,6 +87,9 @@ namespace APIs.Controllers
 
             return BadRequest("Update Class Fail");
         }
+
+        [HttpPatch("UpdateStatusOnlyOfClass/{ClassId}"), Authorize(policy: "AuthUser")]
+        public async Task<Response> UpdateStatusOnlyOfClass(Guid ClassId, UpdateStatusOnlyOfClass classModel) => await _classServices.UpdateStatusOnlyOfClass(ClassId, classModel);
 
         [HttpPost("Class/AddTrainingProgram/{classId}/{trainingProgramId}")]
         public async Task<IActionResult> AddTrainingProgram(Guid classId, Guid trainingProgramId)

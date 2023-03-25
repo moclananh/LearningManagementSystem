@@ -2,9 +2,8 @@
 using Applications.ViewModels.ClassTrainingProgramViewModels;
 using Applications.ViewModels.ClassUserViewModels;
 using Applications.ViewModels.ClassViewModels;
+using Applications.ViewModels.Response;
 using Domain.Entities;
-using Domain.Enum.ClassEnum;
-using Domain.Enum.StatusEnum;
 
 namespace Applications.Interfaces
 {
@@ -25,5 +24,6 @@ namespace Applications.Interfaces
         public Task<Class?> GetClassByClassCode(string classCode);
         public Task<ClassViewModel> ApprovedClass(Guid ClassId);
         public Task<ClassViewModel> AddUserToClass(Guid ClassId, Guid UserId);
+        public Task<Response> UpdateStatusOnlyOfClass(Guid ClassId, UpdateStatusOnlyOfClass ClassDTO);
     }
 }

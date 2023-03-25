@@ -3,11 +3,13 @@ using Applications.Interfaces;
 using Applications.ViewModels.ClassTrainingProgramViewModels;
 using Applications.ViewModels.ClassUserViewModels;
 using Applications.ViewModels.ClassViewModels;
+using Applications.ViewModels.Response;
 using AutoMapper;
 using Domain.Entities;
 using Domain.EntityRelationship;
 using Domain.Enum.RoleEnum;
 using Domain.Enum.StatusEnum;
+using System.Net;
 
 namespace Applications.Services
 {
@@ -384,6 +386,22 @@ namespace Applications.Services
             {
                 throw new ArgumentException("Error from AddUserToClass:" + ex.Message);
             }
+        }
+
+        public async Task<Response> UpdateStatusOnlyOfClass(Guid ClassId, UpdateStatusOnlyOfClass ClassDTO)
+        {
+            var classObj = await _unitOfWork.ClassRepository.GetByIdAsync(ClassId);
+            if (classObj != null)
+            {
+                _mapper.Map(ClassDTO, classObj);
+                _unitOfWork.ClassRepository.Update(classObj);
+                var isSuccess = await _unitOfWork.SaveChangeAsync() > 0;
+                if (isSuccess)
+                {
+                    return new Response(HttpStatusCode.OK, "update success");
+                }
+            }
+            return new Response(HttpStatusCode.BadRequest, "Update failed");
         }
     }
 }
