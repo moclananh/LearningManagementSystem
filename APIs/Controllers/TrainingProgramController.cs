@@ -59,8 +59,8 @@ namespace APIs.Controllers
             return BadRequest("Update TrainingProgram Fail");
         }
 
-        [HttpPatch("UpdateStatusOnlyOfTraininigProgram/{TrainingProgramId}"), Authorize(policy: "AuthUser")]
-        public async Task<Response> UpdateStatusOnlyOfTraininigProgram(Guid TrainingProgramId, UpdateStatusOnlyOfTrainingProgram trainingProgramModel) => await _trainingProgramService.UpdateStatusOnlyOfTrainingPrpgram(TrainingProgramId, trainingProgramModel);
+        [HttpPatch("UpdateStatusOnlyOfTrainingProgram/{TrainingProgramId}"), Authorize(policy: "AuthUser")]
+        public async Task<Response> UpdateStatusOnlyOfTrainingProgram(Guid TrainingProgramId, UpdateStatusOnlyOfTrainingProgram trainingProgramModel) => await _trainingProgramService.UpdateStatusOnlyOfTrainingProgram(TrainingProgramId, trainingProgramModel);
 
         [HttpGet("GetTrainingProgramDetails/{TrainingProgramId}")]
         public async Task<Response> GetSyllabusDetailById(Guid TrainingProgramId) => await _trainingProgramService.GetTrainingProgramDetails(TrainingProgramId);

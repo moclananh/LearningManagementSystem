@@ -2,7 +2,6 @@
 using Applications.Commons;
 using Applications.Interfaces;
 using Applications.ViewModels.Response;
-using Applications.ViewModels.SyllabusViewModels;
 using Applications.ViewModels.TrainingProgramModels;
 using Applications.ViewModels.TrainingProgramSyllabi;
 using AutoMapper;
@@ -125,7 +124,7 @@ namespace Applications.Services
             return null;
         }
 
-        public async Task<Response> UpdateStatusOnlyOfTrainingPrpgram(Guid TrainningProgramId, UpdateStatusOnlyOfTrainingProgram trainingProgramDTO)
+        public async Task<Response> UpdateStatusOnlyOfTrainingProgram(Guid TrainningProgramId, UpdateStatusOnlyOfTrainingProgram trainingProgramDTO)
         {
             var trainingProgram = await _unitOfWork.TrainingProgramRepository.GetByIdAsync(TrainningProgramId);
             if (trainingProgram != null)
