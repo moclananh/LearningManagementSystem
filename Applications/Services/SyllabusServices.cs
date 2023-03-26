@@ -244,71 +244,86 @@ namespace Applications.Services
                 listModule.Add(moduleMap);
 
                 // map Unit
-                foreach (var unit in units.Units)
+                if (units.Units != null)
                 {
-                    // map Quizz
-                    double checkDurationOnEachUnit = unit.Duration;
-                    TotalDurationUnit = checkDurationOnEachUnit;
-                    double checkDurationQuizz = 0;
-                    foreach (var quizzes in unit.Quizzes)
+                    foreach (var unit in units.Units)
                     {
-                        var QuizzMapper = _mapper.Map<Quizz>(quizzes);
-                        QuizzMapper.Unit = _mapper.Map<Unit>(unit);
-                        checkDurationQuizz = checkDurationQuizz + QuizzMapper.Duration;
-                        listQuizz.Add(QuizzMapper);
+                        // map Quizz
+                        double checkDurationOnEachUnit = unit.Duration;
+                        TotalDurationUnit = checkDurationOnEachUnit;
+                        double checkDurationQuizz = 0;
+                        if (unit.Quizzes != null)
+                        {
+                            foreach (var quizzes in unit.Quizzes)
+                            {
+                                var QuizzMapper = _mapper.Map<Quizz>(quizzes);
+                                QuizzMapper.Unit = _mapper.Map<Unit>(unit);
+                                checkDurationQuizz = checkDurationQuizz + QuizzMapper.Duration;
+                                listQuizz.Add(QuizzMapper);
+                            }
+                        }
+                        // map Assignment
+
+                        double CheckDurationAssignment = 0;
+                        if (unit.Assignments != null)
+                        {
+                            foreach (var assignments in unit.Assignments)
+                            {
+                                var AssignmentMapper = _mapper.Map<Assignment>(assignments);
+                                AssignmentMapper.Unit = _mapper.Map<Unit>(unit);
+                                CheckDurationAssignment = CheckDurationAssignment + AssignmentMapper.Duration;
+                                listAssignment.Add(AssignmentMapper);
+                            }
+                        }
+
+                        // map Lecture
+                        double CheckDurationLecture = 0;
+                        if (unit.Lectures != null)
+                        {
+                            foreach (var lectures in unit.Lectures)
+                            {
+                                var LecturesMapper = _mapper.Map<Lecture>(lectures);
+                                LecturesMapper.Unit = _mapper.Map<Unit>(unit);
+                                CheckDurationLecture = CheckDurationLecture + LecturesMapper.Duration;
+                                listLecture.Add(LecturesMapper);
+                            }
+                        }
+
+                        // map Practice
+                        double CheckDurationPractice = 0;
+                        if (unit.Practices != null)
+                        {
+                            foreach (var practices in unit.Practices)
+                            {
+                                var PracticesMapper = _mapper.Map<Practice>(practices);
+                                PracticesMapper.Unit = _mapper.Map<Unit>(unit);
+                                CheckDurationPractice = CheckDurationPractice + PracticesMapper.Duration;
+                                listPractice.Add(PracticesMapper);
+                            }
+                        }
+
+                        double SumCheck = CheckDurationAssignment + CheckDurationPractice + CheckDurationLecture + checkDurationQuizz;
+
+                        if (checkDurationOnEachUnit != SumCheck)
+                        {
+                            return new Response(HttpStatusCode.BadRequest, "Invalid Duration between Unit and it's contain");
+                        }
+
+                        listUnit.Add(_mapper.Map<Unit>(unit));
+                        syllabus.Duration = syllabus.Duration + TotalDurationUnit;
                     }
 
-                    // map Assignment
-                    double CheckDurationAssignment = 0;
-                    foreach (var assignments in unit.Assignments)
+                    // add realtionship for ModuleUnit
+                    foreach (var unit in listUnit)
                     {
-                        var AssignmentMapper = _mapper.Map<Assignment>(assignments);
-                        AssignmentMapper.Unit = _mapper.Map<Unit>(unit);
-                        CheckDurationAssignment = CheckDurationAssignment + AssignmentMapper.Duration;
-                        listAssignment.Add(AssignmentMapper);
+                        var moduleUnit = new ModuleUnit()
+                        {
+                            Module = moduleMap,
+                            Unit = unit
+                        };
+                        // add to list
+                        listModuleUnit.Add(moduleUnit);
                     }
-
-                    // map Lecture
-                    double CheckDurationLecture = 0;
-                    foreach (var lectures in unit.Lectures)
-                    {
-                        var LecturesMapper = _mapper.Map<Lecture>(lectures);
-                        LecturesMapper.Unit = _mapper.Map<Unit>(unit);
-                        CheckDurationLecture = CheckDurationLecture + LecturesMapper.Duration;
-                        listLecture.Add(LecturesMapper);
-                    }
-
-                    // map Practice
-                    double CheckDurationPractice = 0;
-                    foreach (var practices in unit.Practices)
-                    {
-                        var PracticesMapper = _mapper.Map<Practice>(practices);
-                        PracticesMapper.Unit = _mapper.Map<Unit>(unit);
-                        CheckDurationPractice = CheckDurationPractice + PracticesMapper.Duration;
-                        listPractice.Add(PracticesMapper);
-                    }
-
-                    double SumCheck = CheckDurationAssignment + CheckDurationPractice + CheckDurationLecture + checkDurationQuizz;
-
-                    if (checkDurationOnEachUnit != SumCheck)
-                    {
-                        return new Response(HttpStatusCode.BadRequest, "Invalid Duration between Unit and it's contain");
-                    }
-
-                    listUnit.Add(_mapper.Map<Unit>(unit));
-                    syllabus.Duration = syllabus.Duration + TotalDurationUnit;
-                }
-
-                // add realtionship for ModuleUnit
-                foreach (var unit in listUnit)
-                {
-                    var moduleUnit = new ModuleUnit()
-                    {
-                        Module = moduleMap,
-                        Unit = unit
-                    };
-                    // add to list
-                    listModuleUnit.Add(moduleUnit);
                 }
             }
             // add realtionship for SyllabusModule
