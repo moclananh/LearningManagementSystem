@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructures.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20230325102039_NewMigration")]
+    [Migration("20230326093503_NewMigration")]
     partial class NewMigration
     {
         /// <inheritdoc />
@@ -1112,7 +1112,6 @@ namespace Infrastructures.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("UnitCode")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UnitName")
