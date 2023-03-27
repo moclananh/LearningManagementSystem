@@ -1,4 +1,5 @@
-﻿using AutoFixture;
+﻿using Applications.Interfaces;
+using AutoFixture;
 using Domain.Entities;
 using Domain.Tests;
 using FluentAssertions;
@@ -65,6 +66,28 @@ namespace Infrastructures.Tests.Repositories
                                         .ToList();
             //act
             var resultPaging = await _practiceQuestionRepository.GetAllPracticeQuestionByPracticeId(i);
+        }
+
+        [Fact]
+        public async Task GetPracticeQuestionListByCreationDate_ShouldReturnCorrectData()
+        {
+            //arrange
+            var startDate = new DateTime();
+            var endDate = new DateTime();
+            var i = Guid.NewGuid();
+            var practiceQuestionMockdata = _fixture.Build<PracticeQuestion>()
+                                .Without(x => x.Practice)
+                                .With(x => x.PracticeId, i)
+                                .CreateMany(30)
+                                .ToList();
+            await _dbContext.AddRangeAsync(practiceQuestionMockdata);
+            await _dbContext.SaveChangesAsync();
+            var expected = practiceQuestionMockdata.Where(x => x.PracticeId == i && (x.CreationDate >= startDate && x.CreationDate <= endDate)).ToList();
+            //act
+            var resultPaging = await _practiceQuestionRepository.GetPracticeQuestionListByCreationDate(startDate, endDate, i);
+            var result = resultPaging.ToList();
+            //assert
+            result.Should().BeEquivalentTo(expected);
         }
     }
 }
