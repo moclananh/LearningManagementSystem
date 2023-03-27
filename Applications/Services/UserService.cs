@@ -89,7 +89,7 @@ public class UserService : IUserService
             ? new Response(HttpStatusCode.OK, "update success", new { user.Id, user.Email, user.Image })
             : new Response(HttpStatusCode.BadRequest, "not success");
     }
-    
+
     // Verify token login 
     public async Task<Response> VerifyToken(TokenRequest token)
     {
@@ -197,6 +197,7 @@ public class UserService : IUserService
             Password = user.Password,
             DOB = user.DOB,
             Gender = user.Gender ? "male" : "female",
+            Image = user.Image,
             Role = user.Role.ToString(),
             Status = user.Status.ToString(),
             Token = token

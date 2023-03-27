@@ -129,9 +129,10 @@ namespace Infrastructures.Repositories
         {
 
             var result = _dbContext.Syllabi.Include(x => x.SyllabusOutputStandards).ThenInclude(x => x.OutputStandard)
-                                                    .Include(x => x.SyllabusModules).ThenInclude(x => x.Module).ThenInclude(x => x.ModuleUnits).ThenInclude(x => x.Unit).ThenInclude(x => x.Quizzs)
+                                                    .Include(x => x.SyllabusModules).ThenInclude(x => x.Module).ThenInclude(x => x.ModuleUnits).ThenInclude(x => x.Unit).ThenInclude(x => x.Lectures)
                                                     .Include(x => x.SyllabusModules).ThenInclude(x => x.Module).ThenInclude(x => x.ModuleUnits).ThenInclude(x => x.Unit).ThenInclude(x => x.Assignments)
                                                     .Include(x => x.SyllabusModules).ThenInclude(x => x.Module).ThenInclude(x => x.ModuleUnits).ThenInclude(x => x.Unit).ThenInclude(x => x.Practices)
+                                                    .Include(x => x.SyllabusModules).ThenInclude(x => x.Module).ThenInclude(x => x.ModuleUnits).ThenInclude(x => x.Unit).ThenInclude(x => x.Quizzs)
                                                     .Include(x => x.TrainingProgramSyllabi)
                                            .FirstOrDefault(x => x.Id == SyllabusId);
             return result;
