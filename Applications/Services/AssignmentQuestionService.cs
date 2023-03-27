@@ -103,7 +103,7 @@ namespace Applications.Services
             var assignment = await _unitOfWork.AssignmentQuestionRepository.GetAssignmentQuestionListByCreationDate(startDate, endDate, AssignmenId);
             if (assignment.Count() < 1)
             {
-                return new Response(HttpStatusCode.NoContent, "No Practice Question Found");
+                return new Response(HttpStatusCode.NoContent, "Not Found");
             }
             _unitOfWork.AssignmentQuestionRepository.SoftRemoveRange(assignment);
             _unitOfWork.SaveChangeAsync();

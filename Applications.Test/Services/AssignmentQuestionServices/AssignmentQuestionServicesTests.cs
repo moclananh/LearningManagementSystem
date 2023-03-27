@@ -8,6 +8,7 @@ using Domain.Entities;
 using Domain.Tests;
 using FluentAssertions;
 using Moq;
+using System.Net;
 
 namespace Applications.Tests.Services.AssignmentQuestionServices
 {
@@ -97,6 +98,51 @@ namespace Applications.Tests.Services.AssignmentQuestionServices
             var result = await _assignmentQuestionService.GetAssignmentQuestionByAssignmentId(id);
             //assert
             _unitOfWorkMock.Verify(x => x.AssignmentQuestionRepository.GetAllAssignmentQuestionByAssignmentId(id, 0, 10), Times.Once());
+        }
+
+        [Fact]
+        public async Task DeleteAssignmentQuestionByCreationDate_Should_Delete_QuizzQuestions_And_Return_DeleteSucceed()
+        {
+            // Arrange
+            var startDate = new DateTime(2023, 03, 20);
+            var endDate = new DateTime(2023, 03, 22);
+            var assignmentId = Guid.NewGuid();
+            var assignmentQuestionList = new List<AssignmentQuestion>()
+        {
+            new AssignmentQuestion(),
+            new AssignmentQuestion(),
+            new AssignmentQuestion()
+        };
+
+            _unitOfWorkMock.Setup(x => x.AssignmentQuestionRepository.GetAssignmentQuestionListByCreationDate(startDate, endDate, assignmentId)).ReturnsAsync(assignmentQuestionList);
+
+            // Act
+            var result = await _assignmentQuestionService.DeleteAssignmentQuestionByCreationDate(startDate, endDate, assignmentId);
+
+            // Assert
+            _unitOfWorkMock.Verify(x => x.AssignmentQuestionRepository.SoftRemoveRange(assignmentQuestionList), Times.Once);
+            _unitOfWorkMock.Verify(x => x.SaveChangeAsync(), Times.Once);
+            Assert.Equal(HttpStatusCode.OK.ToString(), result.Status);
+            Assert.Equal("Delete Succeed", result.Message);
+        }
+
+        [Fact]
+        public async Task DeleteAssignmentQuestionByCreationDate_Should_Return_NotFound_If_QuizzQuestion_List_Is_Empty()
+        {
+            // Arrange
+            var startDate = new DateTime(2023, 03, 20);
+            var endDate = new DateTime(2023, 03, 22);
+            var assignmentId = Guid.NewGuid();
+            var assignmentQuestionList = new List<AssignmentQuestion>();
+
+            _unitOfWorkMock.Setup(x => x.AssignmentQuestionRepository.GetAssignmentQuestionListByCreationDate(startDate, endDate, assignmentId)).ReturnsAsync(assignmentQuestionList);
+
+            // Act
+            var result = await _assignmentQuestionService.DeleteAssignmentQuestionByCreationDate(startDate, endDate, assignmentId);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.NoContent.ToString(), result.Status);
+            Assert.Equal("Not Found", result.Message);
         }
     }
 }

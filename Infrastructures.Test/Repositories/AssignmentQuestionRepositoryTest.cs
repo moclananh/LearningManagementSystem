@@ -1,5 +1,4 @@
-﻿using Applications.Repositories;
-using AutoFixture;
+﻿using AutoFixture;
 using Domain.Entities;
 using Domain.Tests;
 using FluentAssertions;
@@ -66,10 +65,34 @@ namespace Infrastructures.Tests.Repositories
             await _dbContext.SaveChangesAsync();
             var expected = assignmentQuestionMock.Where(x => x.AssignmentId.Equals(i))
                                         .OrderByDescending(x => x.CreationDate)
-                                        .Take(10)
                                         .ToList();
             //act
             var resultPaging = await _assignmentQuestionRepository.GetAssignmentQuestionListByAssignmentId(i);
+            var result = resultPaging.ToList();
+            //assert
+            result.Should().BeEquivalentTo(expected);
+        }
+
+        [Fact]
+        public async Task GetAssignmentQuestionListByCreationDate_ShouldReturnCorrectData()
+        {
+            //arrange
+            var startDate = new DateTime();
+            var endDate = new DateTime();
+            var i = Guid.NewGuid();
+            var assignmentQuestionMockdata = _fixture.Build<AssignmentQuestion>()
+                                .Without(x => x.Assignment)
+                                .With(x => x.AssignmentId, i)
+                                .CreateMany(30)
+                                .ToList();
+            await _dbContext.AddRangeAsync(assignmentQuestionMockdata);
+            await _dbContext.SaveChangesAsync();
+            var expected = assignmentQuestionMockdata.Where(x => x.AssignmentId == i && (x.CreationDate >= startDate && x.CreationDate <= endDate)).ToList();
+            //act
+            var resultPaging = await _assignmentQuestionRepository.GetAssignmentQuestionListByCreationDate(startDate, endDate, i);
+            var result = resultPaging.ToList();
+            //assert
+            result.Should().BeEquivalentTo(expected);
         }
     }
 }
