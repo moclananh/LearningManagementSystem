@@ -5,6 +5,7 @@ using Moq;
 using ClosedXML.Excel;
 using Domain.Entities;
 using Domain.Tests;
+using System.Net;
 
 namespace Applications.Tests.Services.QuizzQuestionServices
 {
@@ -69,6 +70,51 @@ namespace Applications.Tests.Services.QuizzQuestionServices
             var expectedContent = expectedStream.ToArray();
 
             return expectedContent;
+        }
+
+        [Fact]
+        public async Task DeleteQuizzQuestionByCreationDate_Should_Delete_QuizzQuestions_And_Return_DeleteSucceed()
+        {
+            // Arrange
+            var startDate = new DateTime(2023, 03, 20);
+            var endDate = new DateTime(2023, 03, 22);
+            var quizzId = Guid.NewGuid();
+            var quizzQuestionList = new List<QuizzQuestion>()
+        {
+            new QuizzQuestion(),
+            new QuizzQuestion(),
+            new QuizzQuestion()
+        };
+
+            _unitOfWorkMock.Setup(x => x.QuizzQuestionRepository.GetQuizzQuestionListByCreationDate(startDate, endDate, quizzId)).ReturnsAsync(quizzQuestionList);
+
+            // Act
+            var result = await _quizzQuestionService.DeleteQuizzQuestionByCreationDate(startDate, endDate, quizzId);
+
+            // Assert
+            _unitOfWorkMock.Verify(x => x.QuizzQuestionRepository.SoftRemoveRange(quizzQuestionList), Times.Once);
+            _unitOfWorkMock.Verify(x => x.SaveChangeAsync(), Times.Once);
+            Assert.Equal(HttpStatusCode.OK.ToString(), result.Status);
+            Assert.Equal("Delete Succeed", result.Message);
+        }
+
+        [Fact]
+        public async Task DeleteQuizzQuestionByCreationDate_Should_Return_NotFound_If_QuizzQuestion_List_Is_Empty()
+        {
+            // Arrange
+            var startDate = new DateTime(2023, 03, 20);
+            var endDate = new DateTime(2023, 03, 22);
+            var quizzId = Guid.NewGuid();
+            var quizzQuestionList = new List<QuizzQuestion>();
+
+            _unitOfWorkMock.Setup(x => x.QuizzQuestionRepository.GetQuizzQuestionListByCreationDate(startDate, endDate, quizzId)).ReturnsAsync(quizzQuestionList);
+
+            // Act
+            var result = await _quizzQuestionService.DeleteQuizzQuestionByCreationDate(startDate, endDate, quizzId);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.NoContent.ToString(), result.Status);
+            Assert.Equal("Not Found", result.Message);
         }
     }
 }

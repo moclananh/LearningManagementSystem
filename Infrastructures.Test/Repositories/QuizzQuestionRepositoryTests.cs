@@ -38,5 +38,25 @@ namespace Infrastructures.Tests.Repositories
             //act
             var resultPaging = await _quizzQuestionRepository.GetQuizzQuestionListByQuizzId(i);
         }
+        [Fact]
+        public async Task GetQuizzQuestionListByCreationDate_ShouldReturnCorrectData()
+        {
+            //arrange
+            var startDate = new DateTime();
+            var endDate = new DateTime();
+            var id = Guid.NewGuid();
+            var quizzQuestionMockdata = _fixture.Build<QuizzQuestion>()
+                                                .Without(x => x.Quizz)
+                                                .CreateMany(30)
+                                                .ToList();
+            await _dbContext.AddRangeAsync(quizzQuestionMockdata);
+            await _dbContext.SaveChangesAsync();
+            var expected = quizzQuestionMockdata.Where(x => x.Id == id && (x.CreationDate >= startDate && x.CreationDate <= endDate)).ToList();
+            //act
+            var resultPaging = await _quizzQuestionRepository.GetQuizzQuestionListByCreationDate(startDate, endDate, id);
+            var result = resultPaging.ToList();
+            //assert
+            result.Should().BeEquivalentTo(expected);
+        }
     }
 }
