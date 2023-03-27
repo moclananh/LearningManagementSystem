@@ -678,5 +678,23 @@ namespace Applications.Tests.Services.ClassServices
             //assert
             result.Should().BeNull();
         }
+
+        [Fact]
+        public async Task UpdateStatusOnlyOfClass_ShouldReturnCorrectData()
+        {
+            // Arrange
+            var ClassId = Guid.NewGuid();
+            var updateStatusOnlyOfClass = new UpdateStatusOnlyOfClass { Status = Domain.Enum.StatusEnum.Status.Enable };
+
+            _unitOfWorkMock.Setup(x => x.ClassRepository.GetByIdAsync(ClassId))
+                           .ReturnsAsync(null as Class);
+
+            // Act
+            var result = await _classService.UpdateStatusOnlyOfClass(ClassId, updateStatusOnlyOfClass);
+
+            // Assert
+            _unitOfWorkMock.Verify(x => x.ClassRepository.Update(It.IsAny<Class>()), Times.Never);
+            _unitOfWorkMock.Verify(x => x.SaveChangeAsync(), Times.Never);
+        }
     }
 }

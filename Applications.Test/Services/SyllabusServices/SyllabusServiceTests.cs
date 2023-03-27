@@ -9,6 +9,7 @@ using Domain.EntityRelationship;
 using Domain.Tests;
 using FluentAssertions;
 using Moq;
+using System.Net;
 
 namespace Applications.Tests.Services.SyllabusServices
 {
@@ -514,6 +515,24 @@ namespace Applications.Tests.Services.SyllabusServices
             var result = await _syllabusService.GetSyllabusByCreationDate(startDate, endDate, 0, 10);
             //assert
             _unitOfWorkMock.Verify(s => s.SyllabusRepository.GetSyllabusByCreationDate(startDate, endDate, 0, 10), Times.Once());
+        }
+
+        [Fact]
+        public async Task UpdateStatusOnlyOfSyllabus_ShouldReturnCorrectData()
+        {
+            // Arrange
+            var syllabusId = Guid.NewGuid();
+            var updateStatusOnlyOfSyllabus = new UpdateStatusOnlyOfSyllabus { Status = Domain.Enum.StatusEnum.Status.Enable };
+
+            _unitOfWorkMock.Setup(x => x.SyllabusRepository.GetByIdAsync(syllabusId))
+                           .ReturnsAsync(null as Syllabus);
+
+            // Act
+            var result = await _syllabusService.UpdateStatusOnlyOfSyllabus(syllabusId, updateStatusOnlyOfSyllabus);
+
+            // Assert
+            _unitOfWorkMock.Verify(x => x.SyllabusRepository.Update(It.IsAny<Syllabus>()), Times.Never);
+            _unitOfWorkMock.Verify(x => x.SaveChangeAsync(), Times.Never);
         }
     }
 }

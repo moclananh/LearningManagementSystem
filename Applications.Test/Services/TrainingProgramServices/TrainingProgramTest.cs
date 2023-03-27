@@ -1,13 +1,9 @@
 ﻿using Application.ViewModels.TrainingProgramModels;
 using Applications.Commons;
 using Applications.Interfaces;
-using Applications.Services;
-using Applications.ViewModels.AssignmentViewModels;
-using Applications.ViewModels.SyllabusViewModels;
 using Applications.ViewModels.TrainingProgramModels;
 using Applications.ViewModels.TrainingProgramSyllabi;
 using AutoFixture;
-using DocumentFormat.OpenXml.Wordprocessing;
 using Domain.Entities;
 using Domain.EntityRelationship;
 using Domain.Tests;
@@ -450,6 +446,24 @@ namespace Applications.Tests.Services.TrainingProgramServices
             var result = await _trainingProgramService.GetTrainingProgramDetails(mocks.Id);
             //assert
             _unitOfWorkMock.Verify(x => x.TrainingProgramRepository.GetTrainingProgramDetails(mocks.Id), Times.Once());
+        }
+
+        [Fact]
+        public async Task UpdateStatusOnlyOfTrainingProgram_ShouldReturnCorrectData()
+        {
+            // Arrange
+            var trainingProgramId = Guid.NewGuid();
+            var updateStatusOnlyOfTrainingProgram = new UpdateStatusOnlyOfTrainingProgram { Status = Domain.Enum.StatusEnum.Status.Enable };
+
+            _unitOfWorkMock.Setup(x => x.TrainingProgramRepository.GetByIdAsync(trainingProgramId))
+                           .ReturnsAsync(null as TrainingProgram);
+
+            // Act
+            var result = await _trainingProgramService.UpdateStatusOnlyOfTrainingProgram(trainingProgramId, updateStatusOnlyOfTrainingProgram);
+
+            // Assert
+            _unitOfWorkMock.Verify(x => x.TrainingProgramRepository.Update(It.IsAny<TrainingProgram>()), Times.Never);
+            _unitOfWorkMock.Verify(x => x.SaveChangeAsync(), Times.Never);
         }
     }
 }
