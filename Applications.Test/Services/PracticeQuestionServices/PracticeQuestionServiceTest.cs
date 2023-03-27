@@ -1,13 +1,17 @@
 ﻿using Applications.Commons;
 using Applications.Interfaces;
+using Applications.Repositories;
 using Applications.Services;
 using Applications.ViewModels.PracticeQuestionViewModels;
+using Applications.ViewModels.Response;
 using AutoFixture;
 using ClosedXML.Excel;
 using Domain.Entities;
 using Domain.Tests;
 using FluentAssertions;
+using Microsoft.AspNetCore.Mvc;
 using Moq;
+using System.Net;
 
 namespace Applications.Tests.Services.PracticeQuestionServices
 {
@@ -97,6 +101,56 @@ namespace Applications.Tests.Services.PracticeQuestionServices
             var expectedContent = expectedStream.ToArray();
 
             return expectedContent;
+        }
+
+        [Fact]
+        public async Task DeletePracticeQuestionByCreationDate_WithValidParameters_ShouldReturnFailedResponse()
+        {
+            // Arrange
+            var practiceId = Guid.NewGuid();
+            var PQMocks = _fixture.Build<PracticeQuestion>()
+                                .Without(x => x.Practice)
+                                .With(x => x.PracticeId, practiceId)
+                                .With(x => x.CreationDate, DateTime.Today.Date)
+                                .CreateMany(30);
+            var startDate = DateTime.Today.Date.AddDays(1);
+            var endDate = DateTime.Today.Date.AddDays(10);
+            var PQresult = _mapperConfig.Map<List<PracticeQuestion>>(PQMocks);
+            // Mock the repository and unit of work
+            var mockPracticeQuestionRepository = _unitOfWorkMock.Setup(x => x.PracticeQuestionRepository.GetPracticeQuestionListByCreationDate(startDate, endDate, practiceId))
+                .ReturnsAsync(new List<PracticeQuestion>());
+
+            // Act
+            var result = await _practiceQuestionService.DeletePracticeQuestionByCreationDate(startDate, endDate, practiceId);
+            var expected = new Response(HttpStatusCode.NoContent, "No Practice Question Found");
+
+            // Assert
+            result.Should().BeEquivalentTo(expected);
+        }
+
+        [Fact]
+        public async Task DeletePracticeQuestionByCreationDate_WithValidParameters_ShouldReturnSuccessResponse()
+        {
+            // Arrange
+            var practiceId = Guid.NewGuid();
+            var PQMocks = _fixture.Build<PracticeQuestion>()
+                                .Without(x => x.Practice)
+                                .With(x => x.PracticeId , practiceId)
+                                .With(x => x.CreationDate, DateTime.Today.Date)  
+                                .CreateMany(30);
+            var startDate = DateTime.Today.Date.AddDays(-1);
+            var endDate = DateTime.Today.Date.AddDays(1);
+            var PQresult = _mapperConfig.Map<List<PracticeQuestion>>(PQMocks);
+            // Mock the repository and unit of work
+            var mockPracticeQuestionRepository = _unitOfWorkMock.Setup(x => x.PracticeQuestionRepository.GetPracticeQuestionListByCreationDate(startDate, endDate, practiceId))
+                .ReturnsAsync(PQresult);
+
+            // Act
+            var result = await _practiceQuestionService.DeletePracticeQuestionByCreationDate(startDate, endDate, practiceId);
+            var expected = new Response(HttpStatusCode.OK, "Delete Succeed");
+
+            // Assert
+            result.Should().BeEquivalentTo(expected);
         }
     }
 }
