@@ -56,7 +56,7 @@ public class TokenService : ITokenService
             IsUsed = false,
             IsRevoked = false,
             IssuedAt = DateTime.UtcNow,
-            ExpiredAt = DateTime.UtcNow.AddHours(1)
+            ExpiredAt = DateTime.UtcNow.AddDays(10)
         };
         await _unitOfWork.RefreshTokenRepository.AddAsync(refreshTokenEntity);
         var isSuccess = await _unitOfWork.SaveChangeAsync() > 0;
