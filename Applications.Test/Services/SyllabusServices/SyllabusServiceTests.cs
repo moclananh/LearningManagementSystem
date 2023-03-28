@@ -18,7 +18,7 @@ namespace Applications.Tests.Services.SyllabusServices
         private readonly ISyllabusServices _syllabusService;
         public SyllabusServicesTests()
         {
-            _syllabusService = new Applications.Services.SyllabusServices(_unitOfWorkMock.Object, _mapperConfig);
+            _syllabusService = new Applications.Services.SyllabusServices(_unitOfWorkMock.Object, _mapperConfig, _claimServiceMock.Object);
         }
 
         [Fact]

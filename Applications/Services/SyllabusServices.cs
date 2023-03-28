@@ -1,6 +1,5 @@
 ﻿using Applications.Commons;
 using Applications.Interfaces;
-using Applications.ViewModels.AssignmentViewModels;
 using Applications.ViewModels.Response;
 using Applications.ViewModels.SyllabusModuleViewModel;
 using Applications.ViewModels.SyllabusViewModels;
@@ -17,11 +16,13 @@ namespace Applications.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly IClaimService _claimService;
 
-        public SyllabusServices(IUnitOfWork unitOfWork, IMapper mapper)
+        public SyllabusServices(IUnitOfWork unitOfWork, IMapper mapper, IClaimService claimService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _claimService = claimService;
         }
 
         public async Task<SyllabusModuleViewModel> AddSyllabusModule(Guid SyllabusId, Guid ModuleId)
@@ -150,15 +151,15 @@ namespace Applications.Services
         public async Task<Response> UpdateStatusOnlyOfSyllabus(Guid SyllabusId, UpdateStatusOnlyOfSyllabus SyllabusDTO)
         {
             var syllabus = await _unitOfWork.SyllabusRepository.GetByIdAsync(SyllabusId);
-            if(syllabus != null)
+            if (syllabus != null)
             {
                 _mapper.Map(SyllabusDTO, syllabus);
                 _unitOfWork.SyllabusRepository.Update(syllabus);
                 var isSuccess = await _unitOfWork.SaveChangeAsync() > 0;
-                if(isSuccess)
+                if (isSuccess)
                 {
                     return new Response(HttpStatusCode.OK, "update success");
-                }   
+                }
             }
             return new Response(HttpStatusCode.BadRequest, "Update failed");
         }
@@ -247,125 +248,136 @@ namespace Applications.Services
             var listAssignment = new List<Assignment>();
             var listLecture = new List<Lecture>();
             var listPractice = new List<Practice>();
-            double TotalDurationUnit = 0;
+            double TotalDurationUnit;
             // loop for mapping and add entity
-            foreach (var units in SyllabusDTO.Modules)
+            if (SyllabusDTO.Modules != null)
             {
-                // map Module
-                var moduleMap = _mapper.Map<Module>(units);
-                listModule.Add(moduleMap);
 
-                // map Unit
-                if (units.Units != null)
+                foreach (var module in SyllabusDTO.Modules)
                 {
-                    foreach (var unit in units.Units)
+                    // map Unit
+                    if (module.Units != null)
                     {
-                        // map Quizz
-                        double checkDurationOnEachUnit = unit.Duration;
-                        TotalDurationUnit = checkDurationOnEachUnit;
-                        double checkDurationQuizz = 0;
-                        if (unit.Quizzes != null)
+                        foreach (var unit in module.Units)
                         {
-                            foreach (var quizzes in unit.Quizzes)
+                            // map Quizz
+                            double checkDurationOnEachUnit = unit.Duration;
+                            TotalDurationUnit = checkDurationOnEachUnit;
+                            double checkDurationQuizz = 0;
+                            var unitmapper = _mapper.Map<Unit>(unit);
+                            if (unit.Quizzs != null)
                             {
-                                var QuizzMapper = _mapper.Map<Quizz>(quizzes);
-                                QuizzMapper.Unit = _mapper.Map<Unit>(unit);
-                                checkDurationQuizz = checkDurationQuizz + QuizzMapper.Duration;
-                                listQuizz.Add(QuizzMapper);
+                                foreach (var quizzes in unit.Quizzs)
+                                {
+                                    var QuizzMapper = _mapper.Map<Quizz>(quizzes);
+                                    QuizzMapper.Unit = unitmapper;
+                                    checkDurationQuizz = checkDurationQuizz + QuizzMapper.Duration;
+                                    QuizzMapper.CreationDate = DateTime.Now;
+                                    QuizzMapper.CreatedBy = _claimService.GetCurrentUserId;
+                                }
                             }
-                        }
-                        // map Assignment
-
-                        double CheckDurationAssignment = 0;
-                        if (unit.Assignments != null)
-                        {
-                            foreach (var assignments in unit.Assignments)
+                            // map Assignment
+                            double CheckDurationAssignment = 0;
+                            if (unit.Assignments != null)
                             {
-                                var AssignmentMapper = _mapper.Map<Assignment>(assignments);
-                                AssignmentMapper.Unit = _mapper.Map<Unit>(unit);
-                                CheckDurationAssignment = CheckDurationAssignment + AssignmentMapper.Duration;
-                                listAssignment.Add(AssignmentMapper);
+                                foreach (var assignments in unit.Assignments)
+                                {
+                                    var AssignmentMapper = _mapper.Map<Assignment>(assignments);
+                                    AssignmentMapper.Unit = unitmapper;
+                                    CheckDurationAssignment = CheckDurationAssignment + AssignmentMapper.Duration;
+                                    AssignmentMapper.CreationDate = DateTime.Now;
+                                    AssignmentMapper.CreatedBy = _claimService.GetCurrentUserId;
+                                }
                             }
-                        }
 
-                        // map Lecture
-                        double CheckDurationLecture = 0;
-                        if (unit.Lectures != null)
-                        {
-                            foreach (var lectures in unit.Lectures)
+                            // map Lecture
+                            double CheckDurationLecture = 0;
+                            if (unit.Lectures != null)
                             {
-                                var LecturesMapper = _mapper.Map<Lecture>(lectures);
-                                LecturesMapper.Unit = _mapper.Map<Unit>(unit);
-                                CheckDurationLecture = CheckDurationLecture + LecturesMapper.Duration;
-                                listLecture.Add(LecturesMapper);
+                                foreach (var lectures in unit.Lectures)
+                                {
+                                    var LecturesMapper = _mapper.Map<Lecture>(lectures);
+                                    LecturesMapper.Unit = unitmapper;
+                                    CheckDurationLecture = CheckDurationLecture + LecturesMapper.Duration;
+                                    LecturesMapper.CreationDate = DateTime.Now;
+                                    LecturesMapper.CreatedBy = _claimService.GetCurrentUserId;
+                                }
                             }
-                        }
 
-                        // map Practice
-                        double CheckDurationPractice = 0;
-                        if (unit.Practices != null)
-                        {
-                            foreach (var practices in unit.Practices)
+                            // map Practice
+                            double CheckDurationPractice = 0;
+                            if (unit.Practices != null)
                             {
-                                var PracticesMapper = _mapper.Map<Practice>(practices);
-                                PracticesMapper.Unit = _mapper.Map<Unit>(unit);
-                                CheckDurationPractice = CheckDurationPractice + PracticesMapper.Duration;
-                                listPractice.Add(PracticesMapper);
+                                foreach (var practices in unit.Practices)
+                                {
+                                    var PracticesMapper = _mapper.Map<Practice>(practices);
+                                    PracticesMapper.Unit = unitmapper;
+                                    CheckDurationPractice = CheckDurationPractice + PracticesMapper.Duration;
+                                    PracticesMapper.CreationDate = DateTime.Now;
+                                    PracticesMapper.CreatedBy = _claimService.GetCurrentUserId;
+                                }
                             }
+
+                            double SumCheck = CheckDurationAssignment + CheckDurationPractice + CheckDurationLecture + checkDurationQuizz;
+
+                            if (checkDurationOnEachUnit != SumCheck)
+                            {
+                                return new Response(HttpStatusCode.BadRequest, "Invalid Duration between Unit and it's contain");
+                            }
+
+                            listUnit.Add(unitmapper);
+                            syllabus.Duration = syllabus.Duration + TotalDurationUnit;
                         }
-
-                        double SumCheck = CheckDurationAssignment + CheckDurationPractice + CheckDurationLecture + checkDurationQuizz;
-
-                        if (checkDurationOnEachUnit != SumCheck)
-                        {
-                            return new Response(HttpStatusCode.BadRequest, "Invalid Duration between Unit and it's contain");
-                        }
-
-                        listUnit.Add(_mapper.Map<Unit>(unit));
-                        syllabus.Duration = syllabus.Duration + TotalDurationUnit;
                     }
 
-                    // add realtionship for ModuleUnit
+                    // map Module
+                    var moduleMap = _mapper.Map<Module>(module);
+                    listModule.Add(moduleMap);
+
+                    //// add realtionship for ModuleUnit
                     foreach (var unit in listUnit)
                     {
                         var moduleUnit = new ModuleUnit()
                         {
                             Module = moduleMap,
-                            Unit = unit
+                            Unit = unit,
+                            CreationDate = DateTime.Now,
+                            CreatedBy = _claimService.GetCurrentUserId,
                         };
                         // add to list
                         listModuleUnit.Add(moduleUnit);
                     }
+
+                    moduleMap.ModuleUnits = new List<ModuleUnit>();
+                    moduleMap.ModuleUnits = listModuleUnit;
+
                 }
-            }
-            // add realtionship for SyllabusModule
-            foreach (var item in listModule)
-            {
-                var syllabusModule = new SyllabusModule()
+                // add realtionship for SyllabusModule
+                foreach (var item in listModule)
                 {
-                    Syllabus = syllabus,
-                    Module = item,
-                };
-                listModuleSylla.Add(syllabusModule);
-            }
+                    var syllabusModule = new SyllabusModule()
+                    {
+                        Syllabus = syllabus,
+                        Module = item,
+                        CreationDate = DateTime.Now,
+                        CreatedBy = _claimService.GetCurrentUserId,
+                    };
+                    listModuleSylla.Add(syllabusModule);
+                }
+                syllabus.SyllabusModules = new List<SyllabusModule>();
+                syllabus.SyllabusModules = listModuleSylla;
+                await _unitOfWork.UnitRepository.AddRangeAsync(listUnit);
+                await _unitOfWork.ModuleRepository.AddRangeAsync(listModule);
+                await _unitOfWork.SyllabusRepository.AddAsync(syllabus);
+                var Succeed = await _unitOfWork.SaveChangeAsync() > 0;
 
-            await _unitOfWork.LectureRepository.AddRangeAsync(listLecture);
-            await _unitOfWork.AssignmentRepository.AddRangeAsync(listAssignment);
-            await _unitOfWork.PracticeRepository.AddRangeAsync(listPractice);
-            await _unitOfWork.QuizzRepository.AddRangeAsync(listQuizz);
-            await _unitOfWork.UnitRepository.AddRangeAsync(listUnit);
-            await _unitOfWork.ModuleUnitRepository.AddRangeAsync(listModuleUnit);
-            await _unitOfWork.SyllabusRepository.AddAsync(syllabus);
-            await _unitOfWork.ModuleRepository.AddRangeAsync(listModule);
-            await _unitOfWork.SyllabusModuleRepository.AddRangeAsync(listModuleSylla);
-
-            var Succeed = await _unitOfWork.SaveChangeAsync() > 0;
-            if (Succeed)
-            {
-                return new Response(HttpStatusCode.OK, "Create succeed", _mapper.Map<CreateSyllabusDetailModel>(syllabus));
+                if (Succeed)
+                {
+                    return new Response(HttpStatusCode.OK, "Create succeed", _mapper.Map<CreateSyllabusDetailModel>(syllabus));
+                }
+                return new Response(HttpStatusCode.BadRequest, "Create Failed");
             }
             return new Response(HttpStatusCode.BadRequest, "Create Failed");
-
         }
     }
 }
