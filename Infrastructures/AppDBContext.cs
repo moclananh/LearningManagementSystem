@@ -39,6 +39,7 @@ namespace Infrastructures
         public DbSet<SyllabusOutputStandard> SyllabusOutputStandard { get; set; }
         public DbSet<TrainingProgramSyllabus> TrainingProgramSyllabi { get; set; }
         public DbSet<UserAuditPlan> UserAuditPlan { get; set; }
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());

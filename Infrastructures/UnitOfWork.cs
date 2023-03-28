@@ -34,6 +34,7 @@ namespace Infrastructures
         private readonly IQuizzQuestionRepository _quizzQuestionRepository;
         private readonly ISyllabusModuleRepository _syllabusModuleRepository;
         private readonly IAbsentRequestRepository _absentRequestRepository;
+        private readonly IRefreshTokenRepository _refreshTokenRepository;
 
         public UnitOfWork(AppDBContext appDBContext,
             IClassRepository classRepository,
@@ -60,7 +61,8 @@ namespace Infrastructures
             IQuizzQuestionRepository quizzQuestionRepository,
             ISyllabusModuleRepository syllabusModuleRepository,
             IAttendanceRepository attendanceRepository,
-            IAbsentRequestRepository absentRequestRepository)
+            IAbsentRequestRepository absentRequestRepository,
+            IRefreshTokenRepository RefreshTokenRepository)
 
         {
             _appDBContext = appDBContext;
@@ -89,6 +91,7 @@ namespace Infrastructures
             _syllabusModuleRepository = syllabusModuleRepository;
             _attendanceRepository = attendanceRepository;
             _absentRequestRepository = absentRequestRepository;
+            _refreshTokenRepository = RefreshTokenRepository;
         }
         public IClassRepository ClassRepository => _classRepository;
         public IPracticeRepository PracticeRepository => _practiceRepository;
@@ -115,6 +118,7 @@ namespace Infrastructures
         public IQuizzQuestionRepository QuizzQuestionRepository => _quizzQuestionRepository;
         public ISyllabusModuleRepository SyllabusModuleRepository => _syllabusModuleRepository;
         public IAbsentRequestRepository AbsentRequestRepository => _absentRequestRepository;
+        public IRefreshTokenRepository RefreshTokenRepository => _refreshTokenRepository;
         public async Task<int> SaveChangeAsync() => await _appDBContext.SaveChangesAsync();
     }
 }

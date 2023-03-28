@@ -59,6 +59,7 @@ namespace Domain.Tests
         protected readonly Mock<IUserRepository> _userRepositoryMock;
         protected readonly Mock<IAuditResultRepository> _auditResultRepositoryMock;
         protected readonly Mock<IPracticeRepository> _practiceRepositoryMock;
+        protected readonly Mock<IRefreshTokenRepository> _refreshTokenRepositoryMock;
         protected readonly AppDBContext _dbContext;
 
         public SetupTest()
@@ -109,7 +110,8 @@ namespace Domain.Tests
             _trainingProgramRepositoryMock = new Mock<ITrainingProgramRepository>();
             _unitRepositoryMock = new Mock<IUnitRepository>();
             _userRepositoryMock = new Mock<IUserRepository>();
-            _practiceRepositoryMock= new Mock<IPracticeRepository>();   
+            _practiceRepositoryMock= new Mock<IPracticeRepository>();
+            _refreshTokenRepositoryMock = new Mock<IRefreshTokenRepository>();
 
             var options = new DbContextOptionsBuilder<AppDBContext>()
                 .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())

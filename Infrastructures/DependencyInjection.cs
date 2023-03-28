@@ -75,6 +75,7 @@ namespace Infrastructures
             services.AddScoped<IAttendanceService, AttendanceService>();
             services.AddScoped<IAbsentRequestServices, AbsentRequestService>();
             services.AddScoped<IAbsentRequestRepository, AbsentRequestRepository>();
+            services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
             return services;
         }
     }

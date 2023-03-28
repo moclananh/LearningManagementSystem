@@ -4,6 +4,9 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Applications.Utils;
+using Applications.ViewModels.TokenViewModels;
+using Domain.Entities;
 
 namespace APIs.Services;
 
@@ -17,7 +20,7 @@ public class TokenService : ITokenService
         _configuration = configuration;
     }
 
-    public async Task<string> GetToken(string email)
+    public async Task<TokenModel> GetToken(string email)
     {
         var user = (await _unitOfWork.UserRepository.Find(x => x.Email == email)).FirstOrDefault();
 
@@ -30,6 +33,7 @@ public class TokenService : ITokenService
         {
             new Claim("userID",user.Id.ToString()),
             new Claim(ClaimTypes.Email,user.Email),
+            new Claim(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString()),
             new Claim(ClaimTypes.Role, user.Role.ToString())
         };
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("Jwt:SecretKey").Value!));
@@ -40,7 +44,36 @@ public class TokenService : ITokenService
             expires: DateTime.UtcNow.AddMinutes(30),
             signingCredentials: credentials
             );
+        
+        var accessToken = new JwtSecurityTokenHandler().WriteToken(token);
+        var refreshToken = StringUtils.RandomString();
+        var refreshTokenEntity = new RefreshToken()
+        {
+            Id = Guid.NewGuid(),
+            JwtId = token.Id,
+            UserId = user.Id,
+            Token = refreshToken,
+            IsUsed = false,
+            IsRevoked = false,
+            IssuedAt = DateTime.UtcNow,
+            ExpiredAt = DateTime.UtcNow.AddHours(1)
+        };
+        await _unitOfWork.RefreshTokenRepository.AddAsync(refreshTokenEntity);
+        var isSuccess = await _unitOfWork.SaveChangeAsync() > 0;
+        if (isSuccess)
+        {
+            return new TokenModel
+            {
+                AccsessToken = accessToken,
+                RefreshToken = refreshToken
+            };
+        }
 
-        return new JwtSecurityTokenHandler().WriteToken(token);
+        return new TokenModel
+        {
+            AccsessToken = string.Empty,
+            RefreshToken = string.Empty
+        };
     }
+    
 }

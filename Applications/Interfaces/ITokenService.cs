@@ -1,6 +1,8 @@
-﻿namespace Applications.Interfaces;
+﻿using Applications.ViewModels.TokenViewModels;
+
+namespace Applications.Interfaces;
 
 public interface ITokenService
 {
-    Task<string> GetToken(string email);
+    Task<TokenModel> GetToken(string email);
 }

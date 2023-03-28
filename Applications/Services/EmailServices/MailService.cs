@@ -31,7 +31,7 @@ public class MailService : IMailService
         if (user == null) return null;
 
         // check 
-        string code = await _tokenService.GetToken(user.Email);
+        string code = StringUtils.RandomString();
         user.PasswordResetToken = code;
         user.ResetTokenExpires = DateTime.Now.AddMinutes(15);
         await _unitOfWork.SaveChangeAsync();

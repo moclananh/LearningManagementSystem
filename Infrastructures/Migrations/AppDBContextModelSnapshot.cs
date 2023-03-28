@@ -923,6 +923,42 @@ namespace Infrastructures.Migrations
                     b.ToTable("QuizzQuestions");
                 });
 
+            modelBuilder.Entity("Domain.Entities.RefreshToken", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("ExpiredAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsRevoked")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsUsed")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("IssuedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("JwtId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("RefreshTokens");
+                });
+
             modelBuilder.Entity("Domain.Entities.Syllabus", b =>
                 {
                     b.Property<Guid>("Id")
@@ -1680,6 +1716,17 @@ namespace Infrastructures.Migrations
                         .IsRequired();
 
                     b.Navigation("Quizz");
+                });
+
+            modelBuilder.Entity("Domain.Entities.RefreshToken", b =>
+                {
+                    b.HasOne("Domain.Entities.User", "user")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("user");
                 });
 
             modelBuilder.Entity("Domain.EntityRelationship.ClassTrainingProgram", b =>

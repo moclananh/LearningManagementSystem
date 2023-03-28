@@ -1,8 +1,10 @@
-﻿using Applications.Interfaces;
+﻿using System.IdentityModel.Tokens.Jwt;
+using Applications.Interfaces;
 using Applications.ViewModels.Response;
 using Applications.ViewModels.UserViewModels;
 using AutoMapper;
 using System.Net;
+using System.Text;
 using Domain.Entities;
 using Microsoft.AspNetCore.Http;
 using OfficeOpenXml;
@@ -10,7 +12,9 @@ using Domain.Enum.StatusEnum;
 using Domain.Enum.RoleEnum;
 using Applications.Commons;
 using Applications.Utils;
+using Applications.ViewModels.TokenViewModels;
 using Domain.Enum.LevelEnum;
+using Microsoft.IdentityModel.Tokens;
 
 
 namespace Applications.Services;
@@ -101,6 +105,77 @@ public class UserService : IUserService
         return new Response(HttpStatusCode.OK, "success!!");
     }
 
+    // Refresh token
+    public async Task<Response> GetRefreshToken(TokenModel oldTokenModel)
+    {
+        try
+        {
+            var jwtTokenHandler = new JwtSecurityTokenHandler();
+            var tokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("123124321213124322")), // đoạn này đang ma giáo 
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                ValidateLifetime = false,
+                ClockSkew = TimeSpan.Zero
+            };
+            // 1
+            var tokenInVerification = jwtTokenHandler.ValidateToken(oldTokenModel.AccsessToken,tokenValidationParameters, out var validatedToken);
+            // 2
+            if (validatedToken is JwtSecurityToken jwtSecurityToken)
+            {
+                var result = jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase);
+                if (!result)
+                {
+                    return new Response(HttpStatusCode.Conflict, "Invalid Token");
+                }
+            }
+            //3
+            var utcExpireDate = long.Parse(tokenInVerification.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Exp).Value);
+            var expireDate = ConvertUnixTimeToDateTime(utcExpireDate);
+            if (expireDate > DateTime.UtcNow)
+            {
+                return new Response(HttpStatusCode.Conflict, "Access token has not yet expired");
+            }
+            //4
+            var storeToken = (await _unitOfWork.RefreshTokenRepository.Find(x => x.Token == oldTokenModel.RefreshToken)).FirstOrDefault();
+            if (storeToken == null)
+            {
+                return new Response(HttpStatusCode.Conflict, "Refresh token does not exist");
+            }
+            //5
+            if (storeToken.IsUsed)
+            {
+                return new Response(HttpStatusCode.Conflict, "Refresh token has been used");
+            }
+            //6
+            if (storeToken.IsRevoked)
+            {
+                return new Response(HttpStatusCode.Conflict, "Refresh token has been revoked");
+            }
+
+            storeToken.IsRevoked = true;
+            storeToken.IsUsed = true;
+            _unitOfWork.RefreshTokenRepository.Update(storeToken);
+            var isSuccess = await _unitOfWork.SaveChangeAsync() > 0;
+            if (!isSuccess) return new Response(HttpStatusCode.Conflict, "update faild");
+            var user = await _unitOfWork.UserRepository.GetByIdAsync(storeToken.UserId);
+            var token = await _tokenService.GetToken(user.Email);
+            return new Response(HttpStatusCode.OK, "success!",token);
+        }
+        catch (Exception e)
+        {
+            return new Response(HttpStatusCode.BadRequest, "Something went wrong");
+        }
+    }
+    private DateTime ConvertUnixTimeToDateTime(long utcExpireDate)
+    {
+        var dateTimeInterval = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+        dateTimeInterval.AddSeconds(utcExpireDate).ToUniversalTime();
+        return dateTimeInterval;
+    }
+
     // Search Users by Name
     public async Task<Pagination<UserViewModel>> SearchUserByName(string name, int pageIndex = 0, int pageSize = 10)
     {
@@ -182,9 +257,10 @@ public class UserService : IUserService
         if (!StringUtils.Verify(userLoginViewModel.Password, user.Password))
             return new Response(HttpStatusCode.BadRequest, "Invalid Password");
         var token = await _tokenService.GetToken(user.Email);
-        if (string.IsNullOrEmpty(token))
+        if (string.IsNullOrEmpty(token.AccsessToken))
             return new Response(HttpStatusCode.Unauthorized, "Invalid password or username");
-        user.Token = token;
+        user.Token = token.AccsessToken;
+        
         _unitOfWork.UserRepository.Update(user);
         await _unitOfWork.SaveChangeAsync();
 
@@ -194,13 +270,9 @@ public class UserService : IUserService
             firstName = user.firstName,
             lastName = user.lastName,
             Email = user.Email,
-            Password = user.Password,
-            DOB = user.DOB,
-            Gender = user.Gender ? "male" : "female",
             Image = user.Image,
-            Role = user.Role.ToString(),
-            Status = user.Status.ToString(),
-            Token = token
+            AccsessToken = token.AccsessToken,
+            RefreshToken = token.RefreshToken
         };
         return new Response(HttpStatusCode.OK, "authorized", loginResult);
     }

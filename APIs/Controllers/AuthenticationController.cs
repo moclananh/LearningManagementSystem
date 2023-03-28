@@ -3,6 +3,7 @@ using Applications.ViewModels.Response;
 using Applications.ViewModels.UserViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using Applications.ViewModels.TokenViewModels;
 
 namespace APIs.Controllers;
 
@@ -28,5 +29,11 @@ public class AuthenticationController : Controller
     public async Task<Response> Verify(TokenRequest token)
     {
         return await _userService.VerifyToken(token);
+    }
+
+    [HttpPost("RefreshToken")]
+    public async Task<Response> GetRefreshToken(TokenModel oldToken)
+    {
+        return await _userService.GetRefreshToken(oldToken);
     }
 }

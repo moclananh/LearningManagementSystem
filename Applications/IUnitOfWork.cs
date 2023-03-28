@@ -32,6 +32,7 @@ namespace Applications
         public ISyllabusModuleRepository SyllabusModuleRepository { get; }
         public IAttendanceRepository AttendanceRepository { get; }
         public IAbsentRequestRepository AbsentRequestRepository { get; }
+        public IRefreshTokenRepository RefreshTokenRepository { get; }
 
         public Task<int> SaveChangeAsync();
     }

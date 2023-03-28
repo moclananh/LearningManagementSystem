@@ -5,6 +5,7 @@ using AutoFixture;
 using Domain.Entities;
 using Domain.Tests;
 using FluentAssertions;
+using Microsoft.Extensions.Configuration;
 using Moq;
 
 namespace Applications.Tests.Services.UserSevices;

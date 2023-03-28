@@ -10,7 +10,9 @@ public static class StringUtils
     public static bool Verify(string password, string passwordHash) => BCrypt.Net.BCrypt.Verify(password, passwordHash);
     public static string RandomString()
     {
-        var passwordBuilder = new StringBuilder();
-        return passwordBuilder.Append(RandomString()).ToString();
+        var random = new byte[32];
+        using var rng = RandomNumberGenerator.Create();
+        rng.GetBytes(random);
+        return Convert.ToBase64String(random);
     }
 }

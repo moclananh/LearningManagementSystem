@@ -1,5 +1,6 @@
 ﻿using Applications.Commons;
 using Applications.ViewModels.Response;
+using Applications.ViewModels.TokenViewModels;
 using Applications.ViewModels.UserViewModels;
 using Domain.Enum.RoleEnum;
 using Microsoft.AspNetCore.Http;
@@ -22,4 +23,5 @@ public interface IUserService
     Task<Response> ResetPassword(ResetPasswordRequest request);
     Task<Response> UpdateImage(Guid id, string image);
     Task<Response> VerifyToken(TokenRequest token);
+    Task<Response> GetRefreshToken(TokenModel oldTokenModel);
 }

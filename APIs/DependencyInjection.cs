@@ -95,7 +95,8 @@ public static class DependencyInjection
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8
                         .GetBytes(configuration.GetSection("Jwt:SecretKey").Value)),
                     ValidateIssuer = false,
-                    ValidateAudience = false
+                    ValidateAudience = false,
+                    ClockSkew = TimeSpan.Zero
                 };
             });
         services.AddScoped<MailService>();
