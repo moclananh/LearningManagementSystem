@@ -26,7 +26,7 @@ public class UserController : Controller
     /// </summary>
     /// <returns></returns>
     [HttpGet("GetAllUsers")]
-    [AllowAnonymous]
+    [Authorize(policy: "All")]
     public async Task<Pagination<UserViewModel>> GetAllUsers(int pageIndex = 0, int pageSize = 10) => await _userService.GetAllUsers(pageIndex, pageSize);
 
     /// <summary>
@@ -35,7 +35,7 @@ public class UserController : Controller
     /// <param name="id"></param>
     /// <returns></returns>
     [HttpGet("GetUserById/{UserId}")]
-    [AllowAnonymous]
+    [Authorize(policy: "All")]
     public async Task<UserViewModel> GetUserById(Guid UserId) => await _userService.GetUserById(UserId);
 
     /// <summary>
@@ -45,6 +45,7 @@ public class UserController : Controller
     /// <param name="user"></param>
     /// <returns></returns>
     [HttpPut("UpdateUser/{UserId}")]
+    [Authorize(policy: "All")]
     public async Task<Response> UpdateUser(Guid UserId, [FromBody] UpdateUserViewModel user) => await _userService.UpdateUser(UserId, user);
 
     /// <summary>
@@ -63,6 +64,7 @@ public class UserController : Controller
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     [HttpPost("UploadFileExcel")]
+    [Authorize(policy: "OnlySupperAdmin")]
     public async Task<Response> Import(IFormFile formFile, CancellationToken cancellationToken) => await _userService.UploadFileExcel(formFile, cancellationToken);
 
     /// <summary>
@@ -71,6 +73,7 @@ public class UserController : Controller
     /// <param name="changePassword"></param>
     /// <returns></returns>
     [HttpPut("Change-Password/{UserId}")]
+    [Authorize(policy: "All")]
     public async Task<Response> ChangePassword(Guid UserId, [FromBody] ChangePasswordViewModel changePassword) => await _userService.ChangePassword(UserId, changePassword);
     
 
@@ -82,7 +85,7 @@ public class UserController : Controller
     /// <param name="pageSize"></param>
     /// <returns></returns>
     [HttpGet("GetUsersByClassId/{ClassId}")]
-    [AllowAnonymous]
+    [Authorize(policy: "All")]
     public async Task<Response> GetUnitByModuleIdAsync(Guid ClassId, int pageIndex = 0, int pageSize = 10) => await _userService.GetUserByClassId(ClassId, pageIndex, pageSize);
     
 
@@ -94,7 +97,7 @@ public class UserController : Controller
     /// <param name="pageSize"></param>
     /// <returns></returns>
     [HttpGet("SearchUserByName/{name}")]
-    [AllowAnonymous]
+    [Authorize(policy: "All")]
     public async Task<Pagination<UserViewModel>> SearchByName(string name, int pageIndex = 0, int pageSize = 10) => await _userService.SearchUserByName(name, pageIndex, pageSize);
     
 
@@ -104,7 +107,7 @@ public class UserController : Controller
     /// <param name="filterUserRequest"></param>
     /// <returns></returns>
     [HttpGet("Filter")]
-    [AllowAnonymous]
+    [Authorize(policy: "All")]
     public async Task<Pagination<UserViewModel>> FilterUser([FromQuery] FilterUserRequest filterUserRequest,int pageNumber = 0, int pageSize = 10) => await _userService.FilterUser(filterUserRequest,pageNumber,pageSize);
     
 
@@ -133,6 +136,7 @@ public class UserController : Controller
     /// <param name="image"></param>
     /// <returns></returns>
     [HttpPut("Update-Image")]
+    [Authorize(policy: "All")]
     public async Task<Response> UpdateImage(Guid id, string image) => await _userService.UpdateImage(id, image);
 
 }

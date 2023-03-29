@@ -116,7 +116,8 @@ public static class DependencyInjection
         {
             // set Policy
             opt.AddPolicy("AuthUser", policy => policy.RequireAuthenticatedUser()); // only user already login
-
+            opt.AddPolicy("All", policy => policy.RequireRole("SuperAdmin","ClassAdmin","Trainer","Student","Mentor","Auditor"));
+            opt.AddPolicy("OnlySupperAdmin",policy => policy.RequireRole("SuperAdmin"));
         });
         //-------------------------------------------------------------------------------------------
         return services;
