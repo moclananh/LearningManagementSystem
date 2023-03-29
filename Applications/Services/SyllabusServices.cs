@@ -381,7 +381,7 @@ namespace Applications.Services
 
                 if (Succeed)
                 {
-                    return new Response(HttpStatusCode.OK, "Create succeed", _mapper.Map<CreateSyllabusDetailModel>(syllabus));
+                    return new Response(HttpStatusCode.OK, "Create succeed", _mapper.Map<SyllabusViewModel>(syllabus));
                 }
                 return new Response(HttpStatusCode.BadRequest, "Create Failed");
             }
