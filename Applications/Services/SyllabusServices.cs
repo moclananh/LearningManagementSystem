@@ -272,8 +272,6 @@ namespace Applications.Services
                                     var QuizzMapper = _mapper.Map<Quizz>(quizzes);
                                     QuizzMapper.Unit = unitmapper;
                                     checkDurationQuizz = checkDurationQuizz + QuizzMapper.Duration;
-                                    QuizzMapper.CreationDate = DateTime.Now;
-                                    QuizzMapper.CreatedBy = _claimService.GetCurrentUserId;
                                 }
                             }
                             // map Assignment
@@ -285,8 +283,6 @@ namespace Applications.Services
                                     var AssignmentMapper = _mapper.Map<Assignment>(assignments);
                                     AssignmentMapper.Unit = unitmapper;
                                     CheckDurationAssignment = CheckDurationAssignment + AssignmentMapper.Duration;
-                                    AssignmentMapper.CreationDate = DateTime.Now;
-                                    AssignmentMapper.CreatedBy = _claimService.GetCurrentUserId;
                                 }
                             }
 
@@ -299,8 +295,6 @@ namespace Applications.Services
                                     var LecturesMapper = _mapper.Map<Lecture>(lectures);
                                     LecturesMapper.Unit = unitmapper;
                                     CheckDurationLecture = CheckDurationLecture + LecturesMapper.Duration;
-                                    LecturesMapper.CreationDate = DateTime.Now;
-                                    LecturesMapper.CreatedBy = _claimService.GetCurrentUserId;
                                 }
                             }
 
@@ -313,8 +307,6 @@ namespace Applications.Services
                                     var PracticesMapper = _mapper.Map<Practice>(practices);
                                     PracticesMapper.Unit = unitmapper;
                                     CheckDurationPractice = CheckDurationPractice + PracticesMapper.Duration;
-                                    PracticesMapper.CreationDate = DateTime.Now;
-                                    PracticesMapper.CreatedBy = _claimService.GetCurrentUserId;
                                 }
                             }
 
@@ -325,6 +317,29 @@ namespace Applications.Services
                                 return new Response(HttpStatusCode.BadRequest, "Invalid Duration between Unit and it's contain");
                             }
 
+                            foreach(var quizzs in unitmapper.Quizzs)
+                            {
+                                quizzs.CreationDate = DateTime.Now;
+                                quizzs.CreatedBy = _claimService.GetCurrentUserId;
+                            }
+
+                            foreach (var assignments in unitmapper.Assignments)
+                            {
+                                assignments.CreationDate = DateTime.Now;
+                                assignments.CreatedBy = _claimService.GetCurrentUserId;
+                            }
+
+                            foreach (var lectures in unitmapper.Lectures)
+                            {
+                                lectures.CreationDate = DateTime.Now;
+                                lectures.CreatedBy = _claimService.GetCurrentUserId;
+                            }
+
+                            foreach (var practices in unitmapper.Practices)
+                            {
+                                practices.CreationDate = DateTime.Now;
+                                practices.CreatedBy = _claimService.GetCurrentUserId;
+                            }
                             listUnit.Add(unitmapper);
                             syllabus.Duration = syllabus.Duration + TotalDurationUnit;
                         }
@@ -341,16 +356,10 @@ namespace Applications.Services
                         {
                             Module = moduleMap,
                             Unit = unit,
-                            CreationDate = DateTime.Now,
-                            CreatedBy = _claimService.GetCurrentUserId,
                         };
                         // add to list
                         listModuleUnit.Add(moduleUnit);
                     }
-
-                    moduleMap.ModuleUnits = new List<ModuleUnit>();
-                    moduleMap.ModuleUnits = listModuleUnit;
-
                 }
                 // add realtionship for SyllabusModule
                 foreach (var item in listModule)
@@ -359,16 +368,15 @@ namespace Applications.Services
                     {
                         Syllabus = syllabus,
                         Module = item,
-                        CreationDate = DateTime.Now,
-                        CreatedBy = _claimService.GetCurrentUserId,
                     };
                     listModuleSylla.Add(syllabusModule);
                 }
-                syllabus.SyllabusModules = new List<SyllabusModule>();
-                syllabus.SyllabusModules = listModuleSylla;
+
                 await _unitOfWork.UnitRepository.AddRangeAsync(listUnit);
                 await _unitOfWork.ModuleRepository.AddRangeAsync(listModule);
+                await _unitOfWork.ModuleUnitRepository.AddRangeAsync(listModuleUnit);
                 await _unitOfWork.SyllabusRepository.AddAsync(syllabus);
+                await _unitOfWork.SyllabusModuleRepository.AddRangeAsync(listModuleSylla);
                 var Succeed = await _unitOfWork.SaveChangeAsync() > 0;
 
                 if (Succeed)
