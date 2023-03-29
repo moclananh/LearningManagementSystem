@@ -121,7 +121,7 @@ public class UserService : IUserService
                 ClockSkew = TimeSpan.Zero
             };
             // 1
-            var tokenInVerification = jwtTokenHandler.ValidateToken(oldTokenModel.AccsessToken,tokenValidationParameters, out var validatedToken);
+            var tokenInVerification = jwtTokenHandler.ValidateToken(oldTokenModel.AccessToken,tokenValidationParameters, out var validatedToken);
             // 2
             if (validatedToken is JwtSecurityToken jwtSecurityToken)
             {
@@ -257,9 +257,9 @@ public class UserService : IUserService
         if (!StringUtils.Verify(userLoginViewModel.Password, user.Password))
             return new Response(HttpStatusCode.BadRequest, "Invalid Password");
         var token = await _tokenService.GetToken(user.Email);
-        if (string.IsNullOrEmpty(token.AccsessToken))
+        if (string.IsNullOrEmpty(token.AccessToken))
             return new Response(HttpStatusCode.Unauthorized, "Invalid password or username");
-        user.Token = token.AccsessToken;
+        user.Token = token.AccessToken;
         
         _unitOfWork.UserRepository.Update(user);
         await _unitOfWork.SaveChangeAsync();
@@ -271,7 +271,7 @@ public class UserService : IUserService
             lastName = user.lastName,
             Email = user.Email,
             Image = user.Image,
-            AccsessToken = token.AccsessToken,
+            AccessToken = token.AccessToken,
             RefreshToken = token.RefreshToken
         };
         return new Response(HttpStatusCode.OK, "authorized", loginResult);

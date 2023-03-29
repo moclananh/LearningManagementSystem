@@ -64,14 +64,14 @@ public class TokenService : ITokenService
         {
             return new TokenModel
             {
-                AccsessToken = accessToken,
+                AccessToken = accessToken,
                 RefreshToken = refreshToken
             };
         }
 
         return new TokenModel
         {
-            AccsessToken = string.Empty,
+            AccessToken = string.Empty,
             RefreshToken = string.Empty
         };
     }
