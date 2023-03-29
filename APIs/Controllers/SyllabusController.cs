@@ -43,7 +43,7 @@ namespace APIs.Controllers
             return new Response(HttpStatusCode.BadRequest, "Invalid Input");
         }
 
-        [HttpPost("CreateSyllabusDetail")/*, Authorize(policy: "AuthUser")*/]
+        [HttpPost("CreateSyllabusDetail"), Authorize(policy: "AuthUser")]
         public async Task<Response> CreateSyllabusDetail(CreateSyllabusDetailModel SyllabusModel) => await _syllabusServices.CreateSyllabusDetail(SyllabusModel);
 
         [HttpPut("UpdateSyllabus/{SyllabusId}"), Authorize(policy: "AuthUser")]
