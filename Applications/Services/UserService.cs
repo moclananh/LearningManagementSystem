@@ -271,6 +271,7 @@ public class UserService : IUserService
             lastName = user.lastName,
             Email = user.Email,
             Image = user.Image,
+            Role = user.Role.ToString(),
             AccessToken = token.AccessToken,
             RefreshToken = token.RefreshToken
         };
