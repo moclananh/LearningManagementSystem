@@ -1,15 +1,13 @@
-﻿using Applications.Commons;
-using Applications.Interfaces;
+﻿using Applications.Interfaces;
 using Applications.ViewModels.Response;
-using Applications.ViewModels.SyllabusOutputStandardViewModels;
-using Applications.ViewModels.UnitModuleViewModel;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace APIs.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(policy: "AuthUser")]
     public class ModuleUnitController : ControllerBase
     {
         private readonly IModuleUnitService _moduleUnitService;
@@ -19,6 +17,7 @@ namespace APIs.Controllers
         }
 
         [HttpGet("GetAllModuleUnits")]
+        [Authorize(policy: "Admins")]
         public async Task<Response> GetAllModuleUnits(int pageIndex = 0, int pageSize = 10)
         {
             return await _moduleUnitService.GetAllModuleUnitsAsync(pageIndex, pageSize);

@@ -1,8 +1,6 @@
 ﻿using Application.ViewModels.QuizzViewModels;
 using Applications.Interfaces;
-using Applications.Services;
 using Applications.ViewModels.Response;
-using Domain.Entities;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Authorization;
@@ -12,6 +10,7 @@ namespace APIs.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(policy: "AuthUser")]
     public class QuizzController : ControllerBase
     {
         private readonly IQuizzService _quizzServices;
@@ -27,9 +26,11 @@ namespace APIs.Controllers
         }
 
         [HttpGet("GetAllQuizz")]
+        [Authorize(policy: "All")]
         public async Task<Response> GetAllQuizz(int pageIndex = 0, int pageSize = 10) => await _quizzServices.GetAllQuizzes(pageIndex, pageSize);
 
-        [HttpPost("CreateQuizz"), Authorize(policy: "AuthUser")]
+        [HttpPost("CreateQuizz")]
+        [Authorize(policy: "Admins")]
         public async Task<IActionResult> CreateQuizz(CreateQuizzViewModel QuizzModel)
         {
             if (ModelState.IsValid)
@@ -48,21 +49,27 @@ namespace APIs.Controllers
         }
 
         [HttpGet("GetQuizzByQuizzId/{QuizzId}")]
+        [Authorize(policy: "All")]
         public async Task<Response> GetQuizzByQuizzId(Guid QuizzId) => await _quizzServices.GetQuizzByQuizzIdAsync(QuizzId);
 
         [HttpGet("GetQuizzByUnitId/{UnitId}")]
+        [Authorize(policy: "All")] 
         public async Task<Response> GetQuizzByUnitId(Guid UnitId, int pageIndex = 0, int pageSize = 10) => await _quizzServices.GetQuizzByUnitIdAsync(UnitId, pageIndex, pageSize);
 
         [HttpGet("GetQuizzByName/{QuizzName}")]
+        [Authorize(policy: "All")]
         public async Task<Response> GetQuizzesByName(string QuizzName, int pageIndex = 0, int pageSize = 10) => await _quizzServices.GetQuizzByName(QuizzName, pageIndex, pageSize);
 
         [HttpGet("GetEnableQuizzes")]
+        [Authorize(policy: "Admins")]
         public async Task<Response> GetEnableQuizzes(int pageIndex = 0, int pageSize = 10) => await _quizzServices.GetEnableQuizzes(pageIndex, pageSize);
 
         [HttpGet("GetDisableQuizzes")]
+        [Authorize(policy: "Admins")]
         public async Task<Response> GetDisableQuizzes(int pageIndex = 0, int pageSize = 10) => await _quizzServices.GetDisableQuizzes(pageIndex, pageSize);
 
-        [HttpPut("UpdateQuizz/{QuizzId}"), Authorize(policy: "AuthUser")]
+        [HttpPut("UpdateQuizz/{QuizzId}")]
+        [Authorize(policy: "Admins")]
         public async Task<IActionResult> UpdateQuizz(Guid QuizzId, UpdateQuizzViewModel updateQuizzView)
         {
             if (ModelState.IsValid)

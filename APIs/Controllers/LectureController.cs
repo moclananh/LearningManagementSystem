@@ -12,6 +12,7 @@ namespace APIs.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(policy: "AuthUser")]
     public class LectureController : ControllerBase
     {
         private readonly ILectureService _lectureServices;
@@ -26,7 +27,8 @@ namespace APIs.Controllers
             _validatorUpdate = validatorUpdate;
         }
 
-        [HttpPost("CreateLecture"), Authorize(policy: "AuthUser")]
+        [HttpPost("CreateLecture")]
+        [Authorize(policy: "Admins")]
         public async Task<Response> CreateLecture(CreateLectureViewModel LectureModel)
         {
             if (ModelState.IsValid)
@@ -44,25 +46,33 @@ namespace APIs.Controllers
             }
             return new Response(HttpStatusCode.BadRequest, "Invalid Input");
         }
+
         [HttpGet("GetAllLectures")]
+        [Authorize(policy: "All")]
         public async Task<Response> GetAllLectures(int pageIndex = 0, int pageSize = 10) => await _lectureServices.GetAllLectures(pageIndex, pageSize);
 
         [HttpGet("GetLectureById/{LectureId}")]
+        [Authorize(policy: "All")]
         public async Task<Response> GetLectureById(Guid LectureId) => await _lectureServices.GetLectureById(LectureId);
 
         [HttpGet("GetLectureByUnitId/{UnitId}")]
+        [Authorize(policy: "All")]
         public async Task<Response> GetLectureByUnitId(Guid UnitId, int pageIndex = 0, int pageSize = 10) => await _lectureServices.GetLectureByUnitId(UnitId, pageIndex, pageSize);
 
         [HttpGet("GetLectureByName/{LectureName}")]
+        [Authorize(policy: "All")]
         public async Task<Response> GetLectureByName(string LectureName, int pageIndex = 0, int pageSize = 10) => await _lectureServices.GetLectureByName(LectureName, pageIndex, pageSize);
 
         [HttpGet("GetEnableLectures")]
+        [Authorize(policy: "Admins")]
         public async Task<Response> GetEnableLectures(int pageIndex = 0, int pageSize = 10) => await _lectureServices.GetEnableLectures(pageIndex, pageSize);
 
         [HttpGet("GetDisableLectures")]
+        [Authorize(policy: "Admins")]
         public async Task<Response> GetDisableLectures(int pageIndex = 0, int pageSize = 10) => await _lectureServices.GetDisableLectures(pageIndex, pageSize);
 
-        [HttpPut("UpdateLecture/{LectureId}"), Authorize(policy: "AuthUser")]
+        [HttpPut("UpdateLecture/{LectureId}")]
+        [Authorize(policy: "Admins")]
         public async Task<IActionResult> UpdateLecture(Guid LectureId, UpdateLectureViewModel Lecture)
         {
             if (ModelState.IsValid)

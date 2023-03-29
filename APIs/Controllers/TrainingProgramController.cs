@@ -12,6 +12,7 @@ namespace APIs.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(policy: "AuthUser")]
     public class TrainingProgramController : ControllerBase
     {
         private readonly ITrainingProgramService _trainingProgramService;
@@ -25,7 +26,8 @@ namespace APIs.Controllers
             _validatorUpdate = validatorUpdate;
         }
 
-        [HttpPost("CreateTrainingProgram"), Authorize(policy: "AuthUser")]
+        [HttpPost("CreateTrainingProgram")]
+        [Authorize(policy: "Admins")]
         public async Task<Response> CreateTrainingProgram(CreateTrainingProgramViewModel CreateTrainingProgram)
         {
             if (ModelState.IsValid)
@@ -40,7 +42,8 @@ namespace APIs.Controllers
             return new Response(HttpStatusCode.BadRequest, "Invalid Input");
         }
 
-        [HttpPut("UpdateTrainingProgram/{TrainingProgramId}"), Authorize(policy: "AuthUser")]
+        [HttpPut("UpdateTrainingProgram/{TrainingProgramId}")]
+        [Authorize(policy: "Admins")]
         public async Task<IActionResult> UpdateTrainingProgram(Guid TrainingProgramId, UpdateTrainingProgramViewModel UpdateTrainingProgram)
         {
             if (ModelState.IsValid)
@@ -59,27 +62,35 @@ namespace APIs.Controllers
             return BadRequest("Update TrainingProgram Fail");
         }
 
-        [HttpPatch("UpdateStatusOnlyOfTrainingProgram/{TrainingProgramId}"), Authorize(policy: "AuthUser")]
+        [HttpPatch("UpdateStatusOnlyOfTrainingProgram/{TrainingProgramId}")]
+        [Authorize(policy: "Admins")]
         public async Task<Response> UpdateStatusOnlyOfTrainingProgram(Guid TrainingProgramId, UpdateStatusOnlyOfTrainingProgram trainingProgramModel) => await _trainingProgramService.UpdateStatusOnlyOfTrainingProgram(TrainingProgramId, trainingProgramModel);
 
         [HttpGet("GetTrainingProgramDetails/{TrainingProgramId}")]
+        [Authorize(policy: "All")]
         public async Task<Response> GetSyllabusDetailById(Guid TrainingProgramId) => await _trainingProgramService.GetTrainingProgramDetails(TrainingProgramId);
 
         [HttpGet("GetAllTrainingProgram")]
+        [Authorize(policy: "All")]
         public async Task<Response> ViewAllTrainingProgram(int pageIndex = 0, int pageSize = 10) => await _trainingProgramService.ViewAllTrainingProgramAsync(pageIndex, pageSize);
 
         [HttpGet("GetTrainingProgramDisable")]
+        [Authorize(policy: "Admins")]
         public async Task<Response> ViewTrainingProgramDisable(int pageIndex = 0, int pageSize = 10) => await _trainingProgramService.ViewTrainingProgramDisableAsync(pageIndex, pageSize);
 
         [HttpGet("GetTrainingProgramEnable")]
+        [Authorize(policy: "Admins")]
         public async Task<Response> ViewTrainingProgramEnable(int pageIndex = 0, int pageSize = 10) => await _trainingProgramService.ViewTrainingProgramEnableAsync(pageIndex, pageSize);
 
         [HttpGet("GetTrainingProgramById/{TrainingProgramId}")]
+        [Authorize(policy: "All")]
         public async Task<Response> GetTrainingProgramById(Guid TrainingProgramId) => await _trainingProgramService.GetTrainingProgramById(TrainingProgramId);
         [HttpGet("GetTrainingProgramByClassId/{ClassId}")]
+        [Authorize(policy: "All")]
         public async Task<Response> GetTrainingProgramByClassId(Guid ClassId, int pageIndex = 0, int pageSize = 10) => await _trainingProgramService.GetTrainingProgramByClassId(ClassId, pageIndex, pageSize);
 
-        [HttpPost("AddTrainingProgramSyllabus/{SyllabusId}/{TrainingProgramId}"), Authorize(policy: "AuthUser")]
+        [HttpPost("AddTrainingProgramSyllabus/{SyllabusId}/{TrainingProgramId}")]
+        [Authorize(policy: "Admins")]
         public async Task<IActionResult> AddSyllabusToTrainingProgram(Guid SyllabusId, Guid TrainingProgramId)
         {
             if (ModelState.IsValid)
@@ -93,7 +104,8 @@ namespace APIs.Controllers
             return Ok("Add Syllabus to TrainingProgram Success");
         }
 
-        [HttpDelete("DeleteTrainingProgramSyllabus/{SyllabusId}/{TrainingProgramId}"), Authorize(policy: "AuthUser")]
+        [HttpDelete("DeleteTrainingProgramSyllabus/{SyllabusId}/{TrainingProgramId}")]
+        [Authorize(policy: "Admins")]
         public async Task<IActionResult> DeleteTrainingProgram(Guid SyllabusId, Guid TrainingProgramId)
         {
             if (ModelState.IsValid)
@@ -108,6 +120,7 @@ namespace APIs.Controllers
         }
 
         [HttpGet("GetTrainingProgramByName/{trainingProgramName}")]
+        [Authorize(policy: "All")]
         public async Task<Response> GetTrainingProgramByName(string trainingProgramName, int pageIndex = 0, int pageSize = 10) => await _trainingProgramService.GetByName(trainingProgramName, pageIndex, pageSize);
     }
 }

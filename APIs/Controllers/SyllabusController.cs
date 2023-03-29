@@ -11,6 +11,7 @@ namespace APIs.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(policy: "AuthUser")]
     public class SyllabusController : ControllerBase
     {
         private readonly ISyllabusServices _syllabusServices;
@@ -24,7 +25,8 @@ namespace APIs.Controllers
             _validatorUpdate = validatorUpdate;
         }
 
-        [HttpPost("CreateSyllabus"), Authorize(policy: "AuthUser")]
+        [HttpPost("CreateSyllabus")]
+        [Authorize(policy: "Admins")]
         public async Task<Response> CreateSyllabus(CreateSyllabusViewModel SyllabusModel)
         {
             if (ModelState.IsValid)
@@ -43,10 +45,12 @@ namespace APIs.Controllers
             return new Response(HttpStatusCode.BadRequest, "Invalid Input");
         }
 
-        [HttpPost("CreateSyllabusDetail"), Authorize(policy: "AuthUser")]
+        [HttpPost("CreateSyllabusDetail")]
+        [Authorize(policy: "Admins")]
         public async Task<Response> CreateSyllabusDetail(CreateSyllabusDetailModel SyllabusModel) => await _syllabusServices.CreateSyllabusDetail(SyllabusModel);
 
-        [HttpPut("UpdateSyllabus/{SyllabusId}"), Authorize(policy: "AuthUser")]
+        [HttpPut("UpdateSyllabus/{SyllabusId}")]
+        [Authorize(policy: "Admins")]
         public async Task<IActionResult> UpdateSyllabus(Guid SyllabusId, UpdateSyllabusViewModel SyllabusModel)
         {
             if (ModelState.IsValid)
@@ -64,7 +68,8 @@ namespace APIs.Controllers
             return Ok("Update Fail, Invalid Input Information");
         }
 
-        [HttpPatch("UpdateStatusOnlyOfSyllabus/{SyllabusId}"), Authorize(policy: "AuthUser")]
+        [HttpPatch("UpdateStatusOnlyOfSyllabus/{SyllabusId}")]
+        [Authorize(policy: "Admins")]
         public async Task<Response> UpdateStatusOnlyOfSyllabus(Guid SyllabusId, UpdateStatusOnlyOfSyllabus SyllabusModel) => await _syllabusServices.UpdateStatusOnlyOfSyllabus(SyllabusId, SyllabusModel);
 
         /* [HttpGet("GetAllSyllabus")]
@@ -72,29 +77,39 @@ namespace APIs.Controllers
 
 
         [HttpGet("GetAllSyllabusDetail")]
+        [Authorize(policy: "All")]
         public async Task<Response> GetAllSyllabusDetail(int pageNumber = 0, int pageSize = 10) => await _syllabusServices.GetAllSyllabusDetail(pageNumber, pageSize);
 
         [HttpGet("GetSyllabusDetailById/{SyllabusId}")]
+        [Authorize(policy: "All")]
         public async Task<Response> GetSyllabusDetailById(Guid SyllabusId) => await _syllabusServices.GetSyllabusDetails(SyllabusId);
 
         [HttpGet("GetEnableSyllabus")]
+        [Authorize(policy: "Admins")]
         public async Task<Response> GetEnableSyllabus(int pageNumber = 0, int pageSize = 10) => await _syllabusServices.GetEnableSyllabus(pageNumber, pageSize);
 
         [HttpGet("GetDisableSyllabus")]
+        [Authorize(policy: "Admins")]
         public async Task<Response> GetDisableSyllabus(int pageNumber = 0, int pageSize = 10) => await _syllabusServices.GetDisableSyllabus(pageNumber, pageSize);
 
         /*[HttpGet("GetSyllabusById/{SyllabusId}")]
+         *[Authorize(policy: "ClassAdmin, OnlySupperAdmin")]
         public async Task<Response> GetSyllabusById(Guid SyllabusId) => await _syllabusServices.GetSyllabusById(SyllabusId);*/
 
         [HttpGet("GetSyllabusByName/{SyllabusName}")]
+        [Authorize(policy: "All")]
         public async Task<Response> GetSyllabusByName(string SyllabusName, int pageNumber = 0, int pageSize = 10) => await _syllabusServices.GetSyllabusByName(SyllabusName, pageNumber, pageSize);
 
         [HttpGet("GetSyllabusByTrainingProgramId/{TrainingProgramId}")]
+        [Authorize(policy: "All")]
         public async Task<Response> GetSyllabusByTrainingProgramId(Guid TrainingProgramId, int pageNumber = 0, int pageSize = 10) => await _syllabusServices.GetSyllabusByTrainingProgramId(TrainingProgramId, pageNumber, pageSize);
 
         [HttpGet("GetSyllabusByOutputStandardId/{OutputStandardId}")]
+        [Authorize(policy: "All")]
         public async Task<Response> GetSyllabusByOutputStandardId(Guid OutputStandardId, int pageNumber = 0, int pageSize = 10) => await _syllabusServices.GetSyllabusByOutputStandardId(OutputStandardId, pageNumber, pageSize);
-        [HttpPost("AddSyllabusModule/{SyllabusId}/{moduleId}"), Authorize(policy: "AuthUser")]
+        
+        [HttpPost("AddSyllabusModule/{SyllabusId}/{moduleId}")]
+        [Authorize(policy: "Admins")]
         public async Task<IActionResult> AddSyllabusModule(Guid SyllabusId, Guid moduleId)
         {
             if (ModelState.IsValid)
@@ -104,7 +119,9 @@ namespace APIs.Controllers
             }
             return BadRequest("Add Fail");
         }
-        [HttpDelete("DeleteModuleSyllabus/{SyllabusId}/{moduleId}"), Authorize(policy: "AuthUser")]
+
+        [HttpDelete("DeleteModuleSyllabus/{SyllabusId}/{moduleId}")]
+        [Authorize(policy: "Admins")]
         public async Task<IActionResult> DeleteUnit(Guid SyllabusId, Guid moduleId)
         {
             if (ModelState.IsValid)
@@ -116,6 +133,7 @@ namespace APIs.Controllers
         }
 
         [HttpGet("GetSyllabusByCreationDate/{startDate}/{endDate}")]
+        [Authorize(policy: "All")]
         public async Task<Response> GetSyllabusByCreationDate(DateTime startDate, DateTime endDate, int pageNumber = 0, int pageSize = 10)
         {
             return await _syllabusServices.GetSyllabusByCreationDate(startDate, endDate, pageNumber, pageSize);

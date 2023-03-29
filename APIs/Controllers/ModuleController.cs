@@ -10,6 +10,7 @@ namespace APIs.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(policy: "AuthUser")]
     public class ModuleController : ControllerBase
     {
         private readonly IModuleService _moduleServices;
@@ -24,7 +25,8 @@ namespace APIs.Controllers
             _validateUpdate = validatorUpdate;
         }
 
-        [HttpPost("CreateModule"), Authorize(policy: "AuthUser")]
+        [HttpPost("CreateModule")]
+        [Authorize(policy: "Admins")]
         public async Task<IActionResult> CreateModule(CreateModuleViewModel moduleModel)
         {
             if(ModelState.IsValid)
@@ -44,15 +46,19 @@ namespace APIs.Controllers
         }
 
         [HttpGet("GetAllModules")]
+        [Authorize(policy: "All")]
         public async Task<Response> GetAllModules(int pageIndex = 0, int pageSize = 10) => await _moduleServices.GetAllModules(pageIndex,pageSize);
 
         [HttpGet("GetModulesBySyllabusId/{syllabusId}")]
+        [Authorize(policy: "All")]
         public async Task<Response> GetModulesBySyllabusId(Guid syllabusId, int pageIndex = 0, int pageSize = 10) => await _moduleServices.GetModulesBySyllabusId(syllabusId, pageIndex, pageSize);
 
         [HttpGet("GetModulesByName/{ModuleName}")]
+        [Authorize(policy: "All")]
         public async Task<Response> GetModulesByName(string ModuleName, int pageIndex = 0, int pageSize = 10) => await _moduleServices.GetModulesByName(ModuleName, pageIndex, pageSize);
 
-        [HttpPut("UpdateModule"), Authorize(policy: "AuthUser")]
+        [HttpPut("UpdateModule")]
+        [Authorize(policy: "Admins")]
         public async Task<IActionResult> UpdateModule(Guid moduleId, UpdateModuleViewModel module)
         {
             if (ModelState.IsValid)
@@ -71,12 +77,15 @@ namespace APIs.Controllers
         }
 
         [HttpGet("GetEnableModules")]
+        [Authorize(policy: "Admins")]
         public async Task<Response> GetEnableModules(int pageIndex = 0, int pageSize = 10) => await _moduleServices.GetEnableModules(pageIndex,pageSize);
 
         [HttpGet("GetDisableModules")]
+        [Authorize(policy: "Admins")]
         public async Task<Response> GetDisableModules(int pageIndex = 0, int pageSize = 10) => await _moduleServices.GetDisableModules(pageIndex,pageSize);
 
         [HttpPost("AddModuleUnit/{moduleId}/{unitId}")]
+        [Authorize(policy: "Admins")]
         public async Task<IActionResult> AddModuleUnit(Guid moduleId, Guid unitId)
         {
             if (ModelState.IsValid)
@@ -86,12 +95,16 @@ namespace APIs.Controllers
             }
             return BadRequest("Add Fail");
         }
-        [HttpPost("AddMultipleUnitToModule/{moduleId}"), Authorize(policy: "AuthUser")]
+
+        [HttpPost("AddMultipleUnitToModule/{moduleId}")]
+        [Authorize(policy: "Admins")]
         public async Task<Response> AddMultipleUnittoModule(Guid moduleId, List<Guid> unitId)
         {
             return await _moduleServices.AddMultipleUnitToModule(moduleId, unitId);
         }
-        [HttpDelete("DeleteUnit/{moduleId}/{unitId}"), Authorize(policy: "AuthUser")]
+
+        [HttpDelete("DeleteUnit/{moduleId}/{unitId}")]
+        [Authorize(policy: "Admins")]
         public async Task<IActionResult> DeleteUnit(Guid moduleId, Guid unitId)
         {
             if (ModelState.IsValid)

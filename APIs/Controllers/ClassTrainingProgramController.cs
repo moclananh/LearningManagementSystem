@@ -1,14 +1,13 @@
-﻿using Applications.Commons;
-using Applications.Interfaces;
-using Applications.ViewModels.ClassTrainingProgramViewModels;
+﻿using Applications.Interfaces;
 using Applications.ViewModels.Response;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace APIs.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(policy: "AuthUser")]
     public class ClassTrainingProgramController : ControllerBase
     {
         private readonly IClassTrainingProgramService _classTrainingProgramService;
@@ -19,6 +18,7 @@ namespace APIs.Controllers
         }
 
         [HttpGet("GetAllClassTrainingProgram")]
+        [Authorize(policy: "Admins")]
         public async Task<Response> GetAllClassTrainingProgram(int pageIndex = 0, int pageSize = 10)
         {
             return await _classTrainingProgramService.GetAllClassTrainingProgram(pageIndex, pageSize);

@@ -9,6 +9,7 @@ namespace APIs.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(policy: "AuthUser")]
     public class PracticeQuestionController : ControllerBase
     {
         private readonly IPracticeQuestionService _practicequestionService;
@@ -18,12 +19,15 @@ namespace APIs.Controllers
         }
 
         [HttpGet("ViewPracticeQuestionsById/{PracticeId}")]
+        [Authorize(policy: "All")]
         public async Task<Response> GetPracticeQuestionByPracticeId(Guid PracticeId, int pageIndex = 0, int pageSize = 10) => await _practicequestionService.GetPracticeQuestionByPracticeId(PracticeId, pageIndex, pageSize);
 
         [HttpPost("UploadPracticeQuestionFile")]
+        [Authorize(policy: "Admins")]
         public async Task<Response> UploadPracticeQuestionFile(IFormFile formFile) => await _practicequestionService.UploadPracticeQuestions(formFile);
 
         [HttpGet("{practiceId}/export")]
+        [Authorize(policy: "All")]
         public async Task<IActionResult> Export(Guid practiceId)
         {
             var content = await _practicequestionService.ExportPracticeQuestionByPracticeId(practiceId);
@@ -31,7 +35,8 @@ namespace APIs.Controllers
             return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
         }
 
-        [HttpDelete("DeletePracticeQuestion/{startDate}/{endDate}/{PracticeId}"), Authorize(policy: "AuthUser")]
+        [HttpDelete("DeletePracticeQuestion/{startDate}/{endDate}/{PracticeId}")]
+        [Authorize(policy: "Admins")]
         public async Task<Response> DeletePracticeQuestionByCreationDate(DateTime startDate, DateTime endDate, Guid PracticeId)
         {
             return await _practicequestionService.DeletePracticeQuestionByCreationDate(startDate, endDate, PracticeId);

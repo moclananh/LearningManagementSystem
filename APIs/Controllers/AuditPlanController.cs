@@ -1,9 +1,6 @@
 ﻿using Applications.Interfaces;
-using Applications.Services;
 using Applications.ViewModels.AuditPlanViewModel;
 using Applications.ViewModels.Response;
-using DocumentFormat.OpenXml.VariantTypes;
-using Domain.Entities;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Authorization;
@@ -13,6 +10,7 @@ namespace APIs.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(policy: "AuthUser")]
     public class AuditPlanController : ControllerBase
     {
         private readonly IAuditPlanService _auditPlanService;
@@ -32,27 +30,35 @@ namespace APIs.Controllers
         }
 
         [HttpGet("GetAllAuditPlan")]
+        [Authorize(policy: "All")]
         public async Task<Response> GetAllAuditPlanAsync(int pageIndex = 0, int pageSize = 10) => await _auditPlanService.GetAllAuditPlanAsync(pageIndex, pageSize);
 
         [HttpGet("GetEnableAuditPlan")]
+        [Authorize(policy: "Admins")]
         public async Task<Response> GetEnableAuditPlans(int pageIndex = 0, int pageSize = 10) => await _auditPlanService.GetEnableAuditPlanAsync(pageIndex, pageSize);
 
         [HttpGet("GetDisableAuditPlan")]
+        [Authorize(policy: "Admins")]
         public async Task<Response> GetDiableAuditPlans(int pageIndex = 0, int pageSize = 10) => await _auditPlanService.GetDisableAuditPlanAsync(pageIndex, pageSize);
 
         [HttpGet("GetAuditPlanById/{AuditPlanId}")]
+        [Authorize(policy: "All")]
         public async Task<Response> GetAuditPlanByIdAsync(Guid AuditPlanId) => await _auditPlanService.GetAuditPlanByIdAsync(AuditPlanId);
 
         [HttpGet("GetAuditPlanByModuleId/{ModuleId}")]
+        [Authorize(policy: "All")]
         public async Task<Response> GetAuditPlanByModuleId(Guid ModuleId) => await _auditPlanService.GetAuditPlanByModuleIdAsync(ModuleId);
 
         [HttpGet("GetAuditPlanByClassId/{ClassId}")]
+        [Authorize(policy: "All")]
         public async Task<Response> GetAuditPlanByClassId(Guid ClassId, int pageIndex = 0, int pageSize = 10) => await _auditPlanService.GetAuditPlanbyClassIdAsync(ClassId, pageIndex, pageSize);
 
         [HttpGet("GetAuditPlanByName/{AuditPlanName}")]
+        [Authorize(policy: "All")]
         public async Task<Response> GetAuditPlanByName(string AuditPlanName, int pageIndex = 0, int pageSize = 10) => await _auditPlanService.GetAuditPlanByName(AuditPlanName, pageIndex, pageSize);
         
-        [HttpPost("CreateAuditPlan"), Authorize(policy: "AuthUser")]
+        [HttpPost("CreateAuditPlan")]
+        [Authorize(policy: "OnlySupperAdmin, Auditor")]
         public async Task<IActionResult> CreateAuditPlan(CreateAuditPlanViewModel createAuditPlanViewModel)
         {
             if (ModelState.IsValid)
@@ -70,7 +76,8 @@ namespace APIs.Controllers
             return BadRequest("Create Failed,Invalid Input Information");
         }
 
-        [HttpPut("UpdateAuditPlan/{AuditPlanId}"), Authorize(policy: "AuthUser")]
+        [HttpPut("UpdateAuditPlan/{AuditPlanId}")]
+        [Authorize(policy: "OnlySupperAdmin, Auditor")]
         public async Task<IActionResult> UpdateAuditPlan(Guid AuditPlanId, UpdateAuditPlanViewModel updateAuditPlanView)
         {
             if (ModelState.IsValid)
@@ -88,7 +95,8 @@ namespace APIs.Controllers
             return BadRequest("Update Failed,Invalid Input Information");
         }
 
-        [HttpPost("AuditPlan/AddUser/{AuditPlanId}/{UserId}"), Authorize(policy: "AuthUser")]
+        [HttpPost("AuditPlan/AddUser/{AuditPlanId}/{UserId}")]
+        [Authorize(policy: "OnlySupperAdmin, Auditor")]
         public async Task<IActionResult> AddUser(Guid AuditPlanId, Guid UserId)
         {
             var result = await _auditPlanService.AddUserToAuditPlan(AuditPlanId, UserId);
@@ -100,7 +108,8 @@ namespace APIs.Controllers
             return BadRequest("Add UserToAuditPlan Fail");
         }
 
-        [HttpDelete("AuditPlan/DeleteUser/{AuditPlanId}/{UserId}"), Authorize(policy: "AuthUser")]
+        [HttpDelete("AuditPlan/DeleteUser/{AuditPlanId}/{UserId}")]
+        [Authorize(policy: "OnlySupperAdmin, Auditor")]
         public async Task<IActionResult> DeleteUser(Guid AuditPlanId, Guid UserId)
         {
             var result = await _auditPlanService.RemoveUserFromAuditPlan(AuditPlanId, UserId);
@@ -111,7 +120,9 @@ namespace APIs.Controllers
 
             return BadRequest("Remove UserFromAuditPlan Fail");
         }
+
         [HttpGet("GetAllUserAuditPlan")]
+        [Authorize(policy: "Admins")]
         public async Task<Response> GetAllUserAuditPlan(int pageIndex = 0, int pageSize = 10)
         {
             return await _auditPlanService.GetAllUserAuditPlanAsync(pageIndex, pageSize);

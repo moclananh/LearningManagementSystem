@@ -14,6 +14,5 @@ namespace Applications.Interfaces
         public Task<Response> ViewAllAssignmentAsync(int pageIndex = 0, int pageSize = 10);
         public Task<CreateAssignmentViewModel> CreateAssignmentAsync(CreateAssignmentViewModel AssignmentDTO);
         public Task<Response> GetAssignmentByName(string Name, int pageIndex = 0, int pageSize = 10);
-        public Task<Response> GetAssignmentDetail(Guid AssignmentId);
     }
 }

@@ -1,12 +1,14 @@
 ﻿using Application.Interfaces;
 using Applications.Interfaces;
 using Applications.ViewModels.Response;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace APIs.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(policy: "AuthUser")]
     public class ClassUserController : ControllerBase
     {
         private readonly IClassUserServices _classUserServices;
@@ -18,15 +20,18 @@ namespace APIs.Controllers
         }
 
         [HttpGet("GetAllClassUser")]
+        [Authorize(policy: "All")]
         public async Task<Response> GetAllClassUser(int pageIndex = 0, int pageSize = 10)
         {
             return await _classUserServices.GetAllClassUsersAsync(pageIndex, pageSize);
         }
 
         [HttpPost("UploadClassUserFile")]
+        [Authorize(policy: "Admins")]
         public async Task<Response> Import(IFormFile formFile) => await _classUserServices.UploadClassUserFile(formFile);
 
         [HttpGet("{ClassCode}/ExportClassUserByClassCode")]
+        [Authorize(policy: "All")]
         public async Task<IActionResult> ExportClassUserByClassCode(string ClassCode)
         {
             var Class = await _classService.GetClassByClassCode(ClassCode);

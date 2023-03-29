@@ -18,20 +18,20 @@ public class AuthenticationController : Controller
         _userService = userService;
     }
 
-    [HttpPost]
+    [HttpPost("Login")]
     public async Task<Response> Login(UserLoginViewModel userLogin) 
     {
         if(!ModelState.IsValid) return new Response(HttpStatusCode.BadRequest,"worng format");
         return await _userService.Login(userLogin);
     }
     
-    [HttpPost]
+    [HttpPost("Verify")]
     public async Task<Response> Verify(TokenRequest token)
     {
         return await _userService.VerifyToken(token);
     }
 
-    [HttpPost("RefreshToken")]
+    [HttpPost("RefreshToken")] // co gan auth kh ???
     public async Task<Response> GetRefreshToken(TokenModel oldToken)
     {
         return await _userService.GetRefreshToken(oldToken);

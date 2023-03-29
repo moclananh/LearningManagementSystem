@@ -5,15 +5,13 @@ using FluentValidation.Results;
 using FluentValidation;
 using Applications.ViewModels.Response;
 using Microsoft.AspNetCore.Authorization;
-using Applications.Services;
-using Domain.Entities;
 using System.Net;
-using Domain.EntityRelationship;
 
 namespace APIs.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(policy: "AuthUser")]
     public class OutputStandardController : ControllerBase
     {
         private readonly IOutputStandardService _outputStandardServices;
@@ -28,9 +26,11 @@ namespace APIs.Controllers
         }
 
         [HttpGet("GetAllOutputStandard")]
+        [Authorize(policy: "All")]
         public async Task<Response> GetAllOutputStandard(int pageIndex = 0, int pageSize = 10) => await _outputStandardServices.GetAllOutputStandardAsync(pageIndex, pageSize);
 
-        [HttpPost("CreateOutputStandard"), Authorize(policy: "AuthUser")]
+        [HttpPost("CreateOutputStandard")]
+        [Authorize(policy: "Admins")]
         public async Task<Response> CreateOutputStandard(CreateOutputStandardViewModel OutputstandardModule)
         {
             if (ModelState.IsValid)
@@ -48,10 +48,13 @@ namespace APIs.Controllers
             }
             return new Response(HttpStatusCode.BadRequest, "Invalid Input");
         }
+
         [HttpGet("GetOutputStandardByOutputStandardId/{OutputStandardId}")]
+        [Authorize(policy: "All")]
         public async Task<Response> GetOutputStandardByOutputStandardId(Guid OutputStandardId) => await _outputStandardServices.GetOutputStandardByOutputStandardIdAsync(OutputStandardId);
 
-        [HttpPut("UpdateOutputStandard/{OutputStandardId}"), Authorize(policy: "AuthUser")]
+        [HttpPut("UpdateOutputStandard/{OutputStandardId}")]
+        [Authorize(policy: "Admins")]
         public async Task<IActionResult> UpdateOutputStandard(Guid OutputStandardId, UpdateOutputStandardViewModel updateOutputStandardView)
         {
             if (ModelState.IsValid)
@@ -70,9 +73,11 @@ namespace APIs.Controllers
         }
 
         [HttpGet("GetOutputStandardBySyllabusId/{SyllabusId}")]
+        [Authorize(policy: "All")]
         public async Task<Response> GetOutputStandardBySyllabusId(Guid SyllabusId, int pageIndex = 0, int pageSize = 10) => await _outputStandardServices.GetOutputStandardBySyllabusIdAsync(SyllabusId, pageIndex, pageSize);
         
-        [HttpPost("OutputStandard/AddOutputStandardToSyllabus/{SyllabusId}/{OutputStandardId}"), Authorize(policy: "AuthUser")]
+        [HttpPost("OutputStandard/AddOutputStandardToSyllabus/{SyllabusId}/{OutputStandardId}")]
+        [Authorize(policy: "Admins")]
         public async Task<IActionResult> AddOutputStandard(Guid SyllabusId, Guid OutputStandardId)
         {
             if (ModelState.IsValid)
@@ -83,7 +88,8 @@ namespace APIs.Controllers
             return BadRequest("Add OutputStandard Fail");
         }
 
-        [HttpDelete("OutputStandard/DeleteOutputStandard/{SyllabusId}/{OutputStandardId}"), Authorize(policy: "AuthUser")]
+        [HttpDelete("OutputStandard/DeleteOutputStandard/{SyllabusId}/{OutputStandardId}")]
+        [Authorize(policy: "Admins")]
         public async Task<IActionResult> DeleteOutputStandard(Guid SyllabusId, Guid OutputStandardId)
         {
             if (ModelState.IsValid)

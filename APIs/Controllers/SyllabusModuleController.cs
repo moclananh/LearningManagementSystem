@@ -2,8 +2,7 @@
 using Applications.Interfaces;
 using Applications.ViewModels.Response;
 using Applications.ViewModels.SyllabusModuleViewModel;
-using Domain.Entities;
-using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace APIs.Controllers
@@ -19,12 +18,14 @@ namespace APIs.Controllers
         }
 
         [HttpGet("GetAllSyllabusModule")]
+        [Authorize(policy: "Admins")]
         public async Task<Pagination<SyllabusModuleViewModel>> GetAllSyllabusModule(int pageIndex = 0, int pageSize = 10)
         {
             return await _syllabusModuleService.GetAllSyllabusModuleAsync(pageIndex, pageSize);
         }
 
         [HttpPost("AddMultiModulesToSyllabus/{syllabusId}")]
+        [Authorize(policy: "Admins")]
         public async Task<Response> AddMultiModulesToSyllabus(Guid syllabusId, [FromBody] List<Guid> moduleIds)
         {
             return await _syllabusModuleService.AddMultiModulesToSyllabus(syllabusId, moduleIds);

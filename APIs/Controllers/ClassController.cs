@@ -12,6 +12,7 @@ namespace APIs.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(policy: "AuthUser")]
     public class ClassController : ControllerBase
     {
         private readonly IClassService _classServices;
@@ -30,6 +31,7 @@ namespace APIs.Controllers
         }
 
         [HttpPost("CreateClass")]
+        [Authorize(policy: "Admins")]
         public async Task<Response> CreateClass(CreateClassViewModel classModel)
         {
             if (ModelState.IsValid)
@@ -46,12 +48,15 @@ namespace APIs.Controllers
         }
 
         [HttpGet("GetAllClasses")]
+        [Authorize(policy: "All")]
         public async Task<Pagination<ClassViewModel>> GetAllClasses(int pageIndex = 0, int pageSize = 10) => await _classServices.GetAllClasses(pageIndex, pageSize);
 
         [HttpGet("GetClassById/{classId}")]
+        [Authorize(policy: "All")]
         public async Task<ClassViewModel> GetClassById(Guid classId) => await _classServices.GetClassById(classId);
 
         [HttpGet("GetClassByName/{className}")]
+        [Authorize(policy: "All")]
         public async Task<IActionResult> GetClassesByName(string className, int pageIndex = 0, int pageSize = 10)
         {
             if (ModelState.IsValid)
@@ -67,12 +72,15 @@ namespace APIs.Controllers
         }
 
         [HttpGet("GetEnableClasses")]
+        [Authorize(policy: "Admins")]
         public async Task<Pagination<ClassViewModel>> GetEnableClasses(int pageIndex = 0, int pageSize = 10) => await _classServices.GetEnableClasses(pageIndex, pageSize);
 
         [HttpGet("GetDisableClasses")]
+        [Authorize(policy: "Admins")]
         public async Task<Pagination<ClassViewModel>> GetDiableClasses(int pageIndex = 0, int pageSize = 10) => await _classServices.GetDisableClasses(pageIndex, pageSize);
 
         [HttpPut("UpdateClass/{ClassId}")]
+        [Authorize(policy: "Admins")]
         public async Task<IActionResult> UpdateClass(Guid classId, UpdateClassViewModel classModel)
         {
             if (ModelState.IsValid)
@@ -88,10 +96,12 @@ namespace APIs.Controllers
             return BadRequest("Update Class Fail");
         }
 
-        [HttpPatch("UpdateStatusOnlyOfClass/{ClassId}"), Authorize(policy: "AuthUser")]
+        [HttpPatch("UpdateStatusOnlyOfClass/{ClassId}")]
+        [Authorize(policy: "Admins")]
         public async Task<Response> UpdateStatusOnlyOfClass(Guid ClassId, UpdateStatusOnlyOfClass classModel) => await _classServices.UpdateStatusOnlyOfClass(ClassId, classModel);
 
         [HttpPost("Class/AddTrainingProgram/{classId}/{trainingProgramId}")]
+        [Authorize(policy: "Admins")]
         public async Task<IActionResult> AddTrainingProgram(Guid classId, Guid trainingProgramId)
         {
             if (ModelState.IsValid)
@@ -107,6 +117,7 @@ namespace APIs.Controllers
         }
 
         [HttpDelete("Class/DeleteTrainingProgram/{classId}/{trainingProgramId}")]
+        [Authorize(policy: "Admins")]
         public async Task<IActionResult> DeleTrainingProgram(Guid classId, Guid trainingProgramId)
         {
             if (ModelState.IsValid)
@@ -122,6 +133,7 @@ namespace APIs.Controllers
         }
 
         [HttpDelete("Class/DeleteUser/{classId}/{userId}")]
+        [Authorize(policy: "Admins")]
         public async Task<IActionResult> DeleteClassUser(Guid classId, Guid userId)
         {
             var result = await _classServices.RemoveUserFromClass(classId, userId);
@@ -134,6 +146,7 @@ namespace APIs.Controllers
         }
 
         [HttpPost("GetClassByFilter")]
+        [Authorize(policy: "All")]
         public async Task<IActionResult> GetClassByFilter(ClassFiltersViewModel filters, int pageNumber = 0, int pageSize = 10)
         {
             if (ModelState.IsValid)
@@ -155,6 +168,7 @@ namespace APIs.Controllers
         }
 
         [HttpGet("GetClassDetails/{classId}")]
+        [Authorize(policy: "All")]
         public async Task<IActionResult> GetClassDetails(Guid classId)
         {
             if (ModelState.IsValid)
@@ -170,6 +184,7 @@ namespace APIs.Controllers
         }
 
         [HttpPost("AddUserToClass/{classId}/{userId}")]
+        [Authorize(policy: "Admins")]
         public async Task<IActionResult> AddUserToClass(Guid classId, Guid userId)
         {
             if (ModelState.IsValid)
@@ -182,6 +197,7 @@ namespace APIs.Controllers
         }
 
         [HttpPut("ApprovedClass/{classId}")]
+        [Authorize(policy: "Admins")]
         public async Task<IActionResult> ApprovedClass(Guid classId)
         {
             if (ModelState.IsValid)

@@ -3,12 +3,14 @@ using Applications.ViewModels.AssignmentViewModels;
 using Applications.ViewModels.Response;
 using FluentValidation;
 using FluentValidation.Results;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace APIs.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(policy: "AuthUser")]
     public class AssignmentController : ControllerBase
     {
         private readonly IAssignmentService _assignmentService;
@@ -23,10 +25,13 @@ namespace APIs.Controllers
             _validatorCreate = validatorCreate;
             _validatorUpdate = validatorUpdate;
         }
+
         [HttpGet("GetAllAssignment")]
+        [Authorize(policy: "All")]
         public async Task<Response> ViewAllAssignmentAsync(int pageIndex = 0, int pageSize = 10) => await _assignmentService.ViewAllAssignmentAsync(pageIndex, pageSize);
 
         [HttpPost("CreateAssignment")]
+        [Authorize(policy: "Admins")]
         public async Task<IActionResult> CreateAssignment(CreateAssignmentViewModel AssignmentModel)
         {
             if (ModelState.IsValid)
@@ -46,21 +51,23 @@ namespace APIs.Controllers
         }
 
         [HttpGet("GetEnableAssignments")]
+        [Authorize(policy: "Admins")]
         public async Task<Response> GetEnableAssignments(int pageIndex = 0, int pageSize = 10) => await _assignmentService.GetEnableAssignments(pageIndex, pageSize);
 
         [HttpGet("GetDisableAssignments")]
+        [Authorize(policy: "Admins")]
         public async Task<Response> GetDiableAssignments(int pageIndex = 0, int pageSize = 10) => await _assignmentService.GetDisableAssignments(pageIndex, pageSize);
 
-        [HttpGet("GetAssignmentDetail/{AssignmentId}")]
-        public async Task<Response> GetAssignmentDetail(Guid AssignmentId) => await _assignmentService.GetAssignmentDetail(AssignmentId);
-
-        /*[HttpGet("ViewAssignmentById/{AssignmentId}")]
-        public async Task<Response> GetAssignmentById(Guid AssignmentId) => await _assignmentService.GetAssignmentById(AssignmentId);*/
+        [HttpGet("ViewAssignmentById/{AssignmentId}")]
+        [Authorize(policy: "All")]
+        public async Task<Response> GetAssignmentById(Guid AssignmentId) => await _assignmentService.GetAssignmentById(AssignmentId);
 
         [HttpGet("ViewAssignmentsByUnitId/{UnitId}")]
+        [Authorize(policy: "All")]
         public async Task<Response> GetAssignmentsByUnitId(Guid UnitId, int pageIndex = 0, int pageSize = 10) => await _assignmentService.GetAssignmentByUnitId(UnitId, pageIndex, pageSize);
 
         [HttpPut("UpdateAssignment/{AssignmentId}")]
+        [Authorize(policy: "Admins")]
         public async Task<IActionResult?> UpdateAssignment(Guid AssignmentId, UpdateAssignmentViewModel assignmentDTO)
         {
             if (ModelState.IsValid)
@@ -79,6 +86,7 @@ namespace APIs.Controllers
         }
 
         [HttpGet("GetAssignmentByName/{AssignmentName}")]
+        [Authorize(policy: "All")]
         public async Task<Response> GetAssignmentByName(string AssignmentName, int pageIndex = 0, int pageSize = 10) => await _assignmentService.GetAssignmentByName(AssignmentName, pageIndex, pageSize);
     }
 }

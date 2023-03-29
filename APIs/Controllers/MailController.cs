@@ -9,6 +9,7 @@ namespace APIs.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+[Authorize(policy: "AuthUser")]
 public class MailController : Controller
 {
     private readonly IMailService _mailService;
@@ -18,7 +19,8 @@ public class MailController : Controller
 	}
 	
 	[HttpPost("forgotPasswordByEmail")]
-	public async Task<IActionResult> forgotPasswordByEmail(string email)
+    [AllowAnonymous]
+    public async Task<IActionResult> forgotPasswordByEmail(string email)
 	{
 		string body = await _mailService.GetEmailTemplateForgotPassword("forgotPassword", email);
 		if (body == null) return StatusCode(StatusCodes.Status400BadRequest, "Email does not exist in the system!!");

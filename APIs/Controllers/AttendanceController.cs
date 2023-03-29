@@ -3,12 +3,14 @@ using Applications.ViewModels.AttendanceViewModels;
 using Applications.ViewModels.Response;
 using Domain.Enum.AttendenceEnum;
 using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace APIs.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(policy: "AuthUser")]
     public class AttendanceController : ControllerBase
     {
 
@@ -23,6 +25,7 @@ namespace APIs.Controllers
         }
 
         [HttpPost("GetAttendanceByFilter")]
+        [Authorize(policy: "All")]
         public async Task<IActionResult> GetAttendanceByFilter(AttendanceFilterViewModel filter, int pageNumber = 0, int pageSize = 10)
         {
             if (ModelState.IsValid)
@@ -42,12 +45,15 @@ namespace APIs.Controllers
         }
 
         [HttpPost("CreateAttendanceByClassId/{ClassId}")]
+        [Authorize(policy: "Admins")]
         public async Task<Response> CreateAttendanceByClassId(Guid ClassId) => await _attendanceService.CreateAttendanceAsync(ClassId);
 
         [HttpPut("CheckAttendance/{ClassCode}/{Email}")]
+        [Authorize(policy: "Admins")]
         public async Task<Response> CheckAttendance(string ClassCode, string Email) => await _attendanceService.CheckAttendance(ClassCode, Email) ;
 
         [HttpGet("ExportAttendance/{ClassCode}/{Date}")]
+        [Authorize(policy: "All")]
         public async Task<IActionResult> ExportAttendanceByClassCodeandDate(string ClassCode, DateTime Date)
         {
             if (string.IsNullOrEmpty(ClassCode) || Date == default)
@@ -69,6 +75,7 @@ namespace APIs.Controllers
         }
 
         [HttpPut("UpdateAttendance/{ClassCode}/{Email}/{Status}")]
+        [Authorize(policy: "Admins")]
         public async Task<Response> UpdateAttendance(DateTime Date, string ClassCode, string Email,AttendenceStatus Status) => await _attendanceService.UpdateAttendance(Date, ClassCode, Email, Status);
     }
 }

@@ -7,6 +7,7 @@ namespace APIs.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(policy: "AuthUser")]
     public class SyllabusTrainingProgramController : ControllerBase
     {
         private readonly ISyllabusTrainingProgramService _syllabusTrainingProgramService;
@@ -16,11 +17,13 @@ namespace APIs.Controllers
         }
 
         [HttpGet("GetAllSyllabusTrainingProgram")]
+        [Authorize(policy: "Admins")]
         public async Task<Response> GetAllSyllabusOutputStandards(int pageIndex = 0, int pageSize = 10)
         {
             return await _syllabusTrainingProgramService.GetAllSyllabusTrainingPrograms(pageIndex, pageSize);
         }
-        [HttpPost("AddMultipleSyllabusesToTrainingProgram/{trainingProgramId}" ), Authorize(policy: "AuthUser")]
+        [HttpPost("AddMultipleSyllabusesToTrainingProgram/{trainingProgramId}" )]
+        [Authorize(policy: "Admins")]
         public async Task<Response> AddMultipleSyllabusesToTrainingProgram(Guid trainingProgramId, List<Guid> syllabusesId)
         {
             return await _syllabusTrainingProgramService.AddMultipleSyllabusesToTrainingProgram(trainingProgramId, syllabusesId);

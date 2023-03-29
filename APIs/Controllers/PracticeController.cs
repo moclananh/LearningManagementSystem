@@ -10,6 +10,7 @@ namespace APIs.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(policy: "AuthUser")]
     public class PracticeController : ControllerBase
     {
         private readonly IPracticeService _service;
@@ -21,16 +22,21 @@ namespace APIs.Controllers
             _updatePracticeValidator = UpdatePracticeValidator;
             _createPracticeValidator = CreatePracticeValidator;
         }
+
         [HttpGet("GetPracticesByUnitId/{UnitId}")]
+        [Authorize(policy: "All")]
         public async Task<Pagination<PracticeViewModel>> GetPracticesByUnitId(Guid UnitId) => await _service.GetPracticeByUnitId(UnitId);
 
         [HttpGet("GetPracticeById/{PracticeId}")]
+        [Authorize(policy: "All")]
         public async Task<PracticeViewModel> GetPracticeById(Guid PracticeId) => await _service.GetPracticeById(PracticeId);
 
         [HttpGet("GetAllPractice")]
+        [Authorize(policy: "All")]
         public async Task<Response> GetAllPractice(int pageIndex = 0, int pageSize = 10) => await _service.GetAllPractice(pageIndex, pageSize);
 
-        [HttpPost("CreatePractice"), Authorize(policy: "AuthUser")]
+        [HttpPost("CreatePractice")]
+        [Authorize(policy: "Admins")]
         public async Task<IActionResult> CreatePractice(CreatePracticeViewModel PracticeModel)
         {
             if (ModelState.IsValid)
@@ -49,12 +55,19 @@ namespace APIs.Controllers
         }
 
         [HttpGet("GetPracticeByName/{PracticeName}")]
+        [Authorize(policy: "All")]
         public async Task<Response> GetPracticeByName(string PracticeName, int pageIndex = 0, int pageSize = 10) => await _service.GetPracticeByName(PracticeName, pageIndex, pageSize);
+        
         [HttpGet("GetEnablePractice")]
+        [Authorize(policy: "Admins")]
         public async Task<Pagination<PracticeViewModel>> GetEnablePractices(int pageIndex = 0, int pageSize = 10) => await _service.GetEnablePractice(pageIndex, pageSize);
+        
         [HttpGet("GetDisablePractice")]
+        [Authorize(policy: "Admins")]
         public async Task<Pagination<PracticeViewModel>> GetDisablePractice(int pageIndex = 0, int pageSize = 10) => await _service.GetDisablePractice(pageIndex, pageSize);
-        [HttpPut("UpdatePractice/{PracticeId}"), Authorize(policy: "AuthUser")]
+        
+        [HttpPut("UpdatePractice/{PracticeId}")]
+        [Authorize(policy: "Admins")]
         public async Task<IActionResult> UpdatePractice(Guid PracticeId, UpdatePracticeViewModel practiceDTO)
         {
             if (ModelState.IsValid)
