@@ -16,13 +16,12 @@ namespace Infrastructures.Repositories
         public async Task<Pagination<AbsentRequest>> GetAllAbsentRequestByEmail(string Email, int pageNumber = 0, int pageSize = 10)
         {
             var itemCount = await _dbContext.AbsentRequests.CountAsync();
-            var items = await _dbSet.Where(x => x.UserId.Equals(Email))
+            var items = await _dbContext.AbsentRequests.Where(x => x.User.Email == Email)
                                     .OrderByDescending(x => x.CreationDate)
                                     .Skip(pageNumber * pageSize)
                                     .Take(pageSize)
                                     .AsNoTracking()
-            .ToListAsync();
-
+                                    .ToListAsync();
             var result = new Pagination<AbsentRequest>()
             {
                 PageIndex = pageNumber,
@@ -30,7 +29,6 @@ namespace Infrastructures.Repositories
                 TotalItemsCount = itemCount,
                 Items = items,
             };
-
             return result;
         }
     }

@@ -3,6 +3,7 @@ using Applications.Interfaces;
 using Applications.ViewModels.AbsentRequest;
 using Applications.ViewModels.Response;
 using AutoMapper;
+using DocumentFormat.OpenXml.Spreadsheet;
 using System.Net;
 
 namespace Applications.Services
@@ -20,8 +21,23 @@ namespace Applications.Services
         public async Task<Response> GetAllAbsentRequestByEmail(string Email, int pageIndex = 0, int pageSize = 10)
         {
             var AbsentRequestObj = await _unitOfWork.AbsentRequestRepository.GetAllAbsentRequestByEmail(Email, pageIndex, pageSize);
-            if (AbsentRequestObj.Items.Count() < 1) return new Response(HttpStatusCode.BadRequest, "Id not found");
-            else return new Response(HttpStatusCode.OK, "Search Succeed", _mapper.Map<Pagination<AbsentRequestViewModel>>(AbsentRequestObj));
+            var result = _mapper.Map<Pagination<AbsentRequestViewModel>>(AbsentRequestObj);
+
+            var guidList = AbsentRequestObj.Items.Select(x => x.CreatedBy).ToList();
+            var users = await _unitOfWork.UserRepository.GetEntitiesByIdsAsync(guidList);
+            foreach(var item in result.Items)
+            {
+                if (string.IsNullOrEmpty(item.CreatedBy)) continue;
+
+                var createdBy = users.FirstOrDefault(x => x.Id == Guid.Parse(item.CreatedBy));
+                if (createdBy != null)
+                {
+                    item.CreatedBy = createdBy.Email;
+                }
+                return new Response(HttpStatusCode.OK, "Search succeed", result);
+            }
+
+            return new Response(HttpStatusCode.OK, "Not found"); ;
         }
 
         public async Task<Response> GetAbsentById(Guid AbsentId)
