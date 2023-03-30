@@ -1,4 +1,5 @@
 ﻿using Application.Interfaces;
+using Application.ViewModels.QuizzViewModels;
 using Applications.ViewModels.AuditResultViewModels;
 using AutoFixture;
 using Domain.Entities;
@@ -70,6 +71,26 @@ namespace Applications.Tests.Services.AuditResultServices
 
             var result = _auditResultServices.GetByAudiPlanId(auditPlanId);
             result.Result.Should().BeEquivalentTo(expected);
+        }
+
+        [Fact]
+        public async Task GetAuditResultById_ShouldReturnCorrectData()
+        {
+            // Arrange
+            var auditResultObj = _fixture.Build<AuditResult>()
+                .Without(x => x.AuditPlan)
+                .Create();
+            var expected = _mapperConfig.Map<AuditResultViewModel>(auditResultObj);
+            _unitOfWorkMock.Setup(x => x.AuditResultRepository.GetAuditResultById(auditResultObj.Id))
+                .ReturnsAsync(auditResultObj);
+
+            // Act
+            var result = await _auditResultServices.GetAuditResultById(auditResultObj.Id);
+
+            // Assert
+            _unitOfWorkMock.Verify(x => x.AuditResultRepository.GetAuditResultById(auditResultObj.Id), Times.Once());
+            Assert.NotNull(result);
+
         }
     }
 }
