@@ -58,7 +58,7 @@ namespace APIs.Controllers
         public async Task<Response> GetAuditPlanByName(string AuditPlanName, int pageIndex = 0, int pageSize = 10) => await _auditPlanService.GetAuditPlanByName(AuditPlanName, pageIndex, pageSize);
         
         [HttpPost("CreateAuditPlan")]
-        [Authorize(policy: "OnlySupperAdmin, Auditor")]
+        [Authorize(policy: "Audits")]
         public async Task<IActionResult> CreateAuditPlan(CreateAuditPlanViewModel createAuditPlanViewModel)
         {
             if (ModelState.IsValid)
@@ -77,7 +77,7 @@ namespace APIs.Controllers
         }
 
         [HttpPut("UpdateAuditPlan/{AuditPlanId}")]
-        [Authorize(policy: "OnlySupperAdmin, Auditor")]
+        [Authorize(policy: "Audits")]
         public async Task<IActionResult> UpdateAuditPlan(Guid AuditPlanId, UpdateAuditPlanViewModel updateAuditPlanView)
         {
             if (ModelState.IsValid)
@@ -96,7 +96,7 @@ namespace APIs.Controllers
         }
 
         [HttpPost("AuditPlan/AddUser/{AuditPlanId}/{UserId}")]
-        [Authorize(policy: "OnlySupperAdmin, Auditor")]
+        [Authorize(policy: "Audits")]
         public async Task<IActionResult> AddUser(Guid AuditPlanId, Guid UserId)
         {
             var result = await _auditPlanService.AddUserToAuditPlan(AuditPlanId, UserId);
@@ -109,7 +109,7 @@ namespace APIs.Controllers
         }
 
         [HttpDelete("AuditPlan/DeleteUser/{AuditPlanId}/{UserId}")]
-        [Authorize(policy: "OnlySupperAdmin, Auditor")]
+        [Authorize(policy: "Audits")]
         public async Task<IActionResult> DeleteUser(Guid AuditPlanId, Guid UserId)
         {
             var result = await _auditPlanService.RemoveUserFromAuditPlan(AuditPlanId, UserId);

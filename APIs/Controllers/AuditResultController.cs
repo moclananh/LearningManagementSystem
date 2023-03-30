@@ -29,13 +29,14 @@ namespace API.Controllers
         }
 
         [HttpGet("GetAuditResultById/{auditresultId}")]
+        [Authorize(policy: "All")]
         public async Task<AuditResultViewModel> GetAuditResultById(Guid auditresultId)
         {
             return await _service.GetAuditResultById(auditresultId);
         }
 
         [HttpPut("UpdateAuditResult/{AuditResultId}")]
-        [Authorize(policy: "OnlySupperAdmin, Auditor, Trainer, Mentor")]
+        [Authorize(policy: "AuditResults")]
         public async Task<IActionResult> UpdateAuditResult(Guid AuditResultId, UpdateAuditResultViewModel assignmentDTO)
         {
             if (ModelState.IsValid)

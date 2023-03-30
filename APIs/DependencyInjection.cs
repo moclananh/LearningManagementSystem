@@ -119,6 +119,8 @@ public static class DependencyInjection
             opt.AddPolicy("All", policy => policy.RequireRole("SuperAdmin","ClassAdmin","Trainer","Student","Mentor","Auditor"));
             opt.AddPolicy("OnlySupperAdmin",policy => policy.RequireRole("SuperAdmin"));
             opt.AddPolicy("Admins", policy => policy.RequireRole("SuperAdmin", "ClassAdmin"));
+            opt.AddPolicy("Audits", policy => policy.RequireRole("SuperAdmin", "Auditor"));
+            opt.AddPolicy("AuditResults", policy => policy.RequireRole("SuperAdmin", "Auditor", "Mentor", "Trainer"));
         });
         //-------------------------------------------------------------------------------------------
         return services;
