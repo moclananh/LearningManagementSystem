@@ -1,11 +1,9 @@
-﻿using Application.ViewModels.UnitViewModels;
-using Applications.Commons;
+﻿using Applications.Commons;
 using Applications.Interfaces;
 using Applications.ViewModels.OutputStandardViewModels;
 using Applications.ViewModels.Response;
 using Applications.ViewModels.SyllabusOutputStandardViewModels;
 using AutoMapper;
-using DocumentFormat.OpenXml.Wordprocessing;
 using Domain.Entities;
 using Domain.EntityRelationship;
 using System.Net;
@@ -20,12 +18,6 @@ namespace Applications.Services
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
-        }
-        public async Task<List<OutputStandardViewModel>> ViewAllOutputStandardAsync()
-        {
-            var outputStandard = await _unitOfWork.OutputStandardRepository.GetAllAsync();
-            var result = _mapper.Map<List<OutputStandardViewModel>>(outputStandard);
-            return result;
         }
         public async Task<Response> GetOutputStandardByOutputStandardIdAsync(Guid OutputStandardId)
         {

@@ -1,11 +1,17 @@
 ﻿using Applications.Commons;
 using Applications.Interfaces;
+using Applications.Services;
+using Applications.ViewModels.ModuleUnitViewModels;
 using Applications.ViewModels.OutputStandardViewModels;
+using Applications.ViewModels.SyllabusOutputStandardViewModels;
 using AutoFixture;
+using AutoMapper;
 using Domain.Entities;
+using Domain.EntityRelationship;
 using Domain.Tests;
 using FluentAssertions;
 using Moq;
+using System.Net;
 
 namespace Applications.Tests.Services.OutputStandardServices
 {
@@ -137,5 +143,90 @@ namespace Applications.Tests.Services.OutputStandardServices
             _unitOfWorkMock.Verify(x => x.OutputStandardRepository.GetOutputStandardBySyllabusIdAsync(id, 0, 10), Times.Once());
         }
 
+        [Fact]
+        public async Task AddOutputStandardToSyllabus_ShouldReturnCorrectData()
+        {
+            //arrange
+            var OutputStandardMockData = _fixture.Build<OutputStandard>()
+                                       .Without(x => x.SyllabusOutputStandards)
+                                       .Create();
+            var SyllabusMockData = _fixture.Build<Syllabus>()
+                                         .Without(x => x.TrainingProgramSyllabi)
+                                         .Without(x => x.SyllabusOutputStandards)
+                                         .Without(x => x.SyllabusModules)
+                                         .Create();
+            var mockData = new SyllabusOutputStandard()
+            {
+                OutputStandard = OutputStandardMockData,
+                Syllabus = SyllabusMockData
+            };
+            _unitOfWorkMock.Setup(x => x.OutputStandardRepository.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(OutputStandardMockData);
+            _unitOfWorkMock.Setup(x => x.SyllabusRepository.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(SyllabusMockData);
+            _unitOfWorkMock.Setup(x => x.SyllabusOutputStandardRepository.AddAsync(It.IsAny<SyllabusOutputStandard>())).Returns(Task.CompletedTask);
+            _unitOfWorkMock.Setup(x => x.SaveChangeAsync()).ReturnsAsync(1);
+            var expected = _mapperConfig.Map<CreateSyllabusOutputStandardViewModel>(mockData);
+            //act
+            var result = await _outputStandardService.AddOutputStandardToSyllabus(OutputStandardMockData.Id, SyllabusMockData.Id);
+            //assert
+            result.Should().BeEquivalentTo(expected);
+        }
+
+        [Fact]
+        public async Task AddOutputStandardToSyllabus_ShouldReturnNull_WhenNotFoundModule()
+        {
+            //arrange
+            var OutputStandardMockData = _fixture.Build<OutputStandard>()
+                                       .Without(x => x.SyllabusOutputStandards)
+                                       .Create();
+            var SyllabusMockData = _fixture.Build<Syllabus>()
+                                         .Without(x => x.TrainingProgramSyllabi)
+                                         .Without(x => x.SyllabusOutputStandards)
+                                         .Without(x => x.SyllabusModules)
+                                         .Create();
+            var mockData = new SyllabusOutputStandard()
+            {
+                OutputStandard = OutputStandardMockData,
+                Syllabus = SyllabusMockData
+            };
+            _unitOfWorkMock.Setup(x => x.OutputStandardRepository.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(OutputStandardMockData);
+            _unitOfWorkMock.Setup(x => x.SyllabusRepository.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(SyllabusMockData);
+            _unitOfWorkMock.Setup(x => x.SyllabusOutputStandardRepository.AddAsync(It.IsAny<SyllabusOutputStandard>())).Returns(Task.CompletedTask);
+            _unitOfWorkMock.Setup(x => x.SaveChangeAsync()).ReturnsAsync(0);
+            var expected = _mapperConfig.Map<CreateSyllabusOutputStandardViewModel>(mockData);
+            //act
+            var result = await _outputStandardService.AddOutputStandardToSyllabus(OutputStandardMockData.Id, SyllabusMockData.Id);
+            //assert
+            result.Should().BeNull();
+        }
+
+        [Fact]
+        public async Task GetAllOutputStandard_ShouldReturnCorrectData()
+        {
+            //arrange
+            var MockData = new Pagination<OutputStandard>
+            {
+                Items = _fixture.Build<OutputStandard>()
+                                .Without(x => x.SyllabusOutputStandards)
+                                .CreateMany(30)
+                                .ToList(),
+                PageIndex = 0,
+                PageSize = 10,
+                TotalItemsCount = 30
+            };
+            var user = _fixture.Build<User>()
+                               .Without(x => x.UserAuditPlans)
+                               .Without(x => x.AbsentRequests)
+                               .Without(x => x.ClassUsers)
+                               .Without(x => x.Attendences)
+                               .CreateMany(3)
+                               .ToList();
+            var expected = _mapperConfig.Map<Pagination<OutputStandardViewModel>>(MockData);
+            _unitOfWorkMock.Setup(x => x.OutputStandardRepository.ToPagination(0, 10)).ReturnsAsync(MockData);
+            _unitOfWorkMock.Setup(x => x.UserRepository.GetEntitiesByIdsAsync(It.IsAny<List<Guid?>>())).ReturnsAsync(user);
+            //act
+            var result = await _outputStandardService.GetAllOutputStandardAsync();
+            //assert
+            _unitOfWorkMock.Verify(x => x.OutputStandardRepository.ToPagination(0, 10), Times.Once());
+        }
     }
 }
