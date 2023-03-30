@@ -6,6 +6,8 @@ using ClosedXML.Excel;
 using Domain.Entities;
 using Domain.Tests;
 using System.Net;
+using Applications.Repositories;
+using OfficeOpenXml;
 
 namespace Applications.Tests.Services.QuizzQuestionServices
 {
@@ -15,6 +17,56 @@ namespace Applications.Tests.Services.QuizzQuestionServices
         public QuizzQuestionServiceTests()
         {
             _quizzQuestionService = new QuizzQuestionService(_unitOfWorkMock.Object, _mapperConfig);
+        }
+
+        [Fact]
+        public async Task ExportQuizzQuestionByQuizzId_WithValidInput_ReturnsExcelFile()
+        {
+            // Arrange
+            var quizzId = Guid.NewGuid();
+            var questions = new List<QuizzQuestion>
+            {
+                new QuizzQuestion { Id = Guid.NewGuid(), QuizzId = quizzId, Question = "Question 1", Answer = "Answer 1", Note = "Explanation 1" },
+                new QuizzQuestion { Id = Guid.NewGuid(), QuizzId = quizzId, Question = "Question 2", Answer = "Answer 2", Note = "Explanation 2" },
+                new QuizzQuestion { Id = Guid.NewGuid(), QuizzId = quizzId, Question = "Question 3", Answer = "Answer 3", Note = "Explanation 3" }
+            };
+            var mockUnitOfWork = new Mock<IUnitOfWork>();
+            var mockRepository = new Mock<IQuizzQuestionRepository>();
+            _unitOfWorkMock.Setup(uow => uow.QuizzQuestionRepository).Returns(mockRepository.Object);
+            mockRepository.Setup(repo => repo.GetQuizzQuestionListByQuizzId(quizzId)).ReturnsAsync(questions);
+
+            // Act
+            byte[] result = await _quizzQuestionService.ExportQuizzQuestionByQuizzId(quizzId);
+
+            // Assert
+            using (var stream = new MemoryStream(result))
+            {
+                using (var excelPackage = new ExcelPackage(stream))
+                {
+                    // Make sure that the workbook contains at least one worksheet
+                    Assert.True(excelPackage.Workbook.Worksheets.Count > 0);
+
+                    var worksheet = excelPackage.Workbook.Worksheets[0];
+
+                    // Check that the worksheet name is correct
+                    Assert.Equal("Quizz Questions", worksheet.Name);
+
+                    // Check the headers
+                    Assert.Equal("QuizzID", worksheet.Cells[1, 1].Value.ToString());
+                    Assert.Equal("Question", worksheet.Cells[2, 1].Value.ToString());
+                    Assert.Equal("Answer", worksheet.Cells[2, 2].Value.ToString());
+                    Assert.Equal("Note", worksheet.Cells[2, 3].Value.ToString());
+
+                    // Check the values
+                    for (int i = 0; i < questions.Count; i++)
+                    {
+                        var question = questions[i];
+                        Assert.Equal(question.Question, worksheet.Cells[i + 3, 1].Value.ToString());
+                        Assert.Equal(question.Answer, worksheet.Cells[i + 3, 2].Value.ToString());
+                        Assert.Equal(question.Note, worksheet.Cells[i + 3, 3].Value.ToString());
+                    }
+                }
+            }
         }
 
         [Fact]

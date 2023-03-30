@@ -228,5 +228,30 @@ namespace Applications.Tests.Services.OutputStandardServices
             //assert
             _unitOfWorkMock.Verify(x => x.OutputStandardRepository.ToPagination(0, 10), Times.Once());
         }
+        [Fact]
+        public async Task RemoveOutputStandardToSyllabus_ShouldRemoveOutputStandardFromSyllabus()
+        {
+            // Arrange
+            var outputStandardId = Guid.NewGuid();
+            var syllabusId = Guid.NewGuid();
+            var outputStandard = new SyllabusOutputStandard
+            {
+                Id = outputStandardId,
+                SyllabusId = syllabusId,
+            };
+            var mockUnitOfWork = new Mock<IUnitOfWork>();
+            mockUnitOfWork.Setup(uow => uow.SyllabusOutputStandardRepository.GetSyllabusOutputStandard(syllabusId, outputStandardId))
+                          .ReturnsAsync(outputStandard);
+            var mockMapper = new Mock<IMapper>();
+            var service = new OutputStandardService(mockUnitOfWork.Object, mockMapper.Object);
+
+            // Act
+            var result = await service.RemoveOutputStandardToSyllabus(syllabusId, outputStandardId);
+
+            // Assert
+            mockUnitOfWork.Verify(uow => uow.SyllabusOutputStandardRepository.SoftRemove(outputStandard), Times.Once);
+            mockUnitOfWork.Verify(uow => uow.SaveChangeAsync(), Times.Once);
+            Assert.Null(result);
+        }
     }
 }
