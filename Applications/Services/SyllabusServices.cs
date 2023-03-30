@@ -95,8 +95,14 @@ namespace Applications.Services
         {
 
             var syllabus = await _unitOfWork.SyllabusRepository.GetByIdAsync(SyllabusId);
+            var result = _mapper.Map<SyllabusViewModel>(syllabus);
+            var createBy = await _unitOfWork.UserRepository.GetByIdAsync(syllabus?.CreatedBy);
+            if (createBy != null)
+            {
+                result.CreatedBy = createBy.Email;
+            }
             if (syllabus == null) return new Response(HttpStatusCode.NoContent, "Id not found");
-            else return new Response(HttpStatusCode.OK, "Search succeed", _mapper.Map<SyllabusViewModel>(syllabus));
+            else return new Response(HttpStatusCode.OK, "Search succeed", result);
         }
 
         public async Task<Response> GetSyllabusByName(string Name, int pageNumber = 0, int pageSize = 10)
@@ -183,8 +189,11 @@ namespace Applications.Services
         {
             var syllabus = await _unitOfWork.SyllabusRepository.GetSyllabusDetail(syllabusId);
             var result = _mapper.Map<SyllabusViewModel>(syllabus);
-            var createBy = await _unitOfWork.UserRepository.GetByIdAsync(syllabus.CreatedBy);
-            result.CreatedBy = createBy.Email;
+            var createBy = await _unitOfWork.UserRepository.GetByIdAsync(syllabus?.CreatedBy);
+            if (createBy != null)
+            {
+                result.CreatedBy = createBy.Email;
+            }
             if (syllabus == null) return new Response(HttpStatusCode.NoContent, "Id not found");
             else return new Response(HttpStatusCode.OK, "Search succeed", result);
         }

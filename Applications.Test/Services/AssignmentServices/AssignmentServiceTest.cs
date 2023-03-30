@@ -2,6 +2,7 @@
 using Applications.Commons;
 using Applications.Interfaces;
 using Applications.ViewModels.AssignmentViewModels;
+using Applications.ViewModels.SyllabusViewModels;
 using AutoFixture;
 using Domain.Entities;
 using Domain.Tests;
@@ -178,8 +179,12 @@ namespace Applications.Tests.Services.AssignmentServices
                                 .Without(x => x.AssignmentQuestions)
                                 .Without(x => x.Unit)
                                         .Create();
-            _unitOfWorkMock.Setup(x => x.AssignmentRepository.GetByIdAsync(assignmentObj.Id))
-                           .ReturnsAsync(assignmentObj);
+            var expected = _mapperConfig.Map<AssignmentViewModel>(assignmentObj);
+            _unitOfWorkMock.Setup(x => x.AssignmentRepository.GetByIdAsync(assignmentObj.Id)).ReturnsAsync(assignmentObj);
+            var createBy = new User { Email = "mock@example.com" };
+            _unitOfWorkMock.Setup(x => x.UserRepository.GetByIdAsync(assignmentObj.CreatedBy)).ReturnsAsync(createBy);
+            expected.CreatedBy = createBy.Email;
+
             //act
             var result = await _assignmentService.GetAssignmentById(assignmentObj.Id);
             //assert

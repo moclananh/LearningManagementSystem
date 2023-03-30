@@ -3,6 +3,7 @@ using Applications.Interfaces;
 using Applications.ViewModels.SyllabusModuleViewModel;
 using Applications.ViewModels.SyllabusViewModels;
 using AutoFixture;
+using DocumentFormat.OpenXml.Spreadsheet;
 using DocumentFormat.OpenXml.Wordprocessing;
 using Domain.Entities;
 using Domain.EntityRelationship;
@@ -205,6 +206,9 @@ namespace Applications.Tests.Services.SyllabusServices
             //var syllabus = _mapperConfig.Map<Syllabus>(syllabusMockData);
             _unitOfWorkMock.Setup(s => s.SyllabusRepository.GetByIdAsync(syllabusMockData.Id)).ReturnsAsync(syllabusMockData);
             var expected = _mapperConfig.Map<SyllabusViewModel>(syllabusMockData);
+            var createBy = new User { Email = "mock@example.com" };
+            _unitOfWorkMock.Setup(x => x.UserRepository.GetByIdAsync(syllabusMockData.CreatedBy)).ReturnsAsync(createBy);
+            expected.CreatedBy = createBy.Email;
 
             //act
             var result = await _syllabusService.GetSyllabusById(syllabusMockData.Id);
@@ -230,9 +234,18 @@ namespace Applications.Tests.Services.SyllabusServices
                 PageSize = 10,
                 TotalItemsCount = 30,
             };
+            var user = _fixture.Build<User>()
+                               .Without(s => s.UserAuditPlans)
+                               .Without(s => s.AbsentRequests)
+                               .Without(s => s.ClassUsers)
+                               .Without(s => s.Attendences)
+                               .CreateMany(3)
+                               .ToList();
+
             //var syllabus = _mapperConfig.Map<Pagination<Syllabus>>(syllabusMockData);
             _unitOfWorkMock.Setup(s => s.SyllabusRepository.GetSyllabusByName("Mock", 0, 10)).ReturnsAsync(syllabusMockData);
             var expected = _mapperConfig.Map<Pagination<SyllabusViewModel>>(syllabusMockData);
+            _unitOfWorkMock.Setup(s => s.UserRepository.GetEntitiesByIdsAsync(It.IsAny<List<Guid?>>())).ReturnsAsync(user);
 
             //act
             var result = await _syllabusService.GetSyllabusByName("Mock", 0, 10);
