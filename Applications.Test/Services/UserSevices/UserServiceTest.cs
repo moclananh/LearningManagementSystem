@@ -1,4 +1,5 @@
-﻿using Applications.Interfaces;
+﻿using Applications.Commons;
+using Applications.Interfaces;
 using Applications.Services;
 using Applications.ViewModels.UserViewModels;
 using AutoFixture;
@@ -36,4 +37,36 @@ public class UserServiceTest : SetupTest
         //assert
         result.Result.Should().BeEquivalentTo(expected);
     }
+
+    [Fact]
+    public async Task SearchUserByName_shouldReturnCorectData()
+    {
+        //arrage
+        var userMockData = new Pagination<User>
+        {
+            Items = _fixture.Build<User>()
+                .Without(x => x.AbsentRequests)
+                .Without(x => x.Attendences)
+                .Without(x => x.UserAuditPlans)
+                .Without(x => x.ClassUsers)
+                .With(x => x.firstName, "mock")
+                .With(x => x.lastName, "mock")
+                .CreateMany(30)
+                .ToList(),
+
+            PageIndex = 0,
+            PageSize = 10,
+            TotalItemsCount = 30  
+        };
+        _unitOfWorkMock.Setup(u => u.UserRepository.SearchUserByName("mock",0,10)).ReturnsAsync(userMockData);
+        var expected = _mapperConfig.Map<Pagination<UserViewModel>>(userMockData);
+
+        //act
+        var result = await _userService.SearchUserByName("mock", 0, 10);
+
+        //assert
+        _unitOfWorkMock.Verify(u => u.UserRepository.SearchUserByName("mock", 0, 10));
+        result.Should().BeEquivalentTo(expected);
+    }
+
 }
