@@ -1,4 +1,5 @@
-﻿using Applications.Commons;
+﻿using Application.ViewModels.UnitViewModels;
+using Applications.Commons;
 using Applications.Interfaces;
 using Applications.Services;
 using Applications.ViewModels.PracticeViewModels;
@@ -218,6 +219,58 @@ namespace Applications.Tests.Services.PracticeServices
             var result = await _practiceService.GetPracticeByUnitId(id);
             //assert
             _unitOfWorkMock.Verify(x => x.PracticeRepository.GetPracticeByUnitId(id, 0, 10), Times.Once());
+        }
+        [Fact]
+        public async Task GetEnablePractice_ShouldReturnCorrectData()
+        {
+            //arrange
+            var MockData = new Pagination<Practice>
+            {
+                Items = _fixture.Build<Practice>()
+                                .Without(x => x.Unit)
+                                .Without(x => x.UnitId)
+                                .Without(x => x.Status)
+                                .Without(x => x.PracticeQuestions)
+                                .With(x => x.Status, Domain.Enum.StatusEnum.Status.Enable)
+                                .CreateMany(30)
+                                .ToList(),
+                PageIndex = 0,
+                PageSize = 10,
+                TotalItemsCount = 30,
+            };
+            var practice = _mapperConfig.Map<Pagination<Practice>>(MockData);
+            _unitOfWorkMock.Setup(x => x.PracticeRepository.GetEnablePractices(0, 10)).ReturnsAsync(MockData);
+            var expected = _mapperConfig.Map<Pagination<PracticeViewModel>>(practice);
+            //act
+            var result = await _practiceService.GetEnablePractice();
+            //assert
+            _unitOfWorkMock.Verify(x => x.PracticeRepository.GetEnablePractices(0, 10), Times.Once());
+        }
+        [Fact]
+        public async Task GetDisableUnits_ShouldReturnCorrectData()
+        {
+            //arrange
+            var MockData = new Pagination<Practice>
+            {
+                Items = _fixture.Build<Practice>()
+                                 .Without(x => x.Unit)
+                                .Without(x => x.UnitId)
+                                .Without(x => x.Status)
+                                .Without(x => x.PracticeQuestions)
+                                .With(x => x.Status, Domain.Enum.StatusEnum.Status.Disable)
+                                .CreateMany(30)
+                                .ToList(),
+                PageIndex = 0,
+                PageSize = 10,
+                TotalItemsCount = 30,
+            };
+            var practice = _mapperConfig.Map<Pagination<Practice>>(MockData);
+            _unitOfWorkMock.Setup(x => x.PracticeRepository.GetDisablePractices(0, 10)).ReturnsAsync(MockData);
+            var expected = _mapperConfig.Map<Pagination<PracticeViewModel>>(practice);
+            //act
+            var result = await _practiceService.GetDisablePractice();
+            //assert
+            _unitOfWorkMock.Verify(x => x.PracticeRepository.GetDisablePractices(0, 10), Times.Once());
         }
     }
 }
