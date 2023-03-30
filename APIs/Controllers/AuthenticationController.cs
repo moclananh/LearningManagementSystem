@@ -7,7 +7,7 @@ using Applications.ViewModels.TokenViewModels;
 
 namespace APIs.Controllers;
 
-[Route("api/[controller]/[action]")]
+[Route("api/[controller]")]
 [ApiController]
 public class AuthenticationController : Controller
 {
@@ -31,7 +31,7 @@ public class AuthenticationController : Controller
         return await _userService.VerifyToken(token);
     }
 
-    [HttpPost("RefreshToken")] // co gan auth kh ???
+    [HttpPost("RefreshToken")] 
     public async Task<Response> GetRefreshToken(TokenModel oldToken)
     {
         return await _userService.GetRefreshToken(oldToken);
