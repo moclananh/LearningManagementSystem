@@ -281,10 +281,6 @@ public class UserService : IUserService
     // Update
     public async Task<Response> UpdateUser(Guid id, UpdateUserViewModel updateUserViewModel)
     {
-        var currentUser = await _unitOfWork.UserRepository.GetByIdAsync(_claimService.GetCurrentUserId);
-        if (!_claimService.GetCurrentUserId.Equals(id) && currentUser.Role != Role.SuperAdmin)
-            return new Response(HttpStatusCode.Forbidden,
-                $"You are not authorized to use this feature!");
         var user = await _unitOfWork.UserRepository.GetByIdAsync(id);
         if (user is null) return new Response(HttpStatusCode.NoContent, "Not Found this user");
 

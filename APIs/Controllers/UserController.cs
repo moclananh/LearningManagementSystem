@@ -45,7 +45,7 @@ public class UserController : Controller
     /// <param name="user"></param>
     /// <returns></returns>
     [HttpPut("UpdateUser/{UserId}")]
-    [Authorize(policy: "All")]
+    [Authorize(policy: "OnlySupperAdmin")]
     public async Task<Response> UpdateUser(Guid UserId, [FromBody] UpdateUserViewModel user) => await _userService.UpdateUser(UserId, user);
 
     /// <summary>
