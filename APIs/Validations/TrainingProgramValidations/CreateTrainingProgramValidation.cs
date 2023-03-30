@@ -10,7 +10,7 @@ namespace APIs.Validations.TrainingProgramValidations
             RuleFor(x => x.TrainingProgramName)
                 .NotEmpty()
                 .WithMessage("The 'TrainingProgramName' should not be empty")
-                .Length(6, 150);
+                .MaximumLength(350);
         }
     }
 }
