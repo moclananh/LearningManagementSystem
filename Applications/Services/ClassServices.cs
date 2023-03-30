@@ -398,7 +398,7 @@ namespace Applications.Services
                 var isSuccess = await _unitOfWork.SaveChangeAsync() > 0;
                 if (isSuccess)
                 {
-                    return new Response(HttpStatusCode.OK, "update success");
+                    return new Response(HttpStatusCode.OK, "update success", classObj);
                 }
             }
             return new Response(HttpStatusCode.BadRequest, "Update failed");
