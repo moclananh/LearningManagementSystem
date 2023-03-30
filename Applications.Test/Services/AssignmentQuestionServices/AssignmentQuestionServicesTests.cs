@@ -1,13 +1,16 @@
 ﻿using Applications.Commons;
 using Applications.Interfaces;
+using Applications.Repositories;
 using Applications.Services;
 using Applications.ViewModels.AssignmentQuestionViewModels;
 using AutoFixture;
+using AutoMapper;
 using ClosedXML.Excel;
 using Domain.Entities;
 using Domain.Tests;
 using FluentAssertions;
 using Moq;
+using OfficeOpenXml;
 using System.Net;
 
 namespace Applications.Tests.Services.AssignmentQuestionServices
@@ -18,6 +21,56 @@ namespace Applications.Tests.Services.AssignmentQuestionServices
         public AssignmentQuestionServicesTests()
         {
             _assignmentQuestionService = new AssignmentQuestionService(_unitOfWorkMock.Object, _mapperConfig);
+        }
+
+        [Fact]
+        public async Task ExportAssignmentQuestionByAssignmentId_WithValidInput_ReturnsExcelFile()
+        {
+            // Arrange
+            Guid assignmentId = Guid.NewGuid();
+            List<AssignmentQuestion> questions = new List<AssignmentQuestion>
+            {
+                new AssignmentQuestion { Id = Guid.NewGuid(), AssignmentId = assignmentId, Question = "Question 1", Answer = "Answer 1", Note = "Note 1" },
+                new AssignmentQuestion { Id = Guid.NewGuid(), AssignmentId = assignmentId, Question = "Question 2", Answer = "Answer 2", Note = "Note 2" },
+                new AssignmentQuestion { Id = Guid.NewGuid(), AssignmentId = assignmentId, Question = "Question 3", Answer = "Answer 3", Note = "Note 3" }
+            };
+            var mockUnitOfWork = new Mock<IUnitOfWork>();
+            var mockRepository = new Mock<IAssignmentQuestionRepository>();
+            _unitOfWorkMock.Setup(uow => uow.AssignmentQuestionRepository).Returns(mockRepository.Object);
+            mockRepository.Setup(repo => repo.GetAssignmentQuestionListByAssignmentId(assignmentId)).ReturnsAsync(questions);
+
+            // Act
+            byte[] result = await _assignmentQuestionService.ExportAssignmentQuestionByAssignmentId(assignmentId);
+
+            // Assert
+            using (var stream = new MemoryStream(result))
+            {
+                using (var excelPackage = new ExcelPackage(stream))
+                {
+                    // Make sure that the workbook contains at least one worksheet
+                    Assert.True(excelPackage.Workbook.Worksheets.Count > 0);
+
+                    var worksheet = excelPackage.Workbook.Worksheets[0];
+
+                    // Check that the worksheet name is correct
+                    Assert.Equal("Assignment Questions", worksheet.Name);
+
+                    // Check the headers
+                    Assert.Equal("AsignmentID", worksheet.Cells[1, 1].Value.ToString());
+                    Assert.Equal("Question", worksheet.Cells[2, 1].Value.ToString());
+                    Assert.Equal("Answer", worksheet.Cells[2, 2].Value.ToString());
+                    Assert.Equal("Note", worksheet.Cells[2, 3].Value.ToString());
+
+                    // Check the values
+                    for (int i = 0; i < questions.Count; i++)
+                    {
+                        var question = questions[i];
+                        Assert.Equal(question.Question, worksheet.Cells[i + 3, 1].Value.ToString());
+                        Assert.Equal(question.Answer, worksheet.Cells[i + 3, 2].Value.ToString());
+                        Assert.Equal(question.Note, worksheet.Cells[i + 3, 3].Value.ToString());
+                    }
+                }
+            }
         }
 
         [Fact]

@@ -11,6 +11,7 @@ using Domain.Tests;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
+using OfficeOpenXml;
 using System.Net;
 
 namespace Applications.Tests.Services.PracticeQuestionServices
@@ -46,6 +47,56 @@ namespace Applications.Tests.Services.PracticeQuestionServices
             var result = await _practiceQuestionService.GetPracticeQuestionByPracticeId(id);
             //assert
             _unitOfWorkMock.Verify(x => x.PracticeQuestionRepository.GetAllPracticeQuestionById(id, 0, 10), Times.Once());
+        }
+
+        [Fact]
+        public async Task ExportPracticeQuestionByPracticeId_WithValidInput_ReturnsExcelFile()
+        {
+            // Arrange
+            Guid practiceId = Guid.NewGuid();
+            List<PracticeQuestion> questions = new List<PracticeQuestion>
+            {
+                new PracticeQuestion { Id = Guid.NewGuid(), PracticeId = practiceId, Question = "Question 1", Answer = "Answer 1", Note = "Note 1" },
+                new PracticeQuestion { Id = Guid.NewGuid(), PracticeId = practiceId, Question = "Question 2", Answer = "Answer 2", Note = "Note 2" },
+                new PracticeQuestion { Id = Guid.NewGuid(), PracticeId = practiceId, Question = "Question 3", Answer = "Answer 3", Note = "Note 3" }
+            };
+            var mockUnitOfWork = new Mock<IUnitOfWork>();
+            var mockRepository = new Mock<IPracticeQuestionRepository>();
+            _unitOfWorkMock.Setup(uow => uow.PracticeQuestionRepository).Returns(mockRepository.Object);
+            mockRepository.Setup(repo => repo.GetAllPracticeQuestionByPracticeId(practiceId)).ReturnsAsync(questions);
+
+            // Act
+            byte[] result = await _practiceQuestionService.ExportPracticeQuestionByPracticeId(practiceId);
+
+            // Assert
+            using (var stream = new MemoryStream(result))
+            {
+                using (var excelPackage = new ExcelPackage(stream))
+                {
+                    // Make sure that the workbook contains at least one worksheet
+                    Assert.True(excelPackage.Workbook.Worksheets.Count > 0);
+
+                    var worksheet = excelPackage.Workbook.Worksheets[0];
+
+                    // Check that the worksheet name is correct
+                    Assert.Equal("Practice Questions", worksheet.Name);
+
+                    // Check the headers
+                    Assert.Equal("PracticeID", worksheet.Cells[1, 1].Value.ToString());
+                    Assert.Equal("Question", worksheet.Cells[2, 1].Value.ToString());
+                    Assert.Equal("Answer", worksheet.Cells[2, 2].Value.ToString());
+                    Assert.Equal("Note", worksheet.Cells[2, 3].Value.ToString());
+
+                    // Check the values
+                    for (int i = 0; i < questions.Count; i++)
+                    {
+                        var question = questions[i];
+                        Assert.Equal(question.Question, worksheet.Cells[i + 3, 1].Value.ToString());
+                        Assert.Equal(question.Answer, worksheet.Cells[i + 3, 2].Value.ToString());
+                        Assert.Equal(question.Note, worksheet.Cells[i + 3, 3].Value.ToString());
+                    }
+                }
+            }
         }
 
         [Fact]
