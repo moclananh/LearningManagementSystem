@@ -21,7 +21,7 @@ namespace API.Controllers
             _updateValidator = validator;
         }
 
-        [HttpGet("GetByAuditPlanId")]
+        [HttpGet("GetByAuditPlanId/{AuditPlanId}")]
         [Authorize(policy: "All")]
         public async Task<AuditResultViewModel> GetByAuditPlanId(Guid id)
         {
