@@ -25,7 +25,7 @@ namespace Applications.Tests.Services.PracticeServices
         {
             var practiceMocks = _fixture.Build<Practice>()
                                 .Without(x => x.Unit)
-            .Without(x => x.PracticeQuestions)
+                                .Without(x => x.PracticeQuestions)
                                 .Create();
             var expected = _mapperConfig.Map<PracticeViewModel>(practiceMocks);
             var createBy = new User { Email = "mock@example.com" };

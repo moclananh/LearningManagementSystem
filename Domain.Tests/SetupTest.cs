@@ -42,6 +42,8 @@ namespace Domain.Tests
         protected readonly Mock<IPracticeService> _practiceServiceMock;
         protected readonly Mock<IClassTrainingProgramService> _classTrainingProgramServiceMock;
         protected readonly Mock<ISyllabusModuleService> _syllabusModuleServiceMock;
+        protected readonly Mock<IAbsentRequestServices> _absentRequestServiceMock;
+
         //
         protected readonly Mock<IAssignmentQuestionRepository> _assignmentQuestionRepositoryMock;
         protected readonly Mock<IAssignmentRepository> _assignmentRepositoryMock;
@@ -60,6 +62,7 @@ namespace Domain.Tests
         protected readonly Mock<IAuditResultRepository> _auditResultRepositoryMock;
         protected readonly Mock<IPracticeRepository> _practiceRepositoryMock;
         protected readonly Mock<IRefreshTokenRepository> _refreshTokenRepositoryMock;
+        protected readonly Mock<IAbsentRequestRepository> _absentRequestRepositoryMock;
         protected readonly AppDBContext _dbContext;
 
         public SetupTest()
@@ -94,6 +97,7 @@ namespace Domain.Tests
             _practiceServiceMock = new Mock<IPracticeService>();
             _classTrainingProgramServiceMock = new Mock<IClassTrainingProgramService>();
             _syllabusModuleServiceMock = new Mock<ISyllabusModuleService>();
+            _absentRequestServiceMock = new Mock<IAbsentRequestServices>();
             //
             _auditResultRepositoryMock = new Mock<IAuditResultRepository>();
             _assignmentQuestionRepositoryMock = new Mock<IAssignmentQuestionRepository>();
@@ -112,6 +116,7 @@ namespace Domain.Tests
             _userRepositoryMock = new Mock<IUserRepository>();
             _practiceRepositoryMock= new Mock<IPracticeRepository>();
             _refreshTokenRepositoryMock = new Mock<IRefreshTokenRepository>();
+            _absentRequestRepositoryMock= new Mock<IAbsentRequestRepository>();
 
             var options = new DbContextOptionsBuilder<AppDBContext>()
                 .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())

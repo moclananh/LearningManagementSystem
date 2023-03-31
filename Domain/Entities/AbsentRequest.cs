@@ -11,5 +11,6 @@ namespace Domain.Entities
         public User User { get; set; }
         public Guid ClassId { get; set; }
         public Class Class { get; set; }
+
     }
 }
