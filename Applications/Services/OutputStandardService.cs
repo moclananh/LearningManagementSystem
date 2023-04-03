@@ -24,7 +24,10 @@ namespace Applications.Services
             var outputStandard = await _unitOfWork.OutputStandardRepository.GetByIdAsync(OutputStandardId);
             var result = _mapper.Map<OutputStandardViewModel>(outputStandard);
             var createBy = await _unitOfWork.UserRepository.GetByIdAsync(outputStandard.CreatedBy);
-            result.CreatedBy = createBy.Email;
+            if (createBy != null)
+            {
+                result.CreatedBy = createBy.Email;
+            }
             if (outputStandard == null) return new Response(HttpStatusCode.NoContent, "Id not found");
             else return new Response(HttpStatusCode.OK, "Search succeed",result);
         }
