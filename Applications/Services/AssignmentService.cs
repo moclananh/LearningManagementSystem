@@ -1,6 +1,7 @@
 ﻿using Applications.Commons;
 using Applications.Interfaces;
 using Applications.ViewModels.AssignmentViewModels;
+using Applications.ViewModels.LectureViewModels;
 using Applications.ViewModels.Response;
 using AutoMapper;
 using Domain.Entities;
@@ -52,7 +53,7 @@ namespace Applications.Services
             else return new Response(HttpStatusCode.OK, "Search Succeed", _mapper.Map<Pagination<AssignmentViewModel>>(assignmentObj));
         }
 
-        public async Task<Response?> UpdateAssignment(Guid AssignmentId, UpdateAssignmentViewModel assignmentDTO)
+        public async Task<UpdateAssignmentViewModel?> UpdateAssignment(Guid AssignmentId, UpdateAssignmentViewModel assignmentDTO)
         {
             var assignmentObj = await _unitOfWork.AssignmentRepository.GetByIdAsync(AssignmentId);
             if (assignmentObj is object)
@@ -62,10 +63,10 @@ namespace Applications.Services
                 var isSuccess = await _unitOfWork.SaveChangeAsync() > 0;
                 if (isSuccess)
                 {
-                    return new Response(HttpStatusCode.OK, "Update Succeed", _mapper.Map<UpdateAssignmentViewModel>(assignmentObj));
+                    return _mapper.Map<UpdateAssignmentViewModel>(assignmentObj);
                 }
             }
-            return new Response(HttpStatusCode.BadRequest, "Update Failed");
+            return null;
         }
         public async Task<Response> ViewAllAssignmentAsync(int pageIndex = 0, int pageSize = 10)
         {

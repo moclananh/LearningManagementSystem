@@ -2,13 +2,11 @@
 using Applications.Commons;
 using Applications.Interfaces;
 using Applications.ViewModels.AssignmentViewModels;
-using Applications.ViewModels.SyllabusViewModels;
 using AutoFixture;
 using Domain.Entities;
 using Domain.Tests;
 using FluentAssertions;
 using Moq;
-using System.Net;
 
 namespace Applications.Tests.Services.AssignmentServices
 {
@@ -88,23 +86,24 @@ namespace Applications.Tests.Services.AssignmentServices
         {
             //arrange
             var assignmentObj = _fixture.Build<Assignment>()
-                                   .Without(x => x.AssignmentQuestions)
-                                   .Without(x => x.Unit)
+                                  .Without(x => x.AssignmentQuestions)
+                                  .Without(x => x.Unit)
                                    .Create();
             _unitOfWorkMock.Setup(x => x.AssignmentRepository.GetByIdAsync(assignmentObj.Id))
                            .ReturnsAsync(assignmentObj);
-            var updateDataMock = _fixture.Build<UpdateAssignmentViewModel>()
+            var updateAssignmentDataMock = _fixture.Build<UpdateAssignmentViewModel>()
                                          .Create();
             //act
-            await _assignmentService.UpdateAssignment(assignmentObj.Id, updateDataMock);
+            await _assignmentService.UpdateAssignment(assignmentObj.Id, updateAssignmentDataMock);
             var result = _mapperConfig.Map<UpdateAssignmentViewModel>(assignmentObj);
             //assert
             result.Should().NotBeNull();
             result.Should().BeOfType<UpdateAssignmentViewModel>();
-            result.AssignmentName.Should().Be(updateDataMock.AssignmentName);
+            result.AssignmentName.Should().Be(updateAssignmentDataMock.AssignmentName);
             // add more property ...
             _unitOfWorkMock.Verify(x => x.AssignmentRepository.Update(assignmentObj), Times.Once);
             _unitOfWorkMock.Verify(x => x.SaveChangeAsync(), Times.Once);
+
         }
 
         [Fact]
@@ -167,8 +166,7 @@ namespace Applications.Tests.Services.AssignmentServices
             //act
             var result = await _assignmentService.UpdateAssignment(assignmentId, updateDataMock);
             //assert
-            Assert.Equal(HttpStatusCode.BadRequest.ToString(), result.Status);
-            Assert.Equal("Update Failed", result.Message);
+            result.Should().BeNull();
             _unitOfWorkMock.Verify(x => x.AssignmentRepository.Update(It.IsAny<Assignment>()), Times.Never);
             _unitOfWorkMock.Verify(x => x.SaveChangeAsync(), Times.Never);
         }
