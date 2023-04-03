@@ -30,20 +30,20 @@ namespace Applications.Services
             return new Response(HttpStatusCode.BadRequest, "Created Failed");
         }
 
-        public async Task<Response> UpdateUnitAsync(Guid UnitId, CreateUnitViewModel UnitDTO)
+        public async Task<UnitViewModel> UpdateUnitAsync(Guid UnitId, CreateUnitViewModel UnitDTO)
         {
             var unit = await _unitOfWork.UnitRepository.GetByIdAsync(UnitId);
-            if (unit != null)
+            if (unit is object)
             {
                 _mapper.Map(UnitDTO, unit);
                 _unitOfWork.UnitRepository.Update(unit);
                 var isSuccess = await _unitOfWork.SaveChangeAsync() > 0;
                 if (isSuccess)
                 {
-                    return new Response(HttpStatusCode.OK,"Update Success", _mapper.Map<CreateUnitViewModel>(unit));
+                    return _mapper.Map<UnitViewModel>(unit);
                 }
-            }
-            return new Response(HttpStatusCode.BadRequest, "Update Failed");
+            } 
+            return null;
         }
 
         public async Task<Response> GetUnitByModuleIdAsync(Guid ModuleId, int pageIndex = 0, int pageSize = 10)

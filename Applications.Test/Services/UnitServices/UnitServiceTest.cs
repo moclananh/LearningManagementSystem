@@ -6,6 +6,7 @@ using Domain.Entities;
 using Domain.Tests;
 using FluentAssertions;
 using Moq;
+using System.Net;
 
 namespace Applications.Tests.Services.UnitServices
 {
@@ -104,7 +105,8 @@ namespace Applications.Tests.Services.UnitServices
             //assert
             _unitOfWorkMock.Verify(x => x.UnitRepository.AddAsync(It.IsAny<Unit>()), Times.Once());
             _unitOfWorkMock.Verify(x => x.SaveChangeAsync(), Times.Once());
-            result.Should().BeNull();
+            Assert.Equal(HttpStatusCode.BadRequest.ToString(), result.Status);
+            Assert.Equal("Created Failed", result.Message);
         }
 
         [Fact]
@@ -146,9 +148,9 @@ namespace Applications.Tests.Services.UnitServices
             //act
             var result = await _unitService.UpdateUnitAsync(UnitId, updateDataMock);
             //assert
-            result.Should().BeNull();
             _unitOfWorkMock.Verify(x => x.UnitRepository.Update(It.IsAny<Unit>()), Times.Never);
             _unitOfWorkMock.Verify(x => x.SaveChangeAsync(), Times.Never);
+            result.Should().BeNull();
         }
 
         [Fact]

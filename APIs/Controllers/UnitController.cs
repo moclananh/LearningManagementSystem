@@ -58,14 +58,14 @@ namespace APIs.Controllers
                 ValidationResult result = _unitValidation.Validate(UnitModel);
                 if (result.IsValid)
                 {
-                    if (await _unitServices.UpdateUnitAsync(UnitId, UnitModel) != null)
+                    if (await _unitServices.UpdateUnitAsync(UnitId, UnitModel) is object)
                     {
-                        return Ok("Update Assignment Success");
+                        return Ok("Update Success");
                     }
-                    return BadRequest("Invalid AuditPlan Id");
+                    return BadRequest("Invalid Id");
                 }
             }
-            return BadRequest("Update Failed,Invalid Input Information");
+            return BadRequest("Update Failed, Invalid Input Information");
         }
 
         [HttpGet("GetEnableUnits")]

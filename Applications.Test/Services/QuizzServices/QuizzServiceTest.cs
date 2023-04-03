@@ -8,6 +8,7 @@ using Domain.Tests;
 using FluentAssertions;
 using Infrastructures.Repositories;
 using Moq;
+using System.Net;
 
 namespace Applications.Tests.Services.QuizzServices
 {
@@ -100,7 +101,8 @@ namespace Applications.Tests.Services.QuizzServices
             //assert
             _unitOfWorkMock.Verify(x => x.QuizzRepository.AddAsync(It.IsAny<Quizz>()), Times.Once());
             _unitOfWorkMock.Verify(x => x.SaveChangeAsync(), Times.Once());
-            result.Should().BeNull();
+            Assert.Equal(HttpStatusCode.BadRequest.ToString(), result.Status);
+            Assert.Equal("Create Failed", result.Message);
         }
 
         [Fact]
