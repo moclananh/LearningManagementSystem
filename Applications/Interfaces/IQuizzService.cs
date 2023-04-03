@@ -6,7 +6,7 @@ namespace Applications.Interfaces
     public interface IQuizzService
     {
         public Task<Response> GetQuizzByQuizzIdAsync(Guid QuizzId);
-        public Task<CreateQuizzViewModel> CreateQuizzAsync(CreateQuizzViewModel QuizzDTO);
+        public Task<Response> CreateQuizzAsync(CreateQuizzViewModel QuizzDTO);
         public Task<UpdateQuizzViewModel> UpdateQuizzAsync(Guid QuizzId, UpdateQuizzViewModel QuizzDTO);
         public Task<Response> GetQuizzByName(string QuizzName, int pageIndex = 0, int pageSize = 10);
         public Task<Response> GetAllQuizzes(int pageIndex = 0, int pageSize = 10);

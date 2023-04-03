@@ -32,16 +32,18 @@ namespace Applications.Services
             else return new Response(HttpStatusCode.OK, "Search succeed", result);
         }
 
-        public async Task<CreateQuizzViewModel> CreateQuizzAsync(CreateQuizzViewModel QuizzDTO)
+        public async Task<Response> CreateQuizzAsync(CreateQuizzViewModel QuizzDTO)
         {
             var quizzOjb = _mapper.Map<Quizz>(QuizzDTO);
             await _unitOfWork.QuizzRepository.AddAsync(quizzOjb);
             var isSuccess = await _unitOfWork.SaveChangeAsync() > 0;
             if (isSuccess)
             {
-                return _mapper.Map<CreateQuizzViewModel>(quizzOjb);
+                return new Response(HttpStatusCode.OK, "Create Succeed", _mapper.Map<QuizzViewModel>(quizzOjb));
+               
             }
-            return null;
+            return new Response(HttpStatusCode.BadRequest, "Create Failed");
+
         }
 
         public async Task<UpdateQuizzViewModel> UpdateQuizzAsync(Guid QuizzId, UpdateQuizzViewModel QuizzDTO)

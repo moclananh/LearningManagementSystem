@@ -5,6 +5,7 @@ using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace APIs.Controllers
 {
@@ -31,21 +32,18 @@ namespace APIs.Controllers
 
         [HttpPost("CreateQuizz")]
         [Authorize(policy: "Admins")]
-        public async Task<IActionResult> CreateQuizz(CreateQuizzViewModel QuizzModel)
+        public async Task<Response> CreateQuizz(CreateQuizzViewModel QuizzModel)
         {
             if (ModelState.IsValid)
             {
-                ValidationResult result = _createQuizzValidator.Validate(QuizzModel);
-                if (result.IsValid)
+                ValidationResult check = _createQuizzValidator.Validate(QuizzModel);
+                if (check.IsValid)
                 {
-                    await _quizzServices.CreateQuizzAsync(QuizzModel);
+                     await _quizzServices.CreateQuizzAsync(QuizzModel);
+                     return new Response(HttpStatusCode.OK, "Created Success", QuizzModel);
                 }
-                else
-                {
-                    return BadRequest("Fail to create new Quizz");
-                }
-            }     
-            return Ok("Create new Quizz Success");
+            }
+            return new Response(HttpStatusCode.BadRequest, "Invalid Data");
         }
 
         [HttpGet("GetQuizzByQuizzId/{QuizzId}")]
