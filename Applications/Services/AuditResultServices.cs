@@ -20,6 +20,9 @@ namespace Application.Services
         {
             var classOjb = await _unitOfWork.AuditResultRepository.GetAuditResultById(Id);
             var result = _mapper.Map<AuditResultViewModel>(classOjb);
+            var createBy = await _unitOfWork.UserRepository.GetByIdAsync(classOjb.CreatedBy);
+            result.CreatedBy = createBy.Email;
+            result.UserId = createBy.Id;
             return result;
         }
 
@@ -27,6 +30,9 @@ namespace Application.Services
         {
             var classOjb = await _unitOfWork.AuditResultRepository.GetByAuditPlanId(id);
             var result = _mapper.Map<AuditResultViewModel>(classOjb);
+            var createBy = await _unitOfWork.UserRepository.GetByIdAsync(classOjb.CreatedBy);
+            result.CreatedBy = createBy.Email;
+            result.UserId = createBy.Id;
             return result;
         }
 

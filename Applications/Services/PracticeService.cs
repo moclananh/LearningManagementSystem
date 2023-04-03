@@ -29,7 +29,7 @@ namespace Applications.Services
         public async Task<Pagination<PracticeViewModel>> GetPracticeByUnitId(Guid UnitId, int pageIndex = 0, int pageSize = 10)
         {
             var praObj = await _unitOfWork.PracticeRepository.GetPracticeByUnitId(UnitId);
-            var result = _mapper.Map<Pagination<PracticeViewModel>>(praObj);
+            var result = _mapper.Map<Pagination<PracticeViewModel>>(praObj);            
             return result;
         }
         public async Task<CreatePracticeViewModel> CreatePracticeAsync(CreatePracticeViewModel PracticeDTO)

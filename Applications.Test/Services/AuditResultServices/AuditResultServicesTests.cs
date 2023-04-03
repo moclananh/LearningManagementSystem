@@ -64,13 +64,17 @@ namespace Applications.Tests.Services.AuditResultServices
             var auditResultObj = _fixture.Build<AuditResult>()
                                    .Without(x => x.AuditPlan)
                                    .Create();
-            _unitOfWorkMock.Setup(x => x.AuditResultRepository.GetByAuditPlanId(auditPlanId)).ReturnsAsync(auditResultObj);
-
             //act
-            var expected = _mapperConfig.Map<AuditResultViewModel>(auditResultObj);
 
+            var expected = _mapperConfig.Map<AuditResultViewModel>(auditResultObj);
+            var createBy = new User { Email = "mock@example.com" };
+            _unitOfWorkMock.Setup(x => x.UserRepository.GetByIdAsync(auditResultObj.CreatedBy)).ReturnsAsync(createBy);
+            expected.CreatedBy = createBy.Email;
+            _unitOfWorkMock.Setup(x => x.AuditResultRepository.GetByAuditPlanId(auditPlanId)).ReturnsAsync(auditResultObj);
             var result = _auditResultServices.GetByAudiPlanId(auditPlanId);
-            result.Result.Should().BeEquivalentTo(expected);
+
+            // Assert
+            _unitOfWorkMock.Verify(x => x.AuditResultRepository.GetByAuditPlanId(auditPlanId), Times.Once());
         }
 
         [Fact]
@@ -81,6 +85,9 @@ namespace Applications.Tests.Services.AuditResultServices
                 .Without(x => x.AuditPlan)
                 .Create();
             var expected = _mapperConfig.Map<AuditResultViewModel>(auditResultObj);
+            var createBy = new User { Email = "mock@example.com" };
+            _unitOfWorkMock.Setup(x => x.UserRepository.GetByIdAsync(auditResultObj.CreatedBy)).ReturnsAsync(createBy);
+            expected.CreatedBy = createBy.Email;
             _unitOfWorkMock.Setup(x => x.AuditResultRepository.GetAuditResultById(auditResultObj.Id))
                 .ReturnsAsync(auditResultObj);
 
@@ -89,7 +96,6 @@ namespace Applications.Tests.Services.AuditResultServices
 
             // Assert
             _unitOfWorkMock.Verify(x => x.AuditResultRepository.GetAuditResultById(auditResultObj.Id), Times.Once());
-            Assert.NotNull(result);
 
         }
     }

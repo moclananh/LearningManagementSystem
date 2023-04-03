@@ -23,9 +23,9 @@ namespace API.Controllers
 
         [HttpGet("GetByAuditPlanId/{AuditPlanId}")]
         [Authorize(policy: "All")]
-        public async Task<AuditResultViewModel> GetByAuditPlanId(Guid id)
+        public async Task<AuditResultViewModel> GetByAuditPlanId(Guid AuditPlanId)
         {
-            return await _service.GetByAudiPlanId(id);
+            return await _service.GetByAudiPlanId(AuditPlanId);
         }
 
         [HttpGet("GetAuditResultById/{auditresultId}")]
