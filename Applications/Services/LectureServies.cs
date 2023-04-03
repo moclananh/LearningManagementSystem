@@ -90,7 +90,7 @@ namespace Applications.Services
         public async Task<UpdateLectureViewModel?> UpdateLecture(Guid LectureId, UpdateLectureViewModel lectureDTO)
         {
             var lectureObj = await _unitOfWork.LectureRepository.GetByIdAsync(LectureId);
-            if (lectureObj != null)
+            if (lectureObj is object)
             {
                 _mapper.Map(lectureDTO, lectureObj);
                 _unitOfWork.LectureRepository.Update(lectureObj);

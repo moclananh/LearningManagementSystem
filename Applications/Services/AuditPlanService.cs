@@ -118,7 +118,7 @@ namespace Applications.Services
         {
             var auditOjb = await _unitOfWork.AuditPlanRepository.GetByIdAsync(AuditPlanId);
             var user = await _unitOfWork.UserRepository.GetByIdAsync(UserId);
-            if (auditOjb != null && user != null)
+            if (auditOjb is object && user is object)
             {
                 var userAuditPlan = new UserAuditPlan()
                 {
@@ -137,7 +137,7 @@ namespace Applications.Services
         public async Task<CreateUserAuditPlanViewModel> RemoveUserFromAuditPlan(Guid AuditPlanId, Guid UserId)
         {
             var user = await _unitOfWork.UserAuditPlanRepository.GetUserAuditPlan(AuditPlanId, UserId);
-            if (user != null)
+            if (user is object)
             {
                 _unitOfWork.UserAuditPlanRepository.SoftRemove(user);
                 var isSucces = await _unitOfWork.SaveChangeAsync() > 0;

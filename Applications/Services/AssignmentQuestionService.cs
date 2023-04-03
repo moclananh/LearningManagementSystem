@@ -30,7 +30,7 @@ namespace Applications.Services
 
         public async Task<Response> UploadAssignmentQuestions(IFormFile formFile)
         {
-            if (formFile == null || formFile.Length <= 0) return new Response(HttpStatusCode.Conflict, "File is empty");
+            if (formFile is not object || formFile.Length <= 0) return new Response(HttpStatusCode.Conflict, "File is empty");
 
             if (!Path.GetExtension(formFile.FileName).Equals(".xlsx", StringComparison.OrdinalIgnoreCase)) return new Response(HttpStatusCode.Conflict, "Not Support file extension");
 

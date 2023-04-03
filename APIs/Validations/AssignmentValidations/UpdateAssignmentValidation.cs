@@ -1,15 +1,14 @@
 ﻿using Applications.ViewModels.AssignmentViewModels;
 using FluentValidation;
-using FluentValidation.Validators;
 
 namespace APIs.Validations.AssignmentValidations
 {
     public class UpdateAssignmentValidation : AbstractValidator<UpdateAssignmentViewModel>
     {
         public UpdateAssignmentValidation() {
-            RuleFor(x => x.AssignmentName).NotNull().NotEmpty().MaximumLength(100);
-            RuleFor(x => x.Description).NotNull().NotEmpty().MaximumLength(100);
-            RuleFor(x => x.Status).NotNull();
+            RuleFor(x => x.AssignmentName).NotEmpty().MaximumLength(100);
+            RuleFor(x => x.Description).NotEmpty().MaximumLength(100);
+            RuleFor(x => x.Status).IsInEnum();
         }
     }
 }

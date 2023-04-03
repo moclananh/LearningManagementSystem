@@ -8,6 +8,7 @@ using Domain.Entities;
 using Domain.Tests;
 using FluentAssertions;
 using Moq;
+using System.Net;
 
 namespace Applications.Tests.Services.AssignmentServices
 {
@@ -166,7 +167,8 @@ namespace Applications.Tests.Services.AssignmentServices
             //act
             var result = await _assignmentService.UpdateAssignment(assignmentId, updateDataMock);
             //assert
-            result.Should().BeNull();
+            Assert.Equal(HttpStatusCode.BadRequest.ToString(), result.Status);
+            Assert.Equal("Update Failed", result.Message);
             _unitOfWorkMock.Verify(x => x.AssignmentRepository.Update(It.IsAny<Assignment>()), Times.Never);
             _unitOfWorkMock.Verify(x => x.SaveChangeAsync(), Times.Never);
         }
@@ -210,7 +212,7 @@ namespace Applications.Tests.Services.AssignmentServices
             };
             var asm = _mapperConfig.Map<Pagination<Assignment>>(assignmentMockData);
             _unitOfWorkMock.Setup(x => x.AssignmentRepository.GetAssignmentByUnitId(id, 0, 10)).ReturnsAsync(assignmentMockData);
-            var expected = _mapperConfig.Map<Pagination<UpdateAssignmentViewModel>>(asm);
+            var expected = _mapperConfig.Map<Pagination<AssignmentViewModel>>(asm);
             //act
             var result = await _assignmentService.GetAssignmentByUnitId(id);
             //assert
@@ -235,33 +237,12 @@ namespace Applications.Tests.Services.AssignmentServices
             };
             var auditPlans = _mapperConfig.Map<Pagination<Assignment>>(auditPlanMockData);
             _unitOfWorkMock.Setup(x => x.AssignmentRepository.GetAssignmentByName("Mock", 0, 10)).ReturnsAsync(auditPlanMockData);
-            var expected = _mapperConfig.Map<Pagination<UpdateAssignmentViewModel>>(auditPlans);
+            var expected = _mapperConfig.Map<Pagination<AssignmentViewModel>>(auditPlans);
             //act
             var result = await _assignmentService.GetAssignmentByName("Mock");
             //assert
             _unitOfWorkMock.Verify(x => x.AssignmentRepository.GetAssignmentByName("Mock", 0, 10), Times.Once());
         }
-
-        /*[Fact]
-        public async Task GetAssignmentDetails_ShouldReturnCorrectData()
-        {
-            //arrange
-            var mocks = _fixture.Build<Assignment>()
-                                 .Without(s => s.AssignmentQuestions)
-                                 .Without(S => S.Unit)
-                                 .Create();
-
-            _unitOfWorkMock.Setup(x => x.AssignmentRepository.GetAssignmentDetail(It.IsAny<Guid>())).ReturnsAsync(mocks);
-            var expected = _mapperConfig.Map<AssignmentViewModel>(mocks);
-            var createBy = new User { Email = "mock@example.com" };
-            _unitOfWorkMock.Setup(x => x.UserRepository.GetByIdAsync(mocks.CreatedBy)).ReturnsAsync(createBy);
-            expected.CreatedBy = createBy.Email;
-            //act
-            var result = await _assignmentService.GetAssignmentDetail(mocks.Id);
-            //assert
-            _unitOfWorkMock.Verify(x => x.AssignmentRepository.GetAssignmentDetail(mocks.Id), Times.Once());
-        }*/
-
     }
 }
 

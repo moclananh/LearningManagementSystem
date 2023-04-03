@@ -75,7 +75,7 @@ namespace APIs.Controllers
                 ValidationResult result = _validatorUpdate.Validate(assignmentDTO);
                 if (result.IsValid)
                 {
-                    if (await _assignmentService.UpdateAssignment(AssignmentId, assignmentDTO) != null)
+                    if (await _assignmentService.UpdateAssignment(AssignmentId, assignmentDTO) is object)
                     {
                         return Ok("Update Assignment Success");
                     }   
