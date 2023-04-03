@@ -94,10 +94,15 @@ namespace APIs.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _outputStandardServices.RemoveOutputStandardToSyllabus(SyllabusId, OutputStandardId);
+                var deletedOutputStandard = await _outputStandardServices.RemoveOutputStandardToSyllabus(SyllabusId, OutputStandardId);
+                if (deletedOutputStandard == null)
+                {
+                    return BadRequest("Output standard not found in syllabus");
+                }
                 return Ok("Remove Success");
             }
             return BadRequest("Remove OutputStandard Fail");
         }
+
     }
 }

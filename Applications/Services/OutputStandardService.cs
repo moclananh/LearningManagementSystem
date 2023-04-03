@@ -79,18 +79,20 @@ namespace Applications.Services
         }
         public async Task<CreateSyllabusOutputStandardViewModel> RemoveOutputStandardToSyllabus(Guid SyllabusId, Guid OutputStandardId)
         {
-            var classTrainingProgram = await _unitOfWork.SyllabusOutputStandardRepository.GetSyllabusOutputStandard(SyllabusId, OutputStandardId);
-            if (classTrainingProgram != null)
+            var syllabusOutputStandard = await _unitOfWork.SyllabusOutputStandardRepository.GetSyllabusOutputStandard(SyllabusId, OutputStandardId);
+            if (syllabusOutputStandard != null && !syllabusOutputStandard.IsDeleted)
             {
-                _unitOfWork.SyllabusOutputStandardRepository.SoftRemove(classTrainingProgram);
-                var isSucces = await _unitOfWork.SaveChangeAsync() > 0;
-                if (isSucces)
+                syllabusOutputStandard.IsDeleted = true;
+                _unitOfWork.SyllabusOutputStandardRepository.Update(syllabusOutputStandard);
+                var isSuccess = await _unitOfWork.SaveChangeAsync() > 0;
+                if (isSuccess)
                 {
-                    return _mapper.Map<CreateSyllabusOutputStandardViewModel>(classTrainingProgram);
+                    return _mapper.Map<CreateSyllabusOutputStandardViewModel>(syllabusOutputStandard);
                 }
             }
             return null;
         }
+
         public async Task<Response> GetOutputStandardBySyllabusIdAsync(Guid SyllabusId, int pageIndex, int pageSize)
         {
             var outputStandard = await _unitOfWork.OutputStandardRepository.GetOutputStandardBySyllabusIdAsync(SyllabusId, pageIndex, pageSize);

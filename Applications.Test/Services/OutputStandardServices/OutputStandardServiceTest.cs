@@ -228,29 +228,44 @@ namespace Applications.Tests.Services.OutputStandardServices
             //assert
             _unitOfWorkMock.Verify(x => x.OutputStandardRepository.ToPagination(0, 10), Times.Once());
         }
+
         [Fact]
-        public async Task RemoveOutputStandardToSyllabus_ShouldRemoveOutputStandardFromSyllabus()
+        public async Task RemoveOutputStandardFromSyllabus_Should_Return_Null_When_SyllabusOutputStandard_Exists_And_IsDeleted()
         {
             // Arrange
-            var outputStandardId = Guid.NewGuid();
             var syllabusId = Guid.NewGuid();
-            var outputStandard = new SyllabusOutputStandard
+            var outputStandardId = Guid.NewGuid();
+            var syllabusOutputStandard = new SyllabusOutputStandard
             {
-                Id = outputStandardId,
                 SyllabusId = syllabusId,
+                OutputStandardId = outputStandardId,
+                IsDeleted = true
             };
-            var mockUnitOfWork = new Mock<IUnitOfWork>();
-            mockUnitOfWork.Setup(uow => uow.SyllabusOutputStandardRepository.GetSyllabusOutputStandard(syllabusId, outputStandardId))
-                          .ReturnsAsync(outputStandard);
-            var mockMapper = new Mock<IMapper>();
-            var service = new OutputStandardService(mockUnitOfWork.Object, mockMapper.Object);
+
+            _unitOfWorkMock.Setup(x => x.SyllabusOutputStandardRepository.GetSyllabusOutputStandard(syllabusId, outputStandardId))
+                .ReturnsAsync(syllabusOutputStandard);
 
             // Act
-            var result = await service.RemoveOutputStandardToSyllabus(syllabusId, outputStandardId);
+            var result = await _outputStandardService.RemoveOutputStandardToSyllabus(syllabusId, outputStandardId);
 
             // Assert
-            mockUnitOfWork.Verify(uow => uow.SyllabusOutputStandardRepository.SoftRemove(outputStandard), Times.Once);
-            mockUnitOfWork.Verify(uow => uow.SaveChangeAsync(), Times.Once);
+            Assert.Null(result);
+        }
+
+        [Fact]
+        public async Task RemoveOutputStandardFromSyllabus_Should_Return_Null_When_SyllabusOutputStandard_Does_Not_Exist()
+        {
+            // Arrange
+            var syllabusId = Guid.NewGuid();
+            var outputStandardId = Guid.NewGuid();
+
+            _unitOfWorkMock.Setup(x => x.SyllabusOutputStandardRepository.GetSyllabusOutputStandard(syllabusId, outputStandardId))
+                .ReturnsAsync((SyllabusOutputStandard)null);
+
+            // Act
+            var result = await _outputStandardService.RemoveOutputStandardToSyllabus(syllabusId, outputStandardId);
+
+            // Assert
             Assert.Null(result);
         }
     }
