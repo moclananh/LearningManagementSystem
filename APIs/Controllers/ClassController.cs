@@ -79,7 +79,7 @@ namespace APIs.Controllers
         [Authorize(policy: "Admins")]
         public async Task<Pagination<ClassViewModel>> GetDiableClasses(int pageIndex = 0, int pageSize = 10) => await _classServices.GetDisableClasses(pageIndex, pageSize);
 
-        [HttpPut("UpdateClass/{ClassId}")]
+        [HttpPut("UpdateClass/{classId}")]
         [Authorize(policy: "Admins")]
         public async Task<IActionResult> UpdateClass(Guid classId, UpdateClassViewModel classModel)
         {
