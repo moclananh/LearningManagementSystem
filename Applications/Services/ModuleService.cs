@@ -1,10 +1,15 @@
-﻿using Applications.Commons;
+﻿using Applications;
+using Applications.Commons;
 using Applications.Interfaces;
+using Applications.ViewModels.ClassTrainingProgramViewModels;
 using Applications.ViewModels.ModuleUnitViewModels;
 using Applications.ViewModels.ModuleViewModels;
 using Applications.ViewModels.Response;
+using Applications.ViewModels.SyllabusOutputStandardViewModels;
+using Applications.ViewModels.UnitModuleViewModel;
 using AutoMapper;
 using DocumentFormat.OpenXml.Drawing.Charts;
+using DocumentFormat.OpenXml.VariantTypes;
 using Domain.Entities;
 using Domain.EntityRelationship;
 using System.Net;
@@ -156,19 +161,25 @@ namespace Applications.Services
             return null;
         }
 
-        public async Task<CreateModuleUnitViewModel> RemoveUnitToModule(Guid ModuleId, Guid UnitId)
+        public async Task<ModuleUnitViewModel> RemoveUnitToModule(Guid ModuleId, Guid UnitId)
         {
-            var moduleOjb = await _unitOfWork.ModuleUnitRepository.GetModuleUnit(ModuleId, UnitId);
-            if (moduleOjb != null)
+            var ModuleUnit = await _unitOfWork.ModuleUnitRepository.GetModuleUnit(ModuleId, UnitId);
+            if (ModuleUnit != null && !ModuleUnit.IsDeleted)
             {
-                _unitOfWork.ModuleUnitRepository.SoftRemove(moduleOjb);
-                var isSucces = await _unitOfWork.SaveChangeAsync() > 0;
-                if (isSucces)
+                ModuleUnit.IsDeleted = true;
+                _unitOfWork.ModuleUnitRepository.Update(ModuleUnit);
+                var isSuccess = await _unitOfWork.SaveChangeAsync() > 0;
+                if (isSuccess)
                 {
-                    return _mapper.Map<CreateModuleUnitViewModel>(moduleOjb);
+                    return _mapper.Map<ModuleUnitViewModel>(ModuleUnit);
                 }
             }
             return null;
         }
     }
 }
+
+
+
+
+

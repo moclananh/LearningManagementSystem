@@ -1,6 +1,10 @@
 ﻿using Applications.Interfaces;
+using Applications.Services;
 using Applications.ViewModels.ModuleViewModels;
 using Applications.ViewModels.Response;
+using DocumentFormat.OpenXml.Spreadsheet;
+using DocumentFormat.OpenXml.VariantTypes;
+using Domain.Entities;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Authorization;
@@ -29,7 +33,7 @@ namespace APIs.Controllers
         [Authorize(policy: "Admins")]
         public async Task<IActionResult> CreateModule(CreateModuleViewModel moduleModel)
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 ValidationResult result = _validatorCreate.Validate(moduleModel);
                 if (result.IsValid)
@@ -47,7 +51,7 @@ namespace APIs.Controllers
 
         [HttpGet("GetAllModules")]
         [Authorize(policy: "All")]
-        public async Task<Response> GetAllModules(int pageIndex = 0, int pageSize = 10) => await _moduleServices.GetAllModules(pageIndex,pageSize);
+        public async Task<Response> GetAllModules(int pageIndex = 0, int pageSize = 10) => await _moduleServices.GetAllModules(pageIndex, pageSize);
 
         [HttpGet("GetModulesBySyllabusId/{syllabusId}")]
         [Authorize(policy: "All")]
@@ -78,14 +82,14 @@ namespace APIs.Controllers
 
         [HttpGet("GetEnableModules")]
         [Authorize(policy: "Admins")]
-        public async Task<Response> GetEnableModules(int pageIndex = 0, int pageSize = 10) => await _moduleServices.GetEnableModules(pageIndex,pageSize);
+        public async Task<Response> GetEnableModules(int pageIndex = 0, int pageSize = 10) => await _moduleServices.GetEnableModules(pageIndex, pageSize);
 
         [HttpGet("GetDisableModules")]
         [Authorize(policy: "Admins")]
-        public async Task<Response> GetDisableModules(int pageIndex = 0, int pageSize = 10) => await _moduleServices.GetDisableModules(pageIndex,pageSize);
+        public async Task<Response> GetDisableModules(int pageIndex = 0, int pageSize = 10) => await _moduleServices.GetDisableModules(pageIndex, pageSize);
 
         [HttpPost("AddModuleUnit/{moduleId}/{unitId}")]
-        [Authorize(policy: "Admins")]
+         [Authorize(policy: "Admins")]
         public async Task<IActionResult> AddModuleUnit(Guid moduleId, Guid unitId)
         {
             if (ModelState.IsValid)
@@ -105,14 +109,22 @@ namespace APIs.Controllers
 
         [HttpDelete("DeleteUnit/{moduleId}/{unitId}")]
         [Authorize(policy: "Admins")]
-        public async Task<IActionResult> DeleteUnit(Guid moduleId, Guid unitId)
+        public async Task<IActionResult> DeleteUnitModule(Guid moduleId, Guid unitId)
         {
             if (ModelState.IsValid)
             {
-                await _moduleServices.RemoveUnitToModule(moduleId, unitId);
+                var deletedModuleUnit = await _moduleServices.RemoveUnitToModule(moduleId, unitId);
+                if (deletedModuleUnit == null)
+                {
+                    return BadRequest("Unit not found in Module");
+                }
                 return Ok("Remove Success");
+
             }
-            return BadRequest("Remove Unit Fail");
+            return BadRequest("Remove UnitModule Fail");
         }
+
     }
 }
+
+

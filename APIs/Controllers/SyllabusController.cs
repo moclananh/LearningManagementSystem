@@ -1,6 +1,8 @@
 ﻿using Applications.Interfaces;
+using Applications.Services;
 using Applications.ViewModels.Response;
 using Applications.ViewModels.SyllabusViewModels;
+using Domain.Entities;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Authorization;
@@ -122,14 +124,19 @@ namespace APIs.Controllers
 
         [HttpDelete("DeleteModuleSyllabus/{SyllabusId}/{moduleId}")]
         [Authorize(policy: "Admins")]
-        public async Task<IActionResult> DeleteUnit(Guid SyllabusId, Guid moduleId)
+        public async Task<IActionResult> DeleteModuleSyllabus(Guid SyllabusId, Guid moduleId)
         {
             if (ModelState.IsValid)
             {
-                await _syllabusServices.RemoveSyllabusModule(SyllabusId, moduleId);
+                var deletedSyllabusModule = await _syllabusServices.RemoveSyllabusModule(SyllabusId, moduleId);
+                if (deletedSyllabusModule == null)
+                {
+                    return BadRequest("Module not found in syllabus");
+                }
                 return Ok("Remove Success");
+
             }
-            return BadRequest("Remove Unit Fail");
+            return BadRequest("Remove ModuleSyllabus Fail");
         }
 
         [HttpGet("GetSyllabusByCreationDate/{startDate}/{endDate}")]

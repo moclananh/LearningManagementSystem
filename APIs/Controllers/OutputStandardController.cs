@@ -11,7 +11,7 @@ namespace APIs.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(policy: "AuthUser")]
+   [Authorize(policy: "AuthUser")]
     public class OutputStandardController : ControllerBase
     {
         private readonly IOutputStandardService _outputStandardServices;
@@ -77,7 +77,7 @@ namespace APIs.Controllers
         public async Task<Response> GetOutputStandardBySyllabusId(Guid SyllabusId, int pageIndex = 0, int pageSize = 10) => await _outputStandardServices.GetOutputStandardBySyllabusIdAsync(SyllabusId, pageIndex, pageSize);
         
         [HttpPost("OutputStandard/AddOutputStandardToSyllabus/{SyllabusId}/{OutputStandardId}")]
-        [Authorize(policy: "Admins")]
+       [Authorize(policy: "Admins")]
         public async Task<IActionResult> AddOutputStandard(Guid SyllabusId, Guid OutputStandardId)
         {
             if (ModelState.IsValid)
@@ -89,7 +89,7 @@ namespace APIs.Controllers
         }
 
         [HttpDelete("OutputStandard/DeleteOutputStandard/{SyllabusId}/{OutputStandardId}")]
-        [Authorize(policy: "Admins")]
+       [Authorize(policy: "Admins")]
         public async Task<IActionResult> DeleteOutputStandard(Guid SyllabusId, Guid OutputStandardId)
         {
             if (ModelState.IsValid)

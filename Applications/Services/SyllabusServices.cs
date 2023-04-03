@@ -10,6 +10,7 @@ using Domain.Entities;
 using Domain.EntityRelationship;
 using MimeKit.Cryptography;
 using System.Net;
+using Applications.ViewModels.UnitModuleViewModel;
 
 namespace Applications.Services
 {
@@ -173,14 +174,15 @@ namespace Applications.Services
 
         public async Task<SyllabusModuleViewModel> RemoveSyllabusModule(Guid SyllabusId, Guid ModuleId)
         {
-            var moduleOjb = await _unitOfWork.SyllabusModuleRepository.GetSyllabusModule(SyllabusId, ModuleId);
-            if (moduleOjb != null)
+            var SyllabusModule = await _unitOfWork.SyllabusModuleRepository.GetSyllabusModule(SyllabusId, ModuleId);
+            if (SyllabusModule != null && !SyllabusModule.IsDeleted)
             {
-                _unitOfWork.SyllabusModuleRepository.SoftRemove(moduleOjb);
-                var isSucces = await _unitOfWork.SaveChangeAsync() > 0;
-                if (isSucces)
+                SyllabusModule.IsDeleted = true;
+                _unitOfWork.SyllabusModuleRepository.Update(SyllabusModule);
+                var isSuccess = await _unitOfWork.SaveChangeAsync() > 0;
+                if (isSuccess)
                 {
-                    return _mapper.Map<SyllabusModuleViewModel>(moduleOjb);
+                    return _mapper.Map<SyllabusModuleViewModel>(SyllabusModule);
                 }
             }
             return null;
