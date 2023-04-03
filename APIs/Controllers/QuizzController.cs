@@ -32,7 +32,7 @@ namespace APIs.Controllers
 
         [HttpPost("CreateQuizz")]
         [Authorize(policy: "Admins")]
-        public async Task<Response> CreateQuizz(CreateQuizzViewModel QuizzModel)
+        public async Task<IActionResult> CreateQuizz(CreateQuizzViewModel QuizzModel)
         {
             if (ModelState.IsValid)
             {
@@ -40,10 +40,14 @@ namespace APIs.Controllers
                 if (check.IsValid)
                 {
                      await _quizzServices.CreateQuizzAsync(QuizzModel);
-                     return new Response(HttpStatusCode.OK, "Created Success", QuizzModel);
+                }
+                else
+                {
+                    var error = check.Errors.Select(x => x.ErrorMessage).ToList();
+                    return BadRequest(error);
                 }
             }
-            return new Response(HttpStatusCode.BadRequest, "Invalid Data");
+            return Ok("Create new Success");
         }
 
         [HttpGet("GetQuizzByQuizzId/{QuizzId}")]

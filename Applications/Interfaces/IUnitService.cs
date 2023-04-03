@@ -6,8 +6,8 @@ namespace Applications.Interfaces
 {
     public interface IUnitServices
     {
-        public Task<CreateUnitViewModel> CreateUnitAsync(CreateUnitViewModel UnitDTO);
-        public Task<CreateUnitViewModel> UpdateUnitAsync(Guid UnitId, CreateUnitViewModel UnitDTO);
+        public Task<Response> CreateUnitAsync(CreateUnitViewModel UnitDTO);
+        public Task<Response> UpdateUnitAsync(Guid UnitId, CreateUnitViewModel UnitDTO);
         public Task<Response> GetUnitById(Guid UnitId);
         public Task<Response> GetAllUnits(int pageNumber = 0, int pageSize = 10);
         public Task<Response> GetEnableUnitsAsync(int pageIndex = 0, int pageSize = 10);

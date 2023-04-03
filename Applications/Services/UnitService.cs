@@ -18,19 +18,19 @@ namespace Applications.Services
             _mapper = mapper;
         }
 
-        public async Task<CreateUnitViewModel> CreateUnitAsync(CreateUnitViewModel UnitDTO)
+        public async Task<Response> CreateUnitAsync(CreateUnitViewModel UnitDTO)
         {
             var unitOjb = _mapper.Map<Unit>(UnitDTO);
             await _unitOfWork.UnitRepository.AddAsync(unitOjb);
             var isSuccess = await _unitOfWork.SaveChangeAsync() > 0;
             if (isSuccess)
             {
-                return _mapper.Map<CreateUnitViewModel>(unitOjb);
+                return new Response(HttpStatusCode.OK, "Created success", _mapper.Map<CreateUnitViewModel>(unitOjb));
             }
-            return null;
+            return new Response(HttpStatusCode.BadRequest, "Created Failed");
         }
 
-        public async Task<CreateUnitViewModel> UpdateUnitAsync(Guid UnitId, CreateUnitViewModel UnitDTO)
+        public async Task<Response> UpdateUnitAsync(Guid UnitId, CreateUnitViewModel UnitDTO)
         {
             var unit = await _unitOfWork.UnitRepository.GetByIdAsync(UnitId);
             if (unit != null)
@@ -40,10 +40,10 @@ namespace Applications.Services
                 var isSuccess = await _unitOfWork.SaveChangeAsync() > 0;
                 if (isSuccess)
                 {
-                    return _mapper.Map<CreateUnitViewModel>(unit);
+                    return new Response(HttpStatusCode.OK,"Update Success", _mapper.Map<CreateUnitViewModel>(unit));
                 }
             }
-            return null;
+            return new Response(HttpStatusCode.BadRequest, "Update Failed");
         }
 
         public async Task<Response> GetUnitByModuleIdAsync(Guid ModuleId, int pageIndex = 0, int pageSize = 10)
