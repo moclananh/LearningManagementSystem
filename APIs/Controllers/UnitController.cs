@@ -5,12 +5,14 @@ using FluentValidation;
 using Applications.Interfaces;
 using Applications.ViewModels.Response;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 
 namespace APIs.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-   // [Authorize(policy: "AuthUser")]
+    [Authorize(policy: "AuthUser")]
+    [EnableCors("AllowAll")]
     public class UnitController : ControllerBase
     {
         private readonly IUnitServices _unitServices;

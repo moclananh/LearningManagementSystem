@@ -3,12 +3,14 @@ using Applications.Interfaces;
 using Applications.ViewModels.AbsentRequest;
 using Applications.ViewModels.Response;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace APIs.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [EnableCors("AllowAll")]
     [Authorize(policy: "AuthUser")]
     public class AbsentRequestController : ControllerBase
     {

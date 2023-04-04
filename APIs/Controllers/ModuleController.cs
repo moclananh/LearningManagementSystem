@@ -8,6 +8,7 @@ using Domain.Entities;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace APIs.Controllers
@@ -15,6 +16,7 @@ namespace APIs.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize(policy: "AuthUser")]
+    [EnableCors("AllowAll")]
     public class ModuleController : ControllerBase
     {
         private readonly IModuleService _moduleServices;

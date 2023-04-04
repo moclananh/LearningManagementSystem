@@ -6,12 +6,14 @@ using FluentValidation;
 using Applications.ViewModels.Response;
 using Microsoft.AspNetCore.Authorization;
 using System.Net;
+using Microsoft.AspNetCore.Cors;
 
 namespace APIs.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-   [Authorize(policy: "AuthUser")]
+    [Authorize(policy: "AuthUser")]
+    [EnableCors("AllowAll")]
     public class OutputStandardController : ControllerBase
     {
         private readonly IOutputStandardService _outputStandardServices;

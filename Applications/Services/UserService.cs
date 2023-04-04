@@ -257,8 +257,6 @@ public class UserService : IUserService
         if (!StringUtils.Verify(userLoginViewModel.Password, user.Password))
             return new Response(HttpStatusCode.BadRequest, "Invalid Password");
         var token = await _tokenService.GetToken(user.Email);
-        if (string.IsNullOrEmpty(token.AccessToken))
-            return new Response(HttpStatusCode.Unauthorized, "Invalid password or username");
         user.Token = token.AccessToken;
         
         _unitOfWork.UserRepository.Update(user);

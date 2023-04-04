@@ -4,6 +4,7 @@ using Applications.ViewModels.Response;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace APIs.Controllers
@@ -11,6 +12,7 @@ namespace APIs.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize(policy: "AuthUser")]
+    [EnableCors("AllowAll")]
     public class AuditPlanController : ControllerBase
     {
         private readonly IAuditPlanService _auditPlanService;

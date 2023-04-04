@@ -6,6 +6,7 @@ using Domain.Entities;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -14,6 +15,7 @@ namespace APIs.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize(policy: "AuthUser")]
+    [EnableCors("AllowAll")]
     public class SyllabusController : ControllerBase
     {
         private readonly ISyllabusServices _syllabusServices;

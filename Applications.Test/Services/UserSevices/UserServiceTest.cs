@@ -11,6 +11,7 @@ using Domain.Tests;
 using FluentAssertions;
 using Moq;
 using System.Net;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Applications.Tests.Services.UserSevices;
 
@@ -221,7 +222,7 @@ public class UserServiceTest : SetupTest
         var userMock = new UserLoginViewModel
         {
             Email = "mock",
-            Password = StringUtils.Hash("12345")
+            Password = "12345"
         };
         var expectedResponse = new Response(HttpStatusCode.OK, "authorized",It.IsAny<LoginResult>());
 
@@ -231,19 +232,69 @@ public class UserServiceTest : SetupTest
                 .Without(x => x.UserAuditPlans)
                 .Without(x => x.ClassUsers)
                 .With(x => x.Email, userMock.Email)
-                .With(x => x.Password, userMock.Password)
+                .With(x => x.Password,StringUtils.Hash(userMock.Password))
                 .Create();
         var tokenMock = _fixture.Build<TokenModel>().Create();
-
         _unitOfWorkMock.Setup(unitOfWork => unitOfWork.UserRepository.GetUserByEmail(userMock.Email)).ReturnsAsync(user);
         _tokenServiceMock.Setup(service => service.GetToken(user.Email)).ReturnsAsync(tokenMock);
-
 
         //act
         var result = await _userService.Login(userMock);
 
         //assert
-        result.Should().NotBeNull();
-        //_unitOfWorkMock.Verify(x => x.QuizzRepository.GetByIdAsync(mockdata.Id), Times.Once());
+        Assert.Equal(expectedResponse.Status, result.Status);
+        Assert.IsType<LoginResult>(result.Result);
     }
+
+    [Fact]
+    public async Task Login_WithInvalidEmail_ReturnsBadRequestResponse()
+    {
+        //arrage
+        var userMock = new UserLoginViewModel
+        {
+            Email = "mock",
+            Password = "12345"
+        };
+        _unitOfWorkMock.Setup(unitOfWork => unitOfWork.UserRepository.GetUserByEmail(userMock.Email)).ReturnsAsync((User)null);
+        var expectedResponse = new Response(HttpStatusCode.BadRequest, "Invalid Email");
+
+        //act
+        var result = await _userService.Login(userMock);
+
+        //assert
+        Assert.Equal(expectedResponse.Status, result.Status);
+        Assert.Equal(expectedResponse.Message, result.Message);
+        Assert.Null(result.Result);
+    }
+
+    [Fact]
+    public async Task Login_WithInvalidPassword_ReturnsBadRequestResponse()
+    {
+        //arrage
+        var userMock = new UserLoginViewModel
+        {
+            Email = "mock",
+            Password = "12345"
+        };
+        var user = _fixture.Build<User>()
+                .Without(x => x.AbsentRequests)
+                .Without(x => x.Attendences)
+                .Without(x => x.UserAuditPlans)
+                .Without(x => x.ClassUsers)
+                .With(x => x.Email, userMock.Email)
+                .With(x => x.Password, StringUtils.Hash("123"))
+                .Create();
+        _unitOfWorkMock.Setup(unitOfWork => unitOfWork.UserRepository.GetUserByEmail(userMock.Email)).ReturnsAsync(user);
+        var expectedResponse = new Response(HttpStatusCode.BadRequest, "Invalid Password");
+
+        //act
+        var result = await _userService.Login(userMock);
+
+        //assert
+        Assert.Equal(expectedResponse.Status, result.Status);
+        Assert.Equal(expectedResponse.Message, result.Message);
+        Assert.Null(result.Result);
+    }
+
+   
 }

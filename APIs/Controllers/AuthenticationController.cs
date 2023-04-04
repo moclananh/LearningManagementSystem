@@ -4,11 +4,13 @@ using Applications.ViewModels.UserViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using Applications.ViewModels.TokenViewModels;
+using Microsoft.AspNetCore.Cors;
 
 namespace APIs.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+[EnableCors("AllowAll")]
 public class AuthenticationController : Controller
 {
     private readonly IUserService _userService;

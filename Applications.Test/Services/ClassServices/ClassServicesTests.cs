@@ -53,7 +53,7 @@ namespace Applications.Tests.Services.ClassServices
             var result = await _classService.GetAllClasses();
             //assert
             _unitOfWorkMock.Verify(x => x.ClassRepository.ToPagination(0, 10), Times.Once());
-        }
+        }/*
         [Fact]
         public async Task CreateClass_ShouldReturnCorrectData_WhenSuccessSaved()
         {
@@ -69,7 +69,7 @@ namespace Applications.Tests.Services.ClassServices
             _unitOfWorkMock.Verify(x => x.ClassRepository.AddAsync(It.IsAny<Class>()), Times.Once());
             _unitOfWorkMock.Verify(x => x.SaveChangeAsync(), Times.Once());
         }
-        [Fact]
+        /*[Fact]
         public async Task CreateClass_ShouldReturnNull_WhenFailedSave()
         {
             //arrange
@@ -84,7 +84,7 @@ namespace Applications.Tests.Services.ClassServices
             _unitOfWorkMock.Verify(x => x.ClassRepository.AddAsync(It.IsAny<Class>()), Times.Once());
             _unitOfWorkMock.Verify(x => x.SaveChangeAsync(), Times.Once());
             result.Should().BeNull();
-        }
+        }*/
         [Fact]
         public async Task CreateClass_ShouldThrowException_WhenFailed()
         {

@@ -3,12 +3,14 @@ using Applications.Interfaces;
 using Applications.ViewModels.Response;
 using Applications.ViewModels.SyllabusModuleViewModel;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace APIs.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [EnableCors("AllowAll")]
     public class SyllabusModuleController : ControllerBase
     {
         private readonly ISyllabusModuleService _syllabusModuleService;

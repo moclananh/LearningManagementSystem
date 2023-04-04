@@ -4,6 +4,7 @@ using Applications.ViewModels.Response;
 using Applications.ViewModels.UserViewModels;
 using Domain.Enum.RoleEnum;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -12,6 +13,7 @@ namespace APIs.Controllers;
 [Route("api/[controller]")]
 [ApiController]
 [Authorize(policy: "AuthUser")]
+[EnableCors("AllowAll")]
 public class UserController : Controller
 {
     private readonly IUserService _userService;

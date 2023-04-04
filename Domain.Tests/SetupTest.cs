@@ -71,6 +71,7 @@ namespace Domain.Tests
             {
                 mc.AddProfile(new MapperConfig());
                 mc.ConstructServicesUsing(s => new CreateByResolver(_unitOfWorkMock.Object));
+                //mc.ConstructServicesUsing(s => new UpdateImageResovler());
             });
             _mapperConfig = mappingConfig.CreateMapper();
             _fixture = new Fixture();

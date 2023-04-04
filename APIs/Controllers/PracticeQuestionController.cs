@@ -3,6 +3,7 @@ using Applications.Interfaces;
 using Applications.ViewModels.Response;
 using ClosedXML.Excel;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace APIs.Controllers
@@ -10,6 +11,7 @@ namespace APIs.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize(policy: "AuthUser")]
+    [EnableCors("AllowAll")]
     public class PracticeQuestionController : ControllerBase
     {
         private readonly IPracticeQuestionService _practicequestionService;

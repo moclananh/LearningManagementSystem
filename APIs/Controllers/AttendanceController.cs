@@ -4,6 +4,7 @@ using Applications.ViewModels.Response;
 using Domain.Enum.AttendenceEnum;
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace APIs.Controllers
@@ -11,6 +12,7 @@ namespace APIs.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize(policy: "AuthUser")]
+    [EnableCors("AllowAll")]
     public class AttendanceController : ControllerBase
     {
 
