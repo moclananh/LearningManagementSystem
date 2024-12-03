@@ -1,7 +1,9 @@
 # FPT Software Internship Project
 
 ## Project Overview
-The FPT Software Internship Project aims to develop a flexible, interactive, and user-friendly online learning system. The project involves various roles, including Project Manager, Database Designer, Business Analyst (BA), and Back-end Developer.
+Designed and developed an interactive, user-friendly online learning platform to support a variety of 
+educational needs, including course management, assignments, and file-sharing functionalities. The system 
+focused on scalability and reliability, ensuring smooth experiences for both educators and learners
 
 ## Roles
 - **Project Manager**: Oversees project planning, execution, and delivery.
