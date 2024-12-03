@@ -1,75 +1,45 @@
+# FPT Software Internship Project
 
-# Đọc kỹ để đỡ đau khổ ❤
+## Project Overview
+The FPT Software Internship Project aims to develop a flexible, interactive, and user-friendly online learning system. The project involves various roles, including Project Manager, Database Designer, Business Analyst (BA), and Back-end Developer.
 
+## Roles
+- **Project Manager**: Oversees project planning, execution, and delivery.
+- **Database Designer**: Designs and manages the database schema and structure.
+- **Business Analyst (BA)**: Analyzes business requirements and translates them into technical specifications.
+- **Back-end Developer**: Implements the server-side logic and integrations.
 
+## A. Architecture & Technology Applying
 
+### Back-end
+- ASP .NET Web API
+- SQL Server
+- Domain-Driven Design
+- Unit of Work
+- Dependency Injection
 
-## Code "Xanh sạch đẹp"
+### Front-end
+- Angular
+- TypeScript
+- RxJS
+- Reactive Programming
 
- - [Coding Convention](https://github.com/ktaranov/naming-convention/blob/master/C%23%20Coding%20Standards%20and%20Naming%20Conventions.md)
- - [Format Code: Ctrl + K + D](https://media.makeameme.org/created/bad-code-bad.jpg)
-## Trước khi tạo merge request thì làm ơn 😭
+### Server
+- Azure
 
-- LÀM ƠN CHANGES FILE ÍT THÔI => Tội Reviewer lắm 😢
-- Pull code từ master về => "CHECK THẬT KỸ"
-=> Nếu phát hiện ra lỗi báo ngay cho mọi người và BẮT người vừa COMMIT "SỬA NHIỆT TÌNH" nhé 😉
-- Tiến hành merge từ "master" về "local" => lại TEST "THẬT KỸ" (nếu muốn đơn giản thì hãy viết test cho phần mình làm nhé 😉)
-- Tiến hành tạo Merge Request => Sau khi branch mình đã được merge thì "Xin vui lòng hét lớn thông báo là t vừa được merge xong để mn còn biết"
-- LƯU Ý: mn đổi pass SQL => user: sa; pass: 123 => mục đích là cho đỡ phải chỉnh sửa
+## B. Figma Design
+The Figma design for the project can be accessed [here](https://fptsoftware.com/pages/global-internship).
 
-## Support 1
+## C. Document
+The detailed project document is available [here](https://fptsoftware.com/pages/global-internship/projects-list-global-internship-2024).
 
-Cài Tools
+## D. UML Design
+Details of the UML design will be provided in the project documentation.
 
-```bash
-  dotnet tool install --global dotnet-ef
-```
+## E. Use Case Design
+Details of the use case design will be included in the project documentation.
 
-Migration
+## Additional Details
+For more information about the project, please visit the detailed project page [here](https://mlananhhdev.wixsite.com/mlananhh/post/learning-management-system-website).
 
-```bash
-  dotnet ef migrations add NewMigration -s APIs -p Infrastructures
-```
-
-UpdateDB
-
-```bash
-  dotnet ef database update -s APIs -p Infrastructures
-```
-
-
-
-
-## Git víp pro
-
-Tại nhánh của mình
-
-```bash
-  git pull origin master
-```
-
-
-```bash
-  git add .
-```
-```bash
-  git commit -m"Nội dung commit"
-```
-```bash
-  git push origin "Tên Nhánh"
-```
-
-Lên gitlab tạo merge request.
-
-
-
-## Thắc mắc
-
-- Database chuẩn => Mọi thứ kết nối được với nhau => Lấy được hết thông tin liên quan giữa các Model với nhau.Nếu cảm thấy không làm được vui lòng "[bấm vào](https://letmegooglethat.com/)", rồi hãy đi hỏi bạn "bè" nhé 😉.
-- Mọi người code thế nào cũng được đi đường vòng hay ngắn không quan trọng. Đầu tiên hãy làm thỏa mãn yêu cầu trước đã rồi hãy optimize sau.
-
-
-##
-
-![Logo](https://www.memecreator.org/static/images/memes/4023011.jpg)
-
+Feel free to copy this and save it as a `README.md` file in your project repository. If there's anything more you need, just let me know!
